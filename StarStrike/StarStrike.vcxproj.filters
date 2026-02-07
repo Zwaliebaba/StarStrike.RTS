@@ -55,6 +55,18 @@
     <Image Include="Assets\scanner.bmp">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\verd2.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\verd2msk.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\verd4.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\verd4msk.bmp">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">
@@ -88,12 +100,6 @@
       <Filter>Assets</Filter>
     </None>
     <None Include="Assets\theme.mid">
-      <Filter>Assets</Filter>
-    </None>
-    <None Include="Assets\verd2.pcx">
-      <Filter>Assets</Filter>
-    </None>
-    <None Include="Assets\verd4.pcx">
       <Filter>Assets</Filter>
     </None>
     <None Include="Assets\elite.dat">

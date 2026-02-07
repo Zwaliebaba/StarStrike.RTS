@@ -9,6 +9,7 @@ namespace Neuron
     public:
       static void SetHomeDirectory(const std::wstring& _path) { m_homeDir = _path + L"\\Assets\\"; }
       [[nodiscard]] static std::wstring GetHomeDirectory() { return m_homeDir; }
+      [[nodiscard]] static std::string GetHomeDirectoryA() { return std::string(m_homeDir.begin(), m_homeDir.end()); }
 
     protected:
       inline static std::wstring m_homeDir;

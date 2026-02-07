@@ -14,33 +14,13 @@ void write_config_file(void)
   FILE *fp = _wfopen(configFile.c_str(), L"w");
   if (fp == nullptr) return;
 
-  fprintf(fp, "%d\t\t# Screen Width\n", screen_w);
-
-  fprintf(fp, "%d\t\t# Screen Height\n", screen_h);
-
-  fprintf(fp, "%d\t\t# Color depth (bpp)\n", color_depth);
-
-  fprintf(fp, "%d\t\t# 0 = Fullscreen, 1 = Windowed\n", windowed);
-
-  fprintf(fp, "%d\t\t# Sound frequency: 0 = 11Khz, 1 = 22Khz, 2 = 44Khz\n", sound_freq);
-
-  fprintf(fp, "%d\t\t# Sound format: 0 = 8bit, 1 = 16bit\n", sound_format);
-
-  fprintf(fp, "%d\t\t# 0 = Mono, 1 = Stereo\n", sound_channels);
-
-  fprintf(fp, "%d\t\t# Sound buffer size\n", sound_buffersize);
-
-  fprintf(fp, "%s\t# Saved Commanders Directory\n", save_game_dir);
-
-  fprintf(fp, "%d\t\t# Music mode, 0 = C-64 Mp3, 1 = Midi\n", music_mode);
-
   fprintf(fp, "%d\t\t# Game Speed, the lower the number the faster the game.\n", speed_cap);
 
   fprintf(fp, "%d\t\t# Graphics: 0 = Solid, 1 = Wireframe\n", wireframe);
 
   fprintf(fp, "%d\t\t# Anti-Alias Wireframe: 0 = Normal, 1 = Anti-Aliased\n", anti_alias_gfx);
 
-  fprintf(fp, "%d\t\t# Planet style: 0 = Wireframe, 1 = Green\n", planet_render_style);
+  fprintf(fp, "%d\t\t# Planet style: 0 = Wireframe, 1 = Green, 2 = SNES, 3 = Fractal\n", planet_render_style);
 
   fprintf(fp, "%d\t\t# Planet Descriptions: 0 = Tree Grubs, 1 = Hoopy Casinos\n", hoopy_casinos);
 
@@ -124,36 +104,7 @@ void read_config_file(void)
   FILE* fp = _wfopen(configFile.c_str(), L"r");
   if (fp == nullptr) return;
 
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &screen_w);
-
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &screen_h);
-
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &color_depth);
-
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &windowed);
-
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &sound_freq);
-
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &sound_format);
-
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &sound_channels);
-
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &sound_buffersize);
-
-  read_cfg_line(save_game_dir, sizeof(save_game_dir), fp);
-
-  read_cfg_line(str, sizeof(str), fp);
-  sscanf(str, "%d", &music_mode);
-
-  read_cfg_line(str, sizeof(str), fp);
+	read_cfg_line(str, sizeof(str), fp);
   sscanf(str, "%d", &speed_cap);
 
   read_cfg_line(str, sizeof(str), fp);
