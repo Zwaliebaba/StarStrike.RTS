@@ -17,96 +17,58 @@
 #pragma warning(disable: 4710) // function 'bool __thiscall BPointerArray<class BFoo *>::resize(int)' not inlined
 #pragma warning(disable: 4201) // nonstandard extension used : nameless struct/union
 #pragma warning(disable: 4291) // no matching operator delete found; memory will not be freed if initialization throws an exception
+
 #pragma warning(disable: 4786) // identifier was truncated to '255' characters in the debug information
 #pragma warning(disable: 4127) // Turn off the conditional expression is constant for chunker.h MACROs. TODO FIXME HACK: this sucks
+
 #pragma warning(disable: 4288) // VC7TODO: For-loop scoping ... fix this
 #pragma warning(disable: 4353) // VC7TODO: __noop thing ... fix this
 #pragma warning(disable: 4995) // turn off #pragma deprecated, since strsafe.h complains about SOOO much stuff right now... fix this
+
 #pragma warning(disable: 4652) // turn off compiler option 'C++ Exception Handling Unwinding' inconsistent with precompiled header; current command-line option will override that defined in the precompiled header
+
 
 //----------------------------------------------------------------------------
 //  External Includes
 //----------------------------------------------------------------------------
 
-#ifndef XBOX
-   #pragma warning(disable: 4995)
-   
-   //----------------------------------------------------------------------------
-   //  Windows Header Setup
-   //----------------------------------------------------------------------------
-   #if !defined(_WIN32_WINDOWS)
-      #define _WIN32_WINDOWS 0x0500
-   #endif
+#pragma warning(disable: 4995)
 
-   #define _WINSOCKAPI_   /* Prevent inclusion of winsock.h in windows.h */
+//----------------------------------------------------------------------------
+//  Windows Header Setup
+//----------------------------------------------------------------------------
+#if !defined(_WIN32_WINDOWS)
+#define _WIN32_WINDOWS 0x0500
+#endif
 
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x500 // Added to get QueueAPC for Network\LoopbackSocket.h
-                              // And get access to GLYPHSET.
+#define MEMORY_SYSTEM_ENABLE 0
 
-   #define MEMORY_SYSTEM_ENABLE 0
-   
-   // Disable STL exceptions
-   // #define _HAS_EXCEPTIONS 0
-   
-   #include <windows.h>
-   #include <windowsx.h>
+// Disable STL exceptions
+// #define _HAS_EXCEPTIONS 0
 
-   #pragma warning(push)
-   #pragma warning(disable:4996)
-      #include <strsafe.h>
-   #pragma warning(pop)
+#define WINDOWS_IGNORE_PACKING_MISMATCH
+#include <winsock2.h>
+#include <windows.h>
+#include <windowsx.h>
 
-   #ifdef _NETAPI
-      #include <winsock.h>
-   #endif
-   
-   #define PC
-   
-   // rg [1/17/05] - FIXME I have to include this to get the old vector/matrix classes to build. Ugh.
-   #include <d3dx9.h>
-   #include <d3dx9math.h>
-   
-   #include "utils\XTLOnPC.h"
+#pragma warning(push)
+#pragma warning(disable:4996)
+#include <strsafe.h>
+#pragma warning(pop)
 
-   // Don't show warnings about expressions with no effect.
-   #pragma warning(disable:4548)		
-   #pragma warning(disable:4555)
-   
-   #define RESTRICT
-      
-#else // XBOX
-   #define D3DCOMPILE_USEVOIDS 
-   
-   #if (defined(BUILD_DEBUG) || (defined(BUILD_PROFILE) && !defined(FASTCAP)))
-      #define USE_PIX
-   #endif
-   
-   #define MEMORY_SYSTEM_ENABLE 1
-   
-   #if MEMORY_SYSTEM_ENABLE
-      #define _MFC_OVERRIDES_NEW
-   #endif      
-   
-   // Disable STL exceptions
-   #define _HAS_EXCEPTIONS 0
-   
-   #define _XBOX_CRT_DEPRECATE_INSECURE 1
-   
-   #include <xtl.h>
-               
-   #define REQUIRED_XDK_VERSION 7776
-   #define REQUIRED_FLASH_VERSION 6719
+#define PC
 
-   #if _XDK_VER < REQUIRED_XDK_VERSION
-      #error Please update your XDK.
-   #endif      
-   
-   // rg [10/08/06] - Disabling all uses of RESTRICT because the compiler can't handle it reliably!
-   //#define RESTRICT __restrict
-   #define RESTRICT 
-                     
-#endif // XBOX
+// rg [1/17/05] - FIXME I have to include this to get the old vector/matrix classes to build. Ugh.
+#include <C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include/d3dx9.h>
+#include <C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include/d3dx9math.h>
+
+#include "utils\XTLOnPC.h"
+
+// Don't show warnings about expressions with no effect.
+#pragma warning(disable:4548)
+#pragma warning(disable:4555)
+
+#define RESTRICT
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -125,8 +87,8 @@
 #include <algorithm>
 
 #ifdef BUILD_CHECKED
-   // rg [6/12/2008] - Make sure BUILD_DEBUG is also defined in checked builds, because we want debug checking enabled too.
-   #define BUILD_DEBUG
+// rg [6/12/2008] - Make sure BUILD_DEBUG is also defined in checked builds, because we want debug checking enabled too.
+#define BUILD_DEBUG
 #endif
 
 #include "threading\lightWeightMutex.h"
@@ -173,4 +135,3 @@
 typedef bool (*BXCoreInitFuncPtr)(bool init);
 extern void XCoreInitialize(void);
 extern void XCoreDeinitialize(void);
-

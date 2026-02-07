@@ -382,40 +382,6 @@ HRESULT StringCchCatNW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc, 
 }
 
 //============================================================================
-// StrHelperStringCchVPrintfExA
-//============================================================================
-HRESULT StrHelperStringCchVPrintfExA(char* pszDest, size_t cchDest, char** ppszDestEnd, size_t* pcchRemaining, unsigned long dwFlags, const char* pszFormat, va_list argList)
-{
-   BASSERT(pszDest);
-   BASSERT(pszFormat);
-   BASSERT(0 == dwFlags);
-   BASSERT(cchDest >= 1);
-
-   HRESULT hr = S_OK;
-
-   if (ppszDestEnd)
-      *ppszDestEnd = NULL;
-   if (pcchRemaining)
-      *pcchRemaining = 0;
-
-   int result = _vsnprintf_s(pszDest, cchDest, _TRUNCATE, pszFormat, argList);
-   if (result < 0)
-   {
-      hr = E_FAIL;
-      strcpy_s(pszDest, cchDest, "");
-   }
-   else 
-   {  
-      if (ppszDestEnd)
-         *ppszDestEnd = pszDest + result; 
-      if (pcchRemaining)
-         *pcchRemaining = cchDest - result;
-   }
-
-   return hr;
-}
-
-//============================================================================
 // StringCchVPrintfExW
 //============================================================================
 HRESULT StringCchVPrintfExW(wchar_t* pszDest, size_t cchDest, wchar_t** ppszDestEnd, size_t* pcchRemaining, unsigned long dwFlags, const wchar_t* pszFormat, va_list argList)
@@ -602,6 +568,41 @@ HRESULT StrHelperStringCchLengthW(
 }
 
 #endif // XBOX
+
+// Windows port: StrHelperStringCchVPrintfExA is needed for both Xbox and Windows
+//============================================================================
+// StrHelperStringCchVPrintfExA
+//============================================================================
+HRESULT StrHelperStringCchVPrintfExA(char* pszDest, size_t cchDest, char** ppszDestEnd, size_t* pcchRemaining, unsigned long dwFlags, const char* pszFormat, va_list argList)
+{
+   BASSERT(pszDest);
+   BASSERT(pszFormat);
+   BASSERT(0 == dwFlags);
+   BASSERT(cchDest >= 1);
+
+   HRESULT hr = S_OK;
+
+   if (ppszDestEnd)
+      *ppszDestEnd = NULL;
+   if (pcchRemaining)
+      *pcchRemaining = 0;
+
+   int result = _vsnprintf_s(pszDest, cchDest, _TRUNCATE, pszFormat, argList);
+   if (result < 0)
+   {
+      hr = E_FAIL;
+      strcpy_s(pszDest, cchDest, "");
+   }
+   else 
+   {  
+      if (ppszDestEnd)
+         *ppszDestEnd = pszDest + result; 
+      if (pcchRemaining)
+         *pcchRemaining = cchDest - result;
+   }
+
+   return hr;
+}
 
 //==============================================================================
 // locFormatFloat

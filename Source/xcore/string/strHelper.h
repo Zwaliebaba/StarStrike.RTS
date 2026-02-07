@@ -504,6 +504,19 @@ inline BCHAR_T *bcsstr(
       );
 #endif   
 
+// Windows port: Expose StrHelperStringCchVPrintfExA for non-Xbox builds
+#ifndef XBOX
+   HRESULT StrHelperStringCchVPrintfExA(
+      char* pszDest, 
+      size_t cchDest, 
+      char** ppszDestEnd, 
+      size_t* pcchRemaining, 
+      unsigned long dwFlags, 
+      const char* pszFormat, 
+      va_list argList
+      );
+#endif
+
 //==============================================================================
 // locFormatFloat
 // helper function for formatting a float using a localized decimal separator

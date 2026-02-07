@@ -62,6 +62,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shaders", "..\shaders\shade
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xvince", "..\xvince\xvince.vcxproj", "{8E249CAD-9EDD-42D9-9FE4-B97D11E751B9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{7D2F2326-DD11-4AE6-86C4-49405843BB1D}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\upgrades\plan.md = ..\.github\upgrades\plan.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86

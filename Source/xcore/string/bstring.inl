@@ -10,7 +10,7 @@
 #include "bstringmanager.h"
 #include "strPathHelper.h"
 
-#include "..\..\code\extlib\mgs\FormatString\FormatString.h"
+#include "..\..\extlib\mgs\FormatString\FormatString.h"
 
 
 //============================================================================

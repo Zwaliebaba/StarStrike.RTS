@@ -902,9 +902,6 @@
     <None Include="string\strPathHelper.inl" />
     <None Include="utils\utils.inl" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="bassert.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

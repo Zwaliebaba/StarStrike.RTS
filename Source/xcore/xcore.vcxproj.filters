@@ -973,11 +973,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="bassert.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="math\collision.h">
       <Filter>Source Files\math</Filter>
     </CustomBuild>

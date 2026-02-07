@@ -9,11 +9,6 @@
 //============================================================================
 #pragma once
 
-// Windows x86/x64: These are no-ops since Interlocked functions provide barriers
-inline void _ReadWriteBarrier() { }
-inline void _ReadBarrier() { }
-inline void _WriteBarrier() { }
-
 namespace Sync
 {
    //============================================================================
