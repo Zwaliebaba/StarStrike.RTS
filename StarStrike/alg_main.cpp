@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "config.h"
 #include "gfx.h"
 #include "main.h"
 #include "vector.h"
@@ -18,7 +17,6 @@
 #include "loadsave.h"
 #include "file.h"
 #include "input.h"
-#include "SDL/SDL.h"
 
 int frame_count;
 int cross_timer;
@@ -318,7 +316,8 @@ int ready_to_draw(void)
   static long oldtime = 0;
   static long ms_count = 0;
 
-  long newtime = SDL_GetTicks();
+  // Use NeuronCore Timer instead of SDL_GetTicks
+  long newtime = static_cast<long>(Timer::Core::GetTotalSeconds() * 1000.0);
 
   if ((newtime == oldtime) || (oldtime == 0))
   {
@@ -1124,11 +1123,8 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
 
   ClientEngine::Startup(L"Deep Space Outpost", {}, _hInstance, _iCmdShow);
 
-  if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
-  {
-    DebugTrace("Could not initialize SDL: {}.\n", SDL_GetError());
-    return 1;
-  }
+  // Initialize Timer (replaces SDL timing)
+  Timer::Core::Startup();
 
   input_startup();
 
@@ -1143,8 +1139,27 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
 
   reset_game();
 
+  // Main game loop with Win32 message processing
+  MSG msg = {};
   while (!finish)
   {
+    // Process Win32 messages (non-blocking)
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+    {
+      if (msg.message == WM_QUIT)
+      {
+        finish = 1;
+        break;
+      }
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    }
+
+    if (finish) break;
+
+    // Update NeuronCore timer each frame
+    Timer::Core::Update();
+
     snd_update_sound();
     if (ready_to_draw()) draw_screen();
 
@@ -1163,8 +1178,6 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
   snd_sound_shutdown();
   input_shutdown();
   gfx_graphics_shutdown();
-
-  SDL_Quit();
 
   ClientEngine::Shutdown();
 

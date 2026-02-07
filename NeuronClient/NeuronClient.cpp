@@ -70,8 +70,8 @@ void ClientEngine::Startup(const wchar_t* _gameName, Windows::Foundation::Size _
   RECT rc;
   GetClientRect(m_hwnd, &rc);
 
-  Graphics::Core::Startup();
-  Graphics::Core::SetWindow(m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
+  // Graphics::Core::Startup();
+  // Graphics::Core::SetWindow(m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
   ShowWindow(m_hwnd, nCmdShow);
 }
@@ -91,7 +91,7 @@ void ClientEngine::Shutdown()
     m_main = nullptr;
   }
 
-  Graphics::Core::Shutdown();
+  // Graphics::Core::Shutdown();  // Disabled for OpenGL projects
   CoreEngine::Shutdown();
 }
 

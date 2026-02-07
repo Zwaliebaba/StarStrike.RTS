@@ -166,10 +166,6 @@ extern int detonate_bomb;
 extern int witchspace;
 extern int auto_pilot;
 
-extern int screen_w;
-extern int screen_h;
-extern int color_depth;
-extern bool windowed;
 extern int sound_freq;
 extern int sound_format;
 extern int sound_channels;

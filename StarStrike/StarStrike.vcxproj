@@ -179,6 +179,7 @@
     <ClCompile Include="loadsave.cpp" />
     <ClCompile Include="missions.cpp" />
     <ClCompile Include="mp3.cpp" />
+    <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="options.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -196,6 +197,7 @@
     <ClCompile Include="threed.cpp" />
     <ClCompile Include="trade.cpp" />
     <ClCompile Include="vector.cpp" />
+    <ClCompile Include="Win32Input.cpp" />
     <ClCompile Include="WinMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -209,11 +211,11 @@
     <ClInclude Include="gfx.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="intro.h" />
-    <ClInclude Include="keysyms.h" />
     <ClInclude Include="loadsave.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="missions.h" />
     <ClInclude Include="mp3.h" />
+    <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="options.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pilot.h" />
@@ -229,6 +231,7 @@
     <ClInclude Include="threed.h" />
     <ClInclude Include="trade.h" />
     <ClInclude Include="vector.h" />
+    <ClInclude Include="Win32Input.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NeuronClient\NeuronClient.vcxproj">

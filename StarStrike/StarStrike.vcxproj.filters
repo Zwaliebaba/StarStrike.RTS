@@ -148,11 +148,13 @@
     <ClCompile Include="vector.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="dirlist.cpp" />
-    <ClCompile Include="input.cpp" />
     <ClCompile Include="loadsave.cpp" />
     <ClCompile Include="mp3.cpp" />
     <ClCompile Include="StarStrike.cpp" />
     <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="OpenGLContext.cpp" />
+    <ClCompile Include="Win32Input.cpp" />
+    <ClCompile Include="input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -179,10 +181,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="dirlist.h" />
     <ClInclude Include="input.h" />
-    <ClInclude Include="keysyms.h" />
     <ClInclude Include="loadsave.h" />
     <ClInclude Include="mp3.h" />
     <ClInclude Include="StarStrike.h" />
+    <ClInclude Include="OpenGLContext.h" />
+    <ClInclude Include="Win32Input.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Assets\Audio\beep.wav">

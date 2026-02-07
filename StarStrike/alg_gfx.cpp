@@ -6,7 +6,10 @@
 #include "threed.h"
 #include "random.h"
 #include "shipface.h"
+#include "OpenGLContext.h"
 #include "GL/gl.h"
+
+// TODO: Phase 4 will replace SDL bitmap loading with Win32 GDI
 #include "SDL/SDL.h"
 
 #define PI 3.1415926535898
@@ -240,16 +243,11 @@ void gfx_build_gl_circles(void)
 
 int gfx_graphics_startup(void)
 {
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-  if (SDL_SetVideoMode(screen_w, screen_h, color_depth, SDL_OPENGL | ((windowed) ? SDL_RESIZABLE : SDL_FULLSCREEN)) == nullptr)
+  // Initialize OpenGL context using Win32 WGL (replaces SDL video mode)
+  if (!OpenGLContext::Startup(ClientEngine::Window()))
   {
-    fprintf(stderr, "Video mode set failed: %s\n", SDL_GetError());
-    exit(1);
+    Fatal("Failed to initialize OpenGL context");
+    return 1;
   }
 
   glClearColor(0, 0, 0, 1.0);
@@ -260,6 +258,9 @@ int gfx_graphics_startup(void)
 
   glCullFace(GL_BACK);
   glFrontFace(GL_CW);
+
+  // Set initial viewport and projection using ClientEngine window size
+  gfx_set_clip_region(0, 0, 512, 512);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -347,13 +348,24 @@ GLvoid gfx_gl_cen_print(int x, int y, const char *string, int base, int col)
 
 }
 
-void gfx_graphics_shutdown(void) { SDL_FreeSurface(scanner_image); }
+void gfx_graphics_shutdown(void)
+{
+  // Free SDL surface (will be replaced in Phase 4 with Win32 bitmap)
+  if (scanner_image)
+  {
+    SDL_FreeSurface(scanner_image);
+    scanner_image = nullptr;
+  }
+  
+  // Shutdown OpenGL context
+  OpenGLContext::Shutdown();
+}
 
 void gfx_update_screen(void)
 {
   glFlush();
 #ifdef DOUBLEBUFFER
-  SDL_GL_SwapBuffers();
+  OpenGLContext::SwapBuffers();
 #endif
   glDepthMask(GL_TRUE);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -513,6 +525,8 @@ void gfx_set_clip_region(int tx, int ty, int bx, int by)
   clip_bx = bx;
   clip_by = by;
 
+  int screen_w = static_cast<int>(ClientEngine::OutputSize().Width);
+  int screen_h = static_cast<int>(ClientEngine::OutputSize().Height);
   glViewport((tx + GFX_X_OFFSET) * screen_w / 800, (600 - (by + GFX_Y_OFFSET)) * screen_h / 600, (bx - tx) * screen_w / 800, (by - ty) * screen_h / 600);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -522,8 +536,8 @@ void gfx_set_clip_region(int tx, int ty, int bx, int by)
 
 void gfx_resize_window(int width, int height)
 {
-  screen_w = width;
-  screen_h = height;
+  // Size is now managed by ClientEngine::OutputSize()
+  // Just refresh the clip region
   gfx_set_clip_region(clip_tx, clip_ty, clip_bx, clip_by);
 }
 

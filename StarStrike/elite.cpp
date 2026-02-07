@@ -42,10 +42,6 @@ int laser_temp;
 int detonate_bomb;
 int auto_pilot;
 
-int screen_w;
-int screen_h;
-int color_depth;
-bool windowed = true;
 int sound_freq;
 int sound_format;
 int sound_channels;
