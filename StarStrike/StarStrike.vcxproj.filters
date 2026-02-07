@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Image Include="Assets\Wide310x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LockScreenLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\blake.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\ecm.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\elitetx3.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\greendot.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\missgrn.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\missred.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\missyell.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\reddot.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\safe.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="newkind.ico">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{52b3d348-96ac-440c-8bbc-f7382f7b4bbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project Files">
+      <UniqueIdentifier>{979cbe68-dcf7-4c99-81f5-58a5c6afe60b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{22a50e65-aaff-4288-b6a8-658ff022ad3d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="app.manifest">
+      <Filter>Project Files</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <Filter>Project Files</Filter>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <Filter>Project Files</Filter>
+    </None>
+    <None Include="Assets\danube.mid">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\theme.mid">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\verd2.pcx">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\verd4.pcx">
+      <Filter>Assets</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
+      <Filter>Project Files</Filter>
+    </Natvis>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
+      <Filter>Project Files</Filter>
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="nkres.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="alg_gfx.cpp" />
+    <ClCompile Include="alg_main.cpp" />
+    <ClCompile Include="docked.cpp" />
+    <ClCompile Include="elite.cpp" />
+    <ClCompile Include="file.cpp" />
+    <ClCompile Include="intro.cpp" />
+    <ClCompile Include="keyboard.cpp" />
+    <ClCompile Include="missions.cpp" />
+    <ClCompile Include="options.cpp" />
+    <ClCompile Include="pilot.cpp" />
+    <ClCompile Include="planet.cpp" />
+    <ClCompile Include="random.cpp" />
+    <ClCompile Include="shipdata.cpp" />
+    <ClCompile Include="shipface.cpp" />
+    <ClCompile Include="sound.cpp" />
+    <ClCompile Include="space.cpp" />
+    <ClCompile Include="stars.cpp" />
+    <ClCompile Include="swat.cpp" />
+    <ClCompile Include="threed.cpp" />
+    <ClCompile Include="trade.cpp" />
+    <ClCompile Include="vector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="alg_data.h" />
+    <ClInclude Include="alg_main.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="docked.h" />
+    <ClInclude Include="elite.h" />
+    <ClInclude Include="file.h" />
+    <ClInclude Include="gfx.h" />
+    <ClInclude Include="intro.h" />
+    <ClInclude Include="keyboard.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="menu.h" />
+    <ClInclude Include="missions.h" />
+    <ClInclude Include="options.h" />
+    <ClInclude Include="pilot.h" />
+    <ClInclude Include="planet.h" />
+    <ClInclude Include="random.h" />
+    <ClInclude Include="shipdata.h" />
+    <ClInclude Include="shipface.h" />
+    <ClInclude Include="sound.h" />
+    <ClInclude Include="space.h" />
+    <ClInclude Include="stars.h" />
+    <ClInclude Include="swat.h" />
+    <ClInclude Include="threed.h" />
+    <ClInclude Include="trade.h" />
+    <ClInclude Include="vector.h" />
+  </ItemGroup>
+</Project>

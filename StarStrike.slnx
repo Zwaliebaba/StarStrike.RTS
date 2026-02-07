@@ -1,0 +1,10 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="StarStrike/StarStrike.vcxproj" Id="52b3d348-96ac-440c-8bbc-f7382f7b4bbe">
+    <Deploy />
+  </Project>
+</Solution>

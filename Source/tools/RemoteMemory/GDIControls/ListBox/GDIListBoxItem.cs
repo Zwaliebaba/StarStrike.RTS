@@ -1,6 +1,0 @@
-namespace GDIControls
-{
-   class GDIListBoxItem
-   {
-   }
-}
