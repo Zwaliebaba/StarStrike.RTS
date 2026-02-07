@@ -1,27 +1,4 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-/*
- * swat.c
- *
- * Special Weapons And Tactics.
- */
-
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-
+#include "pch.h"
 #include "config.h"
 #include "gfx.h"
 #include "elite.h"
@@ -105,7 +82,7 @@ void clear_universe (void)
 }
 
 
-int add_new_ship (int ship_type, int x, int y, int z, struct vector *rotmat, int rotx, int rotz)
+int add_new_ship (int ship_type, double x, double y, double z, struct vector *rotmat, int rotx, int rotz)
 {
 	int i;
 
@@ -132,15 +109,24 @@ int add_new_ship (int ship_type, int x, int y, int z, struct vector *rotmat, int
 			universe[i].bravery = 0;
 			universe[i].target = 0;
 			
-			universe[i].flags = initial_flags[ship_type];
-
 			if ((ship_type != SHIP_PLANET) && (ship_type != SHIP_SUN))
 			{
+                // bug in TNK_1_0_RELEASE: set flags in here
+                // so we don't reference initial_flags with a negative index
+    			universe[i].flags = initial_flags[ship_type];
 				universe[i].energy = ship_list[ship_type]->energy;
 				universe[i].missiles = ship_list[ship_type]->missiles;
 				ship_count[ship_type]++;
-			}
+            } else
+            {
+                universe[i].flags = 0;
+                universe[i].energy = 0;
+                universe[i].missiles = 0;
+            }
 			
+			matrix_to_quat(universe[i].rotmat, &universe[i].quat);
+			universe[i].oldquat = universe[i].quat;
+			universe[i].oldlocation = universe[i].location;
 			return i;
 		}
 	}
@@ -1236,6 +1222,6 @@ void abandon_ship (void)
 	
 	snd_play_sample (SND_DOCK);					
 	dock_player();
-	current_screen = SCR_BREAK_PATTERN;
+	switch_to_screen(SCR_BREAK_PATTERN);
 }
 

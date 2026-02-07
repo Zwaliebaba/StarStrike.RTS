@@ -52,6 +52,9 @@
     <Image Include="newkind.ico">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="Assets\scanner.bmp">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">
@@ -62,6 +65,9 @@
     </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{22a50e65-aaff-4288-b6a8-658ff022ad3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Audio">
+      <UniqueIdentifier>{841beb1d-40ef-49f8-9ff0-f49855997f6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +96,15 @@
     <None Include="Assets\verd4.pcx">
       <Filter>Assets</Filter>
     </None>
+    <None Include="Assets\elite.dat">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\newkind.cfg">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\newscan.cfg">
+      <Filter>Assets</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
@@ -111,7 +126,6 @@
     <ClCompile Include="elite.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="intro.cpp" />
-    <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="missions.cpp" />
     <ClCompile Include="options.cpp" />
     <ClCompile Include="pilot.cpp" />
@@ -126,19 +140,20 @@
     <ClCompile Include="threed.cpp" />
     <ClCompile Include="trade.cpp" />
     <ClCompile Include="vector.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="dirlist.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="loadsave.cpp" />
+    <ClCompile Include="mp3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="alg_data.h" />
-    <ClInclude Include="alg_main.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="docked.h" />
     <ClInclude Include="elite.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="gfx.h" />
     <ClInclude Include="intro.h" />
-    <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
-    <ClInclude Include="menu.h" />
     <ClInclude Include="missions.h" />
     <ClInclude Include="options.h" />
     <ClInclude Include="pilot.h" />
@@ -153,5 +168,55 @@
     <ClInclude Include="threed.h" />
     <ClInclude Include="trade.h" />
     <ClInclude Include="vector.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="dirlist.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="keysyms.h" />
+    <ClInclude Include="loadsave.h" />
+    <ClInclude Include="mp3.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Assets\Audio\beep.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\boop.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\crash.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\dock.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\ecm.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\explode.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\gameover.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\hitem.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\hyper.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\incom1.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\incom2.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\launch.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\missile.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\pulse.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
   </ItemGroup>
 </Project>

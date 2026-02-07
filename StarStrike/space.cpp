@@ -1,32 +1,5 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-/*
- * space.c
- *
- * This module handles all the flight system and management of the space universe.
- */
-
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
-
+#include "pch.h"
 #include "vector.h"
-
-#include "alg_data.h"
-
 #include "config.h"
 #include "elite.h"
 #include "gfx.h"
@@ -111,10 +84,10 @@ void move_univ_object (struct univ_object *obj)
 	double beta;
 	int rotx,rotz;
 	double speed;
-	
+
 	alpha = flight_roll / 256.0;
 	beta = flight_climb / 256.0;
-	
+
 	x = obj->location.x;
 	y = obj->location.y;
 	z = obj->location.z;
@@ -124,7 +97,7 @@ void move_univ_object (struct univ_object *obj)
 		if (obj->velocity != 0)
 		{
 			speed = obj->velocity;
-			speed *= 1.5; 	
+			speed *= 1.5;
 			x += obj->rotmat[2].x * speed; 
 			y += obj->rotmat[2].y * speed; 
 			z += obj->rotmat[2].z * speed; 
@@ -162,15 +135,14 @@ void move_univ_object (struct univ_object *obj)
 	rotate_vec (&obj->rotmat[1], alpha, beta);
 	rotate_vec (&obj->rotmat[0], alpha, beta);
 
-	if (obj->flags & FLG_DEAD)
-		return;
-
+	if (!(obj->flags & FLG_DEAD))
+	{
 
 	rotx = obj->rotx;
 	rotz = obj->rotz;
 	
 	/* If necessary rotate the object around the X axis... */
-
+	
 	if (rotx != 0)
 	{
 		rotate_x_first (&obj->rotmat[2].x, &obj->rotmat[1].x, rotx);
@@ -194,10 +166,13 @@ void move_univ_object (struct univ_object *obj)
 			obj->rotz -= (rotz < 0) ? -1 : 1;
 	}
 
+	}
 
 	/* Orthonormalize the rotation matrix... */
 
 	tidy_matrix (obj->rotmat);
+
+    matrix_to_quat(obj->rotmat, &obj->quat);
 }
 
 
@@ -207,7 +182,7 @@ void move_univ_object (struct univ_object *obj)
 
 void dock_player (void)
 {
-	disengage_auto_pilot();
+    disengage_auto_pilot();
 	docked = 1;
 	flight_speed = 0;
 	flight_roll = 0;
@@ -230,7 +205,7 @@ int is_docking (int sn)
 	struct vector vec;
 	double fz;
 	double ux;
-
+	
 	if (auto_pilot)		// Don't want it to kill anyone!
 		return 1;
 	
@@ -272,7 +247,7 @@ void update_altitude (void)
 	double dist;
 	
 	myship.altitude = 255;
-
+	
 	if (witchspace)
 		return;
 	
@@ -318,7 +293,7 @@ void update_cabin_temp (void)
 	int dist;
 	
 	myship.cabtemp = 30;
-
+	
 	if (witchspace)
 		return;
 	
@@ -477,8 +452,8 @@ void check_docking (int i)
 	if (is_docking(i))
 	{
 		snd_play_sample (SND_DOCK);					
-		dock_player();
-		current_screen = SCR_BREAK_PATTERN;
+		dock_player ();
+        switch_to_screen(SCR_BREAK_PATTERN);
 		return;
 	}
 					
@@ -577,7 +552,7 @@ void update_universe (void)
 	struct univ_object flip;
 	
 	
-	gfx_start_render();
+//	gfx_start_render();
 				 	
 	for (i = 0; i < MAX_UNIV_OBJECTS; i++)
 	{
@@ -634,15 +609,15 @@ void update_universe (void)
 					make_station_appear();
 				}				
 
-				draw_ship (&flip);
+//				draw_ship (&flip);
 				continue;
 			}
 
 			if (type == SHIP_SUN)
 			{
-				draw_ship (&flip);
+//				draw_ship (&flip);
 				continue;
-			}
+            }
 			
 			
 			if (universe[i].distance < 170)
@@ -661,13 +636,30 @@ void update_universe (void)
 				continue;
 			}
 
-			draw_ship (&flip);
+//			draw_ship (&flip);
 
-			universe[i].flags = flip.flags;
-			universe[i].exp_seed = flip.exp_seed;
-			universe[i].exp_delta = flip.exp_delta;
+    		if (universe[i].flags & FLG_EXPLOSION)
+	    	{
+		    	if (universe[i].exp_delta > 251)
+			    {
+			    	universe[i].flags |= FLG_REMOVE;
+			    	continue;
+			    }
+		    	universe[i].exp_delta += 4;
+		    }
+
+    		if ((universe[i].flags & FLG_DEAD) && !(universe[i].flags & FLG_EXPLOSION))
+    		{
+	    		universe[i].flags |= FLG_EXPLOSION;
+		    	universe[i].exp_seed = randint();
+			    universe[i].exp_delta = 18; 
+		    }
+
+//			universe[i].flags = flip.flags;
+//			universe[i].exp_seed = flip.exp_seed;
+//			universe[i].exp_delta = flip.exp_delta;
 			
-			universe[i].flags &= ~FLG_FIRING;
+//			universe[i].flags &= ~FLG_FIRING;
 			
 			if (universe[i].flags & FLG_DEAD)
 				continue;
@@ -676,7 +668,7 @@ void update_universe (void)
 		}
 	}
 
-	gfx_finish_render();
+//	gfx_finish_render();
 	detonate_bomb = 0;
 }
 
@@ -700,7 +692,7 @@ void update_scanner (void)
 			(universe[i].flags & FLG_DEAD) ||
 			(universe[i].flags & FLG_CLOAKED))
 			continue;
-	
+
 		x = universe[i].location.x / 256;
 		y = universe[i].location.y / 256;
 		z = universe[i].location.z / 256;
@@ -735,15 +727,8 @@ void update_scanner (void)
 				break;
 		}
 			
-		gfx_draw_colour_line (x1+2, y2,   x1-3, y2, colour);
-		gfx_draw_colour_line (x1+2, y2+1, x1-3, y2+1, colour);
-		gfx_draw_colour_line (x1+2, y2+2, x1-3, y2+2, colour);
-		gfx_draw_colour_line (x1+2, y2+3, x1-3, y2+3, colour);
-
-
-		gfx_draw_colour_line (x1,   y1, x1,   y2, colour);
-		gfx_draw_colour_line (x1+1, y1, x1+1, y2, colour);
-		gfx_draw_colour_line (x1+2, y1, x1+2, y2, colour);
+		gfx_draw_rectangle(x1+2, y2, x1-3, y2+3, colour);
+		gfx_draw_rectangle(x1, y1, x1+2, y2, colour);
 	}
 }
 
@@ -758,10 +743,10 @@ void update_compass (void)
 	int compass_x;
 	int compass_y;
 	int un = 0;
-
+	
 	if (witchspace)
 		return;
-	
+
 	if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 		un = 1;
 	
@@ -789,7 +774,6 @@ void update_compass (void)
 void display_speed (void)
 {
 	int sx,sy;
-	int i;
 	int len;
 	int colour;
 
@@ -800,10 +784,7 @@ void display_speed (void)
 
 	colour = (flight_speed > (myship.max_speed * 2 / 3)) ? GFX_COL_DARK_RED : GFX_COL_GOLD;
 
-	for (i = 0; i < 6; i++)
-	{
-		gfx_draw_colour_line (sx, sy + i, sx + len, sy + i, colour);
-	}
+	gfx_draw_rectangle(sx, sy, sx + len, sy + 5, colour);
 }
 
 
@@ -814,16 +795,9 @@ void display_speed (void)
 
 void display_dial_bar (int len, int x, int y)
 {
-	int i = 0;
-
-	gfx_draw_colour_line (x, y + 384, x + len, y + 384, GFX_COL_GOLD);
-	i++;
-	gfx_draw_colour_line (x, y + i + 384, x + len, y + i + 384, GFX_COL_GOLD);
-	
-	for (i = 2; i < 7; i++)
-		gfx_draw_colour_line (x, y + i + 384, x + len, y + i + 384, GFX_COL_YELLOW_1);
-
-	gfx_draw_colour_line (x, y + i + 384, x + len, y + i + 384, GFX_COL_DARK_RED);
+	gfx_draw_rectangle(x, y + 384    , x + len, y + 384 + 2, GFX_COL_GOLD);
+	gfx_draw_rectangle(x, y + 384 + 6, x + len, y + 384 + 7, GFX_COL_DARK_RED);
+	gfx_draw_rectangle(x, y + 384 + 2, x + len, y + 384 + 6, GFX_COL_YELLOW_1);
 }
 
 
@@ -892,7 +866,6 @@ void display_energy (void)
 void display_flight_roll (void)
 {
 	int sx,sy;
-	int i;
 	int pos;
 
 	sx = 416;
@@ -901,16 +874,12 @@ void display_flight_roll (void)
 	pos = sx - ((flight_roll * 28) / myship.max_roll);
 	pos += 32;
 
-	for (i = 0; i < 4; i++)
-	{
-		gfx_draw_colour_line (pos + i, sy, pos + i, sy + 7, GFX_COL_GOLD);
-	}
+	gfx_draw_rectangle(pos, sy, pos + 3, sy + 7, GFX_COL_GOLD);
 }
 
 void display_flight_climb (void)
 {
 	int sx,sy;
-	int i;
 	int pos;
 
 	sx = 416;
@@ -919,10 +888,7 @@ void display_flight_climb (void)
 	pos = sx + ((flight_climb * 28) / myship.max_climb);
 	pos += 32;
 
-	for (i = 0; i < 4; i++)
-	{
-		gfx_draw_colour_line (pos + i, sy, pos + i, sy + 7, GFX_COL_GOLD);
-	}
+	gfx_draw_rectangle(pos, sy, pos + 3, sy + 7, GFX_COL_GOLD);
 }
 
 
@@ -949,7 +915,7 @@ void display_missiles (void)
 	if (missile_target != MISSILE_UNARMED)
 	{
 		gfx_draw_sprite ((missile_target < 0) ? IMG_MISSILE_YELLOW :
-											    IMG_MISSILE_RED, x, y);
+													 IMG_MISSILE_RED, x, y);
 		x += 16;
 		nomiss--;
 	}
@@ -964,25 +930,24 @@ void display_missiles (void)
 
 void update_console (void)
 {
-	gfx_set_clip_region (0, 0, 512, 512);
 	gfx_draw_scanner();
 	
-	display_speed();
-	display_flight_climb();
-	display_flight_roll();
-	display_shields();
-	display_altitude();
-	display_energy();
-	display_cabin_temp();
-	display_laser_temp();
-	display_fuel();
-	display_missiles();
+	display_speed ();
+	display_flight_climb ();
+	display_flight_roll ();
+	display_shields ();
+	display_altitude ();
+	display_energy ();
+	display_cabin_temp ();
+	display_laser_temp ();
+	display_fuel ();
+	display_missiles ();
 	
 	if (docked)
 		return;
 
-	update_scanner();
-	update_compass();
+	update_scanner ();
+	update_compass ();
 
 	if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 		gfx_draw_sprite (IMG_BIG_S, 387, 490);
@@ -1077,7 +1042,6 @@ void display_hyper_status (void)
 	}
 	else
 	{
-		gfx_clear_area (5, 5, 25, 34);
 		gfx_display_text (5, 5, str);
 	}
 }
@@ -1128,7 +1092,7 @@ void enter_witchspace (void)
 	for (i = 0; i < nthg; i++)
 		create_thargoid();	
 	
-	current_screen = SCR_BREAK_PATTERN;
+	switch_to_screen(SCR_BREAK_PATTERN);
 	snd_play_sample (SND_HYPERSPACE);
 }
 
@@ -1140,7 +1104,7 @@ void complete_hyperspace (void)
 	
 	hyper_ready = 0;
 	witchspace = 0;
-	
+
 	if (hyper_galactic)
 	{
 		cmdr.galactic_hyperdrive = 0;
@@ -1196,7 +1160,7 @@ void complete_hyperspace (void)
 
 	add_new_ship (SHIP_SUN, px, py, pz, rotmat, 0, 0);
 
-	current_screen = SCR_BREAK_PATTERN;
+	switch_to_screen(SCR_BREAK_PATTERN);
 	snd_play_sample (SND_HYPERSPACE);
 }
 
@@ -1265,6 +1229,7 @@ void launch_player (void)
 	Matrix rotmat;
 
 	docked = 0;
+    hyper_ready = 0;
 	flight_speed = 12;
 	flight_roll = -15;
 	flight_climb = 0;
@@ -1275,12 +1240,12 @@ void launch_player (void)
 	set_init_matrix (rotmat);
 	add_new_ship (SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
 
-	rotmat[2].x = -rotmat[2].x;
+   	rotmat[2].x = -rotmat[2].x;
 	rotmat[2].y = -rotmat[2].y;
 	rotmat[2].z = -rotmat[2].z;
-	add_new_station (0, 0, -256, rotmat);
+    add_new_station (0, 0, -256, rotmat);
 
-	current_screen = SCR_BREAK_PATTERN;
+	switch_to_screen(SCR_BREAK_PATTERN);
 	snd_play_sample (SND_LAUNCH);
 }
 
@@ -1296,8 +1261,8 @@ void engage_docking_computer (void)
 	if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 	{
 		snd_play_sample (SND_DOCK);					
-		dock_player();
-		current_screen = SCR_BREAK_PATTERN;
-	}
+		dock_player ();
+        switch_to_screen(SCR_BREAK_PATTERN);
+    }
 }
 

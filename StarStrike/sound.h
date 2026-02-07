@@ -12,12 +12,34 @@
  *
  */
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 /*
  * sound.h
  */
  
 #ifndef SOUND_H
 #define SOUND_H
+
+#define MUSIC_MP3    0
+#define MUSIC_MIDI   1
+#define MUSIC_WAV    2
+
+#define SND_FREQ_11KHZ  0
+#define SND_FREQ_22KHZ  1
+#define SND_FREQ_44KHZ  2
+
+#define SND_MONO     0
+#define SND_STEREO   1
+
+#define SND_FORMAT_8BIT   0
+#define SND_FORMAT_16BIT  1
+
+#define SOUND_DIRECTORY "./sounds"
+#define MUSIC_DIRECTORY "./music"
 
 #define SND_LAUNCH		0
 #define SND_CRASH		1

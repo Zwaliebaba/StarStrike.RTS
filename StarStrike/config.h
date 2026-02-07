@@ -9,6 +9,11 @@
  *
  **/
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 /*
  * config.h
  *
@@ -26,11 +31,11 @@
  * Set the graphics platform we are using...
  */
 
-#define GFX_ALLEGRO
+#define GFX_OPENGL
 
 /*
  * #define GFX_WIN32_GDI
- * #define GFX_OPENGL
+ * #define GFX_ALLEGRO
  * #defime GFX_X_WINDOWS
  * #define GFX_DIRECTX
  */

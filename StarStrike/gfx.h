@@ -22,9 +22,17 @@
  *
  **/
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 
 #ifndef GFX_H
 #define GFX_H
+
+#include "space.h"
+#include "vector.h"
 
 #ifdef RES_512_512
 
@@ -70,7 +78,7 @@
 #define GFX_VIEW_BY		191
 
 #endif
- 
+
 
 
 #define GFX_COL_BLACK		0
@@ -120,16 +128,23 @@
 #define IMG_MISSILE_GREEN	7
 #define IMG_MISSILE_YELLOW	8
 #define IMG_MISSILE_RED		9
-#define IMG_BLAKE			10
+#define IMG_BLAKE           10
 
+#define IMG_SCANNER_1		11
+#define IMG_SCANNER_2		12
+#define IMG_SCANNER_3		13
+#define IMG_SCANNER_4		14
+
+#define IMG_FONT_1			15
+#define IMG_FONT_2			16
+
+#define TEXTURE_DIRECTORY "./textures"
+#define DOUBLEBUFFER 1
 
 int gfx_graphics_startup (void);
 void gfx_graphics_shutdown (void);
 void gfx_update_screen (void);
-void gfx_acquire_screen (void);
-void gfx_release_screen (void);
-void gfx_plot_pixel (int x, int y, int col);
-void gfx_fast_plot_pixel (int x, int y, int col);
+void gfx_plot_pixel ( int x, int y, int col);
 void gfx_draw_filled_circle (int cx, int cy, int radius, int circle_colour);
 void gfx_draw_circle (int cx, int cy, int radius, int circle_colour);
 void gfx_draw_line (int x1, int y1, int x2, int y2);
@@ -139,18 +154,17 @@ void gfx_draw_rectangle (int tx, int ty, int bx, int by, int col);
 void gfx_display_text (int x, int y, char *txt);
 void gfx_display_colour_text (int x, int y, char *txt, int col);
 void gfx_display_centre_text (int y, char *str, int psize, int col);
-void gfx_clear_display (void);
-void gfx_clear_text_area (void);
-void gfx_clear_area (int tx, int ty, int bx, int by);
 void gfx_display_pretty_text (int tx, int ty, int bx, int by, char *txt);
 void gfx_draw_scanner (void);
 void gfx_set_clip_region (int tx, int ty, int bx, int by);
-void gfx_polygon (int num_points, int *poly_list, int face_colour);
 void gfx_draw_sprite (int sprite_no, int x, int y);
-void gfx_start_render (void);
-void gfx_render_polygon (int num_points, int *point_list, int face_colour, int zavg);
-void gfx_render_line (int x1, int y1, int x2, int y2, int dist, int col);
-void gfx_finish_render (void);
-int gfx_request_file (char *title, char *path, char *ext);
+void gfx_resize_window (int width, int height);
+void gfx_draw_view (void);
+void gfx_advance_frame (void);
+void gfx_draw_gl_ship (struct univ_object *univ);
+void gfx_set_camera (int angle);
+
+extern double timeslice;
+extern double timedelta;
 
 #endif

@@ -12,6 +12,11 @@
  *
  */
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 /*
  * file.h
  */
@@ -19,10 +24,13 @@
 #ifndef FILE_H
 #define FILE_H
 
+#define MAX_CMDR_NAME_LENGTH      31
+
 void write_config_file (void);
 void read_config_file (void);
-int save_commander_file (char *path);
-int load_commander_file (char *path);
+int save_commander_file (char *filename);
+int load_commander_file (char *filename, struct commander *saved_cmdr);
+char *concat_paths (char *patha, char *pathb);
 
 #endif
 

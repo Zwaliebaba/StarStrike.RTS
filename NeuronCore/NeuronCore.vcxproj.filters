@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="FileSys.cpp" />
+    <ClCompile Include="NeuronCore.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="WndProcManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ASyncLoader.h" />
+    <ClInclude Include="DataReader.h" />
+    <ClInclude Include="DataWriter.h" />
+    <ClInclude Include="Debug.h" />
+    <ClInclude Include="DeviceNotify.h" />
+    <ClInclude Include="FileSys.h" />
+    <ClInclude Include="GameMath.h" />
+    <ClInclude Include="Hash.h" />
+    <ClInclude Include="MathCommon.h" />
+    <ClInclude Include="NeuronCore.h" />
+    <ClInclude Include="NeuronHelper.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="WndProcManager.h" />
+    <ClInclude Include="TimerCore.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Project Files">
+      <UniqueIdentifier>{03327d0c-65d9-4645-9b1c-d577fe8721df}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <Filter>Project Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

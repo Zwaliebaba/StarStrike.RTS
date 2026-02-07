@@ -1,0 +1,21 @@
+# Ignore build output and binaries
+bin/
+obj/
+*.pdb
+*.lib
+*.dll
+*.exe
+*.log
+
+# Ignore NuGet packages
+packages/
+*.nupkg
+
+# Ignore Visual Studio user-specific files
+*.user
+*.suo
+.vs/
+.vscode/
+
+# Ignore generated files
+**/Generated Files/

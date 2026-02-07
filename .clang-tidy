@@ -1,0 +1,35 @@
+Checks: >
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  modernize-*,
+  readability-*,
+  cppcoreguidelines-*,
+  hicpp-*,
+  -hicpp-no-array-decay,
+  -cppcoreguidelines-owning-memory,
+  -modernize-use-trailing-return-type,
+  -modernize-use-default-member-init,
+  -readability-magic-numbers
+
+WarningsAsErrors: '*,-clang-diagnostic-unused-function'
+HeaderFilterRegex: '^(src|libs/(Neuron|GameLogic))/'
+AnalyzeTemporaryDtors: false
+FormatStyle: file
+
+ExtraArgsBefore:
+  - -std=c++20
+  - -D_USE_MATH_DEFINES
+  - -DNOMINMAX
+
+CheckOptions:
+  - key: modernize-use-nullptr.NullMacros
+    value: 'NULL'
+  - key: modernize-loop-convert.MinConfidence
+    value: reasonable
+  - key: modernize-use-auto.MinTypeNameLength
+    value: '5'
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-implicit-bool-conversion.AllowIntegerConditions
+    value: 'true'

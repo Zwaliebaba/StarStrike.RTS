@@ -1,20 +1,4 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-#include <stdlib.h>
-#include <math.h>
-
+#include "pch.h"
 #include "config.h"
 #include "elite.h" 
 #include "gfx.h"
@@ -42,7 +26,7 @@ void create_new_stars (void)
 	nstars = witchspace ? 3 : 12;
 
 	for (i = 0; i < nstars; i++)
-	{
+    {
 		stars[i].x = (rand255() - 128) | 8;
 		stars[i].y = (rand255() - 128) | 4;
 		stars[i].z = rand255() | 0x90;
@@ -66,12 +50,15 @@ void front_starfield (void)
 	
 	nstars = witchspace ? 3 : 12;
 
-	delta = warp_stars ? 50 : flight_speed;	
+	delta = warp_stars ? 50 : (flight_speed * timedelta);	
 	alpha = (double)flight_roll;
 	beta = (double)flight_climb;
 
 	alpha /= 256.0;
 	delta /= 2.0;
+
+	alpha *= timedelta;
+	beta *= timedelta;
 	
 	for (i = 0; i < nstars; i++)
 	{
@@ -162,13 +149,16 @@ void rear_starfield (void)
 	
 	nstars = witchspace ? 3 : 12;
 
-	delta = warp_stars ? 50 : flight_speed;	
+	delta = warp_stars ? 50 : (flight_speed * timedelta);	
 	alpha = -flight_roll;
 	beta = -flight_climb;
 
 	alpha /= 256.0;
 	delta /= 2.0;
 	
+	alpha *= timedelta;
+	beta *= timedelta;
+
 	for (i = 0; i < nstars; i++)
 	{
 		/* Plot the stars in their current locations... */
@@ -271,7 +261,7 @@ void side_starfield (void)
 	
 	nstars = witchspace ? 3 : 12;
 	
-	delta = warp_stars ? 50 : flight_speed;	
+	delta = warp_stars ? 50 : (flight_speed * timedelta);	
 	alpha = flight_roll;
 	beta = flight_climb;
 
@@ -282,6 +272,9 @@ void side_starfield (void)
 		beta = -beta;
 	} 
 	
+	alpha *= timedelta;
+	beta *= timedelta;
+
 	for (i = 0; i < nstars; i++)
 	{
 		sy = stars[i].y;
@@ -375,23 +368,26 @@ void flip_stars (void)
 
 void update_starfield (void)
 {
+	gfx_set_clip_region (1, 2, 510, 383);
+
 	switch (current_screen)
 	{
 		case SCR_FRONT_VIEW:
 		case SCR_INTRO_ONE:
 		case SCR_INTRO_TWO:
 		case SCR_ESCAPE_POD:
-			front_starfield();
+			front_starfield ();
 			break;
 		
 		case SCR_REAR_VIEW:
 		case SCR_GAME_OVER:
-			rear_starfield();
+			rear_starfield ();
 			break;
 		
 		case SCR_LEFT_VIEW:
 		case SCR_RIGHT_VIEW:
-			side_starfield();
+			side_starfield ();
 			break;
 	}
+	gfx_set_clip_region (0, 0, 512, 512);
 }

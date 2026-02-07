@@ -1,34 +1,4 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-/*
- * pilot.c
- *
- * The auto-pilot code.  Used for docking computers and for
- * flying other ships to and from the space station.
- */
- 
-/*
- * In the original Elite this code was mixed in with the tactics routines.
- * I have split it out to make it more understandable and easier to maintain.
- */
-  
-  
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-
+#include "pch.h"
 #include "config.h"
 #include "gfx.h"
 #include "elite.h"

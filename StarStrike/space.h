@@ -11,6 +11,11 @@
  *
  */
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 /*
  * space.h
  */
@@ -46,6 +51,9 @@ struct univ_object
 	int exp_delta;
 	int exp_seed;
 	int distance;
+	Quaternion quat;
+	Quaternion oldquat;
+	Vector oldlocation;
 };
 
 #define MAX_UNIV_OBJECTS	20
@@ -56,7 +64,7 @@ extern int ship_count[NO_OF_SHIPS + 1];  /* many */
 
 
 void clear_universe (void);
-int add_new_ship (int ship_type, int x, int y, int z, struct vector *rotmat, int rotx, int rotz);
+int add_new_ship (int ship_type, double x, double y, double z, struct vector *rotmat, int rotx, int rotz);
 void add_new_station (double sx, double sy, double sz, Matrix rotmat);
 void remove_ship (int un);
 void move_univ_object (struct univ_object *obj);
@@ -87,6 +95,7 @@ void jump_warp (void);
 void launch_player (void);
 
 void engage_docking_computer (void);
+void switch_to_view (struct univ_object *flip);
 
 #endif
 

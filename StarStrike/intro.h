@@ -12,6 +12,11 @@
  *
  */
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 #ifndef INTRO_H
 #define INTRO_H
 
@@ -20,5 +25,8 @@ void initialise_intro2 (void);
 
 void update_intro1 (void);
 void update_intro2 (void);
+
+void draw_intro1 (void);
+void draw_intro2 (void);
 
 #endif

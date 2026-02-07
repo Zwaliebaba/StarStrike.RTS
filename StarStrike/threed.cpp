@@ -1,22 +1,4 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- */
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <ctype.h>
-
+#include "pch.h"
 #include "config.h"
 #include "elite.h"
 #include "gfx.h"
@@ -37,305 +19,6 @@
 static unsigned char landscape[LAND_X_MAX+1][LAND_Y_MAX+1];
 
 static struct point point_list[100];
-
-
-/*
- * The following routine is used to draw a wireframe represtation of a ship.
- *
- * caveat: it is a work in progress.
- * A number of features (such as not showing detail at distance) have not yet been implemented.
- *
- */
-
-void draw_wireframe_ship (struct univ_object *univ)
-{
-	Matrix trans_mat;
-	int i;
-	int sx,sy,ex,ey;
-	double rx,ry,rz;
-	int visible[32];
-	Vector vec;
-	Vector camera_vec;
-	double cos_angle;
-	double tmp;
-	struct ship_face_normal *ship_norm;
-	int num_faces;
-	struct ship_data *ship;
-	int lasv;
-
-	ship = ship_list[univ->type];
-	
-	for (i = 0; i < 3; i++)
-		trans_mat[i] = univ->rotmat[i];
-		
-	camera_vec = univ->location;
-	mult_vector (&camera_vec, trans_mat);
-	camera_vec = unit_vector (&camera_vec);
-	
-	num_faces = ship->num_faces;
-	
-	for (i = 0; i < num_faces; i++)
-	{
-		ship_norm = ship->normals;
-
-		vec.x = ship_norm[i].x;
-		vec.y = ship_norm[i].y;
-		vec.z = ship_norm[i].z;
-
-		if ((vec.x == 0) && (vec.y == 0) && (vec.z == 0))
-			visible[i] = 1;
-		else
-		{
-			vec = unit_vector (&vec);
-			cos_angle = vector_dot_product (&vec, &camera_vec);
-			visible[i] = (cos_angle < -0.2);
-		}
-	}
-
-	tmp = trans_mat[0].y;
-	trans_mat[0].y = trans_mat[1].x;
-	trans_mat[1].x = tmp;
-
-	tmp = trans_mat[0].z;
-	trans_mat[0].z = trans_mat[2].x;
-	trans_mat[2].x = tmp;
-
-	tmp = trans_mat[1].z;
-	trans_mat[1].z = trans_mat[2].y;
-	trans_mat[2].y = tmp;
-
-	for (i = 0; i < ship->num_points; i++)
-	{
-		vec.x = ship->points[i].x;
-		vec.y = ship->points[i].y;
-		vec.z = ship->points[i].z;
-
-		mult_vector (&vec, trans_mat);
-
-		rx = vec.x + univ->location.x;
-		ry = vec.y + univ->location.y;
-		rz = vec.z + univ->location.z;
-
-		sx = (rx * 256) / rz;
-		sy = (ry * 256) / rz;
-
-		sy = -sy;
-
-		sx += 128;
-		sy += 96;
-
-		sx *= GFX_SCALE;
-		sy *= GFX_SCALE;
-
-		point_list[i].x = sx;
-		point_list[i].y = sy;
-
-	}
-
-	for (i = 0; i < ship->num_lines; i++)
-	{
-		if (visible[ship->lines[i].face1] ||
-			visible[ship->lines[i].face2])
-		{
-			sx = point_list[ship->lines[i].start_point].x;
-			sy = point_list[ship->lines[i].start_point].y;
-
-			ex = point_list[ship->lines[i].end_point].x;
-			ey = point_list[ship->lines[i].end_point].y;
-
-			gfx_draw_line (sx, sy, ex, ey);
-		}
-	}
-
-
-	if (univ->flags & FLG_FIRING)
-	{
-		lasv = ship_list[univ->type]->front_laser;
-		gfx_draw_line (point_list[lasv].x, point_list[lasv].y,
-					   univ->location.x > 0 ? 0 : 511, rand255() * 2);
-	}
-}
-
-
-
-
-/*
- * Hacked version of the draw ship routine to display solid ships...
- * This needs a lot of tidying...
- *
- * Check for hidden surface supplied by T.Harte.
- */
-
-void draw_solid_ship (struct univ_object *univ)
-{
-	int i;
-	int sx,sy;
-	double rx,ry,rz;
-	struct vector vec;
-	struct vector camera_vec;
-	double tmp;
-	struct ship_face *face_data;
-	int num_faces;
-	int num_points;
-	int poly_list[16];
-	int zavg;
-	struct ship_solid *solid_data;
-	struct ship_data *ship;
-	Matrix trans_mat;
-	int lasv;
-	int col;
-
-	solid_data = &ship_solids[univ->type];
-	ship = ship_list[univ->type];
-	
-	for (i = 0; i < 3; i++)
-		trans_mat[i] = univ->rotmat[i];
-		
-	camera_vec = univ->location;
-	mult_vector (&camera_vec, trans_mat);
-	camera_vec = unit_vector (&camera_vec);
-
-	num_faces = solid_data->num_faces;
-	face_data = solid_data->face_data;
-
-/*
-	for (i = 0; i < num_faces; i++)
-	{
-		vec.x = face_data[i].norm_x;
-		vec.y = face_data[i].norm_y;
-		vec.z = face_data[i].norm_z;
-
-		vec = unit_vector (&vec);
-		cos_angle = vector_dot_product (&vec, &camera_vec);
-
-		visible[i] = (cos_angle < -0.13);
-	}
-*/
-
-	tmp = trans_mat[0].y;
-	trans_mat[0].y = trans_mat[1].x;
-	trans_mat[1].x = tmp;
-
-	tmp = trans_mat[0].z;
-	trans_mat[0].z = trans_mat[2].x;
-	trans_mat[2].x = tmp;
-
-	tmp = trans_mat[1].z;
-	trans_mat[1].z = trans_mat[2].y;
-	trans_mat[2].y = tmp;
-
-
-	for (i = 0; i < ship->num_points; i++)
-	{
-		vec.x = ship->points[i].x;
-		vec.y = ship->points[i].y;
-		vec.z = ship->points[i].z;
-
-		mult_vector (&vec, trans_mat);
-
-		rx = vec.x + univ->location.x;
-		ry = vec.y + univ->location.y;
-		rz = vec.z + univ->location.z;
-
-		if (rz <= 0)
-			rz = 1;
-		
-		sx = (rx * 256) / rz;
-		sy = (ry * 256) / rz;
-
-		sy = -sy;
-
-		sx += 128;
-		sy += 96;
-
-		sx *= GFX_SCALE;
-		sy *= GFX_SCALE;
-
-		point_list[i].x = sx;
-		point_list[i].y = sy;
-		point_list[i].z = rz;
-		
-	}
-
-	for (i = 0; i < num_faces; i++)
-	{
-		if (((point_list[face_data[i].p1].x - point_list[face_data[i].p2].x) * 
-		     (point_list[face_data[i].p3].y - point_list[face_data[i].p2].y) -
-			 (point_list[face_data[i].p1].y - point_list[face_data[i].p2].y) *
-			 (point_list[face_data[i].p3].x - point_list[face_data[i].p2].x)) <= 0)
-		{
-			num_points = face_data[i].points;
-
-			poly_list[0] = point_list[face_data[i].p1].x;
-			poly_list[1] = point_list[face_data[i].p1].y;
-			zavg = point_list[face_data[i].p1].z;
-
-			poly_list[2] = point_list[face_data[i].p2].x;
-			poly_list[3] = point_list[face_data[i].p2].y;
-			zavg = MAX(zavg,point_list[face_data[i].p2].z);
-
-			if (num_points > 2)
-			{
-				poly_list[4] = point_list[face_data[i].p3].x;
-				poly_list[5] = point_list[face_data[i].p3].y;
-				zavg = MAX(zavg,point_list[face_data[i].p3].z);
-			}
-
-			if (num_points > 3)
-			{
-				poly_list[6] = point_list[face_data[i].p4].x;
-				poly_list[7] = point_list[face_data[i].p4].y;
-				zavg = MAX(zavg,point_list[face_data[i].p4].z);
-			}
-
-			if (num_points > 4)
-			{
-				poly_list[8] = point_list[face_data[i].p5].x;
-				poly_list[9] = point_list[face_data[i].p5].y;
-				zavg = MAX(zavg,point_list[face_data[i].p5].z);
-			}
-
-			if (num_points > 5)
-			{
-				poly_list[10] = point_list[face_data[i].p6].x;
-				poly_list[11] = point_list[face_data[i].p6].y;
-				zavg = MAX(zavg,point_list[face_data[i].p6].z);
-			}
-														 
-			if (num_points > 6)
-			{
-				poly_list[12] = point_list[face_data[i].p7].x;
-				poly_list[13] = point_list[face_data[i].p7].y;
-				zavg = MAX(zavg,point_list[face_data[i].p7].z);
-			}
-
-			if (num_points > 7)
-			{
-				poly_list[14] = point_list[face_data[i].p8].x;
-				poly_list[15] = point_list[face_data[i].p8].y;
-				zavg = MAX(zavg,point_list[face_data[i].p8].z);
-			}
-			
-
-			gfx_render_polygon (face_data[i].points, poly_list, face_data[i].colour, zavg);
-			
-		}
-	}
-
-	if (univ->flags & FLG_FIRING)
-	{
-		lasv = ship_list[univ->type]->front_laser;
-		col = (univ->type == SHIP_VIPER) ? GFX_COL_CYAN : GFX_COL_WHITE; 
-		
-		gfx_render_line (point_list[lasv].x, point_list[lasv].y,
-						 univ->location.x > 0 ? 0 : 511, rand255() * 2,
-						 point_list[lasv].z, col);
-	}
-}
-
-
-
-
 
 /*
  * Colour map used to generate a SNES Elite style planet.
@@ -518,13 +201,13 @@ void generate_landscape (int rnd_seed)
 			/* generate_green_landscape (); */
 			break;
 		
-		case 2:
-			generate_snes_landscape();
-			break;
+//		case 2:
+//			generate_snes_landscape();
+//			break;
 		
-		case 3:
-			generate_fractal_landscape (rnd_seed);
-			break;
+//		case 3:
+//			generate_fractal_landscape (rnd_seed);
+//			break;
 	}
 }
 
@@ -568,7 +251,9 @@ void render_planet_line (int xo, int yo, int x, int y, int radius, int vx, int v
 			ly = ry / div;
 			colour = landscape[lx][ly];
  
-			gfx_fast_plot_pixel (sx, sy, colour);
+//			gfx_fast_plot_pixel (sx, sy, colour);
+			gfx_plot_pixel(sx - GFX_X_OFFSET, sy - GFX_Y_OFFSET, colour);
+
 		}
 		rx += vx;
 		ry += vy;
@@ -668,14 +353,14 @@ void draw_planet (struct univ_object *planet)
 			draw_wireframe_planet (x, y, radius, planet->rotmat);
 			break;
 		
-		case 1:
+		default:
 			gfx_draw_filled_circle (x, y, radius, GFX_COL_GREEN_1);
 			break;
 
-		case 2:
-		case 3:
-			render_planet (x, y, radius, planet->rotmat);
-			break;
+//		case 2:
+//		case 3:
+//			render_planet (x, y, radius, planet->rotmat);
+//			break;
 	}
 }
 
@@ -737,7 +422,8 @@ void render_sun_line (int xo, int yo, int x, int y, int radius)
 		else
 			colour = mix ? GFX_ORANGE_1 : GFX_ORANGE_2;
 		
-		gfx_fast_plot_pixel (sx, sy, colour);
+//		gfx_fast_plot_pixel (sx, sy, colour);
+		gfx_plot_pixel(sx - GFX_X_OFFSET, sy - GFX_Y_OFFSET, colour);
 	} 	
 }
 
@@ -800,7 +486,8 @@ void draw_sun (struct univ_object *planet)
 		(y - radius > 383))
 		return; 
 
-	render_sun (x, y, radius);
+//	render_sun (x, y, radius);
+	gfx_draw_circle(x, y, radius, GFX_ORANGE_1);
 }
 
 
@@ -828,14 +515,14 @@ void draw_explosion (struct univ_object *univ)
 	int np;
 	int old_seed;
 	
+
+//	if (univ->exp_delta > 251)
+//	{
+//		univ->flags |= FLG_REMOVE;
+//		return;
+//	}
 	
-	if (univ->exp_delta > 251)
-	{
-		univ->flags |= FLG_REMOVE;
-		return;
-	}
-	
-	univ->exp_delta += 4;
+//	univ->exp_delta += 4;
 
 	if (univ->location.z <= 0)
 		return;
@@ -880,9 +567,9 @@ void draw_explosion (struct univ_object *univ)
 	
 	for (i = 0; i < ship->num_points; i++)
 	{
-		if (visible[sp[i].face1] || visible[sp[i].face2] ||
-			visible[sp[i].face3] || visible[sp[i].face4])
-		{
+//		if (visible[sp[i].face1] || visible[sp[i].face2] ||
+//			visible[sp[i].face3] || visible[sp[i].face4])
+//		{
 			vec.x = sp[i].x;
 			vec.y = sp[i].y;
 			vec.z = sp[i].z;
@@ -907,7 +594,7 @@ void draw_explosion (struct univ_object *univ)
 			point_list[np].x = sx;
 			point_list[np].y = sy;
 			np++;
-		}
+ //       }
 	}
 
 	
@@ -924,8 +611,8 @@ void draw_explosion (struct univ_object *univ)
 //		q = 254;
 //	else
 
-	q = pr / 32;	
-		
+	q = pr / 32;
+			
 	old_seed = get_rand_seed();
 	set_rand_seed (univ->exp_seed);
 
@@ -937,13 +624,13 @@ void draw_explosion (struct univ_object *univ)
 		for (i = 0; i < 16; i++)
 		{
 			px = rand255() - 128;
-			py = rand255() - 128;		
+			py = rand255() - 128;
 
 			px = (px * q) / 256;
 			py = (py * q) / 256;
 		
 			px = px + px + sx;
-			py = py + py + sy;
+    		py = py + py + sy;
 
 			sizex = (randint() & 1) + 1;
 			sizey = (randint() & 1) + 1;
@@ -966,48 +653,35 @@ void draw_explosion (struct univ_object *univ)
 
 void draw_ship (struct univ_object *ship)
 {
+	struct univ_object flip;
 
-	if ((current_screen != SCR_FRONT_VIEW) && (current_screen != SCR_REAR_VIEW) && 
-		(current_screen != SCR_LEFT_VIEW) && (current_screen != SCR_RIGHT_VIEW) &&
-		(current_screen != SCR_INTRO_ONE) && (current_screen != SCR_INTRO_TWO) &&
-		(current_screen != SCR_GAME_OVER) && (current_screen != SCR_ESCAPE_POD))
-		return;
-	
-	if ((ship->flags & FLG_DEAD) && !(ship->flags & FLG_EXPLOSION))
-	{
-		ship->flags |= FLG_EXPLOSION;
-		ship->exp_seed = randint();
-		ship->exp_delta = 18; 
-	}
+	flip = *ship;
+	switch_to_view (&flip);
 
 	if (ship->flags & FLG_EXPLOSION)
 	{
-		draw_explosion (ship);
+		draw_explosion (&flip);
 		return;
 	}
 	
-	if (ship->location.z <= 0)	/* Only display ships in front of us. */
+	if (flip.location.z <= 0)	/* Only display ships in front of us. */
 		return;
 
 	if (ship->type == SHIP_PLANET)
 	{
-		draw_planet (ship);
+		draw_planet (&flip);
 		return;
 	}
 
 	if (ship->type == SHIP_SUN)
 	{
-		draw_sun (ship);
+		draw_sun (&flip);
 		return;
 	}
 	
-	if ((fabs(ship->location.x) > ship->location.z) ||	/* Check for field of vision. */
-		(fabs(ship->location.y) > ship->location.z))
+	if ((fabs(flip.location.x) > flip.location.z) ||	/* Check for field of vision. */
+		(fabs(flip.location.y) > flip.location.z))
 		return;
-		
-	if (wireframe)
-		draw_wireframe_ship (ship);
-	else
-		draw_solid_ship (ship);
-}
 
+	gfx_draw_gl_ship(ship);
+}

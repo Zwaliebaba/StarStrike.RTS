@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="AudioEngine.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DescriptorHeap.cpp" />
+    <ClCompile Include="GpuBuffer.cpp" />
+    <ClCompile Include="GraphicsCommon.cpp" />
+    <ClCompile Include="GraphicsCore.cpp" />
+    <ClCompile Include="NeuronClient.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="PipelineState.cpp" />
+    <ClCompile Include="ResourceStateTracker.cpp" />
+    <ClCompile Include="RootSignature.cpp" />
+    <ClCompile Include="SamplerManager.cpp" />
+    <ClCompile Include="SoundCommon.cpp" />
+    <ClCompile Include="SoundEffect.cpp" />
+    <ClCompile Include="SoundEffectInstance.cpp" />
+    <ClCompile Include="Strings.cpp" />
+    <ClCompile Include="WAVFileReader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Audio.h" />
+    <ClInclude Include="AudioDefs.h" />
+    <ClInclude Include="AudioEngine.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="d3dx12.h" />
+    <ClInclude Include="DescriptorHeap.h" />
+    <ClInclude Include="DirectXHelper.h" />
+    <ClInclude Include="GameMain.h" />
+    <ClInclude Include="GpuBuffer.h" />
+    <ClInclude Include="GpuResource.h" />
+    <ClInclude Include="GraphicsCommon.h" />
+    <ClInclude Include="GraphicsCore.h" />
+    <ClInclude Include="NeuronClient.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="PipelineState.h" />
+    <ClInclude Include="PixProfiler.h" />
+    <ClInclude Include="ResourceStateTracker.h" />
+    <ClInclude Include="RootSignature.h" />
+    <ClInclude Include="SamplerManager.h" />
+    <ClInclude Include="SoundCommon.h" />
+    <ClInclude Include="Strings.h" />
+    <ClInclude Include="VertexTypes.h" />
+    <ClInclude Include="WAVFileReader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Project Files">
+      <UniqueIdentifier>{0f46989a-59e5-43fb-896e-b4f8e6c0743a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <Filter>Project Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

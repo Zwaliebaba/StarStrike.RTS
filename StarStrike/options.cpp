@@ -1,34 +1,14 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-/*
- * Options.c
- */
-
-#include <stdlib.h>
-#include <string.h>
-
+#include "pch.h"
 #include "elite.h"
 #include "config.h"
 #include "gfx.h"
 #include "options.h"
 #include "main.h"
 #include "docked.h"
-#include "file.h" 
+#include "file.h"
 
 static int hilite_item;
- 
+
 #define NUM_OPTIONS 4
 #define NUM_SETTINGS 6
 
@@ -59,7 +39,7 @@ static struct setting setting_list[NUM_SETTINGS] =
 {
 	{"Graphics:",		{"Solid", "Wireframe", "", "", ""}},
 	{"Anti Alias:",		{"Off", "On", "", "", ""}},		
-	{"Planet Style:",	{"Wireframe", "Green", "SNES", "Fractal", ""}},
+	{"Planet Style:",	{"Wireframe", "Green", "", "", ""}},
 	{"Planet Desc.:",	{"BBC", "MSX", "", "", ""}},
 	{"Instant Dock:",	{"Off", "On", "", "", ""}},	
 	{"Save Settings",	{"", "", "", "", ""}}
@@ -68,9 +48,6 @@ static struct setting setting_list[NUM_SETTINGS] =
 
 void quit_screen (void)
 {
-	current_screen = SCR_QUIT;
-
-	gfx_clear_display();
 	gfx_display_centre_text (10, "GAME OPTIONS", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 
@@ -133,25 +110,6 @@ void highlight_setting (int item)
 	int x,y;
 	int width;
 	
-	if ((hilite_item != -1) && (hilite_item != item))
-	{
-		if (hilite_item == (NUM_SETTINGS - 1))
-		{
-			x = GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-			y = ((NUM_SETTINGS + 1) / 2) * 30 + 96 + 32;
-			width = OPTION_BAR_WIDTH;
-		}
-		else
-		{
-			x = (hilite_item & 1) * 250 + 32 + 120; 
-			y = (hilite_item / 2) * 30 + 96;
-			width = 100;
-		}
-
-		gfx_clear_area (x, y, x + width, y + OPTION_BAR_HEIGHT);
-		display_setting_item (hilite_item);		
-	}
-
 	if (item == (NUM_SETTINGS - 1))
 	{
 		x = GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
@@ -167,7 +125,6 @@ void highlight_setting (int item)
 	
 	gfx_draw_rectangle (x, y, x + width, y + OPTION_BAR_HEIGHT, GFX_COL_DARK_RED);
 	display_setting_item (item);		
-	hilite_item = item;
 }
 
 
@@ -175,13 +132,13 @@ void highlight_setting (int item)
 void select_left_setting (void)
 {
 	if ((hilite_item & 1) != 0)
-		highlight_setting (hilite_item - 1);
+        hilite_item--;
 }
 
 void select_right_setting (void)
 {
 	if (((hilite_item & 1) == 0) && (hilite_item < (NUM_SETTINGS - 1)))
-		highlight_setting (hilite_item + 1);
+        hilite_item++;
 }
 
 
@@ -189,12 +146,12 @@ void select_up_setting (void)
 {
 	if (hilite_item == (NUM_SETTINGS - 1))
 	{
-		highlight_setting (NUM_SETTINGS - 2);
+        hilite_item = NUM_SETTINGS - 2;
 		return;
 	}
 
 	if (hilite_item > 1)
-		highlight_setting (hilite_item - 2);
+        hilite_item = hilite_item - 2;
 }
 
 
@@ -202,12 +159,12 @@ void select_down_setting (void)
 {
 	if (hilite_item == (NUM_SETTINGS - 2))
 	{
-		highlight_setting (NUM_SETTINGS - 1);
+        hilite_item = NUM_SETTINGS - 1;
 		return;
 	}
 	
 	if (hilite_item < (NUM_SETTINGS - 2))
-		highlight_setting (hilite_item + 2);
+        hilite_item = hilite_item + 2;
 }
 
 void toggle_setting (void)
@@ -215,7 +172,7 @@ void toggle_setting (void)
 	if (hilite_item == (NUM_SETTINGS - 1))
 	{
 		write_config_file();
-		display_options();
+        switch_to_screen(SCR_OPTIONS);
 		return;
 	}
 
@@ -230,7 +187,7 @@ void toggle_setting (void)
 			break;
 		
 		case 2:
-			planet_render_style = (planet_render_style + 1) % 4;
+			planet_render_style = (planet_render_style + 1) % 2;
 			break;
 		
 		case 3:
@@ -242,7 +199,6 @@ void toggle_setting (void)
 			break;
 	}
 
-	highlight_setting (hilite_item);
 }
 
 
@@ -250,9 +206,6 @@ void game_settings_screen (void)
 {
 	int i;
 
-	current_screen = SCR_SETTINGS;
-
-	gfx_clear_display();
 	gfx_display_centre_text (10, "GAME SETTINGS", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 
@@ -261,8 +214,7 @@ void game_settings_screen (void)
 		display_setting_item (i);
 	}
 
-	hilite_item = -1;
-	highlight_setting (0);
+    highlight_setting (hilite_item);
 }
 
 
@@ -282,38 +234,26 @@ void display_option_item (int i)
 void highlight_option (int i)
 {
 	int y;
-	int x;
-	
-	if ((hilite_item != -1) && (hilite_item != i))
-	{
-		x = GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-		y = (384 - (30 * NUM_OPTIONS)) / 2;
-		y += hilite_item * 30;
-		gfx_clear_area (x, y, x + OPTION_BAR_WIDTH, y + OPTION_BAR_HEIGHT);
-		display_option_item (hilite_item);		
-	}
-
-	x = GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
+    int x;
+    x = GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
 	y = (384 - (30 * NUM_OPTIONS)) / 2;
 	y += i * 30;
-	
-	gfx_draw_rectangle (x, y, x + OPTION_BAR_WIDTH, y + OPTION_BAR_HEIGHT,
-						GFX_COL_DARK_RED);
-	display_option_item (i);		
 
-	hilite_item = i;
+	gfx_draw_rectangle (x, y, x + OPTION_BAR_WIDTH, y + OPTION_BAR_HEIGHT,
+                        GFX_COL_DARK_RED);
+	display_option_item (i);
 }
 
 void select_previous_option (void)
 {
 	if (hilite_item > 0)
-		highlight_option (hilite_item - 1);
+		hilite_item--;
 }
 
 void select_next_option (void)
 {
 	if (hilite_item < (NUM_OPTIONS - 1))
-		highlight_option (hilite_item + 1);
+		hilite_item++;
 }
 
 
@@ -325,20 +265,19 @@ void do_option (void)
 	switch (hilite_item)
 	{
 		case 0:
-			save_commander_screen();
+			switch_to_screen(SCR_SAVE_CMDR);
 			break;
 			
 		case 1:
-			load_commander_screen();
-			display_commander_status();
+			switch_to_screen(SCR_LOAD_CMDR);
 			break;
 		
 		case 2:
-			game_settings_screen();
+			switch_to_screen(SCR_SETTINGS);
 			break;
-		
+
 		case 3:
-			quit_screen();
+			switch_to_screen(SCR_QUIT);
 			break;
 	}
 }
@@ -348,19 +287,27 @@ void display_options (void)
 {
 	int i;
 
-	current_screen = SCR_OPTIONS;
-	
-	gfx_clear_display();
 	gfx_display_centre_text (10, "GAME OPTIONS", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
-	gfx_display_centre_text (300, "Version: Release 1.0", 120, GFX_COL_WHITE);
-	gfx_display_centre_text (320, "www.newkind.co.uk", 120, GFX_COL_WHITE);
-	gfx_display_centre_text (340, "Written by Christian Pinder 1999-2001", 120, GFX_COL_WHITE);
+	gfx_display_centre_text (300, "Version: Release 1.0.0", 120, GFX_COL_WHITE);
+	gfx_display_centre_text (320, "Written by Christian Pinder 1999-2001", 120, GFX_COL_WHITE);
+	gfx_display_centre_text (340, "SDL/OpenGL Port by Mark Follett", 120, GFX_COL_WHITE);
 	gfx_display_centre_text (360, "Based on original code by Ian Bell & David Braben", 120, GFX_COL_WHITE);
 	
 	for (i = 0; i < NUM_OPTIONS; i++)
 		display_option_item (i);
 
-	hilite_item = -1;
-	highlight_option (0);
+    highlight_option(hilite_item);
+}
+
+
+void initialize_options_screen (void)
+{
+    hilite_item = 0;
+}
+
+
+void initialize_settings_screen (void)
+{
+    hilite_item = 0;
 }

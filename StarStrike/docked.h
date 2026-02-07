@@ -12,8 +12,15 @@
  *
  */
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 #ifndef DOCKED_H
 #define DOCKED_H
+
+#include "elite.h"
 
 void display_short_range_chart (void);
 void display_galactic_chart (void);
@@ -38,6 +45,16 @@ void buy_equip (void);
 
 extern int cross_x;
 extern int cross_y;
+
+void draw_equip_screen (void);
+void draw_market_screen (void);
+void center_cursor_on_planet(struct galaxy_seed planet);
+void display_info_text (void);
+void display_abbreviated_status (struct commander *cmdr);
+void initialize_market_screen (void);
+
+extern char line1[];
+extern char line2[];
 
 #endif
 

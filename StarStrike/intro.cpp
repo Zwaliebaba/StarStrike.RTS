@@ -1,29 +1,4 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
- 
- /*
-  * intro.c
-  *
-  * Run the two intro screens.
-  * First is a rolling Cobra MkIII.
-  * Second is a parade of the various ships.
-  *
-  */
- 
- 
-#include <stdlib.h>
-
+#include "pch.h"
 #include "config.h"
 #include "elite.h"
 #include "gfx.h"
@@ -78,16 +53,9 @@ void update_intro1 (void)
 	if (universe[0].location.z < 384)
 		universe[0].location.z = 384;
 
-	gfx_clear_display();
-
 	flight_roll = 1;
-	update_universe();
-	
-	gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
 
-	gfx_display_centre_text (310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
-	gfx_display_centre_text (330, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);
-	gfx_display_centre_text (360, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
+	update_universe ();
 }
 
 
@@ -110,7 +78,7 @@ void update_intro2 (void)
 			ship_no++;
 			if (ship_no > NO_OF_SHIPS)
 				ship_no = 1;
-		} while (min_dist[ship_no] == 0);
+		}while (min_dist[ship_no] == 0);
 
 		show_time = 0;
 		direction = -100;
@@ -121,10 +89,26 @@ void update_intro2 (void)
 		add_new_ship (ship_no, 0, 0, 4500, intro_ship_matrix, -127, -127);
 	}
 
+	update_universe ();
+}
 
-	gfx_clear_display();
-	update_starfield();
-	update_universe();
+
+void draw_intro1 (void)
+{
+	gfx_draw_view();
+
+	gfx_draw_sprite (IMG_ELITE_TXT, -1, 10);
+
+	gfx_display_centre_text (310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
+	gfx_display_centre_text (330, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);
+	gfx_display_centre_text (360, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
+}
+
+
+void draw_intro2 (void)
+{
+	update_starfield ();
+	gfx_draw_view();
 
 	gfx_draw_sprite (IMG_ELITE_TXT, -1, 10);
 

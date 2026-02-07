@@ -12,6 +12,11 @@
  *
  */
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 #ifndef ELITE_H
 #define ELITE_H
 
@@ -40,6 +45,7 @@
 #define SCR_GAME_OVER		19
 #define SCR_SETTINGS		20
 #define SCR_ESCAPE_POD		21
+#define SCR_MISSION			22
 
 
 #define PULSE_LASER		0x0F
@@ -160,8 +166,18 @@ extern int detonate_bomb;
 extern int witchspace;
 extern int auto_pilot;
 
+extern int screen_w;
+extern int screen_h;
+extern int color_depth;
+extern bool windowed;
+extern int sound_freq;
+extern int sound_format;
+extern int sound_channels;
+extern int sound_buffersize;
+extern char save_game_dir[256];
+extern int music_mode;
 
-void restore_saved_commander (void);
+void restore_saved_commander ();
 
 
 #endif

@@ -12,13 +12,18 @@
  *
  */
 
+/**
+ * SDL/OpenGL Port by Mark Follett 2001-2002
+ * email: <mef123@geocities.com>
+ **/
+
 #ifndef MAIN_H
 #define MAIN_H
 
 void info_message (char *message);
-void save_commander_screen (void);
-void load_commander_screen (void);
-void update_screen (void);
+void switch_to_screen (int screen);
+void handle_key_event (int key, char ascii);
+void finish_game (void);
 
 
 #endif

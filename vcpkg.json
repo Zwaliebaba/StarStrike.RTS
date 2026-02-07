@@ -1,0 +1,8 @@
+{
+  "name": "starstrike-rts",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "sdl1",
+    "sdl1-mixer"
+  ]
+}

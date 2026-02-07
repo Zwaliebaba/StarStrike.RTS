@@ -1,35 +1,33 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-/*
- * sound.c
- */
-
-#include <stdlib.h>
-#include <allegro.h>
+#include "pch.h"
 #include "sound.h"
-#include "alg_data.h" 
+#include "elite.h"
+#include "file.h"
+#include "SDL/SDL_mixer.h"
 
-#define NUM_SAMPLES 14 
+#ifdef HAVE_SMPEG
+#  include "mp3.h"
+#endif
 
-extern DATAFILE *datafile;
+#define NUM_SAMPLES 14
+#define NUM_SONGS 2
 
 static int sound_on;
 
+union {
+
+#ifdef HAVE_SMPEG
+	Mp3_Music *mp3;
+#endif
+
+	Mix_Music *midi;
+	Mix_Chunk *wav;
+
+} songs[NUM_SONGS];
+
+
 struct sound_sample
 {
- 	SAMPLE *sample;
+ 	Mix_Chunk *sample;
 	char filename[256];
 	int runtime;
 	int timeleft;
@@ -52,29 +50,177 @@ struct sound_sample sample_list[NUM_SAMPLES] =
 	{NULL, "beep.wav",		 2, 0},
 	{NULL, "boop.wav",		 7, 0},
 };
- 
- 
+
+
+#ifdef HAVE_SMPEG
+Mp3_Music *load_music_mp3 (char *filename)
+{
+	Mp3_Music *music;
+	char *path;
+	path = concat_paths(MUSIC_DIRECTORY, filename);
+	music = mp3_load(path);
+	free(path);
+	return music;
+}
+#endif
+
+Mix_Chunk *load_music_wav (char *filename)
+{
+	Mix_Chunk *music;
+	char *path;
+	path = concat_paths(MUSIC_DIRECTORY, filename);
+	music = Mix_LoadWAV(path);
+	free(path);
+	return music;
+}
+
+Mix_Music *load_music_midi (char *filename)
+{
+	Mix_Music *music;
+	char *path;
+	path = concat_paths(MUSIC_DIRECTORY, filename);
+	music = Mix_LoadMUS(path);
+	free(path);
+	return music;
+}
+
+Mix_Chunk *load_sound (char *filename)
+{
+	Mix_Chunk *sound;
+	char *path;
+	path = concat_paths(SOUND_DIRECTORY, filename);
+	sound = Mix_LoadWAV(path);
+	free(path);
+	return sound;
+}
+
+
+#ifdef HAVE_SMPEG
+void music_startup_mp3 (void)
+{
+	int frequency;
+	Uint16 format;
+	int channels;
+
+	Mix_QuerySpec(&frequency, &format, &channels);
+//	DebugTrace("Freq: %d Format: %d Channels: %d\n", frequency, format, channels);
+	mp3_init(frequency, format, channels, sound_buffersize);
+
+	Mix_VolumeMusic(128);
+
+	songs[SND_ELITE_THEME].mp3 = load_music_mp3("theme.mp3");
+	songs[SND_BLUE_DANUBE].mp3 = load_music_mp3("danube.mp3");
+}
+#endif
+
+void music_startup_midi (void)
+{
+	Mix_VolumeMusic(64);
+
+	songs[SND_ELITE_THEME].midi = load_music_midi("theme.mid");
+	songs[SND_BLUE_DANUBE].midi = load_music_midi("danube.mid");
+}
+
+void music_startup_wav (void)
+{
+	Mix_VolumeMusic(128);
+	Mix_ReserveChannels(1);
+
+	songs[SND_ELITE_THEME].wav = load_music_wav("theme.wav");
+	songs[SND_BLUE_DANUBE].wav = load_music_wav("danube.wav");
+}
+
 void snd_sound_startup (void)
 {
 	int i;
+    int frequency;
+    Uint16 format;
+    int channels;
 
- 	/* Install a sound driver.. */
-	sound_on = 1;
-	
-	if (install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, ".") != 0)
-	{
+ 	sound_on = 1;
+
+    switch (sound_freq)
+    {
+        case SND_FREQ_11KHZ:
+            frequency = 11025;
+            break;
+
+        case SND_FREQ_22KHZ:
+            frequency = 22050;
+            break;
+
+        case SND_FREQ_44KHZ:
+            frequency = 44100;
+            break;
+
+        default:
+            frequency = MIX_DEFAULT_FREQUENCY;
+            break;
+    }
+
+    switch (sound_format)
+    {
+        case SND_FORMAT_8BIT:
+            format = AUDIO_U8;
+            break;
+
+        case SND_FORMAT_16BIT:
+            format = AUDIO_S16SYS;
+            break;
+
+        default:
+            format = MIX_DEFAULT_FORMAT;
+            break;
+    }
+
+    switch (sound_channels)
+    {
+        case SND_MONO:
+            channels = 1;
+            break;
+
+        case SND_STEREO:
+            channels = 2;
+            break;
+
+        default:
+            channels = MIX_DEFAULT_CHANNELS;
+            break;
+    }
+
+	if (Mix_OpenAudio(frequency, format, channels, sound_buffersize) < 0) {
+		DebugTrace("Couldn't open audio: %s", SDL_GetError());
 		sound_on = 0;
 		return;
+	}
+
+	Mix_Volume(-1, 128);
+
+	switch (music_mode)
+	{
+
+#ifdef HAVE_SMPEG
+		case MUSIC_MP3:
+			music_startup_mp3();
+			break;
+#endif
+
+		case MUSIC_MIDI:
+			music_startup_midi();
+			break;
+
+		case MUSIC_WAV:
+			music_startup_wav();
+			break;
 	}
 
 	/* Load the sound samples... */
 
 	for (i = 0; i < NUM_SAMPLES; i++)
 	{
-		sample_list[i].sample = load_sample(sample_list[i].filename);
+		sample_list[i].sample = load_sound(sample_list[i].filename);
 	}
 }
- 
 
 void snd_sound_shutdown (void)
 {
@@ -87,7 +233,7 @@ void snd_sound_shutdown (void)
 	{
 		if (sample_list[i].sample != NULL)
 		{
-			destroy_sample (sample_list[i].sample);
+			Mix_FreeChunk(sample_list[i].sample);
 			sample_list[i].sample = NULL;
 		}
 	}
@@ -104,14 +250,17 @@ void snd_play_sample (int sample_no)
 
 	sample_list[sample_no].timeleft = sample_list[sample_no].runtime;
 		
-	play_sample (sample_list[sample_no].sample, 255, 128, 1000, FALSE);
+	Mix_PlayChannel(-1,sample_list[sample_no].sample,0);
 }
 
 
 void snd_update_sound (void)
 {
 	int i;
-	
+
+	if (!sound_on)
+		return;
+
 	for (i = 0; i < NUM_SAMPLES; i++)
 	{
 		if (sample_list[i].timeleft > 0)
@@ -124,22 +273,46 @@ void snd_play_midi (int midi_no, int repeat)
 {
 	if (!sound_on)
 		return;
-	
-	switch (midi_no)
+
+	switch (music_mode)
 	{
-		case SND_ELITE_THEME:
-			play_midi (datafile[THEME].dat, repeat);
+
+#ifdef HAVE_SMPEG
+		case MUSIC_MP3:
+			mp3_play(songs[midi_no].mp3);
 			break;
-		
-		case SND_BLUE_DANUBE:
-			play_midi (datafile[DANUBE].dat, repeat);
+#endif
+
+		case MUSIC_MIDI:
+			Mix_PlayMusic(songs[midi_no].midi, -1);
+			break;
+
+		case MUSIC_WAV:
+			Mix_PlayChannel(0, songs[midi_no].wav, -1);
 			break;
 	}
 }
 
-
 void snd_stop_midi (void)
 {
-	if (sound_on);
-		play_midi (NULL, TRUE);
+	if (!sound_on)
+		return;
+
+	switch (music_mode)
+	{
+
+#ifdef HAVE_SMPEG
+		case MUSIC_MP3:
+			mp3_stop();
+			break;
+#endif
+
+		case MUSIC_MIDI:
+			Mix_HaltMusic();
+			break;
+
+		case MUSIC_WAV:
+			Mix_HaltChannel(0);
+			break;
+	}
 }

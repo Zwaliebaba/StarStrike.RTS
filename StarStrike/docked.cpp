@@ -1,34 +1,10 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <ctype.h>
-
+#include "pch.h"
 #include "config.h"
 #include "gfx.h"
 #include "elite.h"
 #include "planet.h"
 #include "shipdata.h"
 #include "space.h"
-
-
-
-
 
 char *economy_type[] = {"Rich Industrial",
 						"Average Industrial",
@@ -56,6 +32,8 @@ char *government_type[] = {	"Anarchy",
 int cross_x = 0;
 int cross_y = 0;
 
+char line1[100];
+char line2[100];
 
 
 
@@ -107,9 +85,7 @@ int calc_distance_to_planet (struct galaxy_seed from_planet, struct galaxy_seed 
 }
 
 
-void show_distance (int ypos, struct galaxy_seed from_planet, struct galaxy_seed to_planet)
-{
-	char str[100];
+void show_distance(char *str, struct galaxy_seed from_planet, struct galaxy_seed to_planet) {
 	int light_years;
 
 	light_years = calc_distance_to_planet (from_planet, to_planet);
@@ -117,9 +93,23 @@ void show_distance (int ypos, struct galaxy_seed from_planet, struct galaxy_seed
 	if (light_years > 0)
 		sprintf (str, "Distance: %2d.%d Light Years ", light_years / 10, light_years % 10);
 	else
-		strcpy (str,"                                                     ");
+		sprintf (str, "%s", "");
+}
 
-	gfx_display_text (16, ypos, str);
+
+
+void center_cursor_on_planet (struct galaxy_seed planet)
+{
+	if (current_screen == SCR_GALACTIC_CHART)
+	{
+		cross_x = planet.d * GFX_SCALE;
+		cross_y = planet.b / (2 / GFX_SCALE) + (18 * GFX_SCALE) + 1;
+	}
+	else
+	{
+		cross_x = ((planet.d - docked_planet.d) * (4 * GFX_SCALE)) + GFX_X_CENTRE;
+		cross_y = ((planet.b - docked_planet.b) * (2 * GFX_SCALE)) + GFX_Y_CENTRE;
+	}
 }
 
 
@@ -128,7 +118,6 @@ void show_distance_to_planet (void)
 {
 	int px,py;
 	char planet_name[16];
-	char str[32];
 
 	if (current_screen == SCR_GALACTIC_CHART)
 	{
@@ -145,40 +134,19 @@ void show_distance_to_planet (void)
 
 	name_planet (planet_name, hyperspace_planet);
 
-	gfx_clear_text_area();
-	sprintf (str, "%-18s", planet_name);
-	gfx_display_text (16, 340, str);
+	sprintf (line1, "%-18s", planet_name);
+	show_distance (line2, docked_planet, hyperspace_planet);
 
-	show_distance (356, docked_planet, hyperspace_planet);
-
-	if (current_screen == SCR_GALACTIC_CHART)
-	{
-		cross_x = hyperspace_planet.d * GFX_SCALE;
-		cross_y = hyperspace_planet.b / (2 / GFX_SCALE) + (18 * GFX_SCALE) + 1;
-	}
-	else
-	{
-		cross_x = ((hyperspace_planet.d - docked_planet.d) * (4 * GFX_SCALE)) + GFX_X_CENTRE;
-		cross_y = ((hyperspace_planet.b - docked_planet.b) * (2 * GFX_SCALE)) + GFX_Y_CENTRE;
-	}
+	center_cursor_on_planet(hyperspace_planet);
 }
 
 
 void move_cursor_to_origin (void)
 {
-	if (current_screen == SCR_GALACTIC_CHART)
-	{
-		cross_x = docked_planet.d * GFX_SCALE;
-		cross_y = docked_planet.b / (2 / GFX_SCALE) + (18 * GFX_SCALE) + 1;
-	}
-	else
-	{
-		cross_x = GFX_X_CENTRE;
-		cross_y = GFX_Y_CENTRE;
-	}
-
-	show_distance_to_planet();
+	center_cursor_on_planet(docked_planet);
+	show_distance_to_planet ();
 }
+
 
 
 void find_planet_by_name (char *find_name)
@@ -187,7 +155,6 @@ void find_planet_by_name (char *find_name)
 	struct galaxy_seed glx;
 	char planet_name[16];
 	int found;
-	char str[32];
 	
 	glx = cmdr.galaxy;
 	found = 0;
@@ -210,29 +177,17 @@ void find_planet_by_name (char *find_name)
 
 	if (!found)
 	{
-		gfx_clear_text_area();
-		gfx_display_text (16, 340, "Unknown Planet");
+		sprintf(line1, "%s", "Unknown Planet");
+		sprintf(line2, "%s", "");
 		return;
 	}
 
 	hyperspace_planet = glx;
 
-	gfx_clear_text_area ();
-	sprintf (str, "%-18s", planet_name);
-	gfx_display_text (16, 340, str);
+	sprintf (line1, "%-18s", planet_name);
+	show_distance (line2, docked_planet, hyperspace_planet);
 
-	show_distance (356, docked_planet, hyperspace_planet);
-
-	if (current_screen == SCR_GALACTIC_CHART)
-	{
-		cross_x = hyperspace_planet.d * GFX_SCALE;
-		cross_y = hyperspace_planet.b / (2 / GFX_SCALE) + (18 * GFX_SCALE) + 1;
-	}
-	else
-	{
-		cross_x = ((hyperspace_planet.d - docked_planet.d) * (4 * GFX_SCALE)) + GFX_X_CENTRE;
-		cross_y = ((hyperspace_planet.b - docked_planet.b) * (2 * GFX_SCALE)) + GFX_Y_CENTRE;
-	}
+	center_cursor_on_planet(hyperspace_planet);
 }
 
 
@@ -247,10 +202,6 @@ void display_short_range_chart (void)
 	int row_used[64];
 	int row;
 	int blob_size;
-
-	current_screen = SCR_SHORT_RANGE;
-
-	gfx_clear_display();
 
 	gfx_display_centre_text (10, "SHORT RANGE CHART", 140, GFX_COL_GOLD);
 
@@ -327,9 +278,6 @@ void display_short_range_chart (void)
 		waggle_galaxy (&glx);
 		waggle_galaxy (&glx);
 	}
-
-	cross_x = ((hyperspace_planet.d - docked_planet.d) * 4 * GFX_SCALE) + GFX_X_CENTRE;
-	cross_y = ((hyperspace_planet.b - docked_planet.b) * 2 * GFX_SCALE) + GFX_Y_CENTRE;
 }
 
 
@@ -341,11 +289,6 @@ void display_galactic_chart (void)
 	struct galaxy_seed glx;
 	char str[64];
 	int px,py;
-	
-
-	current_screen = SCR_GALACTIC_CHART;
-
-	gfx_clear_display();
 
 	sprintf (str, "GALACTIC CHART %d", cmdr.galaxy_number + 1);
 
@@ -355,7 +298,7 @@ void display_galactic_chart (void)
 	gfx_draw_line (0, 36+258, 511, 36+258);
 
 	draw_fuel_limit_circle (docked_planet.d * GFX_SCALE,
-					(docked_planet.b / (2 / GFX_SCALE)) + (18 * GFX_SCALE) + 1);
+								 (docked_planet.b / (2 / GFX_SCALE)) + (18 * GFX_SCALE) + 1);
 
 	glx = cmdr.galaxy;
 
@@ -364,10 +307,13 @@ void display_galactic_chart (void)
 		px = glx.d * GFX_SCALE;
 		py = (glx.b / (2 / GFX_SCALE)) + (18 * GFX_SCALE) + 1;
 
-		gfx_plot_pixel (px, py, GFX_COL_WHITE);
-
 		if ((glx.e | 0x50) < 0x90)
-			gfx_plot_pixel (px + 1, py, GFX_COL_WHITE);
+		{
+			gfx_draw_colour_line (px, py, px + 1, py, GFX_COL_WHITE);
+		} else
+		{
+			gfx_plot_pixel(px, py, GFX_COL_WHITE);
+		}
 
 		waggle_galaxy (&glx);
 		waggle_galaxy (&glx);
@@ -375,10 +321,6 @@ void display_galactic_chart (void)
 		waggle_galaxy (&glx);
 
 	}
-
-
-	cross_x = hyperspace_planet.d * GFX_SCALE;
-	cross_y = (hyperspace_planet.b / (2 / GFX_SCALE)) + (18 * GFX_SCALE) + 1;
 }
 
 
@@ -396,10 +338,6 @@ void display_data_on_planet (void)
 	char *description;
 	struct planet_data hyper_planet_data;
 
-	current_screen = SCR_PLANET_DATA;
-
-	gfx_clear_display();
-
 	name_planet (planet_name, hyperspace_planet);
 	sprintf (str, "DATA ON %s", planet_name);
 
@@ -410,7 +348,8 @@ void display_data_on_planet (void)
 
 	generate_planet_data (&hyper_planet_data, hyperspace_planet);
 
-	show_distance (42, docked_planet, hyperspace_planet);
+	show_distance (str, docked_planet, hyperspace_planet);
+	gfx_display_text (16, 42, str);
 
 	sprintf (str, "Economy:%s", economy_type[hyper_planet_data.economy]);
 	gfx_display_text (16, 74, str);
@@ -508,10 +447,6 @@ void display_commander_status (void)
 	int x,y;
 	int condition;
 	int type;
-	
-	current_screen = SCR_CMDR_STATUS;
-
-	gfx_clear_display();
 
 	sprintf (str, "COMMANDER %s", cmdr.name);
 
@@ -521,7 +456,7 @@ void display_commander_status (void)
 
 
 	gfx_display_colour_text (16, 58, "Present System:", GFX_COL_GREEN_1);
-	
+
 	if (!witchspace)
 	{
 		name_planet (planet_name, docked_planet);
@@ -697,7 +632,41 @@ void display_commander_status (void)
 	}
 }
 
+void display_abbreviated_status (struct commander *cmdr)
+{
+    char planet_name[16];
+	char str[100];
+	int i;
 
+	gfx_display_colour_text (16, 58, "Commander Name:", GFX_COL_GREEN_1);
+	sprintf (str, "%s", cmdr->name);
+	gfx_display_text(170, 58, str);
+
+	gfx_display_colour_text (16, 74, "Present System:", GFX_COL_GREEN_1);
+	name_planet (planet_name, _find_planet (cmdr->ship_x, cmdr->ship_y, cmdr->galaxy));
+	capitalise_name (planet_name);
+	sprintf (str, "%s", planet_name);
+	gfx_display_text (150, 74, str);
+
+	sprintf (str, "%d.%d Cr", cmdr->credits / 10, cmdr->credits % 10);
+	gfx_display_colour_text (16, 90, "Cash:", GFX_COL_GREEN_1);
+	gfx_display_text (70, 90, str);
+
+	if (cmdr->legal_status == 0)
+		strcpy (str, "Clean");
+	else
+		strcpy (str, cmdr->legal_status > 50 ? "Fugitive" : "Offender");
+
+	gfx_display_colour_text (16, 106, "Legal Status:", GFX_COL_GREEN_1);
+	gfx_display_text (128, 106, str);
+
+	for (i = 0; i < NO_OF_RANKS; i++)
+		if (cmdr->score >= rating[i].score)
+			strcpy (str, rating[i].title);
+	
+	gfx_display_colour_text (16, 122, "Rating:", GFX_COL_GREEN_1);
+	gfx_display_text (80, 122, str);
+}
 
 /***********************************************************************************/
 
@@ -744,25 +713,10 @@ void display_stock_price (int i)
 void highlight_stock (int i)
 {
 	int y;
-	char str[30];
-	
-	if ((hilite_item != -1) && (hilite_item != i))
-	{
-		y = hilite_item * 15 + 55;
-		gfx_clear_area (2, y, 510, y + 15);
-		display_stock_price (hilite_item);		
-	}
-
 	y = i * 15 + 55;
-	
+
 	gfx_draw_rectangle (2, y, 510, y + 15, GFX_COL_DARK_RED);
-	display_stock_price (i);		
-
-	hilite_item = i;
-
-	gfx_clear_text_area();
-	sprintf (str, "Cash: %d.%d", cmdr.credits / 10, cmdr.credits % 10);
-	gfx_display_text (16, 340, str);
+	display_stock_price (i);
 }
 
 void select_previous_stock (void)
@@ -770,7 +724,7 @@ void select_previous_stock (void)
 	if ((!docked) || (hilite_item == 0))
 		return;
 
-	highlight_stock (hilite_item - 1);
+	hilite_item--;
 }
 
 void select_next_stock (void)
@@ -778,7 +732,7 @@ void select_next_stock (void)
 	if ((!docked) || (hilite_item == 16))
 		return;
 
-	highlight_stock (hilite_item + 1);
+	hilite_item++;
 }
 
 
@@ -806,7 +760,7 @@ void buy_stock (void)
 	item->current_quantity--;
 	cmdr.credits -= item->current_price;	
 
-	highlight_stock (hilite_item);
+//	highlight_stock (hilite_item);
 }
 
 
@@ -823,7 +777,7 @@ void sell_stock (void)
 	item->current_quantity++;
 	cmdr.credits += item->current_price;	
 
-	highlight_stock (hilite_item);
+//	highlight_stock (hilite_item);
 }
 
 
@@ -833,10 +787,6 @@ void display_market_prices (void)
 	char str[100];
     char planet_name[16];
 	int i;
-
-	current_screen = SCR_MARKET_PRICES;
-
-	gfx_clear_display();
 
 	name_planet (planet_name, docked_planet);
 	sprintf (str, "%s MARKET PRICES", planet_name);
@@ -854,12 +804,6 @@ void display_market_prices (void)
 	{
 		display_stock_price (i);
 	}
-
-	if (docked)
-	{
-		hilite_item = -1;
-		highlight_stock (0);
-	}
 }
 
 
@@ -869,9 +813,6 @@ void display_inventory (void)
 	int y;
 	char str[80];
 	
-	current_screen = SCR_INVENTORY;
-
-	gfx_clear_display();
 	gfx_display_centre_text (10, "INVENTORY", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 	
@@ -1081,25 +1022,10 @@ void display_equip_price (int i)
 void highlight_equip (int i)
 {
 	int y;
-	char str[30];
-	
-	if ((hilite_item != -1) && (hilite_item != i))
-	{
-		y = equip_stock[hilite_item].y;
-		gfx_clear_area (2, y+1, 510, y + 15);
-		display_equip_price (hilite_item);		
-	}
-
 	y = equip_stock[i].y;
-	
+
 	gfx_draw_rectangle (2, y+1, 510, y + 15, GFX_COL_DARK_RED);
 	display_equip_price (i);		
-
-	hilite_item = i;
-
-	gfx_clear_text_area();
-	sprintf (str, "Cash: %d.%d", cmdr.credits / 10, cmdr.credits % 10);
-	gfx_display_text (16, 340, str);
 }
 
 
@@ -1122,7 +1048,7 @@ void select_next_equip (void)
 	}
 
 	if (next != hilite_item)	
-		highlight_equip (next);
+		hilite_item = next;
 }
 
 void select_previous_equip (void)
@@ -1143,8 +1069,8 @@ void select_previous_equip (void)
 		}
 	}
 
-	if (prev != hilite_item)	
-		highlight_equip (prev);
+	if (prev != hilite_item)
+		hilite_item = prev;
 }
 
 
@@ -1154,8 +1080,6 @@ void list_equip_prices (void)
 	int y;
 	int tech_level;
 
-	gfx_clear_area (2, 55, 510, 380);
-	
 	tech_level = current_planet_data.techlevel + 1;
 
 	equip_stock[0].price = (70 - cmdr.fuel) * 2;
@@ -1176,10 +1100,6 @@ void list_equip_prices (void)
 
 		display_equip_price (i);
 	}
-	
-	i = hilite_item;
-	hilite_item = -1;
-	highlight_equip (i);
 }
 
 
@@ -1228,9 +1148,7 @@ void buy_equip (void)
 		hilite_item++;
 		for (i = 0; i < 5; i++)
 			equip_stock[hilite_item + i].show = 1;
-		
-		list_equip_prices();
-		return;		
+		return;
 	}
 
 	if (equip_stock[hilite_item].canbuy == 0)
@@ -1240,12 +1158,10 @@ void buy_equip (void)
 	{
 		case EQ_FUEL:
 			cmdr.fuel = myship.max_fuel;
-			update_console();
 			break;
 
 		case EQ_MISSILE:
 			cmdr.missiles++;
-			update_console();
 			break;
 		
 		case EQ_CARGO_BAY:
@@ -1362,21 +1278,51 @@ void buy_equip (void)
 	}
 
 	cmdr.credits -= equip_stock[hilite_item].price;
-	list_equip_prices();
 }
 
 
 void equip_ship (void)
 {
-	current_screen = SCR_EQUIP_SHIP;
+	collapse_equip_list();
+	hilite_item = 0;
+}
 
-	gfx_clear_display();
+
+void display_cash (void) {
+	char str[30];
+	sprintf (str, "Cash: %d.%d", cmdr.credits / 10, cmdr.credits % 10);
+	gfx_display_text (16, 340, str);
+}
+
+
+void draw_equip_screen (void)
+{
 	gfx_display_centre_text (10, "EQUIP SHIP", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 
-	collapse_equip_list();
-	
-	hilite_item = 0;
-	
 	list_equip_prices();
+	highlight_equip (hilite_item);
+	display_cash();
+}
+
+
+void draw_market_screen (void)
+{
+	display_market_prices ();
+	if (docked) {
+		highlight_stock (hilite_item);
+		display_cash ();
+	}
+}
+
+
+void display_info_text (void)
+{
+	gfx_display_text (16, 340, line1);
+	gfx_display_text (16, 356, line2);
+}
+
+void initialize_market_screen (void)
+{
+    hilite_item = 0;
 }

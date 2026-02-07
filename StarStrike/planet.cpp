@@ -1,26 +1,4 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- */
-
-/*
- *
- * Handle the generation of planet info...
- */
-
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
+#include "pch.h"
 #include "config.h"
 #include "gfx.h"
 #include "elite.h"
@@ -203,17 +181,16 @@ void waggle_galaxy (struct galaxy_seed *glx_ptr)
 
 
 
-
-struct galaxy_seed find_planet (int cx, int cy)
+struct galaxy_seed _find_planet (int cx, int cy, struct galaxy_seed glx)
 {
     int min_dist = 10000;
-	struct galaxy_seed glx;
+//	struct galaxy_seed glx;
 	struct galaxy_seed planet;
 	int distance;
 	int dx, dy;
 	int i;
 
-	glx = cmdr.galaxy;
+//	glx = cmdr.galaxy;
 
 	for (i = 0; i < 256; i++)
 	{
@@ -241,13 +218,17 @@ struct galaxy_seed find_planet (int cx, int cy)
 	return planet;
 }
 
-
-int find_planet_number (struct galaxy_seed planet)
+struct galaxy_seed find_planet(int cx, int cy)
 {
-	struct galaxy_seed glx;
+	return _find_planet(cx, cy, cmdr.galaxy);
+}
+
+int _find_planet_number (struct galaxy_seed planet, struct galaxy_seed glx)
+{
+//	struct galaxy_seed glx;
 	int i;
 
-	glx = cmdr.galaxy;
+//	glx = cmdr.galaxy;
 
 	for (i = 0; i < 256; i++)
 	{
@@ -269,7 +250,10 @@ int find_planet_number (struct galaxy_seed planet)
 	return -1;
 }
 
-
+int find_planet_number(struct galaxy_seed planet)
+{
+	return _find_planet_number(planet, cmdr.galaxy);
+}
 
 void name_planet (char *gname, struct galaxy_seed glx)
 {

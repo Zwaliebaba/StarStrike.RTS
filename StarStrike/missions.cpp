@@ -1,26 +1,4 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-/*
- * missions.c
- *
- * Code to handle the special missions.
- */
-
-#include <stdlib.h>
-#include <string.h>
- 
+#include "pch.h"
 #include "config.h"
 #include "elite.h"
 #include "gfx.h"
@@ -29,8 +7,15 @@
 #include "planet.h"
 #include "main.h"
 #include "missions.h" 
-#include "keyboard.h"
+#include "input.h"
+
+static int current_subscreen;
  
+#define SUBSCR_MISSION_CONST_BRIEF         1
+#define SUBSCR_MISSION_CONST_DEBRIEF       2
+#define SUBSCR_MISSION_THARG_FIRST_BRIEF   3
+#define SUBSCR_MISSION_THARG_SECOND_BRIEF  4
+#define SUBSCR_MISSION_THARG_DEBRIEF       5
 
 char *mission1_brief_a =
 	"Greetings Commander, I am Captain Curruthers of "
@@ -75,7 +60,7 @@ char *mission1_pdesc[] =
 	"BOY ARE YOU IN THE WRONG GALAXY!",
 	"COMING SOON: ELITE - DARKNESS FALLS.",				
 };
-
+	
 char *mission2_brief_a =
 	"Attention Commander, I am Captain Fortesque of Her Majesty's Space Navy. "
 	"We have need of your services again. If you would be so good as to go to "
@@ -101,7 +86,7 @@ char *mission2_debrief =
 	"For the moment please accept this Navy Extra Energy Unit as payment. "
 	"---MESSAGE ENDS.";
 
-	
+
 
 char *mission_planet_desc (struct galaxy_seed planet)
 {
@@ -177,16 +162,23 @@ char *mission_planet_desc (struct galaxy_seed planet)
 	return NULL;
 }
 
-
-void constrictor_mission_brief (void)
+void initialize_constrictor_mission_brief (void)
 {
 	Matrix rotmat;
-
 	cmdr.mission = 1;
 
-	current_screen = SCR_FRONT_VIEW;
+	clear_universe();
+	set_init_matrix (rotmat);
+	add_new_ship (SHIP_CONSTRICTOR, 200, 90, 600, rotmat, -127, -127);
+	flight_roll = 0;
+	flight_climb = 0;
+	flight_speed = 0;
+}
 
-	gfx_clear_display();
+void draw_constrictor_mission_brief (void)
+{
+	gfx_draw_view();
+
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 
@@ -196,33 +188,18 @@ void constrictor_mission_brief (void)
 		
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
 		
-	clear_universe();
-	set_init_matrix (rotmat);
-	add_new_ship (SHIP_CONSTRICTOR, 200, 90, 600, rotmat, -127, -127);
-	flight_roll = 0;
-	flight_climb = 0;
-	flight_speed = 0;
-
-	do
-	{
-		gfx_clear_area (310, 50, 510, 180);
-		update_universe ();
-		universe[0].location.z = 600;
-		gfx_update_screen();
-		kbd_poll_keyboard();
-	} while (!kbd_space_pressed);
+//		universe[0].location.z = 600;
 }	
 
-
-void constrictor_mission_debrief (void)
+void initialize_constrictor_mission_debrief (void)
 {
-	int keyasc;
-
 	cmdr.mission = 3;
 	cmdr.score += 256;
 	cmdr.credits += 50000;
-	
-	gfx_clear_display();
+}
+
+void draw_constrictor_mission_debrief (void)
+{
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 
@@ -231,46 +208,30 @@ void constrictor_mission_debrief (void)
 	gfx_display_pretty_text (116, 132, 400, 384, mission1_debrief);
 
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
-
-	gfx_update_screen();
-	
-	do
-	{
-		keyasc = kbd_read_key();
-	} while (keyasc != ' ');
 }
 
-
-void thargoid_mission_first_brief (void)
+void initialize_thargoid_mission_first_brief (void)
 {
-	int keyasc;
-
 	cmdr.mission = 4;
-	
-	gfx_clear_display();
+}
+
+void draw_thargoid_mission_first_brief (void)
+{
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 
 	gfx_display_pretty_text (116, 132, 400, 384, mission2_brief_a);
 
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
-
-	gfx_update_screen();
-	
-	do
-	{
-		keyasc = kbd_read_key();
-	} while (keyasc != ' ');
 }
 
-
-void thargoid_mission_second_brief (void)
+void initialize_thargoid_mission_second_brief (void)
 {
-	int keyasc;
-
 	cmdr.mission = 5;
-	
-	gfx_clear_display();
+}
+
+void draw_thargoid_mission_second_brief (void)
+{
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 
@@ -280,25 +241,17 @@ void thargoid_mission_second_brief (void)
 	gfx_draw_sprite (IMG_BLAKE, 352, 46);
 	
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
-
-	gfx_update_screen();
-	
-	do
-	{
-		keyasc = kbd_read_key();
-	} while (keyasc != ' ');
 }
 
-
-void thargoid_mission_debrief (void)
+void initialize_thargoid_mission_debrief (void)
 {
-	int keyasc;
-
 	cmdr.mission = 6;
 	cmdr.score += 256;
 	cmdr.energy_unit = 2;
-	
-	gfx_clear_display ();
+}
+
+void draw_thargoid_mission_debrief (void)
+{
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, 511, 36);
 
@@ -307,47 +260,114 @@ void thargoid_mission_debrief (void)
 	gfx_display_pretty_text (116, 132, 400, 384, mission2_debrief);
 
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
-
-	gfx_update_screen();
-	
-	do
-	{
-		keyasc = kbd_read_key();
-	} while (keyasc != ' ');
 }
-
-
 
 void check_mission_brief (void)
 {
 	if ((cmdr.mission == 0) && (cmdr.score >= 256) && (cmdr.galaxy_number < 2))
+//	if (cmdr.mission == 0)
 	{
-		constrictor_mission_brief();
+		initialize_constrictor_mission_brief();
+		switch_to_screen(SCR_MISSION);
+		current_subscreen = SUBSCR_MISSION_CONST_BRIEF;
 		return;
 	}
 
 	if (cmdr.mission == 2)
 	{
-		constrictor_mission_debrief();
+		initialize_constrictor_mission_debrief();
+		switch_to_screen(SCR_MISSION);
+		current_subscreen = SUBSCR_MISSION_CONST_DEBRIEF;
 		return;
 	}
 
 	if ((cmdr.mission == 3) && (cmdr.score >= 1280) && (cmdr.galaxy_number == 2))
 	{
-		thargoid_mission_first_brief();
+		initialize_thargoid_mission_first_brief();
+		switch_to_screen(SCR_MISSION);
+		current_subscreen = SUBSCR_MISSION_THARG_FIRST_BRIEF;
 		return;
 	}
 
 	if ((cmdr.mission == 4) && (docked_planet.d == 215) && (docked_planet.b == 84))
 	{
-		thargoid_mission_second_brief();
+		initialize_thargoid_mission_second_brief();
+		switch_to_screen(SCR_MISSION);
+		current_subscreen = SUBSCR_MISSION_THARG_SECOND_BRIEF;
 		return;
 	}
 
 	if ((cmdr.mission == 5) && (docked_planet.d == 63) && (docked_planet.b == 72))
 	{
-		thargoid_mission_debrief();
+		initialize_thargoid_mission_debrief();
+		switch_to_screen(SCR_MISSION);
+		current_subscreen = SUBSCR_MISSION_THARG_DEBRIEF;
 		return;
+	}
+
+	switch_to_screen(SCR_CMDR_STATUS);
+}
+
+void handle_mission_screen_keys (int key, char ascii)
+{
+	switch (current_subscreen)
+	{
+
+	case SUBSCR_MISSION_CONST_BRIEF:
+		if (key == KBD_INC_SPEED)
+			switch_to_screen(SCR_CMDR_STATUS);
+		break;
+
+	case SUBSCR_MISSION_CONST_DEBRIEF:
+		if (key == KBD_INC_SPEED)
+			switch_to_screen(SCR_CMDR_STATUS);
+		break;
+
+        // thargoid mission
+    default:
+        if (key == KBD_INC_SPEED)
+            switch_to_screen(SCR_CMDR_STATUS);
+        break;
+    }
+}
+
+void draw_mission_screen (void)
+{
+	switch (current_subscreen)
+	{
+	case SUBSCR_MISSION_CONST_BRIEF:
+		draw_constrictor_mission_brief();
+		break;
+
+	case SUBSCR_MISSION_CONST_DEBRIEF:
+		draw_constrictor_mission_debrief();
+		break;
+
+	case SUBSCR_MISSION_THARG_FIRST_BRIEF:
+		draw_thargoid_mission_first_brief();
+		break;
+
+	case SUBSCR_MISSION_THARG_SECOND_BRIEF:
+		draw_thargoid_mission_second_brief();
+		break;
+
+	case SUBSCR_MISSION_THARG_DEBRIEF:
+		draw_thargoid_mission_debrief();
+		break;
 	}
 }
 
+void update_mission_screen (void)
+{
+	switch (current_subscreen)
+	{
+	case SUBSCR_MISSION_CONST_BRIEF:
+		update_universe ();
+		break;
+
+	case SUBSCR_MISSION_CONST_DEBRIEF:
+		break;
+	}
+
+    // thargoid mission does nothing
+}
