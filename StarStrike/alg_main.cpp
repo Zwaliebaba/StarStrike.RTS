@@ -7,10 +7,8 @@
 #include "docked.h"
 #include "intro.h"
 #include "shipdata.h"
-#include "shipface.h"
 #include "space.h"
 #include "sound.h"
-#include "threed.h"
 #include "swat.h"
 #include "random.h"
 #include "options.h"
@@ -134,7 +132,6 @@ void draw_cross(int cx, int cy, int size, int clip_ty)
 void draw_laser_sights(void)
 {
   int laser = 0;
-  int x1, y1, x2, y2;
 
   switch (current_screen)
   {
@@ -161,9 +158,9 @@ void draw_laser_sights(void)
 
   if (laser)
   {
-    x1 = 128 * GFX_SCALE;
-    y1 = (96 - 8) * GFX_SCALE;
-    y2 = (96 - 16) * GFX_SCALE;
+    int x1 = 128 * GFX_SCALE;
+    int y1 = (96 - 8) * GFX_SCALE;
+    int y2 = (96 - 16) * GFX_SCALE;
 
     gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, GFX_COL_GREY_1);
     gfx_draw_colour_line(x1, y1, x1, y2, GFX_COL_WHITE);
@@ -178,7 +175,7 @@ void draw_laser_sights(void)
 
     x1 = (128 - 8) * GFX_SCALE;
     y1 = 96 * GFX_SCALE;
-    x2 = (128 - 16) * GFX_SCALE;
+    int x2 = (128 - 16) * GFX_SCALE;
 
     gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, GFX_COL_GREY_1);
     gfx_draw_colour_line(x1, y1, x2, y1, GFX_COL_WHITE);
@@ -320,10 +317,8 @@ int ready_to_draw(void)
 {
   static long oldtime = 0;
   static long ms_count = 0;
-  long newtime;
-  long elapsed;
 
-  newtime = SDL_GetTicks();
+  long newtime = SDL_GetTicks();
 
   if ((newtime == oldtime) || (oldtime == 0))
   {
@@ -331,7 +326,7 @@ int ready_to_draw(void)
     return 0;
   }
 
-  elapsed = newtime - oldtime;
+  long elapsed = newtime - oldtime;
   oldtime = newtime;
 
   ms_count += elapsed;
@@ -468,9 +463,8 @@ void add_find_char(int letter)
 
 void delete_find_char(void)
 {
-  int len;
 
-  len = strlen(find_name);
+  int len = strlen(find_name);
   if (len == 0) return;
 
   find_name[len - 1] = '\0';
@@ -674,7 +668,6 @@ void auto_dock(void)
 
 void run_escape_sequence(void)
 {
-  int newship;
   Matrix rotmat;
 
   flight_speed = 1;
@@ -684,7 +677,7 @@ void run_escape_sequence(void)
   set_init_matrix(rotmat);
   rotmat[2].z = 1.0;
 
-  newship = add_new_ship(SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
+  int newship = add_new_ship(SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
   universe[newship].velocity = 7;
   snd_play_sample(SND_LAUNCH);
 
@@ -694,10 +687,8 @@ void run_escape_sequence(void)
 
 void update_escape_sequence(void)
 {
-  int i;
-  int newship;
 
-  newship = escape_pod_ship;
+  int newship = escape_pod_ship;
 
   if (escape_pod_timer < 90)
   {
@@ -719,7 +710,7 @@ void update_escape_sequence(void)
   {
     auto_dock();
 
-    if ((abs(flight_roll) < 3) && (abs(flight_climb) < 3)) { for (i = 0; i < MAX_UNIV_OBJECTS; i++) { if (universe[i].type != 0) universe[i].location.z -= 1500; } }
+    if ((abs(flight_roll) < 3) && (abs(flight_climb) < 3)) { for (int i = 0; i < MAX_UNIV_OBJECTS; i++) { if (universe[i].type != 0) universe[i].location.z -= 1500; } }
 
     warp_stars = 1;
     update_universe();
@@ -949,10 +940,7 @@ void handle_key_event(int key, char ascii)
 
 void run_game_over_screen(void)
 {
-  int i;
-  int newship;
   Matrix rotmat;
-  int type;
 
   flight_speed = 6;
   flight_roll = 0;
@@ -961,12 +949,13 @@ void run_game_over_screen(void)
 
   set_init_matrix(rotmat);
 
-  newship = add_new_ship(SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
+  int newship = add_new_ship(SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
   universe[newship].flags |= FLG_DEAD;
 
-  for (i = 0; i < 5; i++)
+  for (int i = 0; i < 5; i++)
   {
-    type = (rand255() & 1) ? SHIP_CARGO : SHIP_ALLOY;
+    int type = (rand255() & 1) ? SHIP_CARGO : SHIP_ALLOY;
+
     newship = add_new_ship(type, (rand255() & 63) - 32, (rand255() & 63) - 32, -400, rotmat, 0, 0);
     universe[newship].rotz = ((rand255() * 2) & 255) - 128;
     universe[newship].rotx = ((rand255() * 2) & 255) - 128;
@@ -993,12 +982,11 @@ void update_game_over_screen(void)
 
 void display_break_pattern(void)
 {
-  int i, j;
 
-  i = break_pattern_timer;
+  int i = break_pattern_timer;
 
   gfx_set_clip_region(1, 2, 510, 383);
-  for (j = 0; j <= i; j++) gfx_draw_circle(256, 192, 30 + j * 15, GFX_COL_WHITE);
+  for (int j = 0; j <= i; j++) gfx_draw_circle(256, 192, 30 + j * 15, GFX_COL_WHITE);
   gfx_set_clip_region(0, 0, 512, 512);
 }
 
@@ -1014,11 +1002,10 @@ void update_break_pattern(void)
   }
 }
 
-void info_message(char *message)
+void info_message(const char *message)
 {
   strcpy(message_string, message);
   message_count = 37;
-  //	snd_play_sample (SND_BEEP);
 }
 
 void update_simulation(void)
@@ -1122,7 +1109,7 @@ void update_screen(void)
   if (message_count > 0) message_count--;
 }
 
-int main(int argc, char **argv)
+int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdLine, int _iCmdShow)
 {
 #if defined(_DEBUG)
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -1134,6 +1121,8 @@ int main(int argc, char **argv)
   path = path.substr(0, path.find_last_of('\\'));
 
   FileSys::SetHomeDirectory(path);
+
+  ClientEngine::Startup(L"Deep Space Outpost", {}, _hInstance, _iCmdShow);
 
   if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
   {
@@ -1176,6 +1165,8 @@ int main(int argc, char **argv)
   gfx_graphics_shutdown();
 
   SDL_Quit();
+
+  ClientEngine::Shutdown();
 
   return 0;
 }

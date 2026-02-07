@@ -61,26 +61,34 @@ Uint32 gfx_get_pixel(SDL_Surface *surface, int x, int y)
 
 void gfx_get_char_size(SDL_Surface *bmp, int x, int y, int *size_x, int *size_y)
 {
+  *size_x = 0;
+  *size_y = 0;
 
-  for (int dy = 31; dy > 0; dy--)
+  SDL_LockSurface(bmp);
+
+  // Auto-detect mask convention by sampling the corner pixel (should be background)
+  Uint32 background = gfx_get_pixel(bmp, (x * 32), (y * 32));
+
+  for (int dy = 0; dy < 32; dy++)
   {
-    for (int dx = 31; dx > 0; dx--)
+    for (int dx = 0; dx < 32; dx++)
     {
-      SDL_LockSurface(bmp);
       Uint32 pixel = gfx_get_pixel(bmp, (x * 32) + dx, (y * 32) + dy);
-      SDL_UnlockSurface(bmp);
 
-      if (pixel == 0)
+      // If this pixel differs from background, it's a character pixel
+      if (pixel != background)
       {
-        *size_x = dx;
-        *size_y = dy;
-        return;
+        if (dx > *size_x) *size_x = dx;
+        if (dy > *size_y) *size_y = dy;
       }
     }
   }
 
-  *size_x = 0;
-  *size_y = 0;
+  SDL_UnlockSurface(bmp);
+
+  // Add 1 to convert from max index to size, ensure minimum spacing
+  (*size_x)++;
+  (*size_y)++;
 }
 
 SDL_Surface *gfx_load_bitmap(const char *filename)
@@ -290,7 +298,7 @@ void gfx_set_color(int index) { glColor3ubv((GLubyte *) &(scanner_image->format-
 
 void apply_standard_transformation(void) { glTranslatef(GFX_X_OFFSET, GFX_Y_OFFSET, 0.0); }
 
-void gfx_gl_print(int x, int y, char *string, int base, int col)
+void gfx_gl_print(int x, int y, const char *string, int base, int col)
 {
   glLoadIdentity();
   apply_standard_transformation();
@@ -309,7 +317,7 @@ void gfx_gl_print(int x, int y, char *string, int base, int col)
 
 }
 
-GLvoid gfx_gl_cen_print(int x, int y, char *string, int base, int col)
+GLvoid gfx_gl_cen_print(int x, int y, const char *string, int base, int col)
 {
   GLfloat matrix[16];
   GLint buffer;
@@ -401,13 +409,12 @@ void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
   glEnd();
 }
 
-void gfx_display_text(int x, int y, char *txt) { gfx_display_colour_text(x, y, txt, GFX_COL_WHITE); }
+void gfx_display_text(int x, int y, const char *txt) { gfx_display_colour_text(x, y, txt, GFX_COL_WHITE); }
 
-void gfx_display_colour_text(int x, int y, char *txt, int col) { gfx_gl_print(x, y, txt, Elite_1_base, col); }
+void gfx_display_colour_text(int x, int y, const char *txt, int col) { gfx_gl_print(x, y, txt, Elite_1_base, col); }
 
-void gfx_display_centre_text(int y, char *str, int psize, int col)
+void gfx_display_centre_text(int y, const char *str, int psize, int col)
 {
-
   int txt_size;
   int txt_colour;
 
@@ -437,14 +444,14 @@ void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
   glEnd();
 }
 
-void gfx_display_pretty_text(int tx, int ty, int bx, int by, char *txt)
+void gfx_display_pretty_text(int tx, int ty, int bx, int by, const char *txt)
 {
   char strbuf[100];
   char *bptr;
 
   int maxlen = (bx - tx) / 8;
 
-  char* str = txt;
+  const char *str = txt;
   int len = strlen(txt);
 
   while (len > 0)
@@ -575,7 +582,6 @@ void gfx_draw_view(void)
     copy.location.z = ((universe[i].location.z - universe[i].oldlocation.z) * timeslice) + universe[i].oldlocation.z;
 
     draw_ship(&copy);
-    //        draw_ship(&universe[i]);
 
     universe[i].flags &= ~FLG_FIRING;
   }
@@ -615,7 +621,7 @@ void gfx_set_camera(int angle)
   camera[3].w = 1;
 }
 
-void get_object_matrix(struct univ_object *univ, Matrix4 matrix)
+void get_object_matrix(univ_object *univ, Matrix4 matrix)
 {
   matrix[0].x = univ->rotmat[0].x;
   matrix[0].y = univ->rotmat[0].y;

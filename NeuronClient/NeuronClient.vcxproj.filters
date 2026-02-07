@@ -1,53 +1,123 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="AudioEngine.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="DescriptorHeap.cpp" />
-    <ClCompile Include="GpuBuffer.cpp" />
-    <ClCompile Include="GraphicsCommon.cpp" />
-    <ClCompile Include="GraphicsCore.cpp" />
     <ClCompile Include="NeuronClient.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="PipelineState.cpp" />
-    <ClCompile Include="ResourceStateTracker.cpp" />
-    <ClCompile Include="RootSignature.cpp" />
-    <ClCompile Include="SamplerManager.cpp" />
-    <ClCompile Include="SoundCommon.cpp" />
-    <ClCompile Include="SoundEffect.cpp" />
-    <ClCompile Include="SoundEffectInstance.cpp" />
     <ClCompile Include="Strings.cpp" />
-    <ClCompile Include="WAVFileReader.cpp" />
+    <ClCompile Include="AudioEngine.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundCommon.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEffect.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEffectInstance.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="WAVFileReader.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorHeap.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GpuBuffer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsCommon.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsCore.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceStateTracker.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerManager.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Audio.h" />
-    <ClInclude Include="AudioDefs.h" />
-    <ClInclude Include="AudioEngine.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="d3dx12.h" />
-    <ClInclude Include="DescriptorHeap.h" />
-    <ClInclude Include="DirectXHelper.h" />
     <ClInclude Include="GameMain.h" />
-    <ClInclude Include="GpuBuffer.h" />
-    <ClInclude Include="GpuResource.h" />
-    <ClInclude Include="GraphicsCommon.h" />
-    <ClInclude Include="GraphicsCore.h" />
     <ClInclude Include="NeuronClient.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PipelineState.h" />
-    <ClInclude Include="PixProfiler.h" />
-    <ClInclude Include="ResourceStateTracker.h" />
-    <ClInclude Include="RootSignature.h" />
-    <ClInclude Include="SamplerManager.h" />
-    <ClInclude Include="SoundCommon.h" />
     <ClInclude Include="Strings.h" />
-    <ClInclude Include="VertexTypes.h" />
-    <ClInclude Include="WAVFileReader.h" />
+    <ClInclude Include="Audio.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioDefs.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioEngine.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundCommon.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="WAVFileReader.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorHeap.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXHelper.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GpuBuffer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GpuResource.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsCommon.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsCore.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="PixProfiler.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceStateTracker.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerManager.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexTypes.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Project Files">
       <UniqueIdentifier>{0f46989a-59e5-43fb-896e-b4f8e6c0743a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{4c2af77f-a082-4fd8-a7b9-1fb1460df178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{3553d1bf-3c60-44b9-9140-e6b4fe7c3f84}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

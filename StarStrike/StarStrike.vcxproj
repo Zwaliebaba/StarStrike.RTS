@@ -191,10 +191,14 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="space.cpp" />
     <ClCompile Include="stars.cpp" />
+    <ClCompile Include="StarStrike.cpp" />
     <ClCompile Include="swat.cpp" />
     <ClCompile Include="threed.cpp" />
     <ClCompile Include="trade.cpp" />
     <ClCompile Include="vector.cpp" />
+    <ClCompile Include="WinMain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -220,6 +224,7 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="space.h" />
     <ClInclude Include="stars.h" />
+    <ClInclude Include="StarStrike.h" />
     <ClInclude Include="swat.h" />
     <ClInclude Include="threed.h" />
     <ClInclude Include="trade.h" />

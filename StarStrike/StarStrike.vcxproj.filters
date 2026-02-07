@@ -151,6 +151,8 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="loadsave.cpp" />
     <ClCompile Include="mp3.cpp" />
+    <ClCompile Include="StarStrike.cpp" />
+    <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -180,6 +182,7 @@
     <ClInclude Include="keysyms.h" />
     <ClInclude Include="loadsave.h" />
     <ClInclude Include="mp3.h" />
+    <ClInclude Include="StarStrike.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Assets\Audio\beep.wav">
