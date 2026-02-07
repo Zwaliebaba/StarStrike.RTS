@@ -1,0 +1,7 @@
+*.suo
+*.user
+[Dd]ebug/
+[Rr]elease/
+x64/
+*.vsidx
+.vs/

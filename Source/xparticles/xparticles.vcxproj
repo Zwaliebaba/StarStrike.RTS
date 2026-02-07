@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ClCompile Include="configsparticles.cpp" />
+    <ClCompile Include="particledatatracker.cpp" />
+    <ClCompile Include="particleeffectdata.cpp" />
+    <ClCompile Include="particleemitter.cpp" />
+    <ClCompile Include="particleemitterset.cpp" />
+    <ClCompile Include="particlegateway.cpp" />
+    <ClCompile Include="particleheap.cpp" />
+    <ClCompile Include="particlerenderer.cpp" />
+    <ClCompile Include="ParticleSystemManager.cpp" />
+    <ClCompile Include="ParticleSystemParticle.cpp" />
+    <ClCompile Include="particletexturemanager.cpp" />
+    <ClCompile Include="particlevertextypes.cpp" />
+    <ClCompile Include="particleworkdirsetup.cpp" />
+    <ClCompile Include="progression.cpp" />
+    <ClCompile Include="xparticlescommon.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <ProjectGuid>{18B091CA-B6B8-453C-A2BA-30F348753FD1}</ProjectGuid>
+    <RootNamespace>xparticles</RootNamespace>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
+    <Keyword>XenonProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>18.0.11312.151</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="configsparticles.h" />
+    <ClInclude Include="particledatatracker.h" />
+    <ClInclude Include="particleeffectdata.h" />
+    <ClInclude Include="particleemitter.h" />
+    <ClInclude Include="particleemitterset.h" />
+    <ClInclude Include="particlegateway.h" />
+    <ClInclude Include="particleheap.h" />
+    <ClInclude Include="particlerenderer.h" />
+    <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="ParticleSystemManager.h" />
+    <ClInclude Include="ParticleSystemParticle.h" />
+    <ClInclude Include="particletexturemanager.h" />
+    <ClInclude Include="particlevertextypes.h" />
+    <ClInclude Include="particleworkdirsetup.h" />
+    <ClInclude Include="progression.h" />
+    <ClInclude Include="xparticlescommon.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

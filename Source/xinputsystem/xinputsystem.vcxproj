@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ClCompile Include="common.cpp" />
+    <ClCompile Include="configsinput.cpp" />
+    <ClCompile Include="console.cpp" />
+    <ClCompile Include="gamepad.cpp" />
+    <ClCompile Include="gamepadmap.cpp" />
+    <ClCompile Include="inputcontext.cpp" />
+    <ClCompile Include="inputcontrol.cpp" />
+    <ClCompile Include="inputcontrolenum.cpp" />
+    <ClCompile Include="inputevent.cpp" />
+    <ClCompile Include="inputinterface.cpp" />
+    <ClCompile Include="inputsystem.cpp" />
+    <ClCompile Include="keyboard.cpp" />
+    <ClCompile Include="xinputsystem.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <ProjectGuid>{3B96AA5E-E639-4251-B8CC-59D79DFA14CB}</ProjectGuid>
+    <RootNamespace>xinputsystem</RootNamespace>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>18.0.11312.151</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="configsinput.h" />
+    <ClInclude Include="console.h" />
+    <ClInclude Include="gamepad.h" />
+    <ClInclude Include="gamepadmap.h" />
+    <ClInclude Include="inputcontext.h" />
+    <ClInclude Include="inputcontrol.h" />
+    <ClInclude Include="inputcontrolenum.h" />
+    <ClInclude Include="inputevent.h" />
+    <ClInclude Include="inputinterface.h" />
+    <ClInclude Include="inputsystem.h" />
+    <ClInclude Include="keyboard.h" />
+    <ClInclude Include="xinputsystem.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

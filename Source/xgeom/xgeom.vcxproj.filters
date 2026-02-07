@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="fastdeformer">
+      <UniqueIdentifier>{8e5b5179-c118-4f14-af28-e0bb058643a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mesh">
+      <UniqueIdentifier>{db770b66-6b25-461d-85bd-144aacdb53bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ugx">
+      <UniqueIdentifier>{2069afec-a021-4540-aa40-4f47326f7d0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geom">
+      <UniqueIdentifier>{293f5bcc-2f77-48fa-b81f-0628ef4eb402}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="granny">
+      <UniqueIdentifier>{f4b0d232-adfe-46e6-aea5-f0ec34edd2a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="unigeom">
+      <UniqueIdentifier>{ac3ca708-ca8e-496c-ac74-ca370d2d0aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="polyscan">
+      <UniqueIdentifier>{24620f30-5d0b-4437-8b10-8a1bd924f4ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="aabbTree">
+      <UniqueIdentifier>{247151de-c3bd-4661-8368-1e6e5a92a8a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uax">
+      <UniqueIdentifier>{2ea281e7-1449-4ac7-b974-db30de7f2ac4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="fastdeformer.cpp">
+      <Filter>fastdeformer</Filter>
+    </ClCompile>
+    <ClCompile Include="fastdeformerc.cpp">
+      <Filter>fastdeformer</Filter>
+    </ClCompile>
+    <ClCompile Include="fastdeformerdata.cpp">
+      <Filter>fastdeformer</Filter>
+    </ClCompile>
+    <ClCompile Include="xbstrip.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ugxInstancer.cpp">
+      <Filter>ugx</Filter>
+    </ClCompile>
+    <ClCompile Include="aabbTri.cpp">
+      <Filter>geom</Filter>
+    </ClCompile>
+    <ClCompile Include="basisVectorCreator.cpp">
+      <Filter>geom</Filter>
+    </ClCompile>
+    <ClCompile Include="intersection.cpp">
+      <Filter>geom</Filter>
+    </ClCompile>
+    <ClCompile Include="staticGeomBuilder.cpp">
+      <Filter>geom</Filter>
+    </ClCompile>
+    <ClCompile Include="grannyMaterial.cpp">
+      <Filter>granny</Filter>
+    </ClCompile>
+    <ClCompile Include="grannyToUnigeom.cpp">
+      <Filter>granny</Filter>
+    </ClCompile>
+    <ClCompile Include="grannyVertexConverter.cpp">
+      <Filter>granny</Filter>
+    </ClCompile>
+    <ClCompile Include="unigeom.cpp">
+      <Filter>unigeom</Filter>
+    </ClCompile>
+    <ClCompile Include="unigeomMaterial.cpp">
+      <Filter>unigeom</Filter>
+    </ClCompile>
+    <ClCompile Include="univert.cpp">
+      <Filter>unigeom</Filter>
+    </ClCompile>
+    <ClCompile Include="univertPacker.cpp">
+      <Filter>unigeom</Filter>
+    </ClCompile>
+    <ClCompile Include="poly.cpp">
+      <Filter>polyscan</Filter>
+    </ClCompile>
+    <ClCompile Include="poly_clip.cpp">
+      <Filter>polyscan</Filter>
+    </ClCompile>
+    <ClCompile Include="poly_scan.cpp">
+      <Filter>polyscan</Filter>
+    </ClCompile>
+    <ClCompile Include="xgeom.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="fastdeformer.h">
+      <Filter>fastdeformer</Filter>
+    </ClInclude>
+    <ClInclude Include="fastdeformerdata.h">
+      <Filter>fastdeformer</Filter>
+    </ClInclude>
+    <ClInclude Include="indexedMesh.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="indexedTri.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="indexedTriMesh.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ngon3.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="stripifier.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="stripTunneler.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tri.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="trilistOptimizer.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="triStrips.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="xbstrip.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ugxGeom.h">
+      <Filter>ugx</Filter>
+    </ClInclude>
+    <ClInclude Include="ugxInstancer.h">
+      <Filter>ugx</Filter>
+    </ClInclude>
+    <ClInclude Include="aabbTri.h">
+      <Filter>geom</Filter>
+    </ClInclude>
+    <ClInclude Include="basisVectorCreator.h">
+      <Filter>geom</Filter>
+    </ClInclude>
+    <ClInclude Include="convexhull2.h">
+      <Filter>geom</Filter>
+    </ClInclude>
+    <ClInclude Include="intersection.h">
+      <Filter>geom</Filter>
+    </ClInclude>
+    <ClInclude Include="staticGeomBuilder.h">
+      <Filter>geom</Filter>
+    </ClInclude>
+    <ClInclude Include="textureSpaceBasis.h">
+      <Filter>geom</Filter>
+    </ClInclude>
+    <ClInclude Include="grannyMaterial.h">
+      <Filter>granny</Filter>
+    </ClInclude>
+    <ClInclude Include="grannyToUnigeom.h">
+      <Filter>granny</Filter>
+    </ClInclude>
+    <ClInclude Include="grannyVertexConverter.h">
+      <Filter>granny</Filter>
+    </ClInclude>
+    <ClInclude Include="unigeom.h">
+      <Filter>unigeom</Filter>
+    </ClInclude>
+    <ClInclude Include="unigeomMaterial.h">
+      <Filter>unigeom</Filter>
+    </ClInclude>
+    <ClInclude Include="univert.h">
+      <Filter>unigeom</Filter>
+    </ClInclude>
+    <ClInclude Include="univertPacker.h">
+      <Filter>unigeom</Filter>
+    </ClInclude>
+    <ClInclude Include="vertexCache.h">
+      <Filter>unigeom</Filter>
+    </ClInclude>
+    <ClInclude Include="vertexElement.h">
+      <Filter>unigeom</Filter>
+    </ClInclude>
+    <ClInclude Include="poly.h">
+      <Filter>polyscan</Filter>
+    </ClInclude>
+    <ClInclude Include="aabbTree.h">
+      <Filter>aabbTree</Filter>
+    </ClInclude>
+    <ClInclude Include="aabbTreeBuilder.h">
+      <Filter>aabbTree</Filter>
+    </ClInclude>
+    <ClInclude Include="uaxDefs.h">
+      <Filter>uax</Filter>
+    </ClInclude>
+    <ClInclude Include="xgeom.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="unigeomMaterial.inl">
+      <Filter>unigeom</Filter>
+    </None>
+    <None Include="univertPacker.inl">
+      <Filter>unigeom</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ClCompile Include="..\extlib\Bink\xbox\binktextures.cpp" />
+    <ClCompile Include="AtgFont.cpp" />
+    <ClCompile Include="AtgResource.cpp" />
+    <ClCompile Include="AtgUtil.cpp" />
+    <ClCompile Include="barChart.cpp" />
+    <ClCompile Include="binkInterface.cpp" />
+    <ClCompile Include="binkVideo.cpp" />
+    <ClCompile Include="blurHelper.cpp" />
+    <ClCompile Include="boundingBox.cpp" />
+    <ClCompile Include="BoundingSphere.cpp" />
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="configsgamerender.cpp" />
+    <ClCompile Include="consoleRender.cpp" />
+    <ClCompile Include="cubemapGen.cpp" />
+    <ClCompile Include="debugprimitives.cpp" />
+    <ClCompile Include="debugTextDisplay.cpp" />
+    <ClCompile Include="decalManager.cpp" />
+    <ClCompile Include="dirShadowManager.cpp" />
+    <ClCompile Include="fatalMessageBox.cpp" />
+    <ClCompile Include="flashallocator.cpp" />
+    <ClCompile Include="flashbackgroundplayer.cpp" />
+    <ClCompile Include="flashgateway.cpp" />
+    <ClCompile Include="flashmanager.cpp" />
+    <ClCompile Include="flashminimaprenderer.cpp" />
+    <ClCompile Include="flashmovie.cpp" />
+    <ClCompile Include="flashmoviedefinition.cpp" />
+    <ClCompile Include="flashrender.cpp" />
+    <ClCompile Include="flashtexture.cpp" />
+    <ClCompile Include="flashtexturemanager.cpp" />
+    <ClCompile Include="flashtranslator.cpp" />
+    <ClCompile Include="Font2_xbox.cpp" />
+    <ClCompile Include="FontCharHashTable.cpp" />
+    <ClCompile Include="FontManager2_xbox.cpp" />
+    <ClCompile Include="GamerPicManager.cpp" />
+    <ClCompile Include="gammaRamp.cpp" />
+    <ClCompile Include="gfxMoviePlayer.cpp" />
+    <ClCompile Include="GMemory_sys.cpp" />
+    <ClCompile Include="gpuDXTPack.cpp" />
+    <ClCompile Include="gpuDXTVideo.cpp" />
+    <ClCompile Include="graphattribs.cpp" />
+    <ClCompile Include="graphmanager.cpp" />
+    <ClCompile Include="graphrenderer.cpp" />
+    <ClCompile Include="GRendererCommonImpl.cpp" />
+    <ClCompile Include="GRendererXbox360Impl.cpp" />
+    <ClCompile Include="interestVolume.cpp" />
+    <ClCompile Include="lightEffect.cpp" />
+    <ClCompile Include="lightEffectManager.cpp" />
+    <ClCompile Include="lightVisualData.cpp" />
+    <ClCompile Include="lightVisualInstance.cpp" />
+    <ClCompile Include="lightVisualManager.cpp" />
+    <ClCompile Include="localShadowManager.cpp" />
+    <ClCompile Include="miniLoadManager.cpp" />
+    <ClCompile Include="nearLayerManager.cpp" />
+    <ClCompile Include="occlusion.cpp" />
+    <ClCompile Include="primDraw2D.cpp" />
+    <ClCompile Include="render.cpp" />
+    <ClCompile Include="render2Dprimitiveutility.cpp" />
+    <ClCompile Include="renderFuncs.cpp" />
+    <ClCompile Include="renderprimitiveutility.cpp" />
+    <ClCompile Include="renderProxyManager.cpp" />
+    <ClCompile Include="renderViewParams.cpp" />
+    <ClCompile Include="sceneLightManager.cpp" />
+    <ClCompile Include="temporalAA.cpp" />
+    <ClCompile Include="tiledAA.cpp" />
+    <ClCompile Include="tonemapManager.cpp" />
+    <ClCompile Include="ugxGeomData.cpp" />
+    <ClCompile Include="ugxGeomInstanceManager.cpp" />
+    <ClCompile Include="ugxGeomManager.cpp" />
+    <ClCompile Include="ugxGeomRender.cpp" />
+    <ClCompile Include="ugxGeomRenderPackedBone.cpp" />
+    <ClCompile Include="ugxGeomRenderTypes.cpp" />
+    <ClCompile Include="ugxGeomUberEffectManager.cpp" />
+    <ClCompile Include="ugxGeomUberSectionRenderer.cpp" />
+    <ClCompile Include="vectorFont.cpp" />
+    <ClCompile Include="vertexTypes.cpp" />
+    <ClCompile Include="viewportManager.cpp" />
+    <ClCompile Include="visibleLightManager.cpp" />
+    <ClCompile Include="waterManager.cpp" />
+    <ClCompile Include="wordwrap.cpp" />
+    <ClCompile Include="worldVisibility.cpp" />
+    <ClCompile Include="xgameRender.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <ProjectGuid>{CC1BB2A0-F8FD-4A35-90DF-D34DD605B9DE}</ProjectGuid>
+    <RootNamespace>xgameRender</RootNamespace>
+    <SccProjectName>Perforce Project</SccProjectName>
+    <SccLocalPath>..</SccLocalPath>
+    <SccProvider>MSSCCI:Perforce SCM</SccProvider>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>18.0.11312.151</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\extlib\Bink\xbox\binktextures.h" />
+    <ClInclude Include="AtgFont.h" />
+    <ClInclude Include="AtgResource.h" />
+    <ClInclude Include="AtgUtil.h" />
+    <ClInclude Include="barChart.h" />
+    <ClInclude Include="binkInterface.h" />
+    <ClInclude Include="binkVideo.h" />
+    <ClInclude Include="blurHelper.h" />
+    <ClInclude Include="boundingBox.h" />
+    <ClInclude Include="BoundingSphere.h" />
+    <ClInclude Include="camera.h" />
+    <ClInclude Include="configsgamerender.h" />
+    <ClInclude Include="consoleRender.h" />
+    <ClInclude Include="cubemapGen.h" />
+    <ClInclude Include="debugprimitives.h" />
+    <ClInclude Include="debugTextDisplay.h" />
+    <ClInclude Include="decalManager.h" />
+    <ClInclude Include="dirShadowManager.h" />
+    <ClInclude Include="fatalMessageBox.h" />
+    <ClInclude Include="flashallocator.h" />
+    <ClInclude Include="flashassetcategory.h" />
+    <ClInclude Include="flashbackgroundplayer.h" />
+    <ClInclude Include="flashgateway.h" />
+    <ClInclude Include="flashinput.h" />
+    <ClInclude Include="flashmanager.h" />
+    <ClInclude Include="flashminimaprenderer.h" />
+    <ClInclude Include="flashmovie.h" />
+    <ClInclude Include="flashmoviedefinition.h" />
+    <ClInclude Include="flashrender.h" />
+    <ClInclude Include="flashscenemanager.h" />
+    <ClInclude Include="flashtexture.h" />
+    <ClInclude Include="flashtexturemanager.h" />
+    <ClInclude Include="flashtranslator.h" />
+    <ClInclude Include="flashXFSFile.h" />
+    <ClInclude Include="Font2_xbox.h" />
+    <ClInclude Include="FontCharHashTable.h" />
+    <ClInclude Include="FontManager2_xbox.h" />
+    <ClInclude Include="FontSystem2.h" />
+    <ClInclude Include="GamerPicManager.h" />
+    <ClInclude Include="gammaRamp.h" />
+    <ClInclude Include="gfxMoviePlayer.h" />
+    <ClInclude Include="gpuDXTPack.h" />
+    <ClInclude Include="gpuDXTVideo.h" />
+    <ClInclude Include="graphattribs.h" />
+    <ClInclude Include="graphmanager.h" />
+    <ClInclude Include="graphrenderer.h" />
+    <ClInclude Include="GRendererCommonImpl.h" />
+    <ClInclude Include="GRendererXbox360.h" />
+    <ClInclude Include="interestVolume.h" />
+    <ClInclude Include="lightData.h" />
+    <ClInclude Include="lightEffect.h" />
+    <ClInclude Include="lightEffectManager.h" />
+    <ClInclude Include="lightVisualData.h" />
+    <ClInclude Include="lightVisualInstance.h" />
+    <ClInclude Include="lightVisualManager.h" />
+    <ClInclude Include="localShadowManager.h" />
+    <ClInclude Include="miniLoadManager.h" />
+    <ClInclude Include="nearLayerManager.h" />
+    <ClInclude Include="occlusion.h" />
+    <ClInclude Include="primDraw2D.h" />
+    <ClInclude Include="render.h" />
+    <ClInclude Include="render2Dprimitiveutility.h" />
+    <ClInclude Include="renderFuncs.h" />
+    <ClInclude Include="renderprimitiveutility.h" />
+    <ClInclude Include="renderProxyManager.h" />
+    <ClInclude Include="renderViewParams.h" />
+    <ClInclude Include="scaleformIncludes.h" />
+    <ClInclude Include="sceneLightManager.h" />
+    <ClInclude Include="simplexFont.h" />
+    <ClInclude Include="temporalAA.h" />
+    <ClInclude Include="tiledAA.h" />
+    <ClInclude Include="tonemapManager.h" />
+    <ClInclude Include="ugxGeomData.h" />
+    <ClInclude Include="ugxGeomInstanceManager.h" />
+    <ClInclude Include="ugxGeomManager.h" />
+    <ClInclude Include="ugxGeomRender.h" />
+    <ClInclude Include="ugxGeomRenderPackedBone.h" />
+    <ClInclude Include="ugxGeomRenderTypes.h" />
+    <ClInclude Include="ugxGeomSectionRenderer.h" />
+    <ClInclude Include="ugxGeomUberEffectManager.h" />
+    <ClInclude Include="ugxGeomUberSectionRenderer.h" />
+    <ClInclude Include="vectorFont.h" />
+    <ClInclude Include="vertexTypes.h" />
+    <ClInclude Include="viewportManager.h" />
+    <ClInclude Include="visibleLightManager.h" />
+    <ClInclude Include="waterManager.h" />
+    <ClInclude Include="wordwrap.h" />
+    <ClInclude Include="worldVisibility.h" />
+    <ClInclude Include="xgameRender.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="color">
+      <UniqueIdentifier>{d71fa67d-5402-4a5b-b438-422a6e4fd4b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hdr">
+      <UniqueIdentifier>{acc48097-7d70-44c1-b6d2-f0af947604b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="image">
+      <UniqueIdentifier>{8cd3cb05-c252-4a94-9a03-244f21b56c92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="textureMetadata">
+      <UniqueIdentifier>{c4328374-a0b2-4a4a-b090-46805f26cbdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tga">
+      <UniqueIdentifier>{b2cc51e0-6cf4-4f02-9639-832ceef23471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tiff">
+      <UniqueIdentifier>{efa79a7c-bb1c-4895-97ca-79ca0a49e305}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="colorUtils.cpp">
+      <Filter>color</Filter>
+    </ClCompile>
+    <ClCompile Include="pixelFormat.cpp">
+      <Filter>color</Filter>
+    </ClCompile>
+    <ClCompile Include="pixelFormatTrans.cpp">
+      <Filter>color</Filter>
+    </ClCompile>
+    <ClCompile Include="hdrUtils.cpp">
+      <Filter>hdr</Filter>
+    </ClCompile>
+    <ClCompile Include="readHDR.cpp">
+      <Filter>hdr</Filter>
+    </ClCompile>
+    <ClCompile Include="writeHDR.cpp">
+      <Filter>hdr</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageResample.cpp">
+      <Filter>image</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageUtils.cpp">
+      <Filter>image</Filter>
+    </ClCompile>
+    <ClCompile Include="resampler.cpp">
+      <Filter>image</Filter>
+    </ClCompile>
+    <ClCompile Include="RGBAImage.cpp">
+      <Filter>image</Filter>
+    </ClCompile>
+    <ClCompile Include="textureMetadata.cpp">
+      <Filter>textureMetadata</Filter>
+    </ClCompile>
+    <ClCompile Include="readTGA.cpp">
+      <Filter>tga</Filter>
+    </ClCompile>
+    <ClCompile Include="writeTGA.cpp">
+      <Filter>tga</Filter>
+    </ClCompile>
+    <ClCompile Include="readTiff.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="writeTiff.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="colorUtils.h">
+      <Filter>color</Filter>
+    </ClInclude>
+    <ClInclude Include="hsv.h">
+      <Filter>color</Filter>
+    </ClInclude>
+    <ClInclude Include="palette.h">
+      <Filter>color</Filter>
+    </ClInclude>
+    <ClInclude Include="pixelFormat.h">
+      <Filter>color</Filter>
+    </ClInclude>
+    <ClInclude Include="hdrUtils.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
+    <ClInclude Include="readHDR.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
+    <ClInclude Include="writeHDR.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageResample.h">
+      <Filter>image</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageUtils.h">
+      <Filter>image</Filter>
+    </ClInclude>
+    <ClInclude Include="resampler.h">
+      <Filter>image</Filter>
+    </ClInclude>
+    <ClInclude Include="RGBAImage.h">
+      <Filter>image</Filter>
+    </ClInclude>
+    <ClInclude Include="textureMetadata.h">
+      <Filter>textureMetadata</Filter>
+    </ClInclude>
+    <ClInclude Include="readTGA.h">
+      <Filter>tga</Filter>
+    </ClInclude>
+    <ClInclude Include="writeTGA.h">
+      <Filter>tga</Filter>
+    </ClInclude>
+    <ClInclude Include="readTiff.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="writeTiff.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="ximage.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RGBAImage.inl">
+      <Filter>image</Filter>
+    </None>
+  </ItemGroup>
+</Project>

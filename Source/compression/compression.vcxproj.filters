@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="DeflateCodec">
+      <UniqueIdentifier>{995a23ab-197d-489b-8dcd-9c81c1cf04ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{53994e4c-b6ac-45b2-98ac-670148b659e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DXT">
+      <UniqueIdentifier>{467e0747-d060-44ff-af28-298f00ef9851}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DXTMunger">
+      <UniqueIdentifier>{1edc139a-2fc2-4e8d-b872-dbc803ad9bf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EmbeddedDCT">
+      <UniqueIdentifier>{dde05d44-3a40-47d9-a929-a3cae0f7bf50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HDR">
+      <UniqueIdentifier>{e851bbeb-b699-4305-9bc7-61ae751bf72c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JPGCodec">
+      <UniqueIdentifier>{831f6940-6d53-4b8a-946a-826b2c24b88c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JPGCodec\encoder">
+      <UniqueIdentifier>{1ce58c52-70a5-4c53-a42b-285ad9f9a24c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JPGCodec\decoder">
+      <UniqueIdentifier>{a64e9fd0-0c06-4f24-b956-2279c38f8687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quantization">
+      <UniqueIdentifier>{3397e9f5-173e-4b03-ad09-bc79959b1e9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RangeCoder">
+      <UniqueIdentifier>{bfbcf33f-bf32-40f7-a146-ec35da04d68c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xml">
+      <UniqueIdentifier>{436926fe-9f74-49bc-b28f-1c7ee6d32152}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="archive">
+      <UniqueIdentifier>{6de100c2-1d0f-4ee7-bb24-a586fe319efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="packedObject">
+      <UniqueIdentifier>{f1f14139-60c1-4c6b-91f1-578cf6c190bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Huffman">
+      <UniqueIdentifier>{fc0a7a8e-1dea-4a7d-9695-7264090a7a37}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="deflate.cpp">
+      <Filter>DeflateCodec</Filter>
+    </ClCompile>
+    <ClCompile Include="deflatecodec.cpp">
+      <Filter>DeflateCodec</Filter>
+    </ClCompile>
+    <ClCompile Include="fastInflator.cpp">
+      <Filter>DeflateCodec</Filter>
+    </ClCompile>
+    <ClCompile Include="inflate.cpp">
+      <Filter>DeflateCodec</Filter>
+    </ClCompile>
+    <ClCompile Include="bitCoder.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="dxtBlockPacker.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="memoryPacker.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTPacker.cpp">
+      <Filter>DXT</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTShrinker.cpp">
+      <Filter>DXT</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTUnpacker.cpp">
+      <Filter>DXT</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTUtils.cpp">
+      <Filter>DXT</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTMunge.cpp">
+      <Filter>DXTMunger</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTMungeMethod1.cpp">
+      <Filter>DXTMunger</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTMungeMethod2.cpp">
+      <Filter>DXTMunger</Filter>
+    </ClCompile>
+    <ClCompile Include="EmbeddedDCTCodec.cpp">
+      <Filter>EmbeddedDCT</Filter>
+    </ClCompile>
+    <ClCompile Include="hdrCodec.cpp">
+      <Filter>HDR</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGCodecComp.cpp">
+      <Filter>JPGCodec</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGCodecDecomp.cpp">
+      <Filter>JPGCodec</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGencode\fdct.cpp">
+      <Filter>JPGCodec\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGencode\Jpghuff.cpp">
+      <Filter>JPGCodec\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGencode\Jpgtab.cpp">
+      <Filter>JPGCodec\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGencode\Jpgwrite.cpp">
+      <Filter>JPGCodec\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGdecode\H2v2.cpp">
+      <Filter>JPGCodec\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGdecode\idct.cpp">
+      <Filter>JPGCodec\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGdecode\jidctfst.cpp">
+      <Filter>JPGCodec\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="JPEGcodec\JPGdecode\jpegdecoder.cpp">
+      <Filter>JPGCodec\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="binaryentropycoder.cpp">
+      <Filter>RangeCoder</Filter>
+    </ClCompile>
+    <ClCompile Include="xmlReader.cpp">
+      <Filter>xml</Filter>
+    </ClCompile>
+    <ClCompile Include="ecfArchiver.cpp">
+      <Filter>archive</Filter>
+    </ClCompile>
+    <ClCompile Include="packedObjectManager.cpp">
+      <Filter>packedObject</Filter>
+    </ClCompile>
+    <ClCompile Include="huffman.cpp">
+      <Filter>Huffman</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="deflate.h">
+      <Filter>DeflateCodec</Filter>
+    </ClInclude>
+    <ClInclude Include="deflatecodec.h">
+      <Filter>DeflateCodec</Filter>
+    </ClInclude>
+    <ClInclude Include="fastInflator.h">
+      <Filter>DeflateCodec</Filter>
+    </ClInclude>
+    <ClInclude Include="inflate.h">
+      <Filter>DeflateCodec</Filter>
+    </ClInclude>
+    <ClInclude Include="infMacros.h">
+      <Filter>DeflateCodec</Filter>
+    </ClInclude>
+    <ClInclude Include="bitCoder.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="bytePacker.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="companders.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="compressedStream.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtBlockPacker.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="memoryPacker.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="rawInflateStream.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTPacker.h">
+      <Filter>DXT</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTShrinker.h">
+      <Filter>DXT</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTUnpacker.h">
+      <Filter>DXT</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTUtils.h">
+      <Filter>DXT</Filter>
+    </ClInclude>
+    <ClInclude Include="gpuDXTVideoHeaders.h">
+      <Filter>DXT</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTMunge.h">
+      <Filter>DXTMunger</Filter>
+    </ClInclude>
+    <ClInclude Include="EmbeddedDCTCodec.h">
+      <Filter>EmbeddedDCT</Filter>
+    </ClInclude>
+    <ClInclude Include="hdrCodec.h">
+      <Filter>HDR</Filter>
+    </ClInclude>
+    <ClInclude Include="JPEGcodec\JPGCodec.h">
+      <Filter>JPGCodec</Filter>
+    </ClInclude>
+    <ClInclude Include="JPEGcodec\JPGmain.h">
+      <Filter>JPGCodec</Filter>
+    </ClInclude>
+    <ClInclude Include="JPEGcodec\JPGencode\fdct.h">
+      <Filter>JPGCodec\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="JPEGcodec\JPGencode\Jpge.h">
+      <Filter>JPGCodec\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="JPEGcodec\JPGencode\Jpghuff.h">
+      <Filter>JPGCodec\encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="JPEGcodec\JPGdecode\jpegdecoder.h">
+      <Filter>JPGCodec\decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="LBGQuantizer.h">
+      <Filter>Quantization</Filter>
+    </ClInclude>
+    <ClInclude Include="WeightedMinMaxQuantizer.h">
+      <Filter>Quantization</Filter>
+    </ClInclude>
+    <ClInclude Include="binaryentropycoder.h">
+      <Filter>RangeCoder</Filter>
+    </ClInclude>
+    <ClInclude Include="rangecoder.h">
+      <Filter>RangeCoder</Filter>
+    </ClInclude>
+    <ClInclude Include="xmlReader.h">
+      <Filter>xml</Filter>
+    </ClInclude>
+    <ClInclude Include="ecfArchiver.h">
+      <Filter>archive</Filter>
+    </ClInclude>
+    <ClInclude Include="packedObjectManager.h">
+      <Filter>packedObject</Filter>
+    </ClInclude>
+    <ClInclude Include="bitStream.h">
+      <Filter>Huffman</Filter>
+    </ClInclude>
+    <ClInclude Include="huffman.h">
+      <Filter>Huffman</Filter>
+    </ClInclude>
+    <ClInclude Include="compression.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="deflateTables.inc">
+      <Filter>DeflateCodec</Filter>
+    </None>
+    <None Include="JPEGcodec\JPGdecode\jpegdecoder.inl">
+      <Filter>JPGCodec\decoder</Filter>
+    </None>
+    <None Include="JPEGcodec\JPGdecode\upsample.inc">
+      <Filter>JPGCodec\decoder</Filter>
+    </None>
+    <None Include="xmlReader.inl">
+      <Filter>xml</Filter>
+    </None>
+  </ItemGroup>
+</Project>

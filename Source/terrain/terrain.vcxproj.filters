@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="terrain">
+      <UniqueIdentifier>{3e5cf48b-89a9-4459-a5bd-d4815a1bae16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Visual Effects">
+      <UniqueIdentifier>{e8e3a24d-c430-41ca-a5d8-a0f8da67dfcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Visual Effects\Decal Heightfield">
+      <UniqueIdentifier>{41ec4035-cdab-4102-af2e-18005d69d534}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Water">
+      <UniqueIdentifier>{3a762ee7-d539-457c-9a36-56245f73b668}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="StaticBitStateArray.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainIO.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainMetric.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainPCH.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainQuadNode.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainRender.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainTexturing.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainTexturingCache.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainTexturingCompositor.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainVisual.cpp">
+      <Filter>terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="RoadManager.cpp">
+      <Filter>Visual Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainDeformer.cpp">
+      <Filter>Visual Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainDynamicAlpha.cpp">
+      <Filter>Visual Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainFoliage.cpp">
+      <Filter>Visual Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainHeightField.cpp">
+      <Filter>Visual Effects\Decal Heightfield</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainLitDecals.cpp">
+      <Filter>Visual Effects\Decal Heightfield</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainRibbon.cpp">
+      <Filter>Visual Effects\Decal Heightfield</Filter>
+    </ClCompile>
+    <ClCompile Include="mathlib.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="StaticBitStateArray.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainIO.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainMetric.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainPCH.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainQuadNode.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainRender.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainTexturing.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainTexturingCache.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainVisual.h">
+      <Filter>terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="RoadManager.h">
+      <Filter>Visual Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainDeformer.h">
+      <Filter>Visual Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainDynamicAlpha.h">
+      <Filter>Visual Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainFoliage.h">
+      <Filter>Visual Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainHeightField.h">
+      <Filter>Visual Effects\Decal Heightfield</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainLitDecals.h">
+      <Filter>Visual Effects\Decal Heightfield</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainRibbon.h">
+      <Filter>Visual Effects\Decal Heightfield</Filter>
+    </ClInclude>
+    <ClInclude Include="mathlib.h" />
+  </ItemGroup>
+</Project>

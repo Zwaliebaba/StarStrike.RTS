@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="shared">
+      <UniqueIdentifier>{d13d7481-dd36-414b-bc1a-c32a70d9e281}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ugx">
+      <UniqueIdentifier>{fa545f8b-e5b0-491b-935e-ef8f29a461b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="terrain">
+      <UniqueIdentifier>{e973ed7e-ac98-487b-9de3-17e76d971c29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="particles">
+      <UniqueIdentifier>{7bb977b0-34b6-4946-bdae-1d35490a4045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="minimap">
+      <UniqueIdentifier>{1ee73a34-8504-45e8-964c-c9c784e17a73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="worldVisibility">
+      <UniqueIdentifier>{19c3c1de-9c30-4696-998a-add154091bea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HPBar">
+      <UniqueIdentifier>{5c040a80-3cae-4629-acaa-cfa58006270c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tonemap">
+      <UniqueIdentifier>{d323c7d1-eda9-48db-896b-8e19f0aac9f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dxtPack">
+      <UniqueIdentifier>{6b7352c9-9532-45b3-93da-60e807587767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderPrimitive">
+      <UniqueIdentifier>{4d926a11-145c-4210-86cf-e374d671a530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dirShadowing">
+      <UniqueIdentifier>{0ee33211-7298-4d5a-a05a-fe389b55cf73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lightBuffer">
+      <UniqueIdentifier>{e6b9f948-33bb-44c8-8ac3-ef84448b16aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shared\blackmap.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="shared\dirLighting.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="shared\fogHelpers.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="shared\helpers.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="shared\intrinsics.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="shared\localLighting.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="shared\localLightingRegs.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="shared\pcf.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="shared\shFillLighting.inc">
+      <Filter>shared</Filter>
+    </None>
+    <None Include="ugx\pixelShader.inc">
+      <Filter>ugx</Filter>
+    </None>
+    <None Include="ugx\pShaderRegs.inc">
+      <Filter>ugx</Filter>
+    </None>
+    <None Include="ugx\skinning.inc">
+      <Filter>ugx</Filter>
+    </None>
+    <None Include="ugx\vertexShader.inc">
+      <Filter>ugx</Filter>
+    </None>
+    <None Include="ugx\vShaderRegs.inc">
+      <Filter>ugx</Filter>
+    </None>
+    <None Include="terrain\gpuTerrainBlackmap.inc">
+      <Filter>terrain</Filter>
+    </None>
+    <None Include="terrain\gpuTerrainPS.inc">
+      <Filter>terrain</Filter>
+    </None>
+    <None Include="terrain\gpuTerrainShaderRegs.inc">
+      <Filter>terrain</Filter>
+    </None>
+    <None Include="terrain\gpuTerrainTexturingLightingPS.inc">
+      <Filter>terrain</Filter>
+    </None>
+    <None Include="terrain\gpuTerrainVS.inc">
+      <Filter>terrain</Filter>
+    </None>
+    <None Include="terrain\terrainDynamicAlpha.inc">
+      <Filter>terrain</Filter>
+    </None>
+    <None Include="particles\particlehelpers.inc">
+      <Filter>particles</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ugx\parametricShader.fx">
+      <Filter>ugx</Filter>
+    </FxCompile>
+    <FxCompile Include="terrain\gpuTerrainComposite.fx">
+      <Filter>terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="terrain\gpuTerrainXbox.fx">
+      <Filter>terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="terrain\terrainFoliage.fx">
+      <Filter>terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="terrain\terrainHeightField.fx">
+      <Filter>terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="terrain\terrainRoads.fx">
+      <Filter>terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="particles\particle.fx">
+      <Filter>particles</Filter>
+    </FxCompile>
+    <FxCompile Include="minimap\minimap.fx">
+      <Filter>minimap</Filter>
+    </FxCompile>
+    <FxCompile Include="worldVisibility\worldVisibility.fx">
+      <Filter>worldVisibility</Filter>
+    </FxCompile>
+    <FxCompile Include="HPBar\HPBar.fx">
+      <Filter>HPBar</Filter>
+    </FxCompile>
+    <FxCompile Include="tonemap\tonemap.fx">
+      <Filter>tonemap</Filter>
+    </FxCompile>
+    <FxCompile Include="dxtPack\dxtPack.fx">
+      <Filter>dxtPack</Filter>
+    </FxCompile>
+    <FxCompile Include="dxtPack\dxtPack.vsh">
+      <Filter>dxtPack</Filter>
+    </FxCompile>
+    <FxCompile Include="dxtPack\dxtqUnpack.fx">
+      <Filter>dxtPack</Filter>
+    </FxCompile>
+    <FxCompile Include="renderprimitive\primitive.fx">
+      <Filter>renderPrimitive</Filter>
+    </FxCompile>
+    <FxCompile Include="dirShadowing\dirShadowing.fx">
+      <Filter>dirShadowing</Filter>
+    </FxCompile>
+    <FxCompile Include="lightBuffer\lightBuffer.fx">
+      <Filter>lightBuffer</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

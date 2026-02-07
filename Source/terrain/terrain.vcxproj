@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ClCompile Include="mathlib.cpp" />
+    <ClCompile Include="RoadManager.cpp" />
+    <ClCompile Include="StaticBitStateArray.cpp" />
+    <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="TerrainDeformer.cpp" />
+    <ClCompile Include="TerrainDynamicAlpha.cpp" />
+    <ClCompile Include="TerrainFoliage.cpp" />
+    <ClCompile Include="TerrainHeightField.cpp" />
+    <ClCompile Include="TerrainIO.cpp" />
+    <ClCompile Include="TerrainLitDecals.cpp" />
+    <ClCompile Include="TerrainMetric.cpp" />
+    <ClCompile Include="TerrainPCH.cpp" />
+    <ClCompile Include="TerrainQuadNode.cpp" />
+    <ClCompile Include="TerrainRender.cpp" />
+    <ClCompile Include="TerrainRibbon.cpp" />
+    <ClCompile Include="TerrainTexturing.cpp" />
+    <ClCompile Include="TerrainTexturingCache.cpp" />
+    <ClCompile Include="TerrainTexturingCompositor.cpp" />
+    <ClCompile Include="TerrainVisual.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <ProjectGuid>{47117851-E570-47A2-9E2C-4B0F0E91AC13}</ProjectGuid>
+    <RootNamespace>terrain</RootNamespace>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>18.0.11312.151</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="mathlib.h" />
+    <ClInclude Include="RoadManager.h" />
+    <ClInclude Include="StaticBitStateArray.h" />
+    <ClInclude Include="Terrain.h" />
+    <ClInclude Include="TerrainDeformer.h" />
+    <ClInclude Include="TerrainDynamicAlpha.h" />
+    <ClInclude Include="TerrainFoliage.h" />
+    <ClInclude Include="TerrainHeightField.h" />
+    <ClInclude Include="TerrainIO.h" />
+    <ClInclude Include="TerrainLitDecals.h" />
+    <ClInclude Include="TerrainMetric.h" />
+    <ClInclude Include="TerrainPCH.h" />
+    <ClInclude Include="TerrainQuadNode.h" />
+    <ClInclude Include="TerrainRender.h" />
+    <ClInclude Include="TerrainRibbon.h" />
+    <ClInclude Include="TerrainTexturing.h" />
+    <ClInclude Include="TerrainTexturingCache.h" />
+    <ClInclude Include="TerrainVisual.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

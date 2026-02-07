@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ClCompile Include="AkDefaultLowLevelIO.cpp" />
+    <ClCompile Include="CAkDefaultLowLevelIO.cpp" />
+    <ClCompile Include="CAkFilePackageLowLevelIO.cpp" />
+    <ClCompile Include="CAkFilePackageLUT.cpp" />
+    <ClCompile Include="common.cpp" />
+    <ClCompile Include="configsSound.cpp" />
+    <ClCompile Include="soundmanager.cpp" />
+    <ClCompile Include="xsound.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <ProjectGuid>{779984B3-5179-40F5-BCFA-5BFC9465F9F3}</ProjectGuid>
+    <RootNamespace>xsound</RootNamespace>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>18.0.11312.151</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="AkDefaultLowLevelIO.h" />
+    <ClInclude Include="CAkDefaultLowLevelIO.h" />
+    <ClInclude Include="CAkFilePackageLowLevelIO.h" />
+    <ClInclude Include="CAkFilePackageLUT.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="configsSound.h" />
+    <ClInclude Include="soundmanager.h" />
+    <ClInclude Include="Wwise_IDs.h" />
+    <ClInclude Include="xsound.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ClCompile Include="common.cpp" />
+    <ClCompile Include="configsphysics.cpp" />
+    <ClCompile Include="constraint.cpp" />
+    <ClCompile Include="eventsystem.cpp" />
+    <ClCompile Include="havokarchive.cpp" />
+    <ClCompile Include="havokclasses.cpp" />
+    <ClCompile Include="physics.cpp" />
+    <ClCompile Include="physicsevent.cpp" />
+    <ClCompile Include="physicsinternal.cpp" />
+    <ClCompile Include="physicsmatrix.cpp" />
+    <ClCompile Include="physicsobject.cpp" />
+    <ClCompile Include="physicsobjectblueprint.cpp" />
+    <ClCompile Include="physicsobjectblueprintmanager.cpp" />
+    <ClCompile Include="physicsworld.cpp" />
+    <ClCompile Include="shape.cpp" />
+    <ClCompile Include="shapemanager.cpp" />
+    <ClCompile Include="simpleraycastcallback.cpp" />
+    <ClCompile Include="terrainnode.cpp" />
+    <ClCompile Include="triangle.cpp" />
+    <ClCompile Include="VehicleSetup.cpp" />
+    <ClCompile Include="xphysics.cpp" />
+    <ClCompile Include="xphysicsglobals.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <ProjectName>xphysics</ProjectName>
+    <ProjectGuid>{16121742-CA57-41F0-9FA7-1A518A5DBBEF}</ProjectGuid>
+    <RootNamespace>xphysics</RootNamespace>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>18.0.11312.151</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="configsphysics.h" />
+    <ClInclude Include="constraint.h" />
+    <ClInclude Include="eventsystem.h" />
+    <ClInclude Include="havokarchive.h" />
+    <ClInclude Include="havokclasses.h" />
+    <ClInclude Include="havokMemoryOverride.h" />
+    <ClInclude Include="physics.h" />
+    <ClInclude Include="physicsevent.h" />
+    <ClInclude Include="physicsinternal.h" />
+    <ClInclude Include="physicslistener.h" />
+    <ClInclude Include="physicsmatrix.h" />
+    <ClInclude Include="physicsobject.h" />
+    <ClInclude Include="physicsobjectblueprint.h" />
+    <ClInclude Include="physicsobjectblueprintmanager.h" />
+    <ClInclude Include="physicsquat.h" />
+    <ClInclude Include="physicsworld.h" />
+    <ClInclude Include="shape.h" />
+    <ClInclude Include="shapemanager.h" />
+    <ClInclude Include="simplehitcollector.h" />
+    <ClInclude Include="simpleraycastcallback.h" />
+    <ClInclude Include="simpleraycastcollisionfilter.h" />
+    <ClInclude Include="terrainnode.h" />
+    <ClInclude Include="triangle.h" />
+    <ClInclude Include="VehicleSetup.h" />
+    <ClInclude Include="xphysics.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="physicsmatrix.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
