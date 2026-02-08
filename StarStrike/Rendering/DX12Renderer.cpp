@@ -13,7 +13,7 @@
 using namespace Neuron::Graphics;
 
 namespace StarStrike
-  {
+{
   void DX12Renderer::Startup()
   {
     DebugTrace("DX12Renderer::Startup\n");
@@ -82,11 +82,7 @@ namespace StarStrike
     // Root Parameter 0: CBV at b0
     sm_basicRootSignature.Reset(1, 0);
     sm_basicRootSignature[0].InitAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
-    sm_basicRootSignature.Finalize(L"Basic Root Signature",
-      D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-      D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-      D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-      D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
+    sm_basicRootSignature.Finalize(L"Basic Root Signature", D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
 
     // Sprite root signature: CBV + texture SRV + sampler
     sm_spriteRootSignature.Reset(2, 1);
@@ -99,11 +95,7 @@ namespace StarStrike
     spriteSampler.SetTextureAddressMode(D3D12_TEXTURE_ADDRESS_MODE_CLAMP);
     sm_spriteRootSignature.InitStaticSampler(0, spriteSampler, D3D12_SHADER_VISIBILITY_PIXEL);
 
-    sm_spriteRootSignature.Finalize(L"Sprite Root Signature",
-      D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-      D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-      D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-      D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
+    sm_spriteRootSignature.Finalize(L"Sprite Root Signature", D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
   }
 
   void DX12Renderer::CreatePipelineStates()
@@ -169,37 +161,19 @@ namespace StarStrike
     // Line vertex upload buffer
     size_t lineBufferSize = MAX_BATCH_VERTICES * sizeof(VertexPositionColor);
     auto lineBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(lineBufferSize);
-    check_hresult(device->CreateCommittedResource(
-      &uploadHeapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &lineBufferDesc,
-      D3D12_RESOURCE_STATE_GENERIC_READ,
-      nullptr,
-      IID_PPV_ARGS(sm_lineUploadBuffer.put())));
+    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &lineBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_lineUploadBuffer.put())));
     sm_lineUploadBuffer->SetName(L"Line Vertex Upload Buffer");
 
     // Triangle vertex upload buffer
     size_t triangleBufferSize = MAX_BATCH_VERTICES * sizeof(VertexPositionColor);
     auto triangleBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(triangleBufferSize);
-    check_hresult(device->CreateCommittedResource(
-      &uploadHeapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &triangleBufferDesc,
-      D3D12_RESOURCE_STATE_GENERIC_READ,
-      nullptr,
-      IID_PPV_ARGS(sm_triangleUploadBuffer.put())));
+    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &triangleBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_triangleUploadBuffer.put())));
     sm_triangleUploadBuffer->SetName(L"Triangle Vertex Upload Buffer");
 
     // Constant buffer (256-byte aligned)
     size_t constantBufferSize = (sizeof(BasicConstants) + 255) & ~255;
     auto constantBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(constantBufferSize);
-    check_hresult(device->CreateCommittedResource(
-      &uploadHeapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &constantBufferDesc,
-      D3D12_RESOURCE_STATE_GENERIC_READ,
-      nullptr,
-      IID_PPV_ARGS(sm_constantUploadBuffer.put())));
+    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &constantBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_constantUploadBuffer.put())));
     sm_constantUploadBuffer->SetName(L"DX12Renderer Constant Buffer");
 
     // Map constant buffer permanently
@@ -208,13 +182,7 @@ namespace StarStrike
     // Sprite vertex upload buffer
     size_t spriteBufferSize = MAX_BATCH_VERTICES * sizeof(VertexPositionTextureColor);
     auto spriteBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(spriteBufferSize);
-    check_hresult(device->CreateCommittedResource(
-      &uploadHeapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &spriteBufferDesc,
-      D3D12_RESOURCE_STATE_GENERIC_READ,
-      nullptr,
-      IID_PPV_ARGS(sm_spriteUploadBuffer.put())));
+    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &spriteBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_spriteUploadBuffer.put())));
     sm_spriteUploadBuffer->SetName(L"Sprite Vertex Upload Buffer");
 
     // Reserve sprite vertex storage
@@ -230,19 +198,15 @@ namespace StarStrike
     constexpr float VIRTUAL_WIDTH = 800.0f;
     constexpr float VIRTUAL_HEIGHT = 600.0f;
 
-    XMMATRIX proj = XMMatrixOrthographicOffCenterLH(
-      0.0f, VIRTUAL_WIDTH,   // left, right
-      VIRTUAL_HEIGHT, 0.0f,  // bottom, top (flipped for top-left origin)
-      0.0f, 1.0f             // near, far
-    );
+    XMMATRIX proj = XMMatrixOrthographicOffCenterLH(0.0f, VIRTUAL_WIDTH,// left, right
+                                                    VIRTUAL_HEIGHT, 0.0f,// bottom, top (flipped for top-left origin)
+                                                    0.0f, 1.0f// near, far
+        );
 
     XMStoreFloat4x4(&sm_constants.WorldViewProj, XMMatrixTranspose(proj));
 
     // Update constant buffer
-    if (sm_constantBufferMapped)
-    {
-      memcpy(sm_constantBufferMapped, &sm_constants, sizeof(BasicConstants));
-    }
+    if (sm_constantBufferMapped) memcpy(sm_constantBufferMapped, &sm_constants, sizeof(BasicConstants));
   }
 
   void DX12Renderer::BeginFrame()
@@ -268,14 +232,11 @@ namespace StarStrike
     auto cmdList = Core::GetCommandList();
 
     // Clear render target
-    const float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
+    constexpr float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
     cmdList->ClearRenderTargetView(Core::GetRenderTargetView(), clearColor, 0, nullptr);
 
     // Clear depth stencil for 3D rendering
-    if (Core::GetDepthBufferFormat() != DXGI_FORMAT_UNKNOWN)
-    {
-      cmdList->ClearDepthStencilView(Core::GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-    }
+    if (Core::GetDepthBufferFormat() != DXGI_FORMAT_UNKNOWN) cmdList->ClearDepthStencilView(Core::GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
     // Set render target and viewport
     auto rtvHandle = Core::GetRenderTargetView();
@@ -314,13 +275,11 @@ namespace StarStrike
 
   void DX12Renderer::ApplyClipRegion()
   {
-    if (!sm_clipDirty)
-      return;
+    if (!sm_clipDirty) return;
 
     // Don't issue GPU commands if the command list is closed
     // The clip region will be applied when BeginFrame() is called
-    if (!Core::IsCommandListOpen())
-      return;
+    if (!Core::IsCommandListOpen()) return;
 
     auto cmdList = Core::GetCommandList();
 
@@ -358,43 +317,37 @@ namespace StarStrike
     FlushSprites();
   }
 
-  void DX12Renderer::DrawPixel(float x, float y, const XMFLOAT4& color)
+  void DX12Renderer::DrawPixel(float x, float y, const XMFLOAT4 &color)
   {
     // Draw pixel as a small rectangle (1x1)
     DrawRectangle(x, y, x + 1.0f, y + 1.0f, color);
   }
 
-  void DX12Renderer::DrawLine(float x1, float y1, float x2, float y2, const XMFLOAT4& color)
+  void DX12Renderer::DrawLine(float x1, float y1, float x2, float y2, const XMFLOAT4 &color)
   {
-    if (sm_lineVertices.size() + 2 > MAX_BATCH_VERTICES)
-    {
-      FlushLines();
-    }
+    if (sm_lineVertices.size() + 2 > MAX_BATCH_VERTICES) FlushLines();
 
     sm_lineVertices.emplace_back(XMFLOAT3(x1, y1, 0.0f), color);
     sm_lineVertices.emplace_back(XMFLOAT3(x2, y2, 0.0f), color);
   }
 
-  void DX12Renderer::DrawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, const XMFLOAT4& color)
+  void DX12Renderer::DrawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, const XMFLOAT4 &color)
   {
-    if (sm_triangleVertices.size() + 3 > MAX_BATCH_VERTICES)
-    {
-      FlushTriangles();
-    }
+    if (sm_triangleVertices.size() + 3 > MAX_BATCH_VERTICES) FlushTriangles();
 
     sm_triangleVertices.emplace_back(XMFLOAT3(x1, y1, 0.0f), color);
     sm_triangleVertices.emplace_back(XMFLOAT3(x2, y2, 0.0f), color);
     sm_triangleVertices.emplace_back(XMFLOAT3(x3, y3, 0.0f), color);
   }
 
-  void DX12Renderer::DrawRectangle(float left, float top, float right, float bottom, const XMFLOAT4& color)
+  void DX12Renderer::DrawRectangle(float left, float top, float right, float bottom, const XMFLOAT4 &color)
   {
     // Draw as two triangles
     DrawTriangle(left, top, right, top, right, bottom, color);
     DrawTriangle(left, top, right, bottom, left, bottom, color);
   }
 
-  void DX12Renderer::DrawCircle(float cx, float cy, float radius, const XMFLOAT4& color, bool filled)
+  void DX12Renderer::DrawCircle(float cx, float cy, float radius, const XMFLOAT4 &color, bool filled)
   {
     constexpr int CIRCLE_SEGMENTS = 32;
     constexpr float PI = 3.14159265358979f;
@@ -435,8 +388,7 @@ namespace StarStrike
 
   void DX12Renderer::FlushLines()
   {
-    if (sm_lineVertices.empty())
-      return;
+    if (sm_lineVertices.empty()) return;
 
     auto cmdList = Core::GetCommandList();
 
@@ -447,7 +399,7 @@ namespace StarStrike
     ApplyClipRegion();
 
     // Copy vertex data to upload buffer
-    void* mapped = nullptr;
+    void *mapped = nullptr;
     size_t dataSize = sm_lineVertices.size() * sizeof(VertexPositionColor);
     check_hresult(sm_lineUploadBuffer->Map(0, nullptr, &mapped));
     memcpy(mapped, sm_lineVertices.data(), dataSize);
@@ -474,8 +426,7 @@ namespace StarStrike
 
   void DX12Renderer::FlushTriangles()
   {
-    if (sm_triangleVertices.empty())
-      return;
+    if (sm_triangleVertices.empty()) return;
 
     auto cmdList = Core::GetCommandList();
 
@@ -486,7 +437,7 @@ namespace StarStrike
     ApplyClipRegion();
 
     // Copy vertex data to upload buffer
-    void* mapped = nullptr;
+    void *mapped = nullptr;
     size_t dataSize = sm_triangleVertices.size() * sizeof(VertexPositionColor);
     check_hresult(sm_triangleUploadBuffer->Map(0, nullptr, &mapped));
     memcpy(mapped, sm_triangleVertices.data(), dataSize);
@@ -511,36 +462,21 @@ namespace StarStrike
     sm_triangleVertices.clear();
   }
 
-  ID3D12GraphicsCommandList* DX12Renderer::GetCommandList()
-  {
-    return Core::GetCommandList();
-  }
+  ID3D12GraphicsCommandList *DX12Renderer::GetCommandList() { return Core::GetCommandList(); }
 
   XMFLOAT4 DX12Renderer::PaletteToColor(int paletteIndex)
   {
-    if (paletteIndex >= 0 && paletteIndex < static_cast<int>(sm_palette.size()))
-    {
-      return sm_palette[paletteIndex];
-    }
+    if (paletteIndex >= 0 && paletteIndex < static_cast<int>(sm_palette.size())) return sm_palette[paletteIndex];
     // Default to white if invalid index
     return XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
   }
 
-  void DX12Renderer::SetPaletteFromRGBQUAD(const RGBQUAD* palette, int count)
+  void DX12Renderer::SetPaletteFromRGBQUAD(const RGBQUAD *palette, int count)
   {
-    if (!palette || count <= 0)
-      return;
+    if (!palette || count <= 0) return;
 
     sm_palette.resize(count);
-    for (int i = 0; i < count; i++)
-    {
-      sm_palette[i] = XMFLOAT4(
-        palette[i].rgbRed / 255.0f,
-        palette[i].rgbGreen / 255.0f,
-        palette[i].rgbBlue / 255.0f,
-        1.0f
-      );
-    }
+    for (int i = 0; i < count; i++) { sm_palette[i] = XMFLOAT4(palette[i].rgbRed / 255.0f, palette[i].rgbGreen / 255.0f, palette[i].rgbBlue / 255.0f, 1.0f); }
     DebugTrace("DX12Renderer: Loaded {} palette colors\n", count);
   }
 
@@ -558,15 +494,15 @@ namespace StarStrike
     }
 
     // Override common colors used in the game
-    sm_palette[0] = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);      // GFX_COL_BLACK
-    sm_palette[255] = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);    // GFX_COL_WHITE
-    sm_palette[39] = XMFLOAT4(1.0f, 0.84f, 0.0f, 1.0f);    // GFX_COL_GOLD
-    sm_palette[49] = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);     // GFX_COL_RED
-    sm_palette[11] = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);     // GFX_COL_CYAN
-    sm_palette[28] = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);     // GFX_COL_DARK_RED
+    sm_palette[0] = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);// GFX_COL_BLACK
+    sm_palette[255] = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);// GFX_COL_WHITE
+    sm_palette[39] = XMFLOAT4(1.0f, 0.84f, 0.0f, 1.0f);// GFX_COL_GOLD
+    sm_palette[49] = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);// GFX_COL_RED
+    sm_palette[11] = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);// GFX_COL_CYAN
+    sm_palette[28] = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);// GFX_COL_DARK_RED
   }
 
-  int DX12Renderer::LoadTexture(const std::wstring& filename)
+  int DX12Renderer::LoadTexture(const std::wstring &filename)
   {
     auto texture = std::make_unique<Texture2D>();
     if (!texture->CreateFromFile(filename))
@@ -581,10 +517,9 @@ namespace StarStrike
     return index;
   }
 
-  int DX12Renderer::LoadTextureFromBitmap(const Neuron::GdiBitmap* bitmap)
+  int DX12Renderer::LoadTextureFromBitmap(const GdiBitmap *bitmap)
   {
-    if (!bitmap)
-      return -1;
+    if (!bitmap) return -1;
 
     auto texture = std::make_unique<Texture2D>();
     if (!texture->CreateFromBitmap(bitmap))
@@ -598,16 +533,11 @@ namespace StarStrike
     return index;
   }
 
-  void DX12Renderer::DrawSprite(int textureIndex, float x, float y, float width, float height, const XMFLOAT4& color)
-  {
-    DrawSpriteUV(textureIndex, x, y, width, height, 0.0f, 0.0f, 1.0f, 1.0f, color);
-  }
+  void DX12Renderer::DrawSprite(int textureIndex, float x, float y, float width, float height, const XMFLOAT4 &color) { DrawSpriteUV(textureIndex, x, y, width, height, 0.0f, 0.0f, 1.0f, 1.0f, color); }
 
-  void DX12Renderer::DrawSpriteUV(int textureIndex, float x, float y, float width, float height,
-                                  float u0, float v0, float u1, float v1, const XMFLOAT4& color)
+  void DX12Renderer::DrawSpriteUV(int textureIndex, float x, float y, float width, float height, float u0, float v0, float u1, float v1, const XMFLOAT4 &color)
   {
-    if (textureIndex < 0 || textureIndex >= static_cast<int>(sm_textures.size()))
-      return;
+    if (textureIndex < 0 || textureIndex >= static_cast<int>(sm_textures.size())) return;
 
     SpriteInfo sprite;
     sprite.textureIndex = textureIndex;
@@ -626,10 +556,7 @@ namespace StarStrike
 
   void DX12Renderer::FlushSprites()
   {
-    if (sm_sprites.empty())
-      return;
-
-    DebugTrace("DX12Renderer::FlushSprites - Flushing {} sprites\n", sm_sprites.size());
+    if (sm_sprites.empty()) return;
 
     // Flush other primitives first to maintain draw order
     FlushLines();
@@ -645,7 +572,7 @@ namespace StarStrike
 
     int currentTexture = -1;
 
-    for (const auto& sprite : sm_sprites)
+    for (const auto &sprite: sm_sprites)
     {
       // Build vertex data for this sprite (6 vertices = 2 triangles)
       float left = sprite.x;
@@ -654,15 +581,10 @@ namespace StarStrike
       float bottom = sprite.y + sprite.height;
 
       VertexPositionTextureColor vertices[6] = {
-        // Triangle 1
-        {XMFLOAT3(left, top, 0.0f), XMFLOAT2(sprite.u0, sprite.v0), sprite.color},
-        {XMFLOAT3(right, top, 0.0f), XMFLOAT2(sprite.u1, sprite.v0), sprite.color},
-        {XMFLOAT3(right, bottom, 0.0f), XMFLOAT2(sprite.u1, sprite.v1), sprite.color},
-        // Triangle 2
-        {XMFLOAT3(left, top, 0.0f), XMFLOAT2(sprite.u0, sprite.v0), sprite.color},
-        {XMFLOAT3(right, bottom, 0.0f), XMFLOAT2(sprite.u1, sprite.v1), sprite.color},
-        {XMFLOAT3(left, bottom, 0.0f), XMFLOAT2(sprite.u0, sprite.v1), sprite.color},
-      };
+          // Triangle 1
+          {XMFLOAT3(left, top, 0.0f), XMFLOAT2(sprite.u0, sprite.v0), sprite.color}, {XMFLOAT3(right, top, 0.0f), XMFLOAT2(sprite.u1, sprite.v0), sprite.color}, {XMFLOAT3(right, bottom, 0.0f), XMFLOAT2(sprite.u1, sprite.v1), sprite.color},
+          // Triangle 2
+          {XMFLOAT3(left, top, 0.0f), XMFLOAT2(sprite.u0, sprite.v0), sprite.color}, {XMFLOAT3(right, bottom, 0.0f), XMFLOAT2(sprite.u1, sprite.v1), sprite.color}, {XMFLOAT3(left, bottom, 0.0f), XMFLOAT2(sprite.u0, sprite.v1), sprite.color},};
 
       // If texture changed, we need to set up new state
       if (sprite.textureIndex != currentTexture)
@@ -671,7 +593,7 @@ namespace StarStrike
         if (!sm_spriteVertices.empty())
         {
           // Upload and draw
-          void* mapped = nullptr;
+          void *mapped = nullptr;
           size_t dataSize = sm_spriteVertices.size() * sizeof(VertexPositionTextureColor);
           check_hresult(sm_spriteUploadBuffer->Map(0, nullptr, &mapped));
           memcpy(mapped, sm_spriteVertices.data(), dataSize);
@@ -682,8 +604,6 @@ namespace StarStrike
           vbv.SizeInBytes = static_cast<UINT>(dataSize);
           vbv.StrideInBytes = sizeof(VertexPositionTextureColor);
           cmdList->IASetVertexBuffers(0, 1, &vbv);
-
-          DebugTrace("DX12Renderer::FlushSprites - Drawing {} vertices for texture {}\n", sm_spriteVertices.size(), currentTexture);
           cmdList->DrawInstanced(static_cast<UINT>(sm_spriteVertices.size()), 1, 0, 0);
           sm_spriteVertices.clear();
         }
@@ -702,37 +622,31 @@ namespace StarStrike
         cmdList->SetGraphicsRootConstantBufferView(0, sm_constantUploadBuffer->GetGPUVirtualAddress());
 
         // Set texture
-        auto& tex = sm_textures[currentTexture];
-        DebugTrace("DX12Renderer::FlushSprites - Binding texture {} ({}x{}), GPU SRV ptr={}\n", 
-                   currentTexture, tex->GetWidth(), tex->GetHeight(), tex->GetGpuSRV().ptr);
+        auto &tex = sm_textures[currentTexture];
         cmdList->SetGraphicsRootDescriptorTable(1, tex->GetGpuSRV());
 
         cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
       }
 
       // Add vertices to batch
-      for (int i = 0; i < 6; i++)
-      {
-        sm_spriteVertices.push_back(vertices[i]);
-      }
+      for (int i = 0; i < 6; i++) sm_spriteVertices.push_back(vertices[i]);
     }
 
     // Flush remaining vertices
     if (!sm_spriteVertices.empty())
     {
-      void* mapped = nullptr;
+      void *mapped = nullptr;
       size_t dataSize = sm_spriteVertices.size() * sizeof(VertexPositionTextureColor);
       check_hresult(sm_spriteUploadBuffer->Map(0, nullptr, &mapped));
       memcpy(mapped, sm_spriteVertices.data(), dataSize);
       sm_spriteUploadBuffer->Unmap(0, nullptr);
 
-      D3D12_VERTEX_BUFFER_VIEW vbv = {};
+      D3D12_VERTEX_BUFFER_VIEW vbv;
       vbv.BufferLocation = sm_spriteUploadBuffer->GetGPUVirtualAddress();
       vbv.SizeInBytes = static_cast<UINT>(dataSize);
       vbv.StrideInBytes = sizeof(VertexPositionTextureColor);
       cmdList->IASetVertexBuffers(0, 1, &vbv);
 
-      DebugTrace("DX12Renderer::FlushSprites - Drawing final {} vertices for texture {}\n", sm_spriteVertices.size(), currentTexture);
       cmdList->DrawInstanced(static_cast<UINT>(sm_spriteVertices.size()), 1, 0, 0);
       sm_spriteVertices.clear();
     }
@@ -740,7 +654,7 @@ namespace StarStrike
     sm_sprites.clear();
   }
 
-  void DX12Renderer::LoadFont(const std::wstring& fontTexture, const std::wstring& fontMask)
+  void DX12Renderer::LoadFont(const std::wstring &fontTexture, const std::wstring &fontMask)
   {
     DebugTrace("DX12Renderer::LoadFont - Loading font texture: {}\n", std::string(fontTexture.begin(), fontTexture.end()));
 
@@ -755,21 +669,17 @@ namespace StarStrike
     DebugTrace("DX12Renderer::LoadFont - Font texture loaded at index {}\n", sm_fontTextureSmall);
 
     // Get texture dimensions
-    auto* tex = GetTexture(sm_fontTextureSmall);
-    if (tex)
-    {
-      DebugTrace("DX12Renderer::LoadFont - Font texture dimensions: {}x{}\n", tex->GetWidth(), tex->GetHeight());
-    }
+    auto *tex = GetTexture(sm_fontTextureSmall);
+    if (tex) DebugTrace("DX12Renderer::LoadFont - Font texture dimensions: {}x{}\n", tex->GetWidth(), tex->GetHeight());
 
     // Load font mask to get character widths
     auto fname = FileSys::GetHomeDirectoryA() + std::string(fontMask.begin(), fontMask.end());
     DebugTrace("DX12Renderer::LoadFont - Loading font mask: {}\n", fname);
 
-    auto maskBitmap = Neuron::GdiBitmapLoader::LoadBMP(fname);
+    auto maskBitmap = GdiBitmapLoader::LoadBMP(fname);
     if (maskBitmap)
     {
-      DebugTrace("DX12Renderer::LoadFont - Font mask loaded: {}x{}, bpp={}\n", 
-                 maskBitmap->width, maskBitmap->height, maskBitmap->bitsPerPixel);
+      DebugTrace("DX12Renderer::LoadFont - Font mask loaded: {}x{}, bpp={}\n", maskBitmap->width, maskBitmap->height, maskBitmap->bitsPerPixel);
       LoadFontMetrics(maskBitmap.get(), sm_charWidthsSmall);
     }
     else
@@ -782,7 +692,7 @@ namespace StarStrike
     DebugTrace("DX12Renderer::LoadFont - Loaded font with {} character widths\n", sm_charWidthsSmall.size());
   }
 
-  void DX12Renderer::LoadFontMetrics(const Neuron::GdiBitmap* mask, std::vector<int>& widths)
+  void DX12Renderer::LoadFontMetrics(const GdiBitmap *mask, std::vector<int> &widths)
   {
     widths.resize(96);
 
@@ -793,41 +703,34 @@ namespace StarStrike
 
       // Find character width by scanning for non-background pixels
       int maxWidth = 0;
-      uint32_t background = Neuron::GdiBitmapLoader::GetPixel(mask, gridX * 32, gridY * 32);
+      uint32_t background = GdiBitmapLoader::GetPixel(mask, gridX * 32, gridY * 32);
 
       for (int dy = 0; dy < 32; dy++)
       {
         for (int dx = 0; dx < 32; dx++)
         {
-          uint32_t pixel = Neuron::GdiBitmapLoader::GetPixel(mask, gridX * 32 + dx, gridY * 32 + dy);
-          if (pixel != background && dx > maxWidth)
-          {
-            maxWidth = dx;
-          }
+          uint32_t pixel = GdiBitmapLoader::GetPixel(mask, gridX * 32 + dx, gridY * 32 + dy);
+          if (pixel != background && dx > maxWidth) maxWidth = dx;
         }
       }
 
-      widths[charIndex] = maxWidth + 2; // Add spacing
+      widths[charIndex] = maxWidth + 2;// Add spacing
     }
   }
 
-  void DX12Renderer::DrawText(float x, float y, const char* text, const XMFLOAT4& color, bool large)
+  void DX12Renderer::DrawText(float x, float y, const char *text, const XMFLOAT4 &color, bool large)
   {
-    if (!text || sm_fontTextureSmall < 0)
-      return;
+    if (!text || sm_fontTextureSmall < 0) return;
 
     int fontTexture = large ? sm_fontTextureLarge : sm_fontTextureSmall;
-    if (fontTexture < 0)
-      fontTexture = sm_fontTextureSmall;
+    if (fontTexture < 0) fontTexture = sm_fontTextureSmall;
 
-    auto& widths = large ? sm_charWidthsLarge : sm_charWidthsSmall;
-    if (widths.empty())
-      widths = sm_charWidthsSmall;
+    auto &widths = large ? sm_charWidthsLarge : sm_charWidthsSmall;
+    if (widths.empty()) widths = sm_charWidthsSmall;
 
     // Get actual texture dimensions
-    auto* tex = GetTexture(fontTexture);
-    if (!tex)
-      return;
+    auto *tex = GetTexture(fontTexture);
+    if (!tex) return;
 
     float curX = x;
     // Font is a 16x6 grid of 32x32 characters in a 512x192 (or 512x256) texture
@@ -839,8 +742,7 @@ namespace StarStrike
     while (*text)
     {
       char c = *text++;
-      if (c < 32 || c > 127)
-        continue;
+      if (c < 32 || c > 127) continue;
 
       int charIndex = c - 32;
       int gridX = charIndex % 16;
@@ -860,19 +762,17 @@ namespace StarStrike
     }
   }
 
-  void DX12Renderer::DrawTextCentered(float centerX, float y, const char* text, const XMFLOAT4& color, bool large)
+  void DX12Renderer::DrawTextCentered(float centerX, float y, const char *text, const XMFLOAT4 &color, bool large)
   {
-    if (!text)
-      return;
+    if (!text) return;
 
-    auto& widths = large ? sm_charWidthsLarge : sm_charWidthsSmall;
-    const auto& effectiveWidths = widths.empty() ? sm_charWidthsSmall : widths;
-    if (effectiveWidths.empty())
-      return;
+    auto &widths = large ? sm_charWidthsLarge : sm_charWidthsSmall;
+    const auto &effectiveWidths = widths.empty() ? sm_charWidthsSmall : widths;
+    if (effectiveWidths.empty()) return;
 
     // Calculate total width
     float totalWidth = 0.0f;
-    const char* p = text;
+    const char *p = text;
     while (*p)
     {
       char c = *p++;
@@ -888,10 +788,9 @@ namespace StarStrike
     DrawText(x, y, text, color, large);
   }
 
-  void DX12Renderer::RegisterLegacySprite(int legacySpriteIndex, const std::wstring& filename, int srcX, int srcY, int size)
+  void DX12Renderer::RegisterLegacySprite(int legacySpriteIndex, const std::wstring &filename, int srcX, int srcY, int size)
   {
-    DebugTrace("DX12Renderer::RegisterLegacySprite - Registering sprite {} from {} at ({},{}) size {}\n",
-               legacySpriteIndex, std::string(filename.begin(), filename.end()), srcX, srcY, size);
+    DebugTrace("DX12Renderer::RegisterLegacySprite - Registering sprite {} from {} at ({},{}) size {}\n", legacySpriteIndex, std::string(filename.begin(), filename.end()), srcX, srcY, size);
 
     // Load the full bitmap
     auto fname = FileSys::GetHomeDirectoryA() + std::string(filename.begin(), filename.end());
@@ -905,17 +804,15 @@ namespace StarStrike
       return;
     }
 
-    DebugTrace("DX12Renderer::RegisterLegacySprite - Bitmap loaded: {}x{}, bpp={}, pitch={}\n",
-               bitmap->width, bitmap->height, bitmap->bitsPerPixel, bitmap->pitch);
+    DebugTrace("DX12Renderer::RegisterLegacySprite - Bitmap loaded: {}x{}, bpp={}, pitch={}\n", bitmap->width, bitmap->height, bitmap->bitsPerPixel, bitmap->pitch);
 
     // For now, load the full texture (sub-region extraction can be added later)
     // The legacy code uses gfx_load_texture which extracts a region
     auto texture = std::make_unique<Texture2D>();
-    
+
     // Extract the sub-region from the bitmap
     // If srcX=0, srcY=0 and size exceeds bitmap, load the full texture instead
-    bool loadFullTexture = (srcX == 0 && srcY == 0 && size == bitmap->width && size == bitmap->height) ||
-                           (srcX == 0 && srcY == 0 && (size > bitmap->width || size > bitmap->height));
+    bool loadFullTexture = (srcX == 0 && srcY == 0 && size == bitmap->width && size == bitmap->height) || (srcX == 0 && srcY == 0 && (size > bitmap->width || size > bitmap->height));
 
     if (loadFullTexture)
     {
@@ -932,18 +829,17 @@ namespace StarStrike
       // Validate that the sub-region fits within the bitmap
       if (srcX + size > bitmap->width || srcY + size > bitmap->height)
       {
-        DebugTrace("DX12Renderer::RegisterLegacySprite - Sub-region ({},{},{}) exceeds bitmap dimensions ({}x{})\n",
-                   srcX, srcY, size, bitmap->width, bitmap->height);
+        DebugTrace("DX12Renderer::RegisterLegacySprite - Sub-region ({},{},{}) exceeds bitmap dimensions ({}x{})\n", srcX, srcY, size, bitmap->width, bitmap->height);
         return;
       }
 
-      const uint8_t* srcPixels = static_cast<const uint8_t*>(bitmap->pixels);
+      auto srcPixels = static_cast<const uint8_t *>(bitmap->pixels);
       std::vector<uint8_t> rgbaData(size * size * 4);
       int srcPitch = bitmap->pitch;
 
       for (int y = 0; y < size; y++)
       {
-        const uint8_t* srcRow = srcPixels + (srcY + y) * srcPitch;
+        const uint8_t *srcRow = srcPixels + (srcY + y) * srcPitch;
         for (int x = 0; x < size; x++)
         {
           int dstIdx = (y * size + x) * 4;
@@ -987,29 +883,23 @@ namespace StarStrike
   void DX12Renderer::DrawLegacySprite(int legacySpriteIndex, float x, float y)
   {
     auto it = sm_legacySpriteMap.find(legacySpriteIndex);
-    if (it == sm_legacySpriteMap.end())
-      return;
+    if (it == sm_legacySpriteMap.end()) return;
 
     int textureIndex = it->second;
-    if (textureIndex < 0 || textureIndex >= static_cast<int>(sm_textures.size()))
-      return;
+    if (textureIndex < 0 || textureIndex >= static_cast<int>(sm_textures.size())) return;
 
-    auto& tex = sm_textures[textureIndex];
+    auto &tex = sm_textures[textureIndex];
     float width = static_cast<float>(tex->GetWidth());
     float height = static_cast<float>(tex->GetHeight());
 
     DrawSprite(textureIndex, x, y, width, height, XMFLOAT4(1, 1, 1, 1));
   }
 
-  bool DX12Renderer::HasLegacySprite(int legacySpriteIndex)
-  {
-    return sm_legacySpriteMap.find(legacySpriteIndex) != sm_legacySpriteMap.end();
-  }
+  bool DX12Renderer::HasLegacySprite(int legacySpriteIndex) { return sm_legacySpriteMap.contains(legacySpriteIndex); }
 
-  Texture2D* DX12Renderer::GetTexture(int index)
+  Texture2D *DX12Renderer::GetTexture(int index)
   {
-    if (index < 0 || index >= static_cast<int>(sm_textures.size()))
-      return nullptr;
+    if (index < 0 || index >= static_cast<int>(sm_textures.size())) return nullptr;
     return sm_textures[index].get();
   }
 
@@ -1018,15 +908,10 @@ namespace StarStrike
     auto cmdList = Core::GetCommandList();
 
     // Clear render target
-    const float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
+    constexpr float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
     cmdList->ClearRenderTargetView(Core::GetRenderTargetView(), clearColor, 0, nullptr);
 
     // Clear depth stencil if available
-    if (Core::GetDepthBufferFormat() != DXGI_FORMAT_UNKNOWN)
-    {
-      cmdList->ClearDepthStencilView(Core::GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-    }
+    if (Core::GetDepthBufferFormat() != DXGI_FORMAT_UNKNOWN) cmdList->ClearDepthStencilView(Core::GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
   }
 }
-
-

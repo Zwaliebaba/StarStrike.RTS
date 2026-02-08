@@ -193,6 +193,39 @@
     <None Include="Assets\elite.dat">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </None>
+    <None Include="Assets\Meshes\Adder.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\Anaconda.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\Asp.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\Asteroid.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\Boa.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\Boulder.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\Cargo.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\CobraFS.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\CobraMK1.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\CobraMK3.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Assets\Meshes\Constrictor.cmo">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
     <None Include="Assets\newkind.cfg">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </None>
@@ -204,6 +237,7 @@
   <ItemGroup>
     <ClCompile Include="alg_gfx.cpp" />
     <ClCompile Include="alg_main.cpp" />
+    <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="dirlist.cpp" />
     <ClCompile Include="docked.cpp" />
     <ClCompile Include="elite.cpp" />
@@ -228,7 +262,7 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="space.cpp" />
     <ClCompile Include="stars.cpp" />
-    <ClCompile Include="StarStrike.cpp" />
+    <ClCompile Include="SStrikeMain.cpp" />
     <ClCompile Include="swat.cpp" />
     <ClCompile Include="threed.cpp" />
     <ClCompile Include="trade.cpp" />
@@ -239,6 +273,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Canvas.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="dirlist.h" />
     <ClInclude Include="docked.h" />
@@ -264,7 +299,7 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="space.h" />
     <ClInclude Include="stars.h" />
-    <ClInclude Include="StarStrike.h" />
+    <ClInclude Include="SStrikeMain.h" />
     <ClInclude Include="swat.h" />
     <ClInclude Include="threed.h" />
     <ClInclude Include="trade.h" />

@@ -29,10 +29,7 @@ namespace Neuron
       virtual void Update(float _deltaT) = 0;
 
       // Official rendering pass
-      virtual void RenderScene() = 0;
-
-      // Optional UI (overlay) rendering pass.  This is LDR.  The buffer is already cleared.
-      virtual void RenderCanvas() {}
+      virtual void Render() = 0;
 
       virtual void AddTouch([[maybe_unused]] int _id, [[maybe_unused]] Windows::Foundation::Point _point) {}
       virtual void UpdateTouch([[maybe_unused]] int _id, [[maybe_unused]] Windows::Foundation::Point _point) {}

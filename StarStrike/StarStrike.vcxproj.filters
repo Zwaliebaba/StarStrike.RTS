@@ -213,6 +213,9 @@
     <Filter Include="Assets\Logos">
       <UniqueIdentifier>{fcc0230a-c07a-4d24-98b8-5f8c669b414a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Meshes">
+      <UniqueIdentifier>{7ebcc28f-c691-44f4-a987-c11e9804313a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="app.manifest">
@@ -236,6 +239,39 @@
     </None>
     <None Include="Assets\newscan.cfg">
       <Filter>Assets</Filter>
+    </None>
+    <None Include="Assets\Meshes\CobraMK3.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\Adder.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\Anaconda.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\Asp.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\Asteroid.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\Boa.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\Boulder.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\Cargo.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\CobraFS.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\CobraMK1.cmo">
+      <Filter>Assets\Meshes</Filter>
+    </None>
+    <None Include="Assets\Meshes\Constrictor.cmo">
+      <Filter>Assets\Meshes</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -269,7 +305,7 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="dirlist.cpp" />
     <ClCompile Include="loadsave.cpp" />
-    <ClCompile Include="StarStrike.cpp" />
+    <ClCompile Include="SStrikeMain.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="Win32Input.cpp" />
     <ClCompile Include="input.cpp" />
@@ -278,6 +314,7 @@
     <ClCompile Include="Rendering\DX12Renderer.cpp" />
     <ClCompile Include="Rendering\Texture2D.cpp" />
     <ClCompile Include="Rendering\ShipRenderer.cpp" />
+    <ClCompile Include="Canvas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -305,12 +342,13 @@
     <ClInclude Include="dirlist.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="loadsave.h" />
-    <ClInclude Include="StarStrike.h" />
+    <ClInclude Include="SStrikeMain.h" />
     <ClInclude Include="Win32Input.h" />
     <ClInclude Include="GdiBitmap.h" />
     <ClInclude Include="Rendering\DX12Renderer.h" />
     <ClInclude Include="Rendering\Texture2D.h" />
     <ClInclude Include="Rendering\ShipRenderer.h" />
+    <ClInclude Include="Canvas.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Assets\Audio\beep.wav">

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshOBJ.cpp" />
+    <ClCompile Include="DirectXMeshAdjacency.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshClean.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshConcat.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshGSAdjacency.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshletGenerator.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshNormals.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshOptimize.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshOptimizeLRU.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshOptimizeTVC.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshRemap.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshTangentFrame.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshUtil.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshValidate.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshVBReader.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshVBWriter.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXMeshWeldVertices.cpp">
+      <Filter>DirextXMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Meshconvert.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CMO.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="WaveFrontReader.h" />
+    <ClInclude Include="DirectXMesh.h">
+      <Filter>DirextXMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXMeshP.h">
+      <Filter>DirextXMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="scoped.h">
+      <Filter>DirextXMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdLineHelpers.h" />
+    <ClInclude Include="SDKMesh.h" />
+    <ClInclude Include="vbo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="DirextXMesh">
+      <UniqueIdentifier>{e1b9354a-e92f-48f9-bf4d-c1aa9113cac5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DirectXMesh.inl">
+      <Filter>DirextXMesh</Filter>
+    </None>
+  </ItemGroup>
+</Project>

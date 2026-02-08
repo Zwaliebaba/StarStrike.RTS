@@ -17,6 +17,7 @@
 #include "loadsave.h"
 #include "file.h"
 #include "input.h"
+#include "SStrikeMain.h"
 #include "Rendering/DX12Renderer.h"
 #include "Rendering/ShipRenderer.h"
 
@@ -1131,8 +1132,8 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
 
   ClientEngine::Startup(L"Deep Space Outpost", {1024.0f, 512.0f}, _hInstance, _iCmdShow);
 
-  Timer::Core::Startup();
-
+  auto main = winrt::make_self<SStrikeMain>();
+  ClientEngine::StartGame(std::move(main));
 
   input_startup();
 

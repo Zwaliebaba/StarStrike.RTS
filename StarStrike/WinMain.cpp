@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "StarStrike.h"
+#include "SStrikeMain.h"
 
 int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdLine, int _iCmdShow)
 {
@@ -16,7 +16,7 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
 
   ClientEngine::Startup(L"Deep Space Outpost", {}, _hInstance, _iCmdShow);
 
-  auto main = winrt::make_self<StarStrike>();
+  auto main = winrt::make_self<SStrikeMain>();
   ClientEngine::StartGame(std::move(main));
 
   ClientEngine::Run();
