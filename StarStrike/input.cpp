@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "input.h"
-#include "main.h"
-#include "gfx.h"
 #include "Win32Input.h"
 
 // Game keyboard state array (used by game logic)

@@ -53,6 +53,7 @@
     <ClInclude Include="GpuResource.h" />
     <ClInclude Include="GraphicsCommon.h" />
     <ClInclude Include="GraphicsCore.h" />
+    <ClInclude Include="MusicTrack.h" />
     <ClInclude Include="NeuronClient.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PipelineState.h" />

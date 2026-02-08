@@ -815,11 +815,13 @@ void handle_key_event(int key, char ascii)
     case SCR_INTRO_ONE:
       if (key == KBD_Y)
       {
+        stop_intro1();
         switch_to_screen(SCR_LOAD_CMDR);
       }
 
       if (key == KBD_N)
       {
+        stop_intro1();
         switch_to_screen(SCR_INTRO_TWO);
       }
       break;
@@ -827,6 +829,7 @@ void handle_key_event(int key, char ascii)
     case SCR_INTRO_TWO:
       if (key == KBD_INC_SPEED || key == KBD_FIRE)
       {
+        stop_intro2();
         dock_player();
         switch_to_screen(SCR_CMDR_STATUS);
       }

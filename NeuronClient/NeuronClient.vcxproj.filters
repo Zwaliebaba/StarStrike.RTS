@@ -93,6 +93,7 @@
     <ClInclude Include="SoundEffect.h">
       <Filter>Audio</Filter>
     </ClInclude>
+    <ClInclude Include="MusicTrack.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Project Files">

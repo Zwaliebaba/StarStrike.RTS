@@ -21,4 +21,7 @@
 void snd_sound_startup (void);
 void snd_sound_shutdown (void);
 void snd_play_sample (int sample_no);
+void snd_play_music(int song_no, bool loop = true);
+void snd_stop_music(int song_no);
+void snd_set_music_volume(int song_no, float volume);
 void snd_update_sound (void);

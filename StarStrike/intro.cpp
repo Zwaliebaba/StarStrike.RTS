@@ -5,6 +5,7 @@
 #include "shipdata.h"
 #include "space.h"
 #include "stars.h"
+#include "sound.h"
 
 static int ship_no;
 static int show_time;
@@ -14,16 +15,18 @@ static int min_dist[NO_OF_SHIPS + 1] = {0, 200, 800, 200, 200, 200, 300, 384, 20
 
 static Matrix intro_ship_matrix;
 
-void initialise_intro1(void)
+void initialise_intro1()
 {
   clear_universe();
   set_init_matrix(intro_ship_matrix);
   add_new_ship(SHIP_COBRA3, 0, 0, 4500, intro_ship_matrix, -127, -127);
+
+  snd_play_music(SND_BLUE_DANUBE, true);
 }
 
-void initialise_intro2(void)
+void initialise_intro2()
 {
-  ship_no = 11;
+  ship_no = SHIP_COBRA3;
   show_time = 0;
   direction = 100;
 
@@ -31,9 +34,11 @@ void initialise_intro2(void)
   create_new_stars();
   set_init_matrix(intro_ship_matrix);
   add_new_ship(1, 0, 0, 5000, intro_ship_matrix, -127, -127);
+
+  snd_play_music(SND_ELITE_THEME, true);
 }
 
-void update_intro1(void)
+void update_intro1()
 {
   universe[0].location.z -= 100;
 
@@ -44,7 +49,7 @@ void update_intro1(void)
   update_universe();
 }
 
-void update_intro2(void)
+void update_intro2()
 {
   show_time++;
 
@@ -74,7 +79,7 @@ void update_intro2(void)
   update_universe();
 }
 
-void draw_intro1(void)
+void draw_intro1()
 {
   gfx_draw_view();
 
@@ -85,7 +90,7 @@ void draw_intro1(void)
   gfx_display_centre_text(360, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
 }
 
-void draw_intro2(void)
+void draw_intro2()
 {
   update_starfield();
   gfx_draw_view();
@@ -94,4 +99,14 @@ void draw_intro2(void)
 
   gfx_display_centre_text(360, "Press Fire or Space, Commander.", 140, GFX_COL_GOLD);
   gfx_display_centre_text(330, ship_list[ship_no]->name, 120, GFX_COL_WHITE);
+}
+
+void stop_intro1()
+{
+  snd_stop_music(SND_BLUE_DANUBE);
+}
+
+void stop_intro2()
+{
+  snd_stop_music(SND_ELITE_THEME);
 }

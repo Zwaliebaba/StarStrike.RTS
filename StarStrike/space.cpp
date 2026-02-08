@@ -475,8 +475,6 @@ void update_universe(void)
   char str[80];
   struct univ_object flip;
 
-  //	gfx_start_render();
-
   for (int i = 0; i < MAX_UNIV_OBJECTS; i++)
   {
     int type = universe[i].type;
@@ -518,13 +516,11 @@ void update_universe(void)
         if ((ship_count[SHIP_CORIOLIS] == 0) && (ship_count[SHIP_DODEC] == 0) && (universe[i].distance < 65792))// was 49152
           make_station_appear();
 
-        //				draw_ship (&flip);
         continue;
       }
 
       if (type == SHIP_SUN)
       {
-        //				draw_ship (&flip);
         continue;
       }
 
@@ -541,8 +537,6 @@ void update_universe(void)
         remove_ship(i);
         continue;
       }
-
-      //			draw_ship (&flip);
 
       if (universe[i].flags & FLG_EXPLOSION)
       {
@@ -561,19 +555,11 @@ void update_universe(void)
         universe[i].exp_delta = 18;
       }
 
-      //			universe[i].flags = flip.flags;
-      //			universe[i].exp_seed = flip.exp_seed;
-      //			universe[i].exp_delta = flip.exp_delta;
-
-      //			universe[i].flags &= ~FLG_FIRING;
-
       if (universe[i].flags & FLG_DEAD) continue;
 
       check_target(i, &flip);
     }
   }
-
-  //	gfx_finish_render();
   detonate_bomb = 0;
 }
 
