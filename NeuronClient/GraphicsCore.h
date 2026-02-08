@@ -58,6 +58,7 @@ namespace Neuron::Graphics
       static ID3D12CommandQueue* GetCommandQueue() noexcept { return m_commandQueue.get(); }
       static ID3D12CommandAllocator* GetCommandAllocator() noexcept { return m_commandAllocators[m_backBufferIndex].get(); }
       static auto GetCommandList() noexcept { return m_commandList.get(); }
+      static bool IsCommandListOpen() noexcept { return m_openCommandList; }
       static DXGI_FORMAT GetBackBufferFormat() noexcept { return m_backBufferFormat; }
       static DXGI_FORMAT GetDepthBufferFormat() noexcept { return m_depthBufferFormat; }
       static D3D12_VIEWPORT GetScreenViewport() noexcept { return m_screenViewport; }

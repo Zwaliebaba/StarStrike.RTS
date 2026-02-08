@@ -81,6 +81,9 @@
     <Filter Include="Assets\Audio">
       <UniqueIdentifier>{841beb1d-40ef-49f8-9ff0-f49855997f6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{07fb5f34-7651-427e-83ab-441c21bde16a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="app.manifest">
@@ -144,11 +147,13 @@
     <ClCompile Include="loadsave.cpp" />
     <ClCompile Include="StarStrike.cpp" />
     <ClCompile Include="WinMain.cpp" />
-    <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="Win32Input.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="GdiBitmap.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="Rendering\DX12Renderer.cpp" />
+    <ClCompile Include="Rendering\Texture2D.cpp" />
+    <ClCompile Include="Rendering\ShipRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -177,9 +182,11 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="loadsave.h" />
     <ClInclude Include="StarStrike.h" />
-    <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="Win32Input.h" />
     <ClInclude Include="GdiBitmap.h" />
+    <ClInclude Include="Rendering\DX12Renderer.h" />
+    <ClInclude Include="Rendering\Texture2D.h" />
+    <ClInclude Include="Rendering\ShipRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Assets\Audio\beep.wav">
@@ -230,5 +237,25 @@
     <Media Include="Assets\Audio\OpeningTheme.wav">
       <Filter>Assets\Audio</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\SpritePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SpriteVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\BasicPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\BasicVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Ship3DPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Ship3DVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

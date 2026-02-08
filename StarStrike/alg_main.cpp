@@ -17,6 +17,8 @@
 #include "loadsave.h"
 #include "file.h"
 #include "input.h"
+#include "Rendering/DX12Renderer.h"
+#include "Rendering/ShipRenderer.h"
 
 int frame_count;
 int cross_timer;
@@ -341,6 +343,11 @@ void draw_screen(void)
 {
   if (game_paused) return;
 
+  Graphics::Core::Prepare();
+
+  // Begin DX12 frame (clears batched vertices, updates projection)
+  StarStrike::DX12Renderer::BeginFrame();
+
   if (current_screen != SCR_GAME_OVER) update_console();
 
   switch (current_screen)
@@ -441,7 +448,10 @@ void draw_screen(void)
 
   if (!docked && hyper_ready && (current_screen != SCR_GAME_OVER) && (current_screen != SCR_ESCAPE_POD)) display_hyper_status();
 
-  gfx_update_screen();
+  // End DX12 frame (flushes batched primitives to GPU)
+  StarStrike::DX12Renderer::EndFrame();
+
+  Graphics::Core::Present();
 }
 
 void add_find_char(int letter)
@@ -1119,9 +1129,8 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
 
   FileSys::SetHomeDirectory(path);
 
-  ClientEngine::Startup(L"Deep Space Outpost", {}, _hInstance, _iCmdShow);
+  ClientEngine::Startup(L"Deep Space Outpost", {1024.0f, 512.0f}, _hInstance, _iCmdShow);
 
-  // Initialize Timer (replaces SDL timing)
   Timer::Core::Startup();
 
   input_startup();
@@ -1129,6 +1138,10 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
   read_config_file();
 
   if (gfx_graphics_startup() == 1) return 1;
+
+  // Initialize DirectX 12 renderer (new rendering path)
+  StarStrike::DX12Renderer::Startup();
+  StarStrike::ShipRenderer::Startup();
 
   snd_sound_startup();
 
@@ -1174,6 +1187,8 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
   }
 
   snd_sound_shutdown();
+  StarStrike::ShipRenderer::Shutdown();
+  StarStrike::DX12Renderer::Shutdown();
   input_shutdown();
   gfx_graphics_shutdown();
 

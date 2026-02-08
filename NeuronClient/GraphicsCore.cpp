@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "GraphicsCore.h"
-
 #include "GraphicsCommon.h"
 
 using namespace Neuron::Graphics;
@@ -170,6 +169,7 @@ void Core::CreateDeviceResources()
   check_hresult(m_d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_commandAllocators[0].get(), nullptr,
                                                IID_GRAPHICS_PPV_ARGS(m_commandList)));
   check_hresult(m_commandList->Close());
+  m_openCommandList = false;
 
   m_commandList->SetName(L"Core");
 
@@ -424,6 +424,7 @@ void Core::Prepare()
 // Present the contents of the swap chain to the screen.
 void Core::Present()
 {
+  sm_gpuResourceStateTracker.TransitionResource(m_renderTargets[m_backBufferIndex], D3D12_RESOURCE_STATE_PRESENT, true);
   ExecuteCommandList();
 
   HRESULT hr;
@@ -485,6 +486,13 @@ void Core::WaitForGpu() noexcept
 
 void Core::ResetCommandAllocatorAndCommandlist()
 {
+  // Close the command list if it's still open
+  if (m_openCommandList)
+  {
+    check_hresult(m_commandList->Close());
+    m_openCommandList = false;
+  }
+
   // Reset command list and allocator.
   check_hresult(m_commandAllocators[m_backBufferIndex]->Reset());
   check_hresult(m_commandList->Reset(m_commandAllocators[m_backBufferIndex].get(), nullptr));

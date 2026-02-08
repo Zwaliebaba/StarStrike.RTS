@@ -261,7 +261,7 @@ void describe_inhabitants(char *str, struct galaxy_seed planet)
   strcat(str, "s)");
 }
 
-void expand_description(char *source)
+void expand_description(const char *source)
 {
   char str[32];
   char *ptr;

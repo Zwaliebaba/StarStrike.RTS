@@ -683,5 +683,5 @@ void draw_ship (struct univ_object *ship)
 		(fabs(flip.location.y) > flip.location.z))
 		return;
 
-	gfx_draw_gl_ship(ship);
+	gfx_draw_gl_ship(&flip);
 }

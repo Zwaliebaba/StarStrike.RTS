@@ -2,108 +2,167 @@
 
 ## Project Overview
 
-StarStrike is a DirectX 12 space game built on the Neuron engine framework. The codebase has three main projects:
+StarStrike is a DirectX 12 space game built on the Neuron engine framework. Three main projects:
 
 - **NeuronCore** (`NeuronCore/`): Foundation utilities - math, file system, timers, debugging
 - **NeuronClient** (`NeuronClient/`): DirectX 12 graphics engine, audio (XAudio2), input handling
-- **StarStrike** (`StarStrike/`): The game itself - extends `GameMain` to implement game logic
+- **StarStrike** (`StarStrike/`): Game implementation extending `GameMain`
 
 ## Architecture Patterns
 
-### Namespace Hierarchy
-All engine code uses nested namespaces under `Neuron`:
-- `Neuron::Graphics` - DirectX 12 rendering (see [GraphicsCore.h](../NeuronClient/GraphicsCore.h))
-- `Neuron::Audio` - XAudio2 sound engine
-- `Neuron::Timer` - Frame timing
-- `Neuron::Client` - High-level application engine
-- `Neuron::Math` - DirectXMath wrappers
-
 ### Static Singleton Pattern
-Core engine systems use static class methods with `inline static` member variables instead of instance singletons:
+Core engine systems use static class methods with `inline static` members (no instance singletons):
 ```cpp
 class Core {
 public:
     static void Startup();
+    static void Shutdown();
     static ID3D12Device10* GetD3DDevice() noexcept { return m_d3dDevice.get(); }
 private:
     inline static com_ptr<ID3D12Device10> m_d3dDevice;
 };
 ```
 
-### GameMain Base Class
-Games implement the `GameMain` interface from [GameMain.h](../NeuronClient/GameMain.h):
+### Namespace Hierarchy
+All engine code lives under `Neuron::` namespaces:
+- `Neuron::Graphics::Core` - D3D12 device, swap chain, command lists
+- `Neuron::Audio::Core` - XAudio2 music/sound engines
+- `Neuron::Timer::Core` - Frame timing (`GetElapsedSeconds()`, `GetTotalSeconds()`)
+- `Neuron::Client::ClientEngine` - Application startup/run loop
+
+### GameMain Interface
+Games extend `GameMain` (see [GameMain.h](../NeuronClient/GameMain.h)):
 ```cpp
 class StarStrike : public GameMain {
-    void Startup() override;   // Initialize game state
-    void Shutdown() override;  // Cleanup
+    void Startup() override;              // Initialize game state
+    void Shutdown() override;
     void Update(float _deltaT) override;  // Game logic per frame
     void RenderScene() override;          // 3D rendering
     void RenderCanvas() override;         // UI overlay (LDR)
 };
 ```
 
+### Application Startup Flow (WinMain.cpp)
+```cpp
+FileSys::SetHomeDirectory(exePath);           // Sets asset root to {exe}\Assets\
+ClientEngine::Startup(L"GameName", {}, hInstance, nCmdShow);
+auto main = winrt::make_self<StarStrike>();   // Create game via WinRT
+ClientEngine::StartGame(std::move(main));
+ClientEngine::Run();                          // Main loop
+ClientEngine::Shutdown();
+```
+
 ## Coding Conventions
 
 ### Naming
-- **Parameters**: Prefix with underscore: `_deltaT`, `_size`, `_hInstance`
-- **Member variables**: `m_` prefix for instance, `sm_` prefix for static members
-- **Classes/Methods**: PascalCase (`ClientEngine`, `GetCommandList`)
+- **Parameters**: Underscore prefix: `_deltaT`, `_size`, `_hInstance`
+- **Instance members**: `m_` prefix
+- **Static members**: `sm_` prefix
+- **Classes/Methods**: PascalCase
 - **Local variables**: camelCase
 
-### Legacy Code
-StarStrike contains ported "Elite: The New Kind" code with C-style conventions (e.g., `space.h`, `trade.h`, `elite.h`). **New code should always use modern C++ patterns** regardless of the style in adjacent legacy files. Do not match legacy naming or patterns.
-
-### Resource Management
-- Use `winrt::com_ptr<T>` for COM objects (D3D12 resources)
-- RAII patterns via `inline static` lifetime management
-- All engine systems follow `Startup()`/`Shutdown()` lifecycle
+### Legacy Code Warning
+Files like `elite.h`, `space.h`, `trade.h` contain ported C-style code. **Always use modern C++ patterns for new code** - do not match legacy style.
 
 ### Modern C++
-- C++20 standard (`std::format`, `std::ranges`, `[[nodiscard]]`)
-- DirectXMath types for vectors/matrices (`XMVECTOR`, `XMMATRIX`)
-- WinRT for Windows integration
+- C++20 (`std::format`, `std::ranges`, `[[nodiscard]]`)
+- DirectXMath types (`XMVECTOR`, `XMMATRIX`, `XMFLOAT3`, `XMFLOAT4`)
+- `winrt::com_ptr<T>` for COM objects
 
 ## Build & Dependencies
 
 ### Build System
-- Visual Studio solution: `StarStrike.slnx`
+- Solution: `StarStrike.slnx`
 - Platform: **x64 only**
-- Run clang-format before committing (config: `.clang-format`)
+- Run clang-format before committing (`.clang-format` in root)
 
 ### Package Management
-- **vcpkg**: `sdl1`, `sdl1-mixer` (see `vcpkg.json`)
-- **NuGet**: Windows App SDK, CppWinRT, PIX profiler (see `packages.config` files)
+- **NuGet**: Windows App SDK, CppWinRT, PIX profiler (see `packages.config`)
+- vcpkg is **disabled** (`VcpkgEnableManifest=false`)
+
+### Shader Workflow
+1. Add `.hlsl` files to `StarStrike/Shaders/`
+2. Configure in vcxproj: `FxCompile` with ShaderModel 6.7
+3. Build outputs `CompiledShaders/%(Filename).h` with bytecode array `g_p%(Filename)`
+4. Include and use:
+```cpp
+#include "CompiledShaders/BasicVS.h"
+pso.SetVertexShader(g_pBasicVS, sizeof(g_pBasicVS));
+```
 
 ### Asset Loading
-Assets are resolved via `FileSys::GetHomeDirectory()` which points to `{exe_path}\Assets\`. Use `BinaryFile::ReadFile()` or `TextFile::ReadFile()` for loading.
-
-### Shaders
-Shaders are added manually to the project and compile to `.h` header files containing bytecode arrays. Include the generated header and pass the bytecode to PSO setup methods.
-
-### Testing
-No testing infrastructure is currently available.
+Assets resolve from `{exe_path}\Assets\` via `FileSys::GetHomeDirectory()`:
+```cpp
+auto data = BinaryFile::ReadFile(L"scanner.bmp");
+auto text = TextFile::ReadFile(L"config.txt");
+```
 
 ## Key Integration Points
 
 ### Graphics Pipeline
-1. `Graphics::Core` manages D3D12 device, swap chain, command lists
-2. Use `Graphics::Core::GetCommandList()` for rendering commands
-3. Resources tracked via `ResourceStateTracker` for barrier management
-4. Descriptors allocated via `DescriptorAllocator::Allocate()`
+1. Get command list: `Graphics::Core::GetCommandList()`
+2. Transition resources: `Graphics::Core::GetGpuResourceStateTracker()->TransitionResource(...)`
+3. Allocate descriptors: `Graphics::Core::AllocateDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)`
+
+### Vertex Types (VertexTypes.h)
+Pre-defined vertex structs with `INPUT_LAYOUT` for PSO setup:
+- `VertexPosition` - Position only
+- `VertexPositionColor` - Position + RGBA color
+- `VertexPositionTexture` - Position + UV
+- `VertexPositionTextureColor` - Position + UV + color
 
 ### Creating Pipeline States
-See [PipelineState.h](../NeuronClient/PipelineState.h):
 ```cpp
 GraphicsPSO pso(L"MyPSO");
 pso.SetRootSignature(rootSig);
-pso.SetVertexShader(vsBlob, vsSize);
-pso.SetPixelShader(psBlob, psSize);
+pso.SetVertexShader(g_pMyVS, sizeof(g_pMyVS));
+pso.SetPixelShader(g_pMyPS, sizeof(g_pMyPS));
+pso.SetInputLayout(&VertexPositionColor::INPUT_LAYOUT);
+pso.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 pso.Finalize();
 ```
 
-### Debug Utilities
+### Constant Buffers
+Constant buffers must be 256-byte aligned:
 ```cpp
-Neuron::DebugTrace("Value: {}", value);  // Debug output (release: no-op)
-ASSERT(condition);                        // Fatal in all builds
-DEBUG_ASSERT(condition);                  // Debug-only assertion
+__declspec(align(256)) struct MyConstants {
+    XMFLOAT4X4 WorldViewProj;
+};
 ```
+
+### 2D Rendering (DX12Renderer)
+Use `StarStrike::DX12Renderer` for batched 2D primitives and sprites:
+```cpp
+DX12Renderer::BeginFrame();
+DX12Renderer::DrawLine(x1, y1, x2, y2, color);
+DX12Renderer::DrawRectangle(left, top, right, bottom, color);
+DX12Renderer::DrawSprite(textureIndex, x, y, width, height);
+DX12Renderer::DrawText(x, y, "text", color);
+DX12Renderer::EndFrame();  // Flushes all batched primitives
+```
+
+### Audio
+Separate engines for music vs sound effects:
+```cpp
+// Load and play music (loops by default)
+MusicTrack music;
+music.Load(Audio::Core::MusicEngine(), L"theme.wav");
+music.Play(true);  // true = loop
+
+// Load and play sound effects
+SoundEffect sfx;
+sfx.Load(Audio::Core::SoundEffectEngine(), L"laser.wav");
+sfx.Play();  // one-shot
+```
+
+### Debug Utilities
+**Always end DebugTrace strings with `\n`:**
+```cpp
+DebugTrace("Value: {}\n", value);  // Debug output (release: no-op)
+ASSERT(condition);                          // Fatal in all builds
+DEBUG_ASSERT(condition);                    // Debug-only assertion
+DEBUG_ASSERT_TEXT(condition, "Condition failed: {}\n", details);  // Debug-only with message
+```
+
+### Testing
+No testing infrastructure available.
