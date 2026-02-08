@@ -63,6 +63,9 @@ namespace StarStrike
     static void DrawText(float x, float y, const char* text, const XMFLOAT4& color, bool large = false);
     static void DrawTextCentered(float centerX, float y, const char* text, const XMFLOAT4& color, bool large = false);
 
+    // Fullscreen texture compositing (for overlays)
+    static void DrawFullscreenTexture(D3D12_GPU_DESCRIPTOR_HANDLE srvHandle);
+
     static void ClearScreen();
 
     // Flush batched primitives to GPU

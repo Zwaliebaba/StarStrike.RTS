@@ -117,9 +117,7 @@ void ClientEngine::Run()
       m_main->Update(deltaT);
 
       Graphics::Core::Prepare();
-      m_main->RenderScene();
-      Graphics::Core::ExecuteCommandList();
-      m_main->RenderCanvas();
+      m_main->Render();
       Graphics::Core::Present();
     }
   }

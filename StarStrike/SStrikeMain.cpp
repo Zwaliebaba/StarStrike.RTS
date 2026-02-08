@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "SStrikeMain.h"
+#include "Rendering/DX12Renderer.h"
+
+using namespace StarStrike;
 
 void SStrikeMain::Startup()
 {
@@ -30,12 +33,21 @@ void SStrikeMain::ReleaseWindowSizeDependentResources() { GameMain::ReleaseWindo
 
 void SStrikeMain::Update(float _deltaT) {}
 
-void SStrikeMain::Render() {}
+void SStrikeMain::Render()
+{
+  RenderScene();
+  RenderCanvas();
+
+  // Composite the canvas texture over the backbuffer
+  if (m_canvas && m_canvas->IsValid())
+  {
+    DX12Renderer::DrawFullscreenTexture(m_canvas->GetSRV());
+  }
+}
 
 void SStrikeMain::RenderScene() {}
 
 void SStrikeMain::RenderCanvas()
 {
-  GameMain::RenderCanvas();
   m_canvas->Render();
 }

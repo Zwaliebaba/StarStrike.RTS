@@ -519,10 +519,7 @@ void update_universe(void)
         continue;
       }
 
-      if (type == SHIP_SUN)
-      {
-        continue;
-      }
+      if (type == SHIP_SUN) continue;
 
       if (universe[i].distance < 170)
       {
@@ -974,7 +971,7 @@ void jump_warp(void)
 
   if (jump > 1024) jump = 1024;
 
-  for (i = 0; i < MAX_UNIV_OBJECTS; i++) { if (universe[i].type != 0) universe[i].location.z -= jump; }
+  for (i = 0; i < MAX_UNIV_OBJECTS; i++) if (universe[i].type != 0) universe[i].location.z -= jump;
 
   warp_stars = 1;
   mcount &= 63;

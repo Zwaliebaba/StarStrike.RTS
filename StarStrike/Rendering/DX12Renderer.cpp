@@ -903,6 +903,61 @@ namespace StarStrike
     return sm_textures[index].get();
   }
 
+  void DX12Renderer::DrawFullscreenTexture(D3D12_GPU_DESCRIPTOR_HANDLE srvHandle)
+  {
+    // Flush any pending primitives first
+    FlushLines();
+    FlushTriangles();
+    FlushSprites();
+
+    auto cmdList = Core::GetCommandList();
+
+    // Ensure descriptor heaps are bound
+    DescriptorAllocator::SetDescriptorHeaps(cmdList);
+
+    // Set render target (backbuffer)
+    auto rtvHandle = Core::GetRenderTargetView();
+    cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+    cmdList->RSSetViewports(1, &Core::GetScreenViewport());
+    cmdList->RSSetScissorRects(1, &Core::GetScissorRect());
+
+    // Set pipeline state for sprites (uses alpha blending)
+    cmdList->SetPipelineState(sm_spritePSO.GetPipelineStateObject());
+    cmdList->SetGraphicsRootSignature(sm_spriteRootSignature.GetSignature());
+    cmdList->SetGraphicsRootConstantBufferView(0, sm_constantUploadBuffer->GetGPUVirtualAddress());
+
+    // Set the provided texture SRV
+    cmdList->SetGraphicsRootDescriptorTable(1, srvHandle);
+
+    cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    // Build fullscreen quad vertices (covers 0,0 to screenWidth,screenHeight)
+    VertexPositionTextureColor vertices[6] = {
+        // Triangle 1
+        {XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f), XMFLOAT4(1, 1, 1, 1)},
+        {XMFLOAT3(sm_screenWidth, 0.0f, 0.0f), XMFLOAT2(1.0f, 0.0f), XMFLOAT4(1, 1, 1, 1)},
+        {XMFLOAT3(sm_screenWidth, sm_screenHeight, 0.0f), XMFLOAT2(1.0f, 1.0f), XMFLOAT4(1, 1, 1, 1)},
+        // Triangle 2
+        {XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f), XMFLOAT4(1, 1, 1, 1)},
+        {XMFLOAT3(sm_screenWidth, sm_screenHeight, 0.0f), XMFLOAT2(1.0f, 1.0f), XMFLOAT4(1, 1, 1, 1)},
+        {XMFLOAT3(0.0f, sm_screenHeight, 0.0f), XMFLOAT2(0.0f, 1.0f), XMFLOAT4(1, 1, 1, 1)},
+    };
+
+    // Upload and draw
+    void *mapped = nullptr;
+    size_t dataSize = sizeof(vertices);
+    check_hresult(sm_spriteUploadBuffer->Map(0, nullptr, &mapped));
+    memcpy(mapped, vertices, dataSize);
+    sm_spriteUploadBuffer->Unmap(0, nullptr);
+
+    D3D12_VERTEX_BUFFER_VIEW vbv = {};
+    vbv.BufferLocation = sm_spriteUploadBuffer->GetGPUVirtualAddress();
+    vbv.SizeInBytes = static_cast<UINT>(dataSize);
+    vbv.StrideInBytes = sizeof(VertexPositionTextureColor);
+    cmdList->IASetVertexBuffers(0, 1, &vbv);
+    cmdList->DrawInstanced(6, 1, 0, 0);
+  }
+
   void DX12Renderer::ClearScreen()
   {
     auto cmdList = Core::GetCommandList();
