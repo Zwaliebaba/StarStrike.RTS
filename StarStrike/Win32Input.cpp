@@ -33,6 +33,7 @@ namespace StarStrike
     { 'Y', KBD_Y },
     { 'N', KBD_N },
     { 'A', KBD_FIRE },
+    { VK_SPACE, KBD_FIRE },    // Space bar also fires
     { 'E', KBD_ECM },
     { VK_TAB, KBD_ENERGY_BOMB },
     { 'H', KBD_HYPERSPACE },
@@ -50,8 +51,11 @@ namespace StarStrike
     { 'U', KBD_UNARM_MISSILE },
     { 'P', KBD_PAUSE },
     { 'R', KBD_RESUME },
-    { VK_SPACE, KBD_INC_SPEED },
-    { VK_OEM_2, KBD_DEC_SPEED },  // '/' key
+    { VK_OEM_PLUS, KBD_INC_SPEED },   // '+' key for speed up
+    { VK_ADD, KBD_INC_SPEED },         // Numpad + for speed up
+    { VK_OEM_MINUS, KBD_DEC_SPEED },  // '-' key for slow down
+    { VK_SUBTRACT, KBD_DEC_SPEED },   // Numpad - for slow down
+    { VK_OEM_2, KBD_DEC_SPEED },      // '/' key for slow down (legacy)
     { 'S', KBD_UP },
     { VK_UP, KBD_UP },
     { 'X', KBD_DOWN },

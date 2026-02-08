@@ -37,7 +37,7 @@ int flight_roll;
 int flight_climb;
 int front_shield;
 int aft_shield;
-int energy;
+int g_energy;
 int laser_temp;
 int detonate_bomb;
 int auto_pilot;

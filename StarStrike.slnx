@@ -9,8 +9,6 @@
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
     <File Path="README.md" />
-    <File Path="vcpkg-configuration.json" />
-    <File Path="vcpkg.json" />
   </Folder>
   <Project Path="NeuronClient/NeuronClient.vcxproj" Id="892ecec9-aac2-4ff4-ad71-d6c4baa48281" />
   <Project Path="NeuronCore/NeuronCore.vcxproj" Id="d437df12-5193-4fb5-859f-0a728702c521" />

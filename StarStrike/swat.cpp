@@ -84,9 +84,8 @@ void clear_universe (void)
 
 int add_new_ship (int ship_type, double x, double y, double z, struct vector *rotmat, int rotx, int rotz)
 {
-	int i;
 
-	for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+  for (int i = 0; i < MAX_UNIV_OBJECTS; i++)
 	{
 		if (universe[i].type == 0)
 		{
@@ -139,15 +138,14 @@ int add_new_ship (int ship_type, double x, double y, double z, struct vector *ro
 
 void check_missiles (int un)
 {
-	int i;
-	
-	if (missile_target == un)
+
+  if (missile_target == un)
 	{
 		missile_target = MISSILE_UNARMED;
 		info_message ("Target Lost");
 	}
 
-	for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+	for (int i = 0; i < MAX_UNIV_OBJECTS; i++)
 	{
 		if ((universe[i].type == SHIP_MISSILE) && (universe[i].target == un))
 			universe[i].flags |= FLG_DEAD;
@@ -157,11 +155,9 @@ void check_missiles (int un)
 
 void remove_ship (int un)
 {
-	int type;
-	Matrix rotmat;
-	int px,py,pz;
-	
-	type = universe[un].type;
+  Matrix rotmat;
+
+  int type = universe[un].type;
 	
 	if (type == 0)
 		return;
@@ -176,9 +172,9 @@ void remove_ship (int un)
 	if ((type == SHIP_CORIOLIS) || (type == SHIP_DODEC))
 	{
 		set_init_matrix (rotmat);
-		px = universe[un].location.x;
-		py = universe[un].location.y;
-		pz = universe[un].location.z;
+		int px = universe[un].location.x;
+		int py = universe[un].location.y;
+		int pz = universe[un].location.z;
 		
 		py &= 0xFFFF;
 		py |= 0x60000;
@@ -190,9 +186,8 @@ void remove_ship (int un)
 
 void add_new_station (double sx, double sy, double sz, Matrix rotmat)
 {
-	int station;
-	
-	station = (current_planet_data.techlevel >= 10) ? SHIP_DODEC : SHIP_CORIOLIS;
+
+  int station = (current_planet_data.techlevel >= 10) ? SHIP_DODEC : SHIP_CORIOLIS;
 	universe[1].type = 0;
 	add_new_ship (station, sx, sy, sz, rotmat, 0, -127);					
 }
@@ -212,19 +207,16 @@ void reset_weapons (void)
  
 void launch_enemy (int un, int type, int flags, int bravery)
 {
-	int newship;
-	struct univ_object *ns;
-	
-	newship = add_new_ship (type, universe[un].location.x, universe[un].location.y,
-							universe[un].location.z, universe[un].rotmat,
-							universe[un].rotx, universe[un].rotz);
+
+  int newship = add_new_ship(type, universe[un].location.x, universe[un].location.y, universe[un].location.z, universe[un].rotmat,
+                             universe[un].rotx, universe[un].rotz);
 
 	if (newship == -1)
 	{
 		return;
 	}
 
-	ns = &universe[newship];
+	struct univ_object* ns = &universe[newship];
 	
 	if ((universe[un].type == SHIP_CORIOLIS) || (universe[un].type == SHIP_DODEC))
 	{
@@ -250,7 +242,7 @@ void launch_enemy (int un, int type, int flags, int bravery)
 
 void launch_loot (int un, int loot)
 {
-	int i,cnt;
+	int cnt;
 
 	if (loot == SHIP_ROCK)
 	{
@@ -266,7 +258,7 @@ void launch_loot (int un, int loot)
 		cnt &= 15;
 	}
 
-	for (i = 0; i < cnt; i++)
+	for (int i = 0; i < cnt; i++)
 	{
 		launch_enemy (un, loot, 0,0);
 	}
@@ -277,12 +269,11 @@ void launch_loot (int un, int loot)
 
 int in_target (int type, double x, double y, double z)
 {
-	double size;
-	
-	if (z < 0)
+
+  if (z < 0)
 		return 0;
 		
-	size = ship_list[type]->size;
+	double size = ship_list[type]->size;
 
 	return ((x*x + y*y) <= size);	
 }
@@ -291,11 +282,9 @@ int in_target (int type, double x, double y, double z)
 
 void make_angry (int un)
 {
-	int type;
-	int flags;
-	
-	type = universe[un].type;
-	flags = universe[un].flags;
+
+  int type = universe[un].type;
+	int flags = universe[un].flags;
 
 	if (flags & FLG_INACTIVE)
 		return;
@@ -333,9 +322,8 @@ void explode_object (int un)
 
 void check_target (int un, struct univ_object *flip)
 {
-	struct univ_object *univ;
-	
-	univ = &universe[un];
+
+  struct univ_object* univ = &universe[un];
 	
 	if (in_target (univ->type, flip->location.x, flip->location.y, flip->location.z))
 	{
@@ -423,9 +411,7 @@ void unarm_missile (void)
 
 void fire_missile (void)
 {
-	int newship;
-	struct univ_object *ns;
-	Matrix rotmat;
+  Matrix rotmat;
 
 	if (missile_target < 0)
 		return;
@@ -434,7 +420,7 @@ void fire_missile (void)
 	rotmat[2].z = 1.0;
 	rotmat[0].x = -1.0;
 	
-	newship = add_new_ship (SHIP_MISSILE, 0, -28, 14, rotmat, 0, 0);
+	int newship = add_new_ship(SHIP_MISSILE, 0, -28, 14, rotmat, 0, 0);
 
 	if (newship == -1)
 	{
@@ -442,7 +428,7 @@ void fire_missile (void)
 		return;
 	}
 
-	ns = &universe[newship];
+	struct univ_object* ns = &universe[newship];
 	
 	ns->velocity = flight_speed * 2;
 	ns->flags = FLG_ANGRY;
@@ -460,15 +446,12 @@ void fire_missile (void)
 
 
 void track_object (struct univ_object *ship, double direction, Vector nvec)
-{	
-	double dir;
-	int rat;
-	double rat2;
+{
+
+  int rat = 3;
+	double rat2 = 0.111;
 	
-	rat = 3;
-	rat2 = 0.111;
-	
-	dir = vector_dot_product (&nvec, &ship->rotmat[1]);
+	double dir = vector_dot_product(&nvec, &ship->rotmat[1]);
 
 	if (direction < -0.861)
 	{
@@ -504,14 +487,11 @@ void track_object (struct univ_object *ship, double direction, Vector nvec)
 
 void missile_tactics (int un)
 {
-	struct univ_object *missile;
-	struct univ_object *target;
-	Vector vec;
+  Vector vec;
 	Vector nvec;
-	double direction;
-	double cnt2 = 0.223;
+  double cnt2 = 0.223;
 	
-	missile = &universe[un];
+	struct univ_object* missile = &universe[un];
 	
 	if (ecm_active)
 	{
@@ -536,7 +516,7 @@ void missile_tactics (int un)
 	}
 	else
 	{
-		target = &universe[missile->target];
+		struct univ_object* target = &universe[missile->target];
 
 		vec.x = missile->location.x - target->location.x;
 		vec.y = missile->location.y - target->location.y;
@@ -562,7 +542,7 @@ void missile_tactics (int un)
 	}	
 
 	nvec = unit_vector(&vec);
-	direction = vector_dot_product (&nvec, &missile->rotmat[2]); 
+	double direction = vector_dot_product(&nvec, &missile->rotmat[2]); 
 	nvec.x = -nvec.x;
 	nvec.y = -nvec.y;
 	nvec.z = -nvec.z;
@@ -594,33 +574,25 @@ void missile_tactics (int un)
 
 void launch_shuttle (void)
 {
-	int type;
 
-	if ((ship_count[SHIP_TRANSPORTER] != 0) ||
-		(ship_count[SHIP_SHUTTLE] != 0) ||
-		(rand255() < 253) || (auto_pilot))
+  if ((ship_count[SHIP_TRANSPORTER] != 0) ||
+      (ship_count[SHIP_SHUTTLE] != 0) ||
+      (rand255() < 253) || (auto_pilot))
 		return;
 
-	type = rand255() & 1 ? SHIP_SHUTTLE : SHIP_TRANSPORTER; 
+	int type = rand255() & 1 ? SHIP_SHUTTLE : SHIP_TRANSPORTER; 
 	launch_enemy (1, type, FLG_HAS_ECM | FLG_FLY_TO_PLANET, 113);
 }
 
 
 void tactics (int un)
 {
-	int type;
-	int energy;
-	int maxeng;
-	int flags;
-	struct univ_object *ship;
-	Vector nvec;
+  Vector nvec;
 	double cnt2 = 0.223;
-	double direction;
-	int attacking;
-	
-	ship = &universe[un];
-	type = ship->type;
-	flags = ship->flags;
+
+  struct univ_object* ship = &universe[un];
+	int type = ship->type;
+	int flags = ship->flags;
 
 	if ((type == SHIP_PLANET) || (type == SHIP_SUN))
 		return;
@@ -734,8 +706,8 @@ void tactics (int un)
 			ship->rotz = -(ship->rotz & 127);
 	}
 	
-	maxeng = ship_list[type]->energy;
-	energy = ship->energy;
+	int maxeng = ship_list[type]->energy;
+	int energy = ship->energy;
 
 	if (energy < (maxeng / 2))
 	{
@@ -763,7 +735,7 @@ void tactics (int un)
 	}
 
 	nvec = unit_vector(&universe[un].location);
-	direction = vector_dot_product (&nvec, &ship->rotmat[2]); 
+	double direction = vector_dot_product(&nvec, &ship->rotmat[2]); 
 	
 	if 	((ship->distance < 8192) && (direction <= -0.833) &&
 		 (ship_list[type]->laser_strength != 0))
@@ -808,7 +780,7 @@ void tactics (int un)
 		return;
 	} 
 
-	attacking = 0;
+	int attacking = 0;
 
 	if ((fabs(ship->location.z) >= 768) ||
 		(fabs(ship->location.x) >= 512) ||
@@ -913,8 +885,8 @@ int fire_laser (void)
 
 			snd_play_sample (SND_PULSE);
 			laser_temp += 8;
-			if (energy > 1)
-				energy--;
+      if (g_energy > 1)
+        g_energy--;
 			
 			laser_x = ((rand() & 3) + 128 - 2) * GFX_SCALE;
 			laser_y = ((rand() & 3) + 96 - 2) * GFX_SCALE;
@@ -945,21 +917,19 @@ void cool_laser (void)
 int create_other_ship (int type)
 {
 	Matrix rotmat;
-	int x,y,z;
-	int newship;
-	
-	set_init_matrix (rotmat);
 
-	z = 12000;
-	x = 1000 + (randint() & 8191);
-	y = 1000 + (randint() & 8191);
+  set_init_matrix (rotmat);
+
+	int z = 12000;
+	int x = 1000 + (randint() & 8191);
+	int y = 1000 + (randint() & 8191);
 
 	if (rand255() > 127)
 		x = -x;
 	if (rand255() > 127)
 		y = -y;
 
-	newship = add_new_ship (type, x, y, z, rotmat, 0, 0);
+	int newship = add_new_ship(type, x, y, z, rotmat, 0, 0);
 
 	return newship;
 }
@@ -967,9 +937,8 @@ int create_other_ship (int type)
 
 void create_thargoid (void)
 {
-	int newship;
-	
-	newship = create_other_ship (SHIP_THARGOID);
+
+  int newship = create_other_ship(SHIP_THARGOID);
 	if (newship != -1)
 	{
 		universe[newship].flags = FLG_ANGRY | FLG_HAS_ECM;
@@ -984,12 +953,11 @@ void create_thargoid (void)
 
 void create_cougar (void)
 {
-	int newship;
 
-	if (ship_count[SHIP_COUGAR] != 0)
+  if (ship_count[SHIP_COUGAR] != 0)
 		return;
 	
-	newship = create_other_ship (SHIP_COUGAR);
+	int newship = create_other_ship(SHIP_COUGAR);
 	if (newship != -1)
 	{
 		universe[newship].flags = FLG_HAS_ECM; // | FLG_CLOAKED;
@@ -1002,20 +970,17 @@ void create_cougar (void)
 
 void create_trader (void)
 {
-	int newship;
-	int rnd;
-	int type;
 
-	type = SHIP_COBRA3 + (rand255() & 3);
+  int type = SHIP_COBRA3 + (rand255() & 3);
 
-	newship = create_other_ship (type);
+	int newship = create_other_ship(type);
 	
 	if (newship != -1)
 	{
 		universe[newship].rotmat[2].z = -1.0;
 		universe[newship].rotz = rand255() & 7;
 		
-		rnd = rand255();
+		int rnd = rand255();
 		universe[newship].velocity = (rnd & 31) | 16;
 		universe[newship].bravery = rnd / 2;
 
@@ -1030,23 +995,21 @@ void create_trader (void)
 
 void create_lone_hunter (void)
 {
-	int rnd;
-	int type;
-	int newship;
+  int type;
 
-	if ((cmdr.mission == 1) && (cmdr.galaxy_number == 1) &&
-		(docked_planet.d == 144) && (docked_planet.b == 33) &&
-		(ship_count[SHIP_CONSTRICTOR] == 0))
+  if ((cmdr.mission == 1) && (cmdr.galaxy_number == 1) &&
+      (docked_planet.d == 144) && (docked_planet.b == 33) &&
+      (ship_count[SHIP_CONSTRICTOR] == 0))
 	{
 		type = SHIP_CONSTRICTOR;
 	}
 	else
 	{
-		rnd = rand255();
+		int rnd = rand255();
 		type = SHIP_COBRA3_LONE + (rnd & 3) + (rnd > 127);
 	}
 		
-	newship = create_other_ship (type);
+	int newship = create_other_ship(type);
 
 	if (newship != -1)
 	{
@@ -1065,8 +1028,7 @@ void create_lone_hunter (void)
 
 void check_for_asteroids (void)
 {
-	int newship;
-	int type;
+  int type;
 
 	if ((rand255() >= 35) || (ship_count[SHIP_ASTEROID] >= 3))
 		return;
@@ -1076,7 +1038,7 @@ void check_for_asteroids (void)
 	else
 		type = SHIP_ASTEROID;
 		
-	newship = create_other_ship (type);
+	int newship = create_other_ship(type);
 	
 	if (newship != -1)
 	{
@@ -1093,17 +1055,15 @@ void check_for_asteroids (void)
 
 void check_for_cops (void)
 {
-	int newship;
-	int offense;
 
-	offense = carrying_contraband() * 2;
+  int offense = carrying_contraband() * 2;
 	if (ship_count[SHIP_VIPER] == 0)
 		offense |= cmdr.legal_status;
 
 	if (rand255() >= offense)
 		return;
 
-	newship = create_other_ship (SHIP_VIPER);
+	int newship = create_other_ship(SHIP_VIPER);
 	
 	if (newship != -1)
 	{
@@ -1118,16 +1078,10 @@ void check_for_cops (void)
 
 void check_for_others (void)
 {
-	int x,y,z;
-	int newship;
-	Matrix rotmat;
-	int gov;
-	int rnd;
-	int type;
-	int i;
+  Matrix rotmat;
 
-	gov = current_planet_data.government; 
-	rnd = rand255();
+  int gov = current_planet_data.government; 
+	int rnd = rand255();
 
 	if ((gov != 0) && ((rnd >= 90) || ((rnd & 7) < gov)))
 		return;	
@@ -1142,9 +1096,9 @@ void check_for_others (void)
 	
 	set_init_matrix (rotmat);
 
-	z = 12000;
-	x = 1000 + (randint() & 8191);
-	y = 1000 + (randint() & 8191);
+	int z = 12000;
+	int x = 1000 + (randint() & 8191);
+	int y = 1000 + (randint() & 8191);
 
 	if (rand255() > 127)
 		x = -x;
@@ -1153,10 +1107,10 @@ void check_for_others (void)
 
 	rnd = rand255() & 3;
 	
-	for (i = 0; i <= rnd; i++)
+	for (int i = 0; i <= rnd; i++)
 	{
-		type = SHIP_SIDEWINDER + (rand255() & rand255() & 7);
-		newship = add_new_ship (type, x, y, z, rotmat, 0, 0);
+		int type = SHIP_SIDEWINDER + (rand255() & rand255() & 7);
+		int newship = add_new_ship(type, x, y, z, rotmat, 0, 0);
 		if (newship != -1)
 		{
 			universe[newship].flags = FLG_ANGRY;
@@ -1211,13 +1165,12 @@ void random_encounter (void)
 
 void abandon_ship (void)
 {
-	int i;
 
-	cmdr.escape_pod = 0;
+  cmdr.escape_pod = 0;
 	cmdr.legal_status = 0;
 	cmdr.fuel = myship.max_fuel;
 	
-	for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
+	for (int i = 0; i < NO_OF_STOCK_ITEMS; i++)
 		cmdr.current_cargo[i] = 0;
 	
 	snd_play_sample (SND_DOCK);					

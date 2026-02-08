@@ -1,24 +1,4 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-/**
- * SDL/OpenGL Port by Mark Follett 2001-2002
- * email: <mef123@geocities.com>
- **/
-
-#ifndef ELITE_H
-#define ELITE_H
+#pragma once
 
 #include "planet.h"
 #include "trade.h"
@@ -159,7 +139,7 @@ extern int flight_roll;
 extern int flight_climb;
 extern int front_shield;
 extern int aft_shield;
-extern int energy;
+extern int g_energy;
 extern int laser_temp;
 extern int mcount;
 extern int detonate_bomb;
@@ -174,6 +154,3 @@ extern char save_game_dir[256];
 extern int music_mode;
 
 void restore_saved_commander ();
-
-
-#endif

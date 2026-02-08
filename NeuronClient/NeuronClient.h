@@ -14,7 +14,7 @@
 
 using namespace winrt;
 
-#include "Audio.h"
+#include "AudioCore.h"
 #include "DirectXHelper.h"
 #include "GraphicsCore.h"
 #include "PixProfiler.h"

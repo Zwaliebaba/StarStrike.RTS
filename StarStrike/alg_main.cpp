@@ -55,7 +55,7 @@ void initialise_game(void)
   docked = 1;
   front_shield = 255;
   aft_shield = 255;
-  energy = 255;
+  g_energy = 255;
   draw_lasers = 0;
   mcount = 0;
   hyper_ready = 0;
@@ -213,13 +213,11 @@ void switch_to_screen(int screen)
   {
     case SCR_INTRO_ONE:
       gfx_set_camera(0);
-      snd_play_midi(SND_ELITE_THEME, 1);
       initialise_intro1();
       break;
 
     case SCR_INTRO_TWO:
       gfx_set_camera(0);
-      snd_play_midi(SND_BLUE_DANUBE, 1);
       initialise_intro2();
 
       flight_speed = 3;
@@ -817,13 +815,11 @@ void handle_key_event(int key, char ascii)
     case SCR_INTRO_ONE:
       if (key == KBD_Y)
       {
-        snd_stop_midi();
         switch_to_screen(SCR_LOAD_CMDR);
       }
 
       if (key == KBD_N)
       {
-        snd_stop_midi();
         switch_to_screen(SCR_INTRO_TWO);
       }
       break;
@@ -831,7 +827,6 @@ void handle_key_event(int key, char ascii)
     case SCR_INTRO_TWO:
       if (key == KBD_INC_SPEED || key == KBD_FIRE)
       {
-        snd_stop_midi();
         dock_player();
         switch_to_screen(SCR_CMDR_STATUS);
       }
@@ -1043,7 +1038,7 @@ void update_simulation(void)
 
   if ((mcount & 31) == 10)
   {
-    if (energy < 50)
+    if (g_energy < 50)
     {
       info_message("ENERGY LOW");
       snd_play_sample(SND_BEEP);

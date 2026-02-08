@@ -50,7 +50,7 @@ void draw_equip_screen (void);
 void draw_market_screen (void);
 void center_cursor_on_planet(struct galaxy_seed planet);
 void display_info_text (void);
-void display_abbreviated_status (struct commander *cmdr);
+void display_abbreviated_status (struct commander *_cmdr);
 void initialize_market_screen (void);
 
 extern char line1[];

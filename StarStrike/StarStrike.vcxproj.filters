@@ -96,12 +96,6 @@
     <None Include="packages.config">
       <Filter>Project Files</Filter>
     </None>
-    <None Include="Assets\danube.mid">
-      <Filter>Assets</Filter>
-    </None>
-    <None Include="Assets\theme.mid">
-      <Filter>Assets</Filter>
-    </None>
     <None Include="Assets\elite.dat">
       <Filter>Assets</Filter>
     </None>
@@ -139,7 +133,6 @@
     <ClCompile Include="random.cpp" />
     <ClCompile Include="shipdata.cpp" />
     <ClCompile Include="shipface.cpp" />
-    <ClCompile Include="sound.cpp" />
     <ClCompile Include="space.cpp" />
     <ClCompile Include="stars.cpp" />
     <ClCompile Include="swat.cpp" />
@@ -149,12 +142,13 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="dirlist.cpp" />
     <ClCompile Include="loadsave.cpp" />
-    <ClCompile Include="mp3.cpp" />
     <ClCompile Include="StarStrike.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="Win32Input.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="GdiBitmap.cpp" />
+    <ClCompile Include="sound.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -182,10 +176,10 @@
     <ClInclude Include="dirlist.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="loadsave.h" />
-    <ClInclude Include="mp3.h" />
     <ClInclude Include="StarStrike.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="Win32Input.h" />
+    <ClInclude Include="GdiBitmap.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Assets\Audio\beep.wav">
@@ -228,6 +222,12 @@
       <Filter>Assets\Audio</Filter>
     </Media>
     <Media Include="Assets\Audio\pulse.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\Ambient.wav">
+      <Filter>Assets\Audio</Filter>
+    </Media>
+    <Media Include="Assets\Audio\OpeningTheme.wav">
       <Filter>Assets\Audio</Filter>
     </Media>
   </ItemGroup>

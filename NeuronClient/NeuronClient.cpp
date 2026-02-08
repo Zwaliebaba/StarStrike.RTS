@@ -5,7 +5,7 @@
 namespace
 {
   float windowWidthAdd, windowHeightAdd;
-  constexpr bool SHOW_BORDER = false;
+  constexpr bool SHOW_BORDER = true;
 } // namespace
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -73,6 +73,8 @@ void ClientEngine::Startup(const wchar_t* _gameName, Windows::Foundation::Size _
   // Graphics::Core::Startup();
   // Graphics::Core::SetWindow(m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
+  Audio::Core::Startup();
+
   ShowWindow(m_hwnd, nCmdShow);
 }
 
@@ -92,6 +94,9 @@ void ClientEngine::Shutdown()
   }
 
   // Graphics::Core::Shutdown();  // Disabled for OpenGL projects
+
+  Audio::Core::Shutdown();
+
   CoreEngine::Shutdown();
 }
 

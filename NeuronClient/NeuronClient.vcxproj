@@ -24,7 +24,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AudioEngine.cpp" />
+    <ClCompile Include="AudioCore.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="GpuBuffer.cpp" />
@@ -38,16 +38,11 @@
     <ClCompile Include="ResourceStateTracker.cpp" />
     <ClCompile Include="RootSignature.cpp" />
     <ClCompile Include="SamplerManager.cpp" />
-    <ClCompile Include="SoundCommon.cpp" />
-    <ClCompile Include="SoundEffect.cpp" />
-    <ClCompile Include="SoundEffectInstance.cpp" />
     <ClCompile Include="Strings.cpp" />
     <ClCompile Include="WAVFileReader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Audio.h" />
-    <ClInclude Include="AudioDefs.h" />
-    <ClInclude Include="AudioEngine.h" />
+    <ClInclude Include="AudioCore.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="d3dx12.h" />
@@ -65,7 +60,7 @@
     <ClInclude Include="ResourceStateTracker.h" />
     <ClInclude Include="RootSignature.h" />
     <ClInclude Include="SamplerManager.h" />
-    <ClInclude Include="SoundCommon.h" />
+    <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="Strings.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="WAVFileReader.h" />
@@ -112,7 +107,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgEnableManifest>false</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

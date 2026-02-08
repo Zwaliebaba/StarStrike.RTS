@@ -9,19 +9,23 @@
 #include "OpenGLContext.h"
 #include "GL/gl.h"
 
-// TODO: Phase 4 will replace SDL bitmap loading with Win32 GDI
-#include "SDL/SDL.h"
+#include "GdiBitmap.h"
 
 #define PI 3.1415926535898
 
 #define FILLED_CIRCLE    1
 #define WIREFRAME_CIRCLE 2
 
+// GL_BGR_EXT may not be defined in older OpenGL headers
+#ifndef GL_BGR_EXT
+#define GL_BGR_EXT 0x80E0
+#endif
+
 GLuint texture[20];
 GLuint Elite_1_base;
 GLuint Elite_2_base;
 
-SDL_Surface *scanner_image;
+std::unique_ptr<Neuron::GdiBitmap> scanner_image;
 
 int clip_tx;
 int clip_ty;
@@ -31,52 +35,26 @@ int clip_by;
 Matrix4 camera;
 
 /*
- * Return the pixel value at (x, y)
- * NOTE: The surface must be locked before calling this!
+ * Return the pixel value at (x, y) from a GdiBitmap
  */
-Uint32 gfx_get_pixel(SDL_Surface *surface, int x, int y)
+uint32_t gfx_get_pixel(const Neuron::GdiBitmap* bmp, int x, int y)
 {
-  int bpp = surface->format->BytesPerPixel;
-  /* Here p is the address to the pixel we want to retrieve */
-  Uint8 *p = static_cast<Uint8 *>(surface->pixels) + y * surface->pitch + x * bpp;
-
-  switch (bpp)
-  {
-    case 1:
-      return *p;
-
-    case 2:
-      return *(Uint16 *) p;
-
-    case 3:
-    {
-      if (SDL_BYTEORDER == SDL_BIG_ENDIAN) return p[0] << 16 | p[1] << 8 | p[2];
-      return p[0] | p[1] << 8 | p[2] << 16;
-    }
-
-    case 4:
-      return *(Uint32 *) p;
-
-    default:
-      return 0;/* shouldn't happen, but avoids warnings */
-  }
+  return Neuron::GdiBitmapLoader::GetPixel(bmp, x, y);
 }
 
-void gfx_get_char_size(SDL_Surface *bmp, int x, int y, int *size_x, int *size_y)
+void gfx_get_char_size(const Neuron::GdiBitmap* bmp, int x, int y, int* size_x, int* size_y)
 {
   *size_x = 0;
   *size_y = 0;
 
-  SDL_LockSurface(bmp);
-
   // Auto-detect mask convention by sampling the corner pixel (should be background)
-  Uint32 background = gfx_get_pixel(bmp, (x * 32), (y * 32));
+  uint32_t background = gfx_get_pixel(bmp, (x * 32), (y * 32));
 
   for (int dy = 0; dy < 32; dy++)
   {
     for (int dx = 0; dx < 32; dx++)
     {
-      Uint32 pixel = gfx_get_pixel(bmp, (x * 32) + dx, (y * 32) + dy);
+      uint32_t pixel = gfx_get_pixel(bmp, (x * 32) + dx, (y * 32) + dy);
 
       // If this pixel differs from background, it's a character pixel
       if (pixel != background)
@@ -87,84 +65,58 @@ void gfx_get_char_size(SDL_Surface *bmp, int x, int y, int *size_x, int *size_y)
     }
   }
 
-  SDL_UnlockSurface(bmp);
-
   // Add 1 to convert from max index to size, ensure minimum spacing
   (*size_x)++;
   (*size_y)++;
 }
 
-SDL_Surface *gfx_load_bitmap(const char *filename)
+std::unique_ptr<Neuron::GdiBitmap> gfx_load_bitmap(const char* filename)
 {
   auto fname = FileSys::GetHomeDirectoryA() + filename;
-  SDL_Surface *bmap = SDL_LoadBMP(fname.c_str());
-  if (bmap == nullptr)
+  auto bmap = Neuron::GdiBitmapLoader::LoadBMP(fname);
+  if (!bmap)
   {
-    Fatal("Failed to load bitmap '{}': {}", fname, SDL_GetError());
+    Fatal("Failed to load bitmap '{}'", fname);
   }
   return bmap;
 }
 
-GLuint gfx_load_texture(const char *filename, int x, int y, int size)
+GLuint gfx_load_texture(const char* filename, int x, int y, int size)
 {
-  SDL_Surface *bmp, *bmp1;
-  GLuint texture;
-  SDL_Rect rect, rect1;
-  Uint32 rmask, gmask, bmask, amask;
+  GLuint tex;
 
-  /* SDL interprets each pixel as a 32-bit number, so our masks must depend
-     on the endianness (byte order) of the machine */
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  rmask = 0xff000000; gmask = 0x00ff0000; bmask = 0x0000ff00; amask = 0x00000000;
-#else
-  rmask = 0x000000ff;
-  gmask = 0x0000ff00;
-  bmask = 0x00ff0000;
-  amask = 0x00000000;
-#endif
-
-  bmp = gfx_load_bitmap(filename);
-  if (bmp == nullptr)
+  auto bmp = gfx_load_bitmap(filename);
+  if (!bmp)
   {
     Fatal("Error reading bitmap file: {}.\n", filename);
   }
 
-  bmp1 = SDL_CreateRGBSurface(SDL_SWSURFACE, size, size, 24, rmask, gmask, bmask, amask);
+  auto bmp1 = Neuron::GdiBitmapLoader::CreateRGB(size, size, 24);
+  if (!bmp1)
+  {
+    Fatal("Error creating RGB surface for texture.\n");
+  }
 
-  SDL_FillRect(bmp1, nullptr, 0);
+  // Blit the source region to the destination
+  Neuron::GdiBitmapLoader::Blit(bmp.get(), x, y, size, size, bmp1.get(), 0, 0);
 
-  rect.x = x;
-  rect.y = y;
-  rect.w = size;
-  rect.h = size;
+  glGenTextures(1, &tex);
+  glBindTexture(GL_TEXTURE_2D, tex);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, size, size, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, bmp1->pixels);
 
-  rect1.x = 0;
-  rect1.y = 0;
-  rect1.w = size;
-  rect1.h = size;
-
-  SDL_BlitSurface(bmp, &rect, bmp1, &rect1);
-
-  glGenTextures(1, &texture);
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
-  glTexImage2D(GL_TEXTURE_2D, 0, 3, size, size, 0, GL_RGB, GL_UNSIGNED_BYTE, bmp1->pixels);
-
-  SDL_FreeSurface(bmp);
-  SDL_FreeSurface(bmp1);
-
-  return texture;
+  return tex;
 }
 
-GLuint gfx_load_font(const char *filename, const char *maskname)
+GLuint gfx_load_font(const char* filename, const char* maskname)
 {
   int size_x, size_y;
   int cx;
 
-  SDL_Surface* fontmask = gfx_load_bitmap(maskname);
+  auto fontmask = gfx_load_bitmap(maskname);
   if (!fontmask)
   {
     Fatal("Error reading font bitmap file: {}.\n", maskname);
@@ -191,7 +143,7 @@ GLuint gfx_load_font(const char *filename, const char *maskname)
         cx = x;
       }
 
-      gfx_get_char_size(fontmask, x, y, &size_x, &size_y);
+      gfx_get_char_size(fontmask.get(), x, y, &size_x, &size_y);
 
       glBegin(GL_QUADS);
       glTexCoord2d(cx * 0.125, y * 0.125);
@@ -207,8 +159,6 @@ GLuint gfx_load_font(const char *filename, const char *maskname)
       glEndList();
     }
   }
-
-  SDL_FreeSurface(fontmask);
 
   return base;
 }
@@ -247,7 +197,6 @@ int gfx_graphics_startup(void)
   if (!OpenGLContext::Startup(ClientEngine::Window()))
   {
     Fatal("Failed to initialize OpenGL context");
-    return 1;
   }
 
   glClearColor(0, 0, 0, 1.0);
@@ -295,7 +244,18 @@ int gfx_graphics_startup(void)
   return 0;
 }
 
-void gfx_set_color(int index) { glColor3ubv((GLubyte *) &(scanner_image->format->palette->colors[index])); }
+void gfx_set_color(int index)
+{
+  if (scanner_image && scanner_image->palette && index < scanner_image->paletteSize)
+  {
+    const RGBQUAD& color = scanner_image->palette[index];
+    glColor3ub(color.rgbRed, color.rgbGreen, color.rgbBlue);
+  }
+  else
+  {
+    glColor3ub(255, 255, 255);
+  }
+}
 
 void apply_standard_transformation(void) { glTranslatef(GFX_X_OFFSET, GFX_Y_OFFSET, 0.0); }
 
@@ -350,13 +310,8 @@ GLvoid gfx_gl_cen_print(int x, int y, const char *string, int base, int col)
 
 void gfx_graphics_shutdown(void)
 {
-  // Free SDL surface (will be replaced in Phase 4 with Win32 bitmap)
-  if (scanner_image)
-  {
-    SDL_FreeSurface(scanner_image);
-    scanner_image = nullptr;
-  }
-  
+  scanner_image.reset();
+
   // Shutdown OpenGL context
   OpenGLContext::Shutdown();
 }

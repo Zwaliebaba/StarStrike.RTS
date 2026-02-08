@@ -18,12 +18,12 @@ namespace Neuron
   class BinaryFile : public FileSys
   {
     public:
-      [[nodiscard]] static byte_buffer_t ReadFile(const std::wstring& _fileName);
+    [[nodiscard]] static byte_buffer_t ReadFile(std::wstring_view _fileName);
   };
 
   class TextFile : public FileSys
   {
     public:
-      [[nodiscard]] static std::wstring ReadFile(const std::wstring& _fileName);
+    [[nodiscard]] static std::wstring ReadFile(std::wstring_view _fileName);
   };
 }

@@ -89,7 +89,7 @@
       <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\zwali\source\repos\StarStrike.RTS\vcpkg_installed\x64-windows\x64-windows\lib\manual-link\SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
@@ -147,9 +147,6 @@
     the Windows App SDK Nuget package has not yet been restored.
   -->
   <ItemGroup>
-    <None Include="Assets\danube.mid">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
     <None Include="Assets\elite.dat">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </None>
@@ -157,9 +154,6 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </None>
     <None Include="Assets\newscan.cfg">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\theme.mid">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </None>
     <None Include="packages.config" />
@@ -174,11 +168,11 @@
     <ClCompile Include="docked.cpp" />
     <ClCompile Include="elite.cpp" />
     <ClCompile Include="file.cpp" />
+    <ClCompile Include="GdiBitmap.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="intro.cpp" />
     <ClCompile Include="loadsave.cpp" />
     <ClCompile Include="missions.cpp" />
-    <ClCompile Include="mp3.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="options.cpp" />
     <ClCompile Include="pch.cpp">
@@ -208,13 +202,13 @@
     <ClInclude Include="docked.h" />
     <ClInclude Include="elite.h" />
     <ClInclude Include="file.h" />
+    <ClInclude Include="GdiBitmap.h" />
     <ClInclude Include="gfx.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="intro.h" />
     <ClInclude Include="loadsave.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="missions.h" />
-    <ClInclude Include="mp3.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="options.h" />
     <ClInclude Include="pch.h" />
@@ -242,6 +236,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Media Include="Assets\Audio\Ambient.wav" />
     <Media Include="Assets\Audio\beep.wav" />
     <Media Include="Assets\Audio\boop.wav" />
     <Media Include="Assets\Audio\crash.wav" />
@@ -255,13 +250,14 @@
     <Media Include="Assets\Audio\incom2.wav" />
     <Media Include="Assets\Audio\launch.wav" />
     <Media Include="Assets\Audio\missile.wav" />
+    <Media Include="Assets\Audio\OpeningTheme.wav" />
     <Media Include="Assets\Audio\pulse.wav" />
   </ItemGroup>
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgEnableManifest>false</VcpkgEnableManifest>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

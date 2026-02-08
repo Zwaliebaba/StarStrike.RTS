@@ -5,18 +5,6 @@
     <ClCompile Include="NeuronClient.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Strings.cpp" />
-    <ClCompile Include="AudioEngine.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundCommon.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundEffect.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundEffectInstance.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
     <ClCompile Include="WAVFileReader.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
@@ -44,6 +32,9 @@
     <ClCompile Include="SamplerManager.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="AudioCore.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -51,18 +42,6 @@
     <ClInclude Include="NeuronClient.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Strings.h" />
-    <ClInclude Include="Audio.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioDefs.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioEngine.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundCommon.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
     <ClInclude Include="WAVFileReader.h">
       <Filter>Audio</Filter>
     </ClInclude>
@@ -108,6 +87,12 @@
     <ClInclude Include="VertexTypes.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="AudioCore.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEffect.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Project Files">
@@ -124,5 +109,13 @@
     <None Include="packages.config">
       <Filter>Project Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
+      <Filter>Project Files</Filter>
+    </Natvis>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
+      <Filter>Project Files</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

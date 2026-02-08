@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "WAVFileReader.h"
 
+using namespace Neuron::Audio;
+
 namespace
 {
   //--------------------------------------------------------------------------------------
@@ -105,7 +107,13 @@ static const RIFFChunk* FindChunk(_In_reads_bytes_(sizeBytes) const uint8_t* dat
     if (header->tag == tag)
       return header;
 
-    ptrdiff_t offset = header->size + sizeof(RIFFChunk);
+    // Check for overflow before computing offset
+    if (header->size > static_cast<size_t>(PTRDIFF_MAX) - sizeof(RIFFChunk))
+      return nullptr;
+
+    // RIFF chunks are WORD-aligned, round up to even boundary
+    auto alignedSize = (header->size + 1) & ~static_cast<uint32_t>(1);
+    ptrdiff_t offset = alignedSize + sizeof(RIFFChunk);
     ptr += offset;
   }
 
@@ -292,6 +300,10 @@ static HRESULT WaveFindLoopInfo(_In_reads_bytes_(wavDataSize) const uint8_t* wav
     {
       auto dlsSample = reinterpret_cast<const RIFFDLSSample*>(ptr);
 
+      // Check for overflow in loop count calculation
+      if (dlsSample->loopCount > (UINT32_MAX - dlsSample->size) / sizeof(DLSLoop))
+        return E_FAIL;
+
       if (dlsChunk->size >= (dlsSample->size + dlsSample->loopCount * sizeof(DLSLoop)))
       {
         auto loops = reinterpret_cast<const DLSLoop*>(ptr + dlsSample->size);
@@ -310,6 +322,7 @@ static HRESULT WaveFindLoopInfo(_In_reads_bytes_(wavDataSize) const uint8_t* wav
   }
 
   // Locate 'smpl' (Sample Chunk)
+  ptr = reinterpret_cast<const uint8_t*>(riffHeader) + sizeof(RIFFChunkHeader);
   auto midiChunk = FindChunk(ptr, riffChunk->size, FOURCC_MIDI_SAMPLE);
   if (midiChunk)
   {
@@ -321,6 +334,10 @@ static HRESULT WaveFindLoopInfo(_In_reads_bytes_(wavDataSize) const uint8_t* wav
     {
       auto midiSample = reinterpret_cast<const RIFFMIDISample*>(ptr);
 
+      // Check for overflow in loop count calculation
+      if (midiSample->loopCount > (UINT32_MAX - sizeof(RIFFMIDISample)) / sizeof(MIDILoop))
+        return E_FAIL;
+
       if (midiChunk->size >= (sizeof(RIFFMIDISample) + midiSample->loopCount * sizeof(MIDILoop)))
       {
         auto loops = reinterpret_cast<const MIDILoop*>(ptr + sizeof(RIFFMIDISample));
@@ -330,7 +347,7 @@ static HRESULT WaveFindLoopInfo(_In_reads_bytes_(wavDataSize) const uint8_t* wav
           {
             // Return 'forward' loop
             *pLoopStart = loops[j].start;
-            *pLoopLength = loops[j].end + loops[j].start + 1;
+            *pLoopLength = loops[j].end - loops[j].start + 1;
             return S_OK;
           }
         }
@@ -387,8 +404,10 @@ static HRESULT WaveFindTable(_In_reads_bytes_(wavDataSize) const uint8_t* wavDat
   return S_OK;
 }
 
+namespace Neuron::Audio
+{
 //--------------------------------------------------------------------------------------
-_Use_decl_annotations_ HRESULT Audio::LoadWAVAudioInMemory(_In_ const byte_buffer_t& wavData, const WAVEFORMATEX** wfx,
+_Use_decl_annotations_ HRESULT LoadWAVAudioInMemory(_In_ const byte_buffer_t& wavData, const WAVEFORMATEX** wfx,
                                                            const uint8_t** startAudio, uint32_t* audioBytes)
 {
   if (!wfx || !startAudio || !audioBytes)
@@ -410,7 +429,7 @@ _Use_decl_annotations_ HRESULT Audio::LoadWAVAudioInMemory(_In_ const byte_buffe
   return (dpds || seek) ? E_FAIL : S_OK;
 }
 
-_Use_decl_annotations_ HRESULT Audio::LoadWAVAudioInMemoryEx(_In_ const byte_buffer_t& _wavData, WAVData& result)
+_Use_decl_annotations_ HRESULT LoadWAVAudioInMemoryEx(_In_ const byte_buffer_t& _wavData, WAVData& result)
 {
   memset(&result, 0, sizeof(result));
 
@@ -443,3 +462,4 @@ _Use_decl_annotations_ HRESULT Audio::LoadWAVAudioInMemoryEx(_In_ const byte_buf
 
   return S_OK;
 }
+} // namespace Neuron::Audio
