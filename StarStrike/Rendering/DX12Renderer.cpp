@@ -225,11 +225,15 @@ namespace StarStrike
   void DX12Renderer::UpdateProjectionMatrix()
   {
     // Create orthographic projection for 2D rendering
-    // Maps (0,0) at top-left to (width, height) at bottom-right
+    // The game uses an 800x600 virtual coordinate system
+    // Map virtual coordinates to screen space
+    constexpr float VIRTUAL_WIDTH = 800.0f;
+    constexpr float VIRTUAL_HEIGHT = 600.0f;
+
     XMMATRIX proj = XMMatrixOrthographicOffCenterLH(
-      0.0f, sm_screenWidth,   // left, right
-      sm_screenHeight, 0.0f,  // bottom, top (flipped for top-left origin)
-      0.0f, 1.0f              // near, far
+      0.0f, VIRTUAL_WIDTH,   // left, right
+      VIRTUAL_HEIGHT, 0.0f,  // bottom, top (flipped for top-left origin)
+      0.0f, 1.0f             // near, far
     );
 
     XMStoreFloat4x4(&sm_constants.WorldViewProj, XMMatrixTranspose(proj));
@@ -436,6 +440,12 @@ namespace StarStrike
 
     auto cmdList = Core::GetCommandList();
 
+    // Set render target (without depth for 2D)
+    auto rtvHandle = Core::GetRenderTargetView();
+    cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+    cmdList->RSSetViewports(1, &Core::GetScreenViewport());
+    ApplyClipRegion();
+
     // Copy vertex data to upload buffer
     void* mapped = nullptr;
     size_t dataSize = sm_lineVertices.size() * sizeof(VertexPositionColor);
@@ -468,6 +478,12 @@ namespace StarStrike
       return;
 
     auto cmdList = Core::GetCommandList();
+
+    // Set render target (without depth for 2D)
+    auto rtvHandle = Core::GetRenderTargetView();
+    cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+    cmdList->RSSetViewports(1, &Core::GetScreenViewport());
+    ApplyClipRegion();
 
     // Copy vertex data to upload buffer
     void* mapped = nullptr;
@@ -621,6 +637,9 @@ namespace StarStrike
 
     auto cmdList = Core::GetCommandList();
 
+    // Ensure descriptor heaps are bound for shader-visible resources
+    DescriptorAllocator::SetDescriptorHeaps(cmdList);
+
     // Sort sprites by texture to minimize state changes (optional optimization)
     // For now, just render in order
 
@@ -670,6 +689,12 @@ namespace StarStrike
         }
 
         currentTexture = sprite.textureIndex;
+
+        // Set render target (without depth for 2D sprites)
+        auto rtvHandle = Core::GetRenderTargetView();
+        cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+        cmdList->RSSetViewports(1, &Core::GetScreenViewport());
+        ApplyClipRegion();
 
         // Set pipeline state for sprites
         cmdList->SetPipelineState(sm_spritePSO.GetPipelineStateObject());

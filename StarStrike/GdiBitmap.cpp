@@ -223,6 +223,22 @@ namespace Neuron
 
     switch (_bmp->bitsPerPixel)
     {
+      case 1:
+      {
+        int byteIndex = _x / 8;
+        int bitIndex = 7 - (_x % 8);  // MSB first
+        return (row[byteIndex] >> bitIndex) & 0x01;
+      }
+
+      case 4:
+      {
+        int byteIndex = _x / 2;
+        if (_x % 2 == 0)
+          return (row[byteIndex] >> 4) & 0x0F;  // High nibble
+        else
+          return row[byteIndex] & 0x0F;          // Low nibble
+      }
+
       case 8:
         return row[_x];
 

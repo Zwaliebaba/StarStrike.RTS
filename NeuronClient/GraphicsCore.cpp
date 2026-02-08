@@ -99,9 +99,7 @@ void Core::CreateDeviceResources()
     if (FAILED(hr) || !allowTearing)
     {
       m_options &= ~ALLOW_TEARING;
-#ifdef _DEBUG
-      OutputDebugStringA("WARNING: Variable refresh rate displays not supported");
-#endif
+      DebugTrace("WARNING: Variable refresh rate displays not supported");
     }
   }
 

@@ -1133,15 +1133,16 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
 
   Timer::Core::Startup();
 
+
   input_startup();
 
   read_config_file();
 
-  if (gfx_graphics_startup() == 1) return 1;
-
-  // Initialize DirectX 12 renderer (new rendering path)
+  // Initialize DirectX 12 renderers BEFORE loading graphics assets
   StarStrike::DX12Renderer::Startup();
   StarStrike::ShipRenderer::Startup();
+
+  if (gfx_graphics_startup() == 1) return 1;
 
   snd_sound_startup();
 
