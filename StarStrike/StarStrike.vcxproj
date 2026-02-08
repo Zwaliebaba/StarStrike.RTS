@@ -114,24 +114,67 @@
     <Image Include="Assets\ecm.bmp" />
     <Image Include="Assets\elitetx3.bmp" />
     <Image Include="Assets\greendot.bmp" />
-    <Image Include="Assets\LockScreenLogo.scale-200.png" />
+    <Image Include="Assets\Logos\LargeTile.scale-100.png" />
+    <Image Include="Assets\Logos\LargeTile.scale-125.png" />
+    <Image Include="Assets\Logos\LargeTile.scale-150.png" />
+    <Image Include="Assets\Logos\LargeTile.scale-200.png" />
+    <Image Include="Assets\Logos\LargeTile.scale-400.png" />
+    <Image Include="Assets\Logos\LockScreenLogo.scale-200.png" />
+    <Image Include="Assets\Logos\SmallTile.scale-100.png" />
+    <Image Include="Assets\Logos\SmallTile.scale-125.png" />
+    <Image Include="Assets\Logos\SmallTile.scale-150.png" />
+    <Image Include="Assets\Logos\SmallTile.scale-200.png" />
+    <Image Include="Assets\Logos\SmallTile.scale-400.png" />
+    <Image Include="Assets\Logos\SplashScreen.scale-100.png" />
+    <Image Include="Assets\Logos\SplashScreen.scale-125.png" />
+    <Image Include="Assets\Logos\SplashScreen.scale-150.png" />
+    <Image Include="Assets\Logos\SplashScreen.scale-200.png" />
+    <Image Include="Assets\Logos\SplashScreen.scale-400.png" />
+    <Image Include="Assets\Logos\Square150x150Logo.scale-100.png" />
+    <Image Include="Assets\Logos\Square150x150Logo.scale-125.png" />
+    <Image Include="Assets\Logos\Square150x150Logo.scale-150.png" />
+    <Image Include="Assets\Logos\Square150x150Logo.scale-200.png" />
+    <Image Include="Assets\Logos\Square150x150Logo.scale-400.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-unplated_targetsize-16.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-unplated_targetsize-32.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.altform-unplated_targetsize-48.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.scale-100.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.scale-125.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.scale-150.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.scale-200.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.scale-400.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.targetsize-16.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.targetsize-24.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.targetsize-256.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.targetsize-32.png" />
+    <Image Include="Assets\Logos\Square44x44Logo.targetsize-48.png" />
+    <Image Include="Assets\Logos\StoreLogo.scale-100.png" />
+    <Image Include="Assets\Logos\StoreLogo.scale-125.png" />
+    <Image Include="Assets\Logos\StoreLogo.scale-150.png" />
+    <Image Include="Assets\Logos\StoreLogo.scale-200.png" />
+    <Image Include="Assets\Logos\StoreLogo.scale-400.png" />
+    <Image Include="Assets\Logos\Wide310x150Logo.scale-100.png" />
+    <Image Include="Assets\Logos\Wide310x150Logo.scale-125.png" />
+    <Image Include="Assets\Logos\Wide310x150Logo.scale-150.png" />
+    <Image Include="Assets\Logos\Wide310x150Logo.scale-200.png" />
+    <Image Include="Assets\Logos\Wide310x150Logo.scale-400.png" />
     <Image Include="Assets\missgrn.bmp" />
     <Image Include="Assets\missred.bmp" />
     <Image Include="Assets\missyell.bmp" />
     <Image Include="Assets\reddot.bmp" />
     <Image Include="Assets\safe.bmp" />
     <Image Include="Assets\scanner.bmp" />
-    <Image Include="Assets\SplashScreen.scale-200.png" />
-    <Image Include="Assets\Square150x150Logo.scale-200.png" />
-    <Image Include="Assets\Square44x44Logo.scale-200.png" />
-    <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Image Include="Assets\StoreLogo.png" />
     <Image Include="Assets\verd2.bmp" />
     <Image Include="Assets\verd2msk.bmp" />
     <Image Include="Assets\verd4.bmp" />
     <Image Include="Assets\verd4msk.bmp" />
-    <Image Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Image Include="newkind.ico" />
   </ItemGroup>
   <!--
     Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
@@ -157,9 +200,6 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </None>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="nkres.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alg_gfx.cpp" />

@@ -4,9 +4,6 @@
 #include "elite.h"
 #include "space.h"
 #include "threed.h"
-#include "random.h"
-#include "shipface.h"
-
 #include "GdiBitmap.h"
 #include "Rendering/DX12Renderer.h"
 #include "Rendering/ShipRenderer.h"
@@ -16,7 +13,7 @@
 #define FILLED_CIRCLE    1
 #define WIREFRAME_CIRCLE 2
 
-std::unique_ptr<Neuron::GdiBitmap> scanner_image;
+std::unique_ptr<GdiBitmap> scanner_image;
 
 int clip_tx;
 int clip_ty;
@@ -26,12 +23,9 @@ int clip_by;
 /*
  * Return the pixel value at (x, y) from a GdiBitmap
  */
-uint32_t gfx_get_pixel(const Neuron::GdiBitmap* bmp, int x, int y)
-{
-  return Neuron::GdiBitmapLoader::GetPixel(bmp, x, y);
-}
+uint32_t gfx_get_pixel(const GdiBitmap *bmp, int x, int y) { return GdiBitmapLoader::GetPixel(bmp, x, y); }
 
-void gfx_get_char_size(const Neuron::GdiBitmap* bmp, int x, int y, int* size_x, int* size_y)
+void gfx_get_char_size(const GdiBitmap *bmp, int x, int y, int *size_x, int *size_y)
 {
   *size_x = 0;
   *size_y = 0;
@@ -59,14 +53,11 @@ void gfx_get_char_size(const Neuron::GdiBitmap* bmp, int x, int y, int* size_x, 
   (*size_y)++;
 }
 
-std::unique_ptr<Neuron::GdiBitmap> gfx_load_bitmap(const char* filename)
+std::unique_ptr<GdiBitmap> gfx_load_bitmap(const char *filename)
 {
   auto fname = FileSys::GetHomeDirectoryA() + filename;
-  auto bmap = Neuron::GdiBitmapLoader::LoadBMP(fname);
-  if (!bmap)
-  {
-    Fatal("Failed to load bitmap '{}'", fname);
-  }
+  auto bmap = GdiBitmapLoader::LoadBMP(fname);
+  if (!bmap) Fatal("Failed to load bitmap '{}'", fname);
   return bmap;
 }
 
@@ -77,16 +68,10 @@ int gfx_graphics_startup(void)
 
   scanner_image = gfx_load_bitmap(scanner_filename);
 
-  if (!scanner_image)
-  {
-    Fatal("Error reading scanner bitmap file: {}.\n", scanner_filename);
-  }
+  if (!scanner_image) Fatal("Error reading scanner bitmap file: {}.\n", scanner_filename);
 
   // Sync the palette from the scanner bitmap to DX12Renderer
-  if (scanner_image->palette && scanner_image->paletteSize > 0)
-  {
-    StarStrike::DX12Renderer::SetPaletteFromRGBQUAD(scanner_image->palette.get(), scanner_image->paletteSize);
-  }
+  if (scanner_image->palette && scanner_image->paletteSize > 0) StarStrike::DX12Renderer::SetPaletteFromRGBQUAD(scanner_image->palette.get(), scanner_image->paletteSize);
 
   // Register all legacy sprites with DX12Renderer
   StarStrike::DX12Renderer::RegisterLegacySprite(IMG_SCANNER_1, L"scanner.bmp", 0, 0, 128);
@@ -111,36 +96,19 @@ int gfx_graphics_startup(void)
   return 0;
 }
 
-void gfx_graphics_shutdown(void)
-{
-  scanner_image.reset();
-}
-
-void gfx_update_screen(void)
-{
-  // DX12 presentation is handled by DX12Renderer::Present() called from draw_screen
-  // This function is kept for compatibility but does nothing in DX12 mode
-}
+void gfx_graphics_shutdown(void) { scanner_image.reset(); }
 
 void gfx_plot_pixel(int x, int y, int col)
 {
   XMFLOAT4 color = StarStrike::DX12Renderer::PaletteToColor(col);
-  StarStrike::DX12Renderer::DrawPixel(
-    static_cast<float>(x + GFX_X_OFFSET),
-    static_cast<float>(y + GFX_Y_OFFSET),
-    color);
+  StarStrike::DX12Renderer::DrawPixel(static_cast<float>(x + GFX_X_OFFSET), static_cast<float>(y + GFX_Y_OFFSET), color);
 }
 
 void gfx_draw_gl_circle(int cx, int cy, int radius, int circle_colour, int type)
 {
   XMFLOAT4 color = StarStrike::DX12Renderer::PaletteToColor(circle_colour);
   bool filled = (type == FILLED_CIRCLE);
-  StarStrike::DX12Renderer::DrawCircle(
-    static_cast<float>(cx + GFX_X_OFFSET),
-    static_cast<float>(cy + GFX_Y_OFFSET),
-    static_cast<float>(radius),
-    color,
-    filled);
+  StarStrike::DX12Renderer::DrawCircle(static_cast<float>(cx + GFX_X_OFFSET), static_cast<float>(cy + GFX_Y_OFFSET), static_cast<float>(radius), color, filled);
 }
 
 void gfx_draw_filled_circle(int cx, int cy, int radius, int circle_colour) { gfx_draw_gl_circle(cx, cy, radius, circle_colour, FILLED_CIRCLE); }
@@ -152,25 +120,13 @@ void gfx_draw_line(int x1, int y1, int x2, int y2) { gfx_draw_colour_line(x1, y1
 void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
 {
   XMFLOAT4 color = StarStrike::DX12Renderer::PaletteToColor(line_colour);
-  StarStrike::DX12Renderer::DrawLine(
-    static_cast<float>(x1 + GFX_X_OFFSET),
-    static_cast<float>(y1 + GFX_Y_OFFSET),
-    static_cast<float>(x2 + GFX_X_OFFSET),
-    static_cast<float>(y2 + GFX_Y_OFFSET),
-    color);
+  StarStrike::DX12Renderer::DrawLine(static_cast<float>(x1 + GFX_X_OFFSET), static_cast<float>(y1 + GFX_Y_OFFSET), static_cast<float>(x2 + GFX_X_OFFSET), static_cast<float>(y2 + GFX_Y_OFFSET), color);
 }
 
 void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
 {
   XMFLOAT4 color = StarStrike::DX12Renderer::PaletteToColor(col);
-  StarStrike::DX12Renderer::DrawTriangle(
-    static_cast<float>(x1 + GFX_X_OFFSET),
-    static_cast<float>(y1 + GFX_Y_OFFSET),
-    static_cast<float>(x2 + GFX_X_OFFSET),
-    static_cast<float>(y2 + GFX_Y_OFFSET),
-    static_cast<float>(x3 + GFX_X_OFFSET),
-    static_cast<float>(y3 + GFX_Y_OFFSET),
-    color);
+  StarStrike::DX12Renderer::DrawTriangle(static_cast<float>(x1 + GFX_X_OFFSET), static_cast<float>(y1 + GFX_Y_OFFSET), static_cast<float>(x2 + GFX_X_OFFSET), static_cast<float>(y2 + GFX_Y_OFFSET), static_cast<float>(x3 + GFX_X_OFFSET), static_cast<float>(y3 + GFX_Y_OFFSET), color);
 }
 
 void gfx_display_text(int x, int y, const char *txt) { gfx_display_colour_text(x, y, txt, GFX_COL_WHITE); }
@@ -178,10 +134,7 @@ void gfx_display_text(int x, int y, const char *txt) { gfx_display_colour_text(x
 void gfx_display_colour_text(int x, int y, const char *txt, int col)
 {
   XMFLOAT4 color = StarStrike::DX12Renderer::PaletteToColor(col);
-  StarStrike::DX12Renderer::DrawText(
-    static_cast<float>(x + GFX_X_OFFSET),
-    static_cast<float>(y + GFX_Y_OFFSET),
-    txt, color, false);
+  StarStrike::DX12Renderer::DrawText(static_cast<float>(x + GFX_X_OFFSET), static_cast<float>(y + GFX_Y_OFFSET), txt, color, false);
 }
 
 void gfx_display_centre_text(int y, const char *str, int psize, int col)
@@ -189,21 +142,13 @@ void gfx_display_centre_text(int y, const char *str, int psize, int col)
   bool large = (psize == 140);
   int txt_colour = large ? GFX_COL_WHITE : col;
   XMFLOAT4 color = StarStrike::DX12Renderer::PaletteToColor(txt_colour);
-  StarStrike::DX12Renderer::DrawTextCentered(
-    static_cast<float>((128 * GFX_SCALE) + GFX_X_OFFSET),
-    static_cast<float>(y + GFX_Y_OFFSET),
-    str, color, large);
+  StarStrike::DX12Renderer::DrawTextCentered(static_cast<float>((128 * GFX_SCALE) + GFX_X_OFFSET), static_cast<float>(y + GFX_Y_OFFSET), str, color, large);
 }
 
 void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
 {
   XMFLOAT4 color = StarStrike::DX12Renderer::PaletteToColor(col);
-  StarStrike::DX12Renderer::DrawRectangle(
-    static_cast<float>(tx + GFX_X_OFFSET),
-    static_cast<float>(ty + GFX_Y_OFFSET),
-    static_cast<float>(bx + GFX_X_OFFSET),
-    static_cast<float>(by + GFX_Y_OFFSET),
-    color);
+  StarStrike::DX12Renderer::DrawRectangle(static_cast<float>(tx + GFX_X_OFFSET), static_cast<float>(ty + GFX_Y_OFFSET), static_cast<float>(bx + GFX_X_OFFSET), static_cast<float>(by + GFX_Y_OFFSET), color);
 }
 
 void gfx_display_pretty_text(int tx, int ty, int bx, int by, const char *txt)
@@ -242,13 +187,7 @@ void gfx_draw_scanner(void)
 
   int scannerSprites[4] = {IMG_SCANNER_1, IMG_SCANNER_2, IMG_SCANNER_3, IMG_SCANNER_4};
 
-  for (int i = 0; i < 4; i++)
-  {
-    if (StarStrike::DX12Renderer::HasLegacySprite(scannerSprites[i]))
-    {
-      StarStrike::DX12Renderer::DrawLegacySprite(scannerSprites[i], scannerX + (i * 128.0f), scannerY);
-    }
-  }
+  for (int i = 0; i < 4; i++) { if (StarStrike::DX12Renderer::HasLegacySprite(scannerSprites[i])) StarStrike::DX12Renderer::DrawLegacySprite(scannerSprites[i], scannerX + (i * 128.0f), scannerY); }
 
   // Draw border lines
   gfx_draw_line(0, 1, 0, 384);
@@ -277,18 +216,10 @@ void gfx_draw_sprite(int sprite_no, int x, int y)
 {
   // Calculate x position for centered sprites
   float drawX = static_cast<float>(x);
-  if (x == -1)
-  {
-    drawX = static_cast<float>(((256 * GFX_SCALE) - 192) / 2);
-  }
+  if (x == -1) drawX = static_cast<float>(((256 * GFX_SCALE) - 192) / 2);
 
   // Draw using DX12Renderer
-  if (StarStrike::DX12Renderer::HasLegacySprite(sprite_no))
-  {
-    StarStrike::DX12Renderer::DrawLegacySprite(sprite_no, 
-      drawX + GFX_X_OFFSET, 
-      static_cast<float>(y + GFX_Y_OFFSET));
-  }
+  if (StarStrike::DX12Renderer::HasLegacySprite(sprite_no)) { StarStrike::DX12Renderer::DrawLegacySprite(sprite_no, drawX + GFX_X_OFFSET, static_cast<float>(y + GFX_Y_OFFSET)); }
 }
 
 void gfx_draw_view(void)
@@ -327,10 +258,7 @@ void gfx_advance_frame(void)
   }
 }
 
-void gfx_set_camera(int angle)
-{
-  StarStrike::ShipRenderer::SetCamera(angle);
-}
+void gfx_set_camera(int angle) { StarStrike::ShipRenderer::SetCamera(angle); }
 
 void gfx_draw_gl_ship(struct univ_object *univ)
 {

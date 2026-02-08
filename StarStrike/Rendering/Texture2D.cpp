@@ -7,7 +7,7 @@ using namespace Neuron::Graphics;
 
 namespace StarStrike
 {
-  bool Texture2D::Create(uint32_t width, uint32_t height, const uint8_t* data, DXGI_FORMAT format)
+  bool Texture2D::Create(uint32_t width, uint32_t height, const uint8_t *data, DXGI_FORMAT format)
   {
     DebugTrace("Texture2D::Create - Starting creation of {}x{} texture\n", width, height);
 
@@ -18,8 +18,7 @@ namespace StarStrike
     }
 
     auto device = Core::GetD3DDevice();
-    if (!device)
-      return false;
+    if (!device) return false;
 
     m_width = width;
     m_height = height;
@@ -39,17 +38,11 @@ namespace StarStrike
 
     CD3DX12_HEAP_PROPERTIES defaultHeapProps(D3D12_HEAP_TYPE_DEFAULT);
 
-    HRESULT hr = device->CreateCommittedResource(
-      &defaultHeapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &texDesc,
-      D3D12_RESOURCE_STATE_COPY_DEST,
-      nullptr,
-      IID_PPV_ARGS(m_resource.Put()));
+    HRESULT hr = device->CreateCommittedResource(&defaultHeapProps, D3D12_HEAP_FLAG_NONE, &texDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(m_resource.Put()));
 
     if (FAILED(hr))
     {
-      DebugTrace("Texture2D::Create - Failed to create texture resource");
+      DebugTrace("Texture2D::Create - Failed to create texture resource\n");
       return false;
     }
 
@@ -62,17 +55,11 @@ namespace StarStrike
     auto uploadBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize);
 
     com_ptr<ID3D12Resource> uploadBuffer;
-    hr = device->CreateCommittedResource(
-      &uploadHeapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &uploadBufferDesc,
-      D3D12_RESOURCE_STATE_GENERIC_READ,
-      nullptr,
-      IID_PPV_ARGS(uploadBuffer.put()));
+    hr = device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &uploadBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(uploadBuffer.put()));
 
     if (FAILED(hr))
     {
-      DebugTrace("Texture2D::Create - Failed to create upload buffer");
+      DebugTrace("Texture2D::Create - Failed to create upload buffer\n");
       m_resource.Destroy();
       return false;
     }
@@ -84,24 +71,21 @@ namespace StarStrike
     device->GetCopyableFootprints(&texDesc, 0, 1, 0, &layout, &numRows, &rowSizeInBytes, nullptr);
 
     // Map and copy data to upload buffer
-    void* mapped = nullptr;
+    void *mapped = nullptr;
     hr = uploadBuffer->Map(0, nullptr, &mapped);
     if (FAILED(hr))
     {
-      DebugTrace("Texture2D::Create - Failed to map upload buffer");
+      DebugTrace("Texture2D::Create - Failed to map upload buffer\n");
       m_resource.Destroy();
       return false;
     }
 
     // Copy row by row (handle pitch differences)
-    uint8_t* destData = static_cast<uint8_t*>(mapped) + layout.Offset;
-    const uint8_t* srcData = data;
-    size_t srcRowPitch = width * 4; // Assuming RGBA
+    uint8_t *destData = static_cast<uint8_t *>(mapped) + layout.Offset;
+    const uint8_t *srcData = data;
+    size_t srcRowPitch = width * 4;// Assuming RGBA
 
-    for (UINT row = 0; row < numRows; row++)
-    {
-      memcpy(destData + row * layout.Footprint.RowPitch, srcData + row * srcRowPitch, srcRowPitch);
-    }
+    for (UINT row = 0; row < numRows; row++) memcpy(destData + row * layout.Footprint.RowPitch, srcData + row * srcRowPitch, srcRowPitch);
 
     uploadBuffer->Unmap(0, nullptr);
 
@@ -122,10 +106,7 @@ namespace StarStrike
     cmdList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
 
     // Transition to shader resource state
-    auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-      m_resource.GetResource(),
-      D3D12_RESOURCE_STATE_COPY_DEST,
-      D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_resource.GetResource(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     cmdList->ResourceBarrier(1, &barrier);
 
     // Update the GpuResource's tracked state
@@ -147,28 +128,24 @@ namespace StarStrike
     m_srvHandle = Core::AllocateDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     device->CreateShaderResourceView(m_resource.GetResource(), &srvDesc, m_srvHandle);
 
-    DebugTrace("Texture2D::Create - SUCCESS: Created {}x{} texture, SRV CPU ptr={}, GPU ptr={}\n", 
-               width, height, m_srvHandle.GetCpuPtr(), m_srvHandle.GetGpuPtr());
+    DebugTrace("Texture2D::Create - SUCCESS: Created {}x{} texture, SRV CPU ptr={}, GPU ptr={}\n", width, height, m_srvHandle.GetCpuPtr(), m_srvHandle.GetGpuPtr());
     return true;
   }
 
-  bool Texture2D::CreateFromBitmap(const Neuron::GdiBitmap* bitmap)
+  bool Texture2D::CreateFromBitmap(const GdiBitmap *bitmap)
   {
     DebugTrace("Texture2D::CreateFromBitmap - Entry\n");
 
     if (!bitmap || !bitmap->pixels || bitmap->width == 0 || bitmap->height == 0)
     {
-      DebugTrace("Texture2D::CreateFromBitmap - Invalid bitmap: ptr={}, pixels={}, size={}x{}\n",
-                 (void*)bitmap, bitmap ? bitmap->pixels : nullptr, 
-                 bitmap ? bitmap->width : 0, bitmap ? bitmap->height : 0);
+      DebugTrace("Texture2D::CreateFromBitmap - Invalid bitmap: ptr={}, pixels={}, size={}x{}\n", (void *) bitmap, bitmap ? bitmap->pixels : nullptr, bitmap ? bitmap->width : 0, bitmap ? bitmap->height : 0);
       return false;
     }
 
-    DebugTrace("Texture2D::CreateFromBitmap - Bitmap info: {}x{}, bpp={}, pitch={}, paletteSize={}\n",
-               bitmap->width, bitmap->height, bitmap->bitsPerPixel, bitmap->pitch, bitmap->paletteSize);
+    DebugTrace("Texture2D::CreateFromBitmap - Bitmap info: {}x{}, bpp={}, pitch={}, paletteSize={}\n", bitmap->width, bitmap->height, bitmap->bitsPerPixel, bitmap->pitch, bitmap->paletteSize);
 
     // Get pointer to pixel data
-    const uint8_t* srcPixels = static_cast<const uint8_t*>(bitmap->pixels);
+    auto srcPixels = static_cast<const uint8_t *>(bitmap->pixels);
 
     // Convert bitmap to RGBA format
     std::vector<uint8_t> rgbaData(bitmap->width * bitmap->height * 4);
@@ -181,7 +158,7 @@ namespace StarStrike
       // Indexed color with palette
       for (int y = 0; y < bitmap->height; y++)
       {
-        const uint8_t* srcRow = srcPixels + y * srcPitch;
+        const uint8_t *srcRow = srcPixels + y * srcPitch;
         for (int x = 0; x < bitmap->width; x++)
         {
           int dstIndex = (y * bitmap->width + x) * 4;
@@ -209,15 +186,15 @@ namespace StarStrike
       // RGB format
       for (int y = 0; y < bitmap->height; y++)
       {
-        const uint8_t* srcRow = srcPixels + y * srcPitch;
+        const uint8_t *srcRow = srcPixels + y * srcPitch;
         for (int x = 0; x < bitmap->width; x++)
         {
           int srcX = x * 3;
           int dstIndex = (y * bitmap->width + x) * 4;
 
-          rgbaData[dstIndex + 0] = srcRow[srcX + 2]; // B -> R
-          rgbaData[dstIndex + 1] = srcRow[srcX + 1]; // G -> G
-          rgbaData[dstIndex + 2] = srcRow[srcX + 0]; // R -> B
+          rgbaData[dstIndex + 0] = srcRow[srcX + 2];// B -> R
+          rgbaData[dstIndex + 1] = srcRow[srcX + 1];// G -> G
+          rgbaData[dstIndex + 2] = srcRow[srcX + 0];// R -> B
           rgbaData[dstIndex + 3] = 255;
         }
       }
@@ -227,34 +204,34 @@ namespace StarStrike
       // BGRA format
       for (int y = 0; y < bitmap->height; y++)
       {
-        const uint8_t* srcRow = srcPixels + y * srcPitch;
+        const uint8_t *srcRow = srcPixels + y * srcPitch;
         for (int x = 0; x < bitmap->width; x++)
         {
           int srcX = x * 4;
           int dstIndex = (y * bitmap->width + x) * 4;
 
-          rgbaData[dstIndex + 0] = srcRow[srcX + 2]; // B -> R
-          rgbaData[dstIndex + 1] = srcRow[srcX + 1]; // G -> G
-          rgbaData[dstIndex + 2] = srcRow[srcX + 0]; // R -> B
-          rgbaData[dstIndex + 3] = srcRow[srcX + 3]; // A -> A
+          rgbaData[dstIndex + 0] = srcRow[srcX + 2];// B -> R
+          rgbaData[dstIndex + 1] = srcRow[srcX + 1];// G -> G
+          rgbaData[dstIndex + 2] = srcRow[srcX + 0];// R -> B
+          rgbaData[dstIndex + 3] = srcRow[srcX + 3];// A -> A
         }
       }
     }
     else
     {
-      DebugTrace("Texture2D::CreateFromBitmap - Unsupported bits per pixel: {}", bitmap->bitsPerPixel);
+      DebugTrace("Texture2D::CreateFromBitmap - Unsupported bits per pixel: {}\n", bitmap->bitsPerPixel);
       return false;
     }
 
     return Create(bitmap->width, bitmap->height, rgbaData.data());
   }
 
-  bool Texture2D::CreateFromFile(const std::wstring& filename)
+  bool Texture2D::CreateFromFile(const std::wstring &filename)
   {
     auto fname = FileSys::GetHomeDirectoryA() + std::string(filename.begin(), filename.end());
     DebugTrace("Texture2D::CreateFromFile - Loading: {}\n", fname);
 
-    auto bitmap = Neuron::GdiBitmapLoader::LoadBMP(fname);
+    auto bitmap = GdiBitmapLoader::LoadBMP(fname);
 
     if (!bitmap)
     {
