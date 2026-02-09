@@ -113,6 +113,14 @@
     <Image Include="Assets\blake.bmp" />
     <Image Include="Assets\ecm.bmp" />
     <Image Include="Assets\elitetx3.bmp" />
+    <Image Include="Assets\Fonts\EditorFont-ENG.dds" />
+    <Image Include="Assets\Fonts\EditorFont-FRA.dds" />
+    <Image Include="Assets\Fonts\EditorFont-ITA.dds" />
+    <Image Include="Assets\Fonts\EditorFont-RUS.dds" />
+    <Image Include="Assets\Fonts\SpeccyFont-ENG.dds" />
+    <Image Include="Assets\Fonts\SpeccyFont-FRA.dds" />
+    <Image Include="Assets\Fonts\SpeccyFont-ITA.dds" />
+    <Image Include="Assets\Fonts\SpeccyFont-RUS.dds" />
     <Image Include="Assets\greendot.bmp" />
     <Image Include="Assets\Logos\LargeTile.scale-100.png" />
     <Image Include="Assets\Logos\LargeTile.scale-125.png" />
@@ -237,7 +245,6 @@
   <ItemGroup>
     <ClCompile Include="alg_gfx.cpp" />
     <ClCompile Include="alg_main.cpp" />
-    <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="dirlist.cpp" />
     <ClCompile Include="docked.cpp" />
     <ClCompile Include="elite.cpp" />
@@ -273,7 +280,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Canvas.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="dirlist.h" />
     <ClInclude Include="docked.h" />

@@ -20,6 +20,7 @@ public:
 protected:
   void RenderScene();
   void RenderCanvas();
+  void CompositeCanvasToBackbuffer();
 
-  std::unique_ptr<Canvas> m_canvas;
+  Graphics::FontId m_editorFont = 0;
 };

@@ -1,33 +1,31 @@
 #include "pch.h"
 #include "SStrikeMain.h"
+
+#include "Color.h"
+#include "Canvas.h"
 #include "Rendering/DX12Renderer.h"
 
+using namespace Graphics;
 using namespace StarStrike;
 
 void SStrikeMain::Startup()
 {
-  m_canvas = std::make_unique<Canvas>();
+  DX12Renderer::Startup();
   CreateDeviceDependentResources();
+  m_editorFont = Canvas::LoadFont(L"Fonts\\EditorFont-ENG.dds");
 }
+
 void SStrikeMain::Shutdown()
 {
   ReleaseDeviceDependentResources();
-  m_canvas.reset();
+  DX12Renderer::Shutdown();
 }
 
-void SStrikeMain::CreateDeviceDependentResources()
-{
-  GameMain::CreateDeviceDependentResources();
-  m_canvas->CreateDeviceDependentResources();
-}
+void SStrikeMain::CreateDeviceDependentResources() { GameMain::CreateDeviceDependentResources(); }
 
 void SStrikeMain::CreateWindowSizeDependentResources() { GameMain::CreateWindowSizeDependentResources(); }
 
-void SStrikeMain::ReleaseDeviceDependentResources()
-{
-  GameMain::ReleaseDeviceDependentResources();
-  m_canvas->ReleaseDeviceDependentResources();
-}
+void SStrikeMain::ReleaseDeviceDependentResources() { GameMain::ReleaseDeviceDependentResources(); }
 
 void SStrikeMain::ReleaseWindowSizeDependentResources() { GameMain::ReleaseWindowSizeDependentResources(); }
 
@@ -37,17 +35,64 @@ void SStrikeMain::Render()
 {
   RenderScene();
   RenderCanvas();
-
-  // Composite the canvas texture over the backbuffer
-  if (m_canvas && m_canvas->IsValid())
-  {
-    DX12Renderer::DrawFullscreenTexture(m_canvas->GetSRV());
-  }
+  CompositeCanvasToBackbuffer();
 }
 
-void SStrikeMain::RenderScene() {}
+void SStrikeMain::RenderScene()
+{
+  auto commandlist = Graphics::Core::GetCommandList();
+  // Set the viewport and scissor rectangle.
+  const auto viewport = Graphics::Core::GetScreenViewport();
+  const auto scissorRect = Graphics::Core::GetScissorRect();
+
+  commandlist->RSSetViewports(1, &viewport);
+  commandlist->RSSetScissorRects(1, &scissorRect);
+
+  // Indicate that the back buffer will be used as a render target.
+  auto renderTargetView = Graphics::Core::GetRenderTargetView();
+  auto depthStencilView = Graphics::Core::GetDepthStencilView();
+  commandlist->ClearRenderTargetView(renderTargetView, Color::BLACK, 0, nullptr);
+  commandlist->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+  commandlist->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
+
+  // TODO: Render 3D scene here
+}
 
 void SStrikeMain::RenderCanvas()
 {
-  m_canvas->Render();
+  using Canvas = Graphics::Canvas;
+
+  Canvas::BeginFrame();
+
+  // Example: Draw some test primitives at 1920x1080 resolution
+  Canvas::DrawRectangle(100.0f, 100.0f, 500.0f, 300.0f, Color::BLUE);
+  Canvas::DrawRectangleOutline(100.0f, 100.0f, 500.0f, 300.0f, 3.0f, Color::WHITE);
+  Canvas::DrawLine(0.0f, 0.0f, 800.0f, 600.0f, Color::RED);
+  Canvas::DrawCircle(960.0f, 540.0f, 100.0f, Color::GREEN);
+
+  Canvas::Render();
+}
+
+void SStrikeMain::CompositeCanvasToBackbuffer()
+{
+  using Canvas = Graphics::Canvas;
+
+  // Composite the Canvas render target onto the backbuffer
+  if (Canvas::IsValid())
+  {
+    // Restore backbuffer as render target
+    auto commandlist = Graphics::Core::GetCommandList();
+    const auto viewport = Graphics::Core::GetScreenViewport();
+    const auto scissorRect = Graphics::Core::GetScissorRect();
+
+    commandlist->RSSetViewports(1, &viewport);
+    commandlist->RSSetScissorRects(1, &scissorRect);
+
+    auto renderTargetView = Graphics::Core::GetRenderTargetView();
+    commandlist->OMSetRenderTargets(1, &renderTargetView, FALSE, nullptr);
+
+    // Draw the Canvas texture as a fullscreen quad
+    DX12Renderer::DrawFullscreenTexture(Canvas::GetRenderTargetSRV());
+  }
 }

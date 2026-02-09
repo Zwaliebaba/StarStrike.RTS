@@ -1135,6 +1135,8 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
   auto main = winrt::make_self<SStrikeMain>();
   ClientEngine::StartGame(std::move(main));
 
+  ClientEngine::Run();
+
   input_startup();
 
   read_config_file();

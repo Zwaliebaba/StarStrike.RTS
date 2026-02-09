@@ -39,7 +39,7 @@ namespace StarStrike
     ID3D12Resource* GetResource() { return m_resource.GetResource(); }
 
   private:
-    GpuResource m_resource;
+    Neuron::Graphics::GpuResource m_resource;
     uint32_t m_width = 0;
     uint32_t m_height = 0;
    Neuron::Graphics::DescriptorHandle m_srvHandle;

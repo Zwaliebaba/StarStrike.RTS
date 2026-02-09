@@ -1,5 +1,8 @@
 #pragma once
 
+namespace Neuron::Graphics
+{
+
 class GpuResource
 {
   friend class ResourceStateTracker;
@@ -10,18 +13,56 @@ class GpuResource
         m_transitioningState(static_cast<D3D12_RESOURCE_STATES>(-1)),
         m_gpuVirtualAddress(D3D12_GPU_VIRTUAL_ADDRESS_NULL) {}
 
-    GpuResource(ID3D12Resource* pResource, D3D12_RESOURCE_STATES CurrentState)
-      : m_usageState(CurrentState),
+    GpuResource(ID3D12Resource* _pResource, D3D12_RESOURCE_STATES _currentState)
+      : m_usageState(_currentState),
         m_transitioningState(static_cast<D3D12_RESOURCE_STATES>(-1)),
-        m_gpuVirtualAddress(D3D12_GPU_VIRTUAL_ADDRESS_NULL) { m_pResource.attach(pResource); }
+        m_gpuVirtualAddress(D3D12_GPU_VIRTUAL_ADDRESS_NULL) { m_pResource.attach(_pResource); }
 
-    void Set(ID3D12Resource* pResource, D3D12_RESOURCE_STATES CurrentState)
+    // Non-copyable
+    GpuResource(const GpuResource&) = delete;
+    GpuResource& operator=(const GpuResource&) = delete;
+
+    // Move constructor
+    GpuResource(GpuResource&& _other) noexcept
+      : m_pResource(std::move(_other.m_pResource)),
+        m_usageState(_other.m_usageState),
+        m_transitioningState(_other.m_transitioningState),
+        m_gpuVirtualAddress(_other.m_gpuVirtualAddress),
+        m_versionID(_other.m_versionID)
     {
-      m_pResource.attach(pResource);
-      m_usageState = CurrentState;
+      _other.m_usageState = D3D12_RESOURCE_STATE_COMMON;
+      _other.m_transitioningState = static_cast<D3D12_RESOURCE_STATES>(-1);
+      _other.m_gpuVirtualAddress = D3D12_GPU_VIRTUAL_ADDRESS_NULL;
+      _other.m_versionID = 0;
+    }
+
+    // Move assignment
+    GpuResource& operator=(GpuResource&& _other) noexcept
+    {
+      if (this != &_other)
+      {
+        m_pResource = std::move(_other.m_pResource);
+        m_usageState = _other.m_usageState;
+        m_transitioningState = _other.m_transitioningState;
+        m_gpuVirtualAddress = _other.m_gpuVirtualAddress;
+        m_versionID = _other.m_versionID;
+
+        _other.m_usageState = D3D12_RESOURCE_STATE_COMMON;
+        _other.m_transitioningState = static_cast<D3D12_RESOURCE_STATES>(-1);
+        _other.m_gpuVirtualAddress = D3D12_GPU_VIRTUAL_ADDRESS_NULL;
+        _other.m_versionID = 0;
+      }
+      return *this;
+    }
+
+    void Set(ID3D12Resource* _pResource, D3D12_RESOURCE_STATES _currentState)
+    {
+      m_pResource.attach(_pResource);
+      m_usageState = _currentState;
       m_transitioningState = static_cast<D3D12_RESOURCE_STATES>(-1);
     }
-    void SetResourceState(D3D12_RESOURCE_STATES CurrentState) { m_usageState = CurrentState; }
+
+    void SetResourceState(D3D12_RESOURCE_STATES _currentState) { m_usageState = _currentState; }
 
     virtual ~GpuResource() { GpuResource::Destroy(); }
 
@@ -29,23 +70,23 @@ class GpuResource
     {
       m_pResource = nullptr;
       m_gpuVirtualAddress = D3D12_GPU_VIRTUAL_ADDRESS_NULL;
-      ++m_VersionID;
+      ++m_versionID;
     }
 
-    auto GetCurrentState() const { return m_usageState; }
-    auto GetTransitioningState() const { return m_transitioningState; }
+    [[nodiscard]] auto GetCurrentState() const noexcept { return m_usageState; }
+    [[nodiscard]] auto GetTransitioningState() const noexcept { return m_transitioningState; }
 
-    ID3D12Resource* operator->() { return m_pResource.get(); }
-    const ID3D12Resource* operator->() const { return m_pResource.get(); }
+    [[nodiscard]] ID3D12Resource* operator->() noexcept { return m_pResource.get(); }
+    [[nodiscard]] const ID3D12Resource* operator->() const noexcept { return m_pResource.get(); }
 
-    ID3D12Resource* GetResource() { return m_pResource.get(); }
-    const ID3D12Resource* GetResource() const { return m_pResource.get(); }
+    [[nodiscard]] ID3D12Resource* GetResource() noexcept { return m_pResource.get(); }
+    [[nodiscard]] const ID3D12Resource* GetResource() const noexcept { return m_pResource.get(); }
 
-    ID3D12Resource** Put() { return m_pResource.put(); }
+    [[nodiscard]] ID3D12Resource** Put() noexcept { return m_pResource.put(); }
 
-    D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return m_gpuVirtualAddress; }
+    [[nodiscard]] D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const noexcept { return m_gpuVirtualAddress; }
 
-    uint32_t GetVersionID() const { return m_VersionID; }
+    [[nodiscard]] uint32_t GetVersionID() const noexcept { return m_versionID; }
 
   protected:
     com_ptr<ID3D12Resource> m_pResource;
@@ -54,5 +95,7 @@ class GpuResource
     D3D12_GPU_VIRTUAL_ADDRESS m_gpuVirtualAddress;
 
     // Used to identify when a resource changes so descriptors can be copied etc.
-    uint32_t m_VersionID = 0;
+    uint32_t m_versionID = 0;
 };
+
+} 

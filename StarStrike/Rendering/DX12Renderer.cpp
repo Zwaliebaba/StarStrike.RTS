@@ -966,7 +966,7 @@ namespace StarStrike
     constexpr float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
     cmdList->ClearRenderTargetView(Core::GetRenderTargetView(), clearColor, 0, nullptr);
 
-    // Clear depth stencil if available
-    if (Core::GetDepthBufferFormat() != DXGI_FORMAT_UNKNOWN) cmdList->ClearDepthStencilView(Core::GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+    // Clear depth stencil 
+    cmdList->ClearDepthStencilView(Core::GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
   }
 }

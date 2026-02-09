@@ -19,6 +19,8 @@ using namespace winrt;
 #include "GraphicsCore.h"
 #include "PixProfiler.h"
 #include "Strings.h"
+#include "Texture.h"
+#include "TextureManager.h"
 
 #include "GameMain.h"
 

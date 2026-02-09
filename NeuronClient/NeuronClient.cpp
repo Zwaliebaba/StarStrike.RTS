@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "NeuronClient.h"
+
+#include "Canvas.h"
 #include "WndProcManager.h"
 
 namespace
@@ -75,6 +77,8 @@ void ClientEngine::Startup(const wchar_t* _gameName, Windows::Foundation::Size _
 
   Audio::Core::Startup();
 
+  Graphics::Canvas::Startup();
+
   ShowWindow(m_hwnd, nCmdShow);
 }
 
@@ -93,9 +97,11 @@ void ClientEngine::Shutdown()
     m_main = nullptr;
   }
 
-  Graphics::Core::Shutdown();  
+  Graphics::Canvas::Shutdown();
 
   Audio::Core::Shutdown();
+
+  Graphics::Core::Shutdown();  
 
   CoreEngine::Shutdown();
 }
