@@ -12,7 +12,8 @@ void SStrikeMain::Startup()
 {
   DX12Renderer::Startup();
   CreateDeviceDependentResources();
-  m_editorFont = Canvas::LoadFont(L"Fonts\\EditorFont-ENG.dds");
+  // EditorFont is 256x224 with 16x16 pixel glyphs, 16 chars per row, starting at ASCII 32 (space)
+  m_editorFont = Canvas::LoadFont(L"Fonts\\EditorFont-ENG.dds", 16, 16, 16, 32);
 }
 
 void SStrikeMain::Shutdown()
@@ -40,17 +41,17 @@ void SStrikeMain::Render()
 
 void SStrikeMain::RenderScene()
 {
-  auto commandlist = Graphics::Core::GetCommandList();
+  auto commandlist = Core::GetCommandList();
   // Set the viewport and scissor rectangle.
-  const auto viewport = Graphics::Core::GetScreenViewport();
-  const auto scissorRect = Graphics::Core::GetScissorRect();
+  const auto viewport = Core::GetScreenViewport();
+  const auto scissorRect = Core::GetScissorRect();
 
   commandlist->RSSetViewports(1, &viewport);
   commandlist->RSSetScissorRects(1, &scissorRect);
 
   // Indicate that the back buffer will be used as a render target.
-  auto renderTargetView = Graphics::Core::GetRenderTargetView();
-  auto depthStencilView = Graphics::Core::GetDepthStencilView();
+  auto renderTargetView = Core::GetRenderTargetView();
+  auto depthStencilView = Core::GetDepthStencilView();
   commandlist->ClearRenderTargetView(renderTargetView, Color::BLACK, 0, nullptr);
   commandlist->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
@@ -61,35 +62,37 @@ void SStrikeMain::RenderScene()
 
 void SStrikeMain::RenderCanvas()
 {
-  using Canvas = Graphics::Canvas;
+  using Canvas = Canvas;
 
   Canvas::BeginFrame();
 
   // Example: Draw some test primitives at 1920x1080 resolution
-  Canvas::DrawRectangle(100.0f, 100.0f, 500.0f, 300.0f, Color::BLUE);
-  Canvas::DrawRectangleOutline(100.0f, 100.0f, 500.0f, 300.0f, 3.0f, Color::WHITE);
-  Canvas::DrawLine(0.0f, 0.0f, 800.0f, 600.0f, Color::RED);
-  Canvas::DrawCircle(960.0f, 540.0f, 100.0f, Color::GREEN);
+  //Canvas::DrawRectangle(100.0f, 100.0f, 500.0f, 300.0f, Color::BLUE);
+  //Canvas::DrawRectangleOutline(100.0f, 100.0f, 500.0f, 300.0f, 3.0f, Color::WHITE);
+  //Canvas::DrawLine(0.0f, 0.0f, 800.0f, 600.0f, Color::RED);
+  //Canvas::DrawCircle(960.0f, 540.0f, 100.0f, Color::GREEN);
+
+  Canvas::DrawText(m_editorFont, 500.0f, 500.0f, "Test", Color::RED, 10.0f);
 
   Canvas::Render();
 }
 
 void SStrikeMain::CompositeCanvasToBackbuffer()
 {
-  using Canvas = Graphics::Canvas;
+  using Canvas = Canvas;
 
   // Composite the Canvas render target onto the backbuffer
   if (Canvas::IsValid())
   {
     // Restore backbuffer as render target
-    auto commandlist = Graphics::Core::GetCommandList();
-    const auto viewport = Graphics::Core::GetScreenViewport();
-    const auto scissorRect = Graphics::Core::GetScissorRect();
+    auto commandlist = Core::GetCommandList();
+    const auto viewport = Core::GetScreenViewport();
+    const auto scissorRect = Core::GetScissorRect();
 
     commandlist->RSSetViewports(1, &viewport);
     commandlist->RSSetScissorRects(1, &scissorRect);
 
-    auto renderTargetView = Graphics::Core::GetRenderTargetView();
+    auto renderTargetView = Core::GetRenderTargetView();
     commandlist->OMSetRenderTargets(1, &renderTargetView, FALSE, nullptr);
 
     // Draw the Canvas texture as a fullscreen quad

@@ -2,7 +2,6 @@
 #include "TextureManager.h"
 #include "DDSTextureLoader.h"
 #include "GraphicsCore.h"
-#include "FileSys.h"
 
 namespace Neuron::Graphics
 {
@@ -31,10 +30,7 @@ namespace Neuron::Graphics
     // Create new texture
     auto texture = std::make_unique<Texture>();
 
-    // Resolve full path
-    std::wstring fullPath = FileSys::GetHomeDirectory() + _filePath;
-
-    if (!LoadDDSFromFile(fullPath, *texture))
+    if (!LoadDDSFromFile(_filePath, *texture))
     {
       DebugTrace("TextureManager::LoadFromFile - Failed to load: {}\n",
                  std::string(_filePath.begin(), _filePath.end()));
