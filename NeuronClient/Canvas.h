@@ -202,6 +202,9 @@ namespace Neuron::Graphics
     static void RecordSpriteQuad(float _x, float _y, float _width, float _height,
                                  float _u0, float _v0, float _u1, float _v1, FXMVECTOR _color);
 
+    /// Get GPU address of current frame's constant buffer slice
+    [[nodiscard]] static D3D12_GPU_VIRTUAL_ADDRESS GetConstantBufferGPUAddress();
+
     //-------------------------------------------------------------------------
     // Root signature and PSOs
     //-------------------------------------------------------------------------
@@ -221,15 +224,9 @@ namespace Neuron::Graphics
     inline static std::vector<VertexPositionColor> sm_triangleVertices;
     inline static std::vector<VertexPositionTextureColor> sm_spriteVertices;
 
-    inline static com_ptr<ID3D12Resource> sm_lineUploadBuffer;
-    inline static com_ptr<ID3D12Resource> sm_triangleUploadBuffer;
-    inline static com_ptr<ID3D12Resource> sm_spriteUploadBuffer;
+    // Per-frame constant buffers (3 frames in flight, 256-byte aligned each)
+    static constexpr size_t CONSTANT_BUFFER_FRAME_SIZE = (sizeof(CanvasConstants) + 255) & ~255;
     inline static com_ptr<ID3D12Resource> sm_constantBuffer;
-
-    // Persistently mapped buffer pointers (upload heaps can stay mapped)
-    inline static void* sm_lineUploadBufferMapped = nullptr;
-    inline static void* sm_triangleUploadBufferMapped = nullptr;
-    inline static void* sm_spriteUploadBufferMapped = nullptr;
     inline static void* sm_constantBufferMapped = nullptr;
 
     //-------------------------------------------------------------------------

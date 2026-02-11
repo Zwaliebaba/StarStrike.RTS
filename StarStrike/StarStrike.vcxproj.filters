@@ -196,6 +196,30 @@
     <Image Include="Assets\Logos\StoreLogo.scale-400.png">
       <Filter>Assets\Logos</Filter>
     </Image>
+    <Image Include="Assets\Fonts\EditorFont-RUS.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\EditorFont-ENG.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\EditorFont-FRA.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\EditorFont-ITA.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\SpeccyFont-ENG.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\SpeccyFont-FRA.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\SpeccyFont-ITA.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\SpeccyFont-RUS.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">
@@ -215,6 +239,9 @@
     </Filter>
     <Filter Include="Assets\Meshes">
       <UniqueIdentifier>{7ebcc28f-c691-44f4-a987-c11e9804313a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Fonts">
+      <UniqueIdentifier>{281f506c-5092-4e75-a5b1-abfc3236c29a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -314,8 +341,6 @@
     <ClCompile Include="Rendering\DX12Renderer.cpp" />
     <ClCompile Include="Rendering\Texture2D.cpp" />
     <ClCompile Include="Rendering\ShipRenderer.cpp" />
-    
-    
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
@@ -349,8 +374,6 @@
     <ClInclude Include="Rendering\DX12Renderer.h" />
     <ClInclude Include="Rendering\Texture2D.h" />
     <ClInclude Include="Rendering\ShipRenderer.h" />
-    
-    
   </ItemGroup>
   <ItemGroup>
     <Media Include="Assets\Audio\beep.wav">

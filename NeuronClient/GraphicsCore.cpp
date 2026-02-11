@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GraphicsCore.h"
 #include "GraphicsCommon.h"
+#include "FrameUploadAllocator.h"
 
 using namespace Neuron::Graphics;
 
@@ -183,6 +184,7 @@ void Core::CreateDeviceResources()
   check_bool(static_cast<bool>(m_fenceEvent));
 
   DescriptorAllocator::Create();
+  FrameUploadAllocator::Startup();
 
   // Common state was moved to GraphicsCommon.*
   InitializeCommonState();
@@ -190,6 +192,7 @@ void Core::CreateDeviceResources()
 
 void Core::ReleaseDeviceResources()
 {
+  FrameUploadAllocator::Shutdown();
   DestroyCommonState();
 
   m_fenceEvent.close();
@@ -291,7 +294,8 @@ void Core::CreateWindowSizeDependentResources()
     rtvDesc.Format = m_backBufferFormat;
     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-    m_rtvDescriptors[n] = AllocateDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    if (m_rtvDescriptors[n].ptr == 0)
+      m_rtvDescriptors[n] = AllocateDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     m_d3dDevice->CreateRenderTargetView(m_renderTargets[n].GetResource(), &rtvDesc, m_rtvDescriptors[n]);
   }
 
@@ -324,7 +328,8 @@ void Core::CreateWindowSizeDependentResources()
     dsvDesc.Format = m_depthBufferFormat;
     dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 
-    m_dsvDescriptor = AllocateDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+    if (m_dsvDescriptor.ptr == 0)
+      m_dsvDescriptor = AllocateDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
     m_d3dDevice->CreateDepthStencilView(m_depthStencil.GetResource(), &dsvDesc, m_dsvDescriptor);
   }
 
@@ -526,9 +531,13 @@ void Core::MoveToNextFrame()
     WaitForSingleObjectEx(m_fenceEvent.get(), INFINITE, FALSE);
   }
 
+  // Notify upload allocator that this frame's GPU work is complete
+  FrameUploadAllocator::OnFrameComplete(m_backBufferIndex);
+
   // Set the fence value for the next frame.
   m_fenceValues[m_backBufferIndex] = currentFenceValue + 1;
 }
+
 
 // This method acquires the first available hardware adapter that supports Direct3D 12.
 // If no such adapter can be found, try WARP. Otherwise throw an exception.

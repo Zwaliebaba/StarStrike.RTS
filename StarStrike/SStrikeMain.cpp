@@ -80,10 +80,10 @@ void SStrikeMain::RenderCanvas()
   Canvas::BeginFrame();
 
   // Example: Draw some test primitives at 1920x1080 logical resolution
-  //Canvas::DrawRectangle(100.0f, 100.0f, 500.0f, 300.0f, Color::BLUE);
-  //Canvas::DrawRectangleOutline(100.0f, 100.0f, 500.0f, 300.0f, 3.0f, Color::WHITE);
-  //Canvas::DrawLine(0.0f, 0.0f, 800.0f, 600.0f, Color::RED);
-  //Canvas::DrawCircle(960.0f, 540.0f, 100.0f, Color::GREEN);
+  Canvas::DrawRectangle(100.0f, 100.0f, 500.0f, 300.0f, Color::BLUE);
+  Canvas::DrawRectangleOutline(100.0f, 100.0f, 500.0f, 300.0f, 3.0f, Color::WHITE);
+  Canvas::DrawLine(0.0f, 0.0f, 800.0f, 600.0f, Color::RED);
+  Canvas::DrawCircle(960.0f, 540.0f, 100.0f, Color::GREEN);
 
   Canvas::DrawText(m_editorFont, 500.0f, 500.0f, "Test", Color::RED, 10.0f);
 

@@ -30,6 +30,7 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="FontPrint.cpp" />
+    <ClCompile Include="FrameUploadAllocator.cpp" />
     <ClCompile Include="GpuBuffer.cpp" />
     <ClCompile Include="GraphicsCommon.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="DescriptorHeap.h" />
     <ClInclude Include="DirectXHelper.h" />
     <ClInclude Include="FontPrint.h" />
+    <ClInclude Include="FrameUploadAllocator.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="GpuBuffer.h" />
     <ClInclude Include="GpuResource.h" />

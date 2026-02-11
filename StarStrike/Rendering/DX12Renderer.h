@@ -109,14 +109,16 @@ namespace StarStrike
     inline static std::vector<VertexPositionColor> sm_lineVertices;
     inline static std::vector<VertexPositionColor> sm_triangleVertices;
 
-    // Upload buffers (CPU-writable)
-    inline static com_ptr<ID3D12Resource> sm_lineUploadBuffer;
-    inline static com_ptr<ID3D12Resource> sm_triangleUploadBuffer;
+    // Per-frame constant buffer (3 frames in flight, 256-byte aligned each)
+    static constexpr size_t CONSTANT_BUFFER_FRAME_SIZE = (sizeof(BasicConstants) + 255) & ~255;
     inline static com_ptr<ID3D12Resource> sm_constantUploadBuffer;
 
     // Constant buffer data
     inline static BasicConstants sm_constants;
     inline static void* sm_constantBufferMapped = nullptr;
+
+    /// Get GPU address of current frame's constant buffer slice
+    [[nodiscard]] static D3D12_GPU_VIRTUAL_ADDRESS GetConstantBufferGPUAddress();
 
     // Screen dimensions for projection
     inline static float sm_screenWidth = 512.0f;
@@ -142,7 +144,6 @@ namespace StarStrike
     // Sprite batching
     inline static std::vector<SpriteInfo> sm_sprites;
     inline static std::vector<VertexPositionTextureColor> sm_spriteVertices;
-    inline static com_ptr<ID3D12Resource> sm_spriteUploadBuffer;
 
     // Font rendering
     inline static int sm_fontTextureSmall = -1;

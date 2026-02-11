@@ -68,22 +68,7 @@ namespace Neuron::Graphics
 
     Core::WaitForGpu();
 
-    // Unmap all persistently mapped buffers
-    if (sm_lineUploadBuffer && sm_lineUploadBufferMapped)
-    {
-      sm_lineUploadBuffer->Unmap(0, nullptr);
-      sm_lineUploadBufferMapped = nullptr;
-    }
-    if (sm_triangleUploadBuffer && sm_triangleUploadBufferMapped)
-    {
-      sm_triangleUploadBuffer->Unmap(0, nullptr);
-      sm_triangleUploadBufferMapped = nullptr;
-    }
-    if (sm_spriteUploadBuffer && sm_spriteUploadBufferMapped)
-    {
-      sm_spriteUploadBuffer->Unmap(0, nullptr);
-      sm_spriteUploadBufferMapped = nullptr;
-    }
+    // Unmap constant buffer
     if (sm_constantBuffer && sm_constantBufferMapped)
     {
       sm_constantBuffer->Unmap(0, nullptr);
@@ -91,9 +76,6 @@ namespace Neuron::Graphics
     }
 
     // Release GPU resources
-    sm_lineUploadBuffer = nullptr;
-    sm_triangleUploadBuffer = nullptr;
-    sm_spriteUploadBuffer = nullptr;
     sm_constantBuffer = nullptr;
 
     // Clear containers
@@ -330,39 +312,22 @@ namespace Neuron::Graphics
     auto device = Core::GetD3DDevice();
     auto uploadHeapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 
-    // Line vertex buffer
-    size_t lineBufferSize = MAX_PRIMITIVE_VERTICES * sizeof(VertexPositionColor);
-    auto lineBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(lineBufferSize);
-    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE,
-      &lineBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_lineUploadBuffer.put())));
-    sm_lineUploadBuffer->SetName(L"Canvas Line Upload Buffer");
-
-    // Triangle vertex buffer
-    size_t triangleBufferSize = MAX_PRIMITIVE_VERTICES * sizeof(VertexPositionColor);
-    auto triangleBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(triangleBufferSize);
-    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE,
-      &triangleBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_triangleUploadBuffer.put())));
-    sm_triangleUploadBuffer->SetName(L"Canvas Triangle Upload Buffer");
-
-    // Sprite vertex buffer
-    size_t spriteBufferSize = MAX_SPRITE_VERTICES * sizeof(VertexPositionTextureColor);
-    auto spriteBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(spriteBufferSize);
-    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE,
-      &spriteBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_spriteUploadBuffer.put())));
-    sm_spriteUploadBuffer->SetName(L"Canvas Sprite Upload Buffer");
-
-    // Constant buffer (256-byte aligned)
-    size_t constantBufferSize = (sizeof(CanvasConstants) + 255) & ~255;
+    // Per-frame constant buffer (3 frames in flight, 256-byte aligned each)
+    static constexpr UINT MAX_FRAMES = 3;
+    size_t constantBufferSize = CONSTANT_BUFFER_FRAME_SIZE * MAX_FRAMES;
     auto constantBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(constantBufferSize);
     check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE,
       &constantBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_constantBuffer.put())));
-    sm_constantBuffer->SetName(L"Canvas Constant Buffer");
+    sm_constantBuffer->SetName(L"Canvas Constant Buffer (Per-Frame)");
 
-    // Persistently map all upload buffers (upload heaps can stay mapped for their lifetime)
-    check_hresult(sm_lineUploadBuffer->Map(0, nullptr, &sm_lineUploadBufferMapped));
-    check_hresult(sm_triangleUploadBuffer->Map(0, nullptr, &sm_triangleUploadBufferMapped));
-    check_hresult(sm_spriteUploadBuffer->Map(0, nullptr, &sm_spriteUploadBufferMapped));
+    // Persistently map constant buffer
     check_hresult(sm_constantBuffer->Map(0, nullptr, &sm_constantBufferMapped));
+  }
+
+  D3D12_GPU_VIRTUAL_ADDRESS Canvas::GetConstantBufferGPUAddress()
+  {
+    UINT frameIndex = Core::GetCurrentFrameIndex();
+    return sm_constantBuffer->GetGPUVirtualAddress() + (CONSTANT_BUFFER_FRAME_SIZE * frameIndex);
   }
 
   void Canvas::UpdateProjection()
@@ -386,9 +351,12 @@ namespace Neuron::Graphics
 
     XMStoreFloat4x4(&sm_constants.Projection, XMMatrixTranspose(proj));
 
+    // Write to current frame's constant buffer slice
     if (sm_constantBufferMapped)
     {
-      memcpy(sm_constantBufferMapped, &sm_constants, sizeof(CanvasConstants));
+      UINT frameIndex = Core::GetCurrentFrameIndex();
+      auto* dest = static_cast<uint8_t*>(sm_constantBufferMapped) + (CONSTANT_BUFFER_FRAME_SIZE * frameIndex);
+      memcpy(dest, &sm_constants, sizeof(CanvasConstants));
     }
   }
 
@@ -1031,16 +999,17 @@ namespace Neuron::Graphics
     {
       size_t vertexDataSize = sm_lineVertices.size() * sizeof(VertexPositionColor);
 
-      // Use persistently mapped buffer
-      memcpy(sm_lineUploadBufferMapped, sm_lineVertices.data(), vertexDataSize);
+      // Allocate from frame-isolated ring buffer
+      auto alloc = FrameUploadAllocator::Allocate(vertexDataSize, alignof(VertexPositionColor));
+      memcpy(alloc.cpuAddress, sm_lineVertices.data(), vertexDataSize);
 
       cmdList->SetGraphicsRootSignature(sm_primitiveRootSig.GetSignature());
       cmdList->SetPipelineState(sm_linePSO.GetPipelineStateObject());
-      cmdList->SetGraphicsRootConstantBufferView(0, sm_constantBuffer->GetGPUVirtualAddress());
+      cmdList->SetGraphicsRootConstantBufferView(0, GetConstantBufferGPUAddress());
       cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
       D3D12_VERTEX_BUFFER_VIEW vbv;
-      vbv.BufferLocation = sm_lineUploadBuffer->GetGPUVirtualAddress();
+      vbv.BufferLocation = alloc.gpuAddress;
       vbv.SizeInBytes = static_cast<UINT>(vertexDataSize);
       vbv.StrideInBytes = sizeof(VertexPositionColor);
       cmdList->IASetVertexBuffers(0, 1, &vbv);
@@ -1055,16 +1024,17 @@ namespace Neuron::Graphics
     {
       size_t vertexDataSize = sm_triangleVertices.size() * sizeof(VertexPositionColor);
 
-      // Use persistently mapped buffer
-      memcpy(sm_triangleUploadBufferMapped, sm_triangleVertices.data(), vertexDataSize);
+      // Allocate from frame-isolated ring buffer
+      auto alloc = FrameUploadAllocator::Allocate(vertexDataSize, alignof(VertexPositionColor));
+      memcpy(alloc.cpuAddress, sm_triangleVertices.data(), vertexDataSize);
 
       cmdList->SetGraphicsRootSignature(sm_primitiveRootSig.GetSignature());
       cmdList->SetPipelineState(sm_trianglePSO.GetPipelineStateObject());
-      cmdList->SetGraphicsRootConstantBufferView(0, sm_constantBuffer->GetGPUVirtualAddress());
+      cmdList->SetGraphicsRootConstantBufferView(0, GetConstantBufferGPUAddress());
       cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
       D3D12_VERTEX_BUFFER_VIEW vbv;
-      vbv.BufferLocation = sm_triangleUploadBuffer->GetGPUVirtualAddress();
+      vbv.BufferLocation = alloc.gpuAddress;
       vbv.SizeInBytes = static_cast<UINT>(vertexDataSize);
       vbv.StrideInBytes = sizeof(VertexPositionColor);
       cmdList->IASetVertexBuffers(0, 1, &vbv);
@@ -1102,17 +1072,18 @@ namespace Neuron::Graphics
 
     size_t vertexDataSize = sm_spriteVertices.size() * sizeof(VertexPositionTextureColor);
 
-    // Use persistently mapped buffer
-    memcpy(sm_spriteUploadBufferMapped, sm_spriteVertices.data(), vertexDataSize);
+    // Allocate from frame-isolated ring buffer
+    auto alloc = FrameUploadAllocator::Allocate(vertexDataSize, alignof(VertexPositionTextureColor));
+    memcpy(alloc.cpuAddress, sm_spriteVertices.data(), vertexDataSize);
 
     cmdList->SetGraphicsRootSignature(sm_spriteRootSig.GetSignature());
     cmdList->SetPipelineState(sm_spritePSO.GetPipelineStateObject());
-    cmdList->SetGraphicsRootConstantBufferView(0, sm_constantBuffer->GetGPUVirtualAddress());
+    cmdList->SetGraphicsRootConstantBufferView(0, GetConstantBufferGPUAddress());
     cmdList->SetGraphicsRootDescriptorTable(1, texture->GetSRV());
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     D3D12_VERTEX_BUFFER_VIEW vbv;
-    vbv.BufferLocation = sm_spriteUploadBuffer->GetGPUVirtualAddress();
+    vbv.BufferLocation = alloc.gpuAddress;
     vbv.SizeInBytes = static_cast<UINT>(vertexDataSize);
     vbv.StrideInBytes = sizeof(VertexPositionTextureColor);
     cmdList->IASetVertexBuffers(0, 1, &vbv);

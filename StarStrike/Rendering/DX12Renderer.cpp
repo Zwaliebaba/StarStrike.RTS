@@ -54,11 +54,8 @@ namespace StarStrike
       sm_constantBufferMapped = nullptr;
     }
 
-    // Release upload buffers
-    sm_lineUploadBuffer = nullptr;
-    sm_triangleUploadBuffer = nullptr;
+    // Release constant buffer
     sm_constantUploadBuffer = nullptr;
-    sm_spriteUploadBuffer = nullptr;
 
     // Clear textures and legacy sprite map
     sm_textures.clear();
@@ -158,36 +155,25 @@ namespace StarStrike
     // Create upload heap properties
     auto uploadHeapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 
-    // Line vertex upload buffer
-    size_t lineBufferSize = MAX_BATCH_VERTICES * sizeof(VertexPositionColor);
-    auto lineBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(lineBufferSize);
-    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &lineBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_lineUploadBuffer.put())));
-    sm_lineUploadBuffer->SetName(L"Line Vertex Upload Buffer");
-
-    // Triangle vertex upload buffer
-    size_t triangleBufferSize = MAX_BATCH_VERTICES * sizeof(VertexPositionColor);
-    auto triangleBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(triangleBufferSize);
-    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &triangleBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_triangleUploadBuffer.put())));
-    sm_triangleUploadBuffer->SetName(L"Triangle Vertex Upload Buffer");
-
-    // Constant buffer (256-byte aligned)
-    size_t constantBufferSize = (sizeof(BasicConstants) + 255) & ~255;
+    // Per-frame constant buffer (3 frames in flight, 256-byte aligned each)
+    static constexpr UINT MAX_FRAMES = 3;
+    size_t constantBufferSize = CONSTANT_BUFFER_FRAME_SIZE * MAX_FRAMES;
     auto constantBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(constantBufferSize);
     check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &constantBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_constantUploadBuffer.put())));
-    sm_constantUploadBuffer->SetName(L"DX12Renderer Constant Buffer");
+    sm_constantUploadBuffer->SetName(L"DX12Renderer Constant Buffer (Per-Frame)");
 
     // Map constant buffer permanently
     check_hresult(sm_constantUploadBuffer->Map(0, nullptr, &sm_constantBufferMapped));
 
-    // Sprite vertex upload buffer
-    size_t spriteBufferSize = MAX_BATCH_VERTICES * sizeof(VertexPositionTextureColor);
-    auto spriteBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(spriteBufferSize);
-    check_hresult(device->CreateCommittedResource(&uploadHeapProps, D3D12_HEAP_FLAG_NONE, &spriteBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(sm_spriteUploadBuffer.put())));
-    sm_spriteUploadBuffer->SetName(L"Sprite Vertex Upload Buffer");
-
     // Reserve sprite vertex storage
     sm_spriteVertices.reserve(MAX_BATCH_VERTICES);
     sm_sprites.reserve(1024);
+  }
+
+  D3D12_GPU_VIRTUAL_ADDRESS DX12Renderer::GetConstantBufferGPUAddress()
+  {
+    UINT frameIndex = Core::GetCurrentFrameIndex();
+    return sm_constantUploadBuffer->GetGPUVirtualAddress() + (CONSTANT_BUFFER_FRAME_SIZE * frameIndex);
   }
 
   void DX12Renderer::UpdateProjectionMatrix()
@@ -205,8 +191,13 @@ namespace StarStrike
 
     XMStoreFloat4x4(&sm_constants.WorldViewProj, XMMatrixTranspose(proj));
 
-    // Update constant buffer
-    if (sm_constantBufferMapped) memcpy(sm_constantBufferMapped, &sm_constants, sizeof(BasicConstants));
+    // Write to current frame's constant buffer slice
+    if (sm_constantBufferMapped)
+    {
+      UINT frameIndex = Core::GetCurrentFrameIndex();
+      auto* dest = static_cast<uint8_t*>(sm_constantBufferMapped) + (CONSTANT_BUFFER_FRAME_SIZE * frameIndex);
+      memcpy(dest, &sm_constants, sizeof(BasicConstants));
+    }
   }
 
   void DX12Renderer::BeginFrame()
@@ -398,21 +389,19 @@ namespace StarStrike
     cmdList->RSSetViewports(1, &Core::GetScreenViewport());
     ApplyClipRegion();
 
-    // Copy vertex data to upload buffer
-    void *mapped = nullptr;
+    // Allocate from frame-isolated ring buffer
     size_t dataSize = sm_lineVertices.size() * sizeof(VertexPositionColor);
-    check_hresult(sm_lineUploadBuffer->Map(0, nullptr, &mapped));
-    memcpy(mapped, sm_lineVertices.data(), dataSize);
-    sm_lineUploadBuffer->Unmap(0, nullptr);
+    auto alloc = FrameUploadAllocator::Allocate(dataSize, alignof(VertexPositionColor));
+    memcpy(alloc.cpuAddress, sm_lineVertices.data(), dataSize);
 
     // Set pipeline state
     cmdList->SetPipelineState(sm_linePSO.GetPipelineStateObject());
     cmdList->SetGraphicsRootSignature(sm_basicRootSignature.GetSignature());
-    cmdList->SetGraphicsRootConstantBufferView(0, sm_constantUploadBuffer->GetGPUVirtualAddress());
+    cmdList->SetGraphicsRootConstantBufferView(0, GetConstantBufferGPUAddress());
 
     // Set vertex buffer
     D3D12_VERTEX_BUFFER_VIEW vbv = {};
-    vbv.BufferLocation = sm_lineUploadBuffer->GetGPUVirtualAddress();
+    vbv.BufferLocation = alloc.gpuAddress;
     vbv.SizeInBytes = static_cast<UINT>(dataSize);
     vbv.StrideInBytes = sizeof(VertexPositionColor);
     cmdList->IASetVertexBuffers(0, 1, &vbv);
@@ -436,21 +425,19 @@ namespace StarStrike
     cmdList->RSSetViewports(1, &Core::GetScreenViewport());
     ApplyClipRegion();
 
-    // Copy vertex data to upload buffer
-    void *mapped = nullptr;
+    // Allocate from frame-isolated ring buffer
     size_t dataSize = sm_triangleVertices.size() * sizeof(VertexPositionColor);
-    check_hresult(sm_triangleUploadBuffer->Map(0, nullptr, &mapped));
-    memcpy(mapped, sm_triangleVertices.data(), dataSize);
-    sm_triangleUploadBuffer->Unmap(0, nullptr);
+    auto alloc = FrameUploadAllocator::Allocate(dataSize, alignof(VertexPositionColor));
+    memcpy(alloc.cpuAddress, sm_triangleVertices.data(), dataSize);
 
     // Set pipeline state
     cmdList->SetPipelineState(sm_trianglePSO.GetPipelineStateObject());
     cmdList->SetGraphicsRootSignature(sm_basicRootSignature.GetSignature());
-    cmdList->SetGraphicsRootConstantBufferView(0, sm_constantUploadBuffer->GetGPUVirtualAddress());
+    cmdList->SetGraphicsRootConstantBufferView(0, GetConstantBufferGPUAddress());
 
     // Set vertex buffer
     D3D12_VERTEX_BUFFER_VIEW vbv = {};
-    vbv.BufferLocation = sm_triangleUploadBuffer->GetGPUVirtualAddress();
+    vbv.BufferLocation = alloc.gpuAddress;
     vbv.SizeInBytes = static_cast<UINT>(dataSize);
     vbv.StrideInBytes = sizeof(VertexPositionColor);
     cmdList->IASetVertexBuffers(0, 1, &vbv);
@@ -592,15 +579,13 @@ namespace StarStrike
         // Flush any pending vertices
         if (!sm_spriteVertices.empty())
         {
-          // Upload and draw
-          void *mapped = nullptr;
+          // Allocate from frame-isolated ring buffer
           size_t dataSize = sm_spriteVertices.size() * sizeof(VertexPositionTextureColor);
-          check_hresult(sm_spriteUploadBuffer->Map(0, nullptr, &mapped));
-          memcpy(mapped, sm_spriteVertices.data(), dataSize);
-          sm_spriteUploadBuffer->Unmap(0, nullptr);
+          auto alloc = FrameUploadAllocator::Allocate(dataSize, alignof(VertexPositionTextureColor));
+          memcpy(alloc.cpuAddress, sm_spriteVertices.data(), dataSize);
 
           D3D12_VERTEX_BUFFER_VIEW vbv = {};
-          vbv.BufferLocation = sm_spriteUploadBuffer->GetGPUVirtualAddress();
+          vbv.BufferLocation = alloc.gpuAddress;
           vbv.SizeInBytes = static_cast<UINT>(dataSize);
           vbv.StrideInBytes = sizeof(VertexPositionTextureColor);
           cmdList->IASetVertexBuffers(0, 1, &vbv);
@@ -619,7 +604,7 @@ namespace StarStrike
         // Set pipeline state for sprites
         cmdList->SetPipelineState(sm_spritePSO.GetPipelineStateObject());
         cmdList->SetGraphicsRootSignature(sm_spriteRootSignature.GetSignature());
-        cmdList->SetGraphicsRootConstantBufferView(0, sm_constantUploadBuffer->GetGPUVirtualAddress());
+        cmdList->SetGraphicsRootConstantBufferView(0, GetConstantBufferGPUAddress());
 
         // Set texture
         auto &tex = sm_textures[currentTexture];
@@ -635,14 +620,13 @@ namespace StarStrike
     // Flush remaining vertices
     if (!sm_spriteVertices.empty())
     {
-      void *mapped = nullptr;
+      // Allocate from frame-isolated ring buffer
       size_t dataSize = sm_spriteVertices.size() * sizeof(VertexPositionTextureColor);
-      check_hresult(sm_spriteUploadBuffer->Map(0, nullptr, &mapped));
-      memcpy(mapped, sm_spriteVertices.data(), dataSize);
-      sm_spriteUploadBuffer->Unmap(0, nullptr);
+      auto alloc = FrameUploadAllocator::Allocate(dataSize, alignof(VertexPositionTextureColor));
+      memcpy(alloc.cpuAddress, sm_spriteVertices.data(), dataSize);
 
       D3D12_VERTEX_BUFFER_VIEW vbv;
-      vbv.BufferLocation = sm_spriteUploadBuffer->GetGPUVirtualAddress();
+      vbv.BufferLocation = alloc.gpuAddress;
       vbv.SizeInBytes = static_cast<UINT>(dataSize);
       vbv.StrideInBytes = sizeof(VertexPositionTextureColor);
       cmdList->IASetVertexBuffers(0, 1, &vbv);
@@ -924,7 +908,7 @@ namespace StarStrike
     // Set pipeline state for sprites (uses alpha blending)
     cmdList->SetPipelineState(sm_spritePSO.GetPipelineStateObject());
     cmdList->SetGraphicsRootSignature(sm_spriteRootSignature.GetSignature());
-    cmdList->SetGraphicsRootConstantBufferView(0, sm_constantUploadBuffer->GetGPUVirtualAddress());
+    cmdList->SetGraphicsRootConstantBufferView(0, GetConstantBufferGPUAddress());
 
     // Set the provided texture SRV
     cmdList->SetGraphicsRootDescriptorTable(1, srvHandle);
@@ -943,15 +927,13 @@ namespace StarStrike
         {XMFLOAT3(0.0f, sm_screenHeight, 0.0f), XMFLOAT2(0.0f, 1.0f), XMFLOAT4(1, 1, 1, 1)},
     };
 
-    // Upload and draw
-    void *mapped = nullptr;
+    // Allocate from frame-isolated ring buffer
     size_t dataSize = sizeof(vertices);
-    check_hresult(sm_spriteUploadBuffer->Map(0, nullptr, &mapped));
-    memcpy(mapped, vertices, dataSize);
-    sm_spriteUploadBuffer->Unmap(0, nullptr);
+    auto alloc = FrameUploadAllocator::Allocate(dataSize, alignof(VertexPositionTextureColor));
+    memcpy(alloc.cpuAddress, vertices, dataSize);
 
     D3D12_VERTEX_BUFFER_VIEW vbv = {};
-    vbv.BufferLocation = sm_spriteUploadBuffer->GetGPUVirtualAddress();
+    vbv.BufferLocation = alloc.gpuAddress;
     vbv.SizeInBytes = static_cast<UINT>(dataSize);
     vbv.StrideInBytes = sizeof(VertexPositionTextureColor);
     cmdList->IASetVertexBuffers(0, 1, &vbv);
