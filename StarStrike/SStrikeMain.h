@@ -20,7 +20,6 @@ public:
 protected:
   void RenderScene();
   void RenderCanvas();
-  void CompositeCanvasToBackbuffer();
 
   Graphics::FontId m_editorFont = 0;
 };

@@ -24,7 +24,16 @@ void SStrikeMain::Shutdown()
 
 void SStrikeMain::CreateDeviceDependentResources() { GameMain::CreateDeviceDependentResources(); }
 
-void SStrikeMain::CreateWindowSizeDependentResources() { GameMain::CreateWindowSizeDependentResources(); }
+void SStrikeMain::CreateWindowSizeDependentResources()
+{
+  GameMain::CreateWindowSizeDependentResources();
+  
+  // Notify Canvas of the new backbuffer size
+  RECT outputSize = Core::GetOutputSize();
+  uint32_t width = static_cast<uint32_t>(outputSize.right - outputSize.left);
+  uint32_t height = static_cast<uint32_t>(outputSize.bottom - outputSize.top);
+  Canvas::OnResize(width, height);
+}
 
 void SStrikeMain::ReleaseDeviceDependentResources() { GameMain::ReleaseDeviceDependentResources(); }
 
@@ -36,7 +45,6 @@ void SStrikeMain::Render()
 {
   RenderScene();
   RenderCanvas();
-  CompositeCanvasToBackbuffer();
 }
 
 void SStrikeMain::RenderScene()
@@ -64,9 +72,14 @@ void SStrikeMain::RenderCanvas()
 {
   using Canvas = Canvas;
 
+  // Ensure we're rendering to the backbuffer
+  auto commandlist = Core::GetCommandList();
+  auto renderTargetView = Core::GetRenderTargetView();
+  commandlist->OMSetRenderTargets(1, &renderTargetView, FALSE, nullptr);
+
   Canvas::BeginFrame();
 
-  // Example: Draw some test primitives at 1920x1080 resolution
+  // Example: Draw some test primitives at 1920x1080 logical resolution
   //Canvas::DrawRectangle(100.0f, 100.0f, 500.0f, 300.0f, Color::BLUE);
   //Canvas::DrawRectangleOutline(100.0f, 100.0f, 500.0f, 300.0f, 3.0f, Color::WHITE);
   //Canvas::DrawLine(0.0f, 0.0f, 800.0f, 600.0f, Color::RED);
@@ -75,27 +88,4 @@ void SStrikeMain::RenderCanvas()
   Canvas::DrawText(m_editorFont, 500.0f, 500.0f, "Test", Color::RED, 10.0f);
 
   Canvas::Render();
-}
-
-void SStrikeMain::CompositeCanvasToBackbuffer()
-{
-  using Canvas = Canvas;
-
-  // Composite the Canvas render target onto the backbuffer
-  if (Canvas::IsValid())
-  {
-    // Restore backbuffer as render target
-    auto commandlist = Core::GetCommandList();
-    const auto viewport = Core::GetScreenViewport();
-    const auto scissorRect = Core::GetScissorRect();
-
-    commandlist->RSSetViewports(1, &viewport);
-    commandlist->RSSetScissorRects(1, &scissorRect);
-
-    auto renderTargetView = Core::GetRenderTargetView();
-    commandlist->OMSetRenderTargets(1, &renderTargetView, FALSE, nullptr);
-
-    // Draw the Canvas texture as a fullscreen quad
-    DX12Renderer::DrawFullscreenTexture(Canvas::GetRenderTargetSRV());
-  }
 }

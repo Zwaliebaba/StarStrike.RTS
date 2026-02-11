@@ -15,15 +15,24 @@ namespace Neuron::Graphics
   // Invalid font constant
   constexpr FontId FONT_INVALID = -1;
 
-  // Fixed render target size for Canvas
-  constexpr uint32_t CANVAS_WIDTH = 1920;
-  constexpr uint32_t CANVAS_HEIGHT = 1080;
+  // Logical/reference resolution for UI authoring (actual rendering uses backbuffer size)
+  constexpr float CANVAS_LOGICAL_WIDTH = 1920.0f;
+  constexpr float CANVAS_LOGICAL_HEIGHT = 1080.0f;
 
   // Default font grid parameters (8x8 monospace starting at ASCII 32)
   constexpr uint32_t DEFAULT_GLYPH_WIDTH = 8;
   constexpr uint32_t DEFAULT_GLYPH_HEIGHT = 8;
   constexpr uint32_t DEFAULT_CHARS_PER_ROW = 16;
   constexpr uint32_t DEFAULT_FIRST_CHAR = 32;
+
+  // Aspect ratio handling modes
+  enum class AspectMode
+  {
+    Stretch,      // Stretch to fill (distorts if aspect differs)
+    ScaleToFit,   // Uniform scale, letterbox/pillarbox as needed
+    ScaleToFill,  // Uniform scale, crops edges to fill
+    None          // No scaling, 1:1 pixel mapping from top-left
+  };
 
   // Constant buffer for Canvas rendering (256-byte aligned)
   __declspec(align(256)) struct CanvasConstants
@@ -38,7 +47,8 @@ namespace Neuron::Graphics
   // - Rendering backend only (no input, layout, or widget state)
   // - Retained draw-command recorder with batching
   // - Explicit layering (Z) and clipping (scissor stack)
-  // - Renders to a fixed-size texture (1920x1080) for compositing
+  // - Resolution-independent: uses logical 1920x1080 coordinates, renders directly to backbuffer
+  // - Supports multiple aspect ratio handling modes
   //=============================================================================
   class Canvas
   {
@@ -50,16 +60,53 @@ namespace Neuron::Graphics
     static void Shutdown();
 
     //-------------------------------------------------------------------------
+    // Configuration
+    //-------------------------------------------------------------------------
+    
+    /// Configure aspect ratio handling and UI scale
+    /// @param _mode How to handle aspect ratio differences
+    /// @param _uiScale Additional UI scale multiplier (default 1.0)
+    static void Configure(AspectMode _mode, float _uiScale = 1.0f);
+    
+    /// Called when the backbuffer/window size changes
+    static void OnResize(uint32_t _width, uint32_t _height);
+
+    //-------------------------------------------------------------------------
     // Frame control
     //-------------------------------------------------------------------------
     static void BeginFrame();
-    static void Render();  // Emits all recorded DX12 commands
+    static void Render();  // Emits all recorded DX12 commands, renders to backbuffer
 
     //-------------------------------------------------------------------------
     // Coordinate system
     //-------------------------------------------------------------------------
-    [[nodiscard]] static float GetVirtualWidth() { return static_cast<float>(CANVAS_WIDTH); }
-    [[nodiscard]] static float GetVirtualHeight() { return static_cast<float>(CANVAS_HEIGHT); }
+    
+    /// Get logical (authoring) resolution - always 1920x1080
+    [[nodiscard]] static float GetLogicalWidth() { return CANVAS_LOGICAL_WIDTH; }
+    [[nodiscard]] static float GetLogicalHeight() { return CANVAS_LOGICAL_HEIGHT; }
+    
+    /// Get physical (backbuffer) resolution
+    [[nodiscard]] static uint32_t GetPhysicalWidth() { return sm_physicalWidth; }
+    [[nodiscard]] static uint32_t GetPhysicalHeight() { return sm_physicalHeight; }
+    
+    /// Get DPI scale factor (from system)
+    [[nodiscard]] static float GetDpiScale() { return sm_dpiScale; }
+    
+    /// Get effective UI scale (DPI * user preference)
+    [[nodiscard]] static float GetEffectiveScale() { return sm_dpiScale * sm_uiScale; }
+    
+    /// Get visible logical bounds (accounting for letterboxing/pillarboxing)
+    [[nodiscard]] static RECT GetVisibleLogicalRect();
+    
+    /// Convert logical coordinates to physical (screen) coordinates
+    [[nodiscard]] static XMFLOAT2 LogicalToPhysical(float _x, float _y);
+    
+    /// Convert physical (screen) coordinates to logical coordinates (for input hit-testing)
+    [[nodiscard]] static XMFLOAT2 PhysicalToLogical(float _x, float _y);
+    
+    // Legacy accessors (for backward compatibility)
+    [[nodiscard]] static float GetVirtualWidth() { return CANVAS_LOGICAL_WIDTH; }
+    [[nodiscard]] static float GetVirtualHeight() { return CANVAS_LOGICAL_HEIGHT; }
 
     //-------------------------------------------------------------------------
     // Clipping (scissor stack)
@@ -132,26 +179,25 @@ namespace Neuron::Graphics
     [[nodiscard]] static int GetTextureCount() { return static_cast<int>(sm_textures.size()); }
 
     //-------------------------------------------------------------------------
-    // Render target access (for compositing onto 3D scene)
+    // State queries
     //-------------------------------------------------------------------------
-    [[nodiscard]] static D3D12_GPU_DESCRIPTOR_HANDLE GetRenderTargetSRV() { return sm_renderTargetSRV; }
-    [[nodiscard]] static bool IsValid() { return sm_renderTarget.get() != nullptr; }
-    [[nodiscard]] static uint32_t GetWidth() { return CANVAS_WIDTH; }
-    [[nodiscard]] static uint32_t GetHeight() { return CANVAS_HEIGHT; }
+    [[nodiscard]] static bool IsValid() { return sm_initialized; }
+    [[nodiscard]] static AspectMode GetAspectMode() { return sm_aspectMode; }
 
   private:
     //-------------------------------------------------------------------------
     // Internal helpers
     //-------------------------------------------------------------------------
-    static void CreateRenderTarget();
     static void CreateRootSignature();
     static void CreatePipelineStates();
     static void CreateDynamicBuffers();
     static void UpdateProjection();
+    static void UpdateScaling();
 
     static void FlushPrimitives();
     static void FlushSprites();
     static void ApplyClipRect(const RECT& _rect);
+    static RECT TransformClipRect(const RECT& _logicalRect);
 
     static void RecordSpriteQuad(float _x, float _y, float _width, float _height,
                                  float _u0, float _v0, float _u1, float _v1, FXMVECTOR _color);
@@ -192,6 +238,23 @@ namespace Neuron::Graphics
     inline static int sm_currentTextureIndex = -1;
 
     //-------------------------------------------------------------------------
+    // Resolution and scaling state
+    //-------------------------------------------------------------------------
+    inline static uint32_t sm_physicalWidth = 1920;
+    inline static uint32_t sm_physicalHeight = 1080;
+    inline static float sm_dpiScale = 1.0f;
+    inline static float sm_uiScale = 1.0f;
+    inline static AspectMode sm_aspectMode = AspectMode::ScaleToFit;
+    inline static bool sm_initialized = false;
+    
+    // Computed scaling values (updated by UpdateScaling)
+    inline static float sm_scaleX = 1.0f;          // Logical to physical X scale
+    inline static float sm_scaleY = 1.0f;          // Logical to physical Y scale
+    inline static float sm_offsetX = 0.0f;         // Physical X offset (for letterboxing)
+    inline static float sm_offsetY = 0.0f;         // Physical Y offset (for pillarboxing)
+    inline static float sm_uniformScale = 1.0f;    // Uniform scale for ScaleToFit/ScaleToFill
+
+    //-------------------------------------------------------------------------
     // Clipping stack
     //-------------------------------------------------------------------------
     inline static std::vector<RECT> sm_clipStack;
@@ -217,15 +280,6 @@ namespace Neuron::Graphics
     // Fonts (managed by FontPrint)
     //-------------------------------------------------------------------------
     inline static std::vector<std::unique_ptr<FontPrint>> sm_fonts;
-
-    //-------------------------------------------------------------------------
-    // Render target (1920x1080 texture for UI compositing)
-    //-------------------------------------------------------------------------
-    inline static com_ptr<ID3D12Resource> sm_renderTarget;
-    inline static D3D12_CPU_DESCRIPTOR_HANDLE sm_renderTargetRTV = {};
-    inline static DescriptorHandle sm_renderTargetSRVHandle;
-    inline static D3D12_GPU_DESCRIPTOR_HANDLE sm_renderTargetSRV = {};
-    inline static D3D12_RESOURCE_STATES sm_renderTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
   };
 
 } // namespace Neuron::Graphics

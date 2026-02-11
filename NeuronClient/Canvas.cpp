@@ -29,17 +29,37 @@ namespace Neuron::Graphics
     sm_layerStack.reserve(16);
 
     // Create GPU resources
-    CreateRenderTarget();
     CreateRootSignature();
     CreatePipelineStates();
     CreateDynamicBuffers();
 
-    // Initialize default clip rect to full canvas
-    sm_currentClipRect = {0, 0, static_cast<LONG>(CANVAS_WIDTH), static_cast<LONG>(CANVAS_HEIGHT)};
+    // Initialize from current backbuffer size
+    RECT outputSize = Core::GetOutputSize();
+    sm_physicalWidth = static_cast<uint32_t>(outputSize.right - outputSize.left);
+    sm_physicalHeight = static_cast<uint32_t>(outputSize.bottom - outputSize.top);
+    
+    if (sm_physicalWidth == 0) sm_physicalWidth = 1920;
+    if (sm_physicalHeight == 0) sm_physicalHeight = 1080;
 
+    // Query DPI if available
+    HWND hwnd = Core::GetWindow();
+    if (hwnd)
+    {
+      UINT dpi = GetDpiForWindow(hwnd);
+      sm_dpiScale = static_cast<float>(dpi) / 96.0f;
+    }
+
+    // Initialize default clip rect to full logical canvas
+    sm_currentClipRect = {0, 0, static_cast<LONG>(CANVAS_LOGICAL_WIDTH), static_cast<LONG>(CANVAS_LOGICAL_HEIGHT)};
+
+    UpdateScaling();
     UpdateProjection();
 
-    DebugTrace("Canvas initialized: {}x{} render target\n", CANVAS_WIDTH, CANVAS_HEIGHT);
+    sm_initialized = true;
+
+    DebugTrace("Canvas initialized: logical {}x{}, physical {}x{}, DPI scale {:.2f}\n", 
+               static_cast<int>(CANVAS_LOGICAL_WIDTH), static_cast<int>(CANVAS_LOGICAL_HEIGHT),
+               sm_physicalWidth, sm_physicalHeight, sm_dpiScale);
   }
 
   void Canvas::Shutdown()
@@ -71,7 +91,6 @@ namespace Neuron::Graphics
     }
 
     // Release GPU resources
-    sm_renderTarget = nullptr;
     sm_lineUploadBuffer = nullptr;
     sm_triangleUploadBuffer = nullptr;
     sm_spriteUploadBuffer = nullptr;
@@ -85,72 +104,145 @@ namespace Neuron::Graphics
     sm_layerStack.clear();
     sm_textures.clear();
     sm_fonts.clear();
+
+    sm_initialized = false;
+  }
+
+  //=============================================================================
+  // Configuration
+  //=============================================================================
+
+  void Canvas::Configure(AspectMode _mode, float _uiScale)
+  {
+    sm_aspectMode = _mode;
+    sm_uiScale = _uiScale;
+    UpdateScaling();
+    UpdateProjection();
+  }
+
+  void Canvas::OnResize(uint32_t _width, uint32_t _height)
+  {
+    if (_width == 0 || _height == 0)
+      return;
+
+    sm_physicalWidth = _width;
+    sm_physicalHeight = _height;
+
+    // Update DPI if window is available
+    HWND hwnd = Core::GetWindow();
+    if (hwnd)
+    {
+      UINT dpi = GetDpiForWindow(hwnd);
+      sm_dpiScale = static_cast<float>(dpi) / 96.0f;
+    }
+
+    UpdateScaling();
+    UpdateProjection();
+
+    DebugTrace("Canvas::OnResize: {}x{}, scale {:.3f}x{:.3f}, offset {:.1f},{:.1f}\n",
+               _width, _height, sm_scaleX, sm_scaleY, sm_offsetX, sm_offsetY);
+  }
+
+  void Canvas::UpdateScaling()
+  {
+    float physicalW = static_cast<float>(sm_physicalWidth);
+    float physicalH = static_cast<float>(sm_physicalHeight);
+
+    switch (sm_aspectMode)
+    {
+      case AspectMode::Stretch:
+        // Direct mapping, may distort
+        sm_scaleX = physicalW / CANVAS_LOGICAL_WIDTH;
+        sm_scaleY = physicalH / CANVAS_LOGICAL_HEIGHT;
+        sm_offsetX = 0.0f;
+        sm_offsetY = 0.0f;
+        sm_uniformScale = 1.0f;
+        break;
+
+      case AspectMode::ScaleToFit:
+      {
+        // Uniform scale to fit entirely within physical bounds (letterbox/pillarbox)
+        float scaleX = physicalW / CANVAS_LOGICAL_WIDTH;
+        float scaleY = physicalH / CANVAS_LOGICAL_HEIGHT;
+        sm_uniformScale = std::min(scaleX, scaleY);
+        sm_scaleX = sm_uniformScale;
+        sm_scaleY = sm_uniformScale;
+
+        // Center the content
+        float scaledWidth = CANVAS_LOGICAL_WIDTH * sm_uniformScale;
+        float scaledHeight = CANVAS_LOGICAL_HEIGHT * sm_uniformScale;
+        sm_offsetX = (physicalW - scaledWidth) * 0.5f;
+        sm_offsetY = (physicalH - scaledHeight) * 0.5f;
+        break;
+      }
+
+      case AspectMode::ScaleToFill:
+      {
+        // Uniform scale to fill physical bounds (may crop edges)
+        float scaleX = physicalW / CANVAS_LOGICAL_WIDTH;
+        float scaleY = physicalH / CANVAS_LOGICAL_HEIGHT;
+        sm_uniformScale = std::max(scaleX, scaleY);
+        sm_scaleX = sm_uniformScale;
+        sm_scaleY = sm_uniformScale;
+
+        // Center the content (negative offsets = cropping)
+        float scaledWidth = CANVAS_LOGICAL_WIDTH * sm_uniformScale;
+        float scaledHeight = CANVAS_LOGICAL_HEIGHT * sm_uniformScale;
+        sm_offsetX = (physicalW - scaledWidth) * 0.5f;
+        sm_offsetY = (physicalH - scaledHeight) * 0.5f;
+        break;
+      }
+
+      case AspectMode::None:
+        // 1:1 pixel mapping from top-left
+        sm_scaleX = 1.0f;
+        sm_scaleY = 1.0f;
+        sm_offsetX = 0.0f;
+        sm_offsetY = 0.0f;
+        sm_uniformScale = 1.0f;
+        break;
+    }
+  }
+
+  RECT Canvas::GetVisibleLogicalRect()
+  {
+    // Calculate what portion of logical space is visible on screen
+    float physicalW = static_cast<float>(sm_physicalWidth);
+    float physicalH = static_cast<float>(sm_physicalHeight);
+
+    // Convert physical bounds to logical
+    XMFLOAT2 topLeft = PhysicalToLogical(0.0f, 0.0f);
+    XMFLOAT2 bottomRight = PhysicalToLogical(physicalW, physicalH);
+
+    // Clamp to logical bounds
+    RECT result;
+    result.left = static_cast<LONG>(std::max(0.0f, topLeft.x));
+    result.top = static_cast<LONG>(std::max(0.0f, topLeft.y));
+    result.right = static_cast<LONG>(std::min(CANVAS_LOGICAL_WIDTH, bottomRight.x));
+    result.bottom = static_cast<LONG>(std::min(CANVAS_LOGICAL_HEIGHT, bottomRight.y));
+
+    return result;
+  }
+
+  XMFLOAT2 Canvas::LogicalToPhysical(float _x, float _y)
+  {
+    return XMFLOAT2{
+      _x * sm_scaleX + sm_offsetX,
+      _y * sm_scaleY + sm_offsetY
+    };
+  }
+
+  XMFLOAT2 Canvas::PhysicalToLogical(float _x, float _y)
+  {
+    return XMFLOAT2{
+      (_x - sm_offsetX) / sm_scaleX,
+      (_y - sm_offsetY) / sm_scaleY
+    };
   }
 
   //=============================================================================
   // GPU Resource Creation
   //=============================================================================
-
-  void Canvas::CreateRenderTarget()
-  {
-    auto device = Core::GetD3DDevice();
-
-    // Create render target texture (1920x1080, BGRA with alpha for transparency)
-    D3D12_RESOURCE_DESC rtDesc = {};
-    rtDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-    rtDesc.Width = CANVAS_WIDTH;
-    rtDesc.Height = CANVAS_HEIGHT;
-    rtDesc.DepthOrArraySize = 1;
-    rtDesc.MipLevels = 1;
-    rtDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-    rtDesc.SampleDesc.Count = 1;
-    rtDesc.SampleDesc.Quality = 0;
-    rtDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-    rtDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-
-    D3D12_CLEAR_VALUE clearValue = {};
-    clearValue.Format = rtDesc.Format;
-    clearValue.Color[0] = 0.0f;
-    clearValue.Color[1] = 0.0f;
-    clearValue.Color[2] = 0.0f;
-    clearValue.Color[3] = 0.0f;  // Fully transparent
-
-    auto heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-    check_hresult(device->CreateCommittedResource(
-      &heapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &rtDesc,
-      D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-      &clearValue,
-      IID_PPV_ARGS(sm_renderTarget.put())));
-
-    sm_renderTarget->SetName(L"Canvas Render Target");
-    sm_renderTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-
-    // Create RTV
-    auto rtvHandle = Core::AllocateDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 1, true);
-    sm_renderTargetRTV = rtvHandle;
-
-    D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-    rtvDesc.Format = rtDesc.Format;
-    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-    rtvDesc.Texture2D.MipSlice = 0;
-    device->CreateRenderTargetView(sm_renderTarget.get(), &rtvDesc, sm_renderTargetRTV);
-
-    // Create SRV
-    sm_renderTargetSRVHandle = Core::AllocateDescriptor(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1);
-    sm_renderTargetSRV = sm_renderTargetSRVHandle;
-
-    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-    srvDesc.Format = rtDesc.Format;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.Texture2D.MipLevels = 1;
-    srvDesc.Texture2D.MostDetailedMip = 0;
-    device->CreateShaderResourceView(sm_renderTarget.get(), &srvDesc, sm_renderTargetSRVHandle);
-
-    DebugTrace("Canvas render target created: {}x{}\n", CANVAS_WIDTH, CANVAS_HEIGHT);
-  }
 
   void Canvas::CreateRootSignature()
   {
@@ -275,11 +367,21 @@ namespace Neuron::Graphics
 
   void Canvas::UpdateProjection()
   {
-    // Orthographic projection for fixed canvas size
+    // Orthographic projection for physical backbuffer size
+    // Vertices are submitted in logical coordinates, transformed via scale/offset in projection
+    float physicalW = static_cast<float>(sm_physicalWidth);
+    float physicalH = static_cast<float>(sm_physicalHeight);
+
+    // Build a combined projection that:
+    // 1. Scales logical coordinates to physical
+    // 2. Applies offset for letterboxing/pillarboxing
+    // 3. Maps to NDC
+
+    // We'll use physical coordinates in the projection, and transform vertices before submission
     XMMATRIX proj = XMMatrixOrthographicOffCenterLH(
-      0.0f, static_cast<float>(CANVAS_WIDTH),     // left, right
-      static_cast<float>(CANVAS_HEIGHT), 0.0f,    // bottom, top (flipped for top-left origin)
-      0.0f, 1.0f                                   // near, far
+      0.0f, physicalW,      // left, right (physical)
+      physicalH, 0.0f,      // bottom, top (flipped for top-left origin)
+      0.0f, 1.0f            // near, far
     );
 
     XMStoreFloat4x4(&sm_constants.Projection, XMMatrixTranspose(proj));
@@ -307,39 +409,24 @@ namespace Neuron::Graphics
     sm_currentZ = 0.0f;
     sm_currentTextureIndex = -1;
 
-    // Reset clip rect to full canvas
-    sm_currentClipRect = {0, 0, static_cast<LONG>(CANVAS_WIDTH), static_cast<LONG>(CANVAS_HEIGHT)};
+    // Reset clip rect to full logical canvas
+    sm_currentClipRect = {0, 0, static_cast<LONG>(CANVAS_LOGICAL_WIDTH), static_cast<LONG>(CANVAS_LOGICAL_HEIGHT)};
 
+    // Bind the backbuffer as render target (caller should have already set it up)
     auto cmdList = Core::GetCommandList();
 
-    // Transition render target to render target state
-    if (sm_renderTargetState != D3D12_RESOURCE_STATE_RENDER_TARGET)
-    {
-      D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-        sm_renderTarget.get(),
-        sm_renderTargetState,
-        D3D12_RESOURCE_STATE_RENDER_TARGET);
-      cmdList->ResourceBarrier(1, &barrier);
-      sm_renderTargetState = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    }
-
-    // Set render target and clear to transparent
-    cmdList->OMSetRenderTargets(1, &sm_renderTargetRTV, FALSE, nullptr);
-
-    constexpr float clearColor[] = {0.0f, 0.0f, 0.0f, 0.0f};  // Transparent
-    cmdList->ClearRenderTargetView(sm_renderTargetRTV, clearColor, 0, nullptr);
-
-    // Set viewport and scissor for canvas size
+    // Set viewport for full physical backbuffer
     D3D12_VIEWPORT viewport = {};
     viewport.TopLeftX = 0.0f;
     viewport.TopLeftY = 0.0f;
-    viewport.Width = static_cast<float>(CANVAS_WIDTH);
-    viewport.Height = static_cast<float>(CANVAS_HEIGHT);
+    viewport.Width = static_cast<float>(sm_physicalWidth);
+    viewport.Height = static_cast<float>(sm_physicalHeight);
     viewport.MinDepth = 0.0f;
     viewport.MaxDepth = 1.0f;
     cmdList->RSSetViewports(1, &viewport);
 
-    D3D12_RECT scissor = {0, 0, static_cast<LONG>(CANVAS_WIDTH), static_cast<LONG>(CANVAS_HEIGHT)};
+    // Set scissor to full physical backbuffer initially
+    D3D12_RECT scissor = {0, 0, static_cast<LONG>(sm_physicalWidth), static_cast<LONG>(sm_physicalHeight)};
     cmdList->RSSetScissorRects(1, &scissor);
   }
 
@@ -348,19 +435,8 @@ namespace Neuron::Graphics
     // Flush all batched primitives to GPU
     FlushPrimitives();
     FlushSprites();
-
-    auto cmdList = Core::GetCommandList();
-
-    // Transition render target back to shader resource for sampling
-    if (sm_renderTargetState != D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE)
-    {
-      D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-        sm_renderTarget.get(),
-        sm_renderTargetState,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-      cmdList->ResourceBarrier(1, &barrier);
-      sm_renderTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-    }
+    
+    // No render target transition needed - we rendered directly to backbuffer
   }
 
   //=============================================================================
@@ -410,20 +486,44 @@ namespace Neuron::Graphics
   void Canvas::ResetClipStack()
   {
     sm_clipStack.clear();
-    sm_currentClipRect = {0, 0, static_cast<LONG>(CANVAS_WIDTH), static_cast<LONG>(CANVAS_HEIGHT)};
+    sm_currentClipRect = {0, 0, static_cast<LONG>(CANVAS_LOGICAL_WIDTH), static_cast<LONG>(CANVAS_LOGICAL_HEIGHT)};
+  }
+
+  RECT Canvas::TransformClipRect(const RECT& _logicalRect)
+  {
+    // Transform logical clip rect to physical coordinates
+    XMFLOAT2 topLeft = LogicalToPhysical(static_cast<float>(_logicalRect.left), 
+                                          static_cast<float>(_logicalRect.top));
+    XMFLOAT2 bottomRight = LogicalToPhysical(static_cast<float>(_logicalRect.right), 
+                                              static_cast<float>(_logicalRect.bottom));
+
+    RECT physicalRect;
+    physicalRect.left = static_cast<LONG>(topLeft.x);
+    physicalRect.top = static_cast<LONG>(topLeft.y);
+    physicalRect.right = static_cast<LONG>(std::ceil(bottomRight.x));
+    physicalRect.bottom = static_cast<LONG>(std::ceil(bottomRight.y));
+
+    // Clamp to physical bounds
+    physicalRect.left = std::max(0L, physicalRect.left);
+    physicalRect.top = std::max(0L, physicalRect.top);
+    physicalRect.right = std::min(static_cast<LONG>(sm_physicalWidth), physicalRect.right);
+    physicalRect.bottom = std::min(static_cast<LONG>(sm_physicalHeight), physicalRect.bottom);
+
+    // Ensure valid scissor rect
+    if (physicalRect.right <= physicalRect.left)
+      physicalRect.right = physicalRect.left + 1;
+    if (physicalRect.bottom <= physicalRect.top)
+      physicalRect.bottom = physicalRect.top + 1;
+
+    return physicalRect;
   }
 
   void Canvas::ApplyClipRect(const RECT& _rect)
   {
     auto cmdList = Core::GetCommandList();
 
-    // Canvas uses fixed size, no scaling needed
-    D3D12_RECT scissor;
-    scissor.left = _rect.left;
-    scissor.top = _rect.top;
-    scissor.right = _rect.right;
-    scissor.bottom = _rect.bottom;
-
+    // Transform logical clip rect to physical coordinates
+    D3D12_RECT scissor = TransformClipRect(_rect);
     cmdList->RSSetScissorRects(1, &scissor);
   }
 
@@ -463,8 +563,12 @@ namespace Neuron::Graphics
     XMFLOAT4 colorF;
     XMStoreFloat4(&colorF, _color);
 
-    sm_lineVertices.emplace_back(XMFLOAT3{_x1, _y1, sm_currentZ}, colorF);
-    sm_lineVertices.emplace_back(XMFLOAT3{_x2, _y2, sm_currentZ}, colorF);
+    // Transform logical to physical coordinates
+    XMFLOAT2 p1 = LogicalToPhysical(_x1, _y1);
+    XMFLOAT2 p2 = LogicalToPhysical(_x2, _y2);
+
+    sm_lineVertices.emplace_back(XMFLOAT3{p1.x, p1.y, sm_currentZ}, colorF);
+    sm_lineVertices.emplace_back(XMFLOAT3{p2.x, p2.y, sm_currentZ}, colorF);
   }
 
   void XM_CALLCONV Canvas::DrawRectangle(float _left, float _top, float _right, float _bottom, FXMVECTOR _color)
@@ -478,14 +582,18 @@ namespace Neuron::Graphics
     XMStoreFloat4(&colorF, _color);
     float z = sm_currentZ;
 
-    // Two triangles for the quad
-    sm_triangleVertices.emplace_back(XMFLOAT3{_left, _top, z}, colorF);
-    sm_triangleVertices.emplace_back(XMFLOAT3{_right, _top, z}, colorF);
-    sm_triangleVertices.emplace_back(XMFLOAT3{_left, _bottom, z}, colorF);
+    // Transform logical to physical coordinates
+    XMFLOAT2 tl = LogicalToPhysical(_left, _top);
+    XMFLOAT2 br = LogicalToPhysical(_right, _bottom);
 
-    sm_triangleVertices.emplace_back(XMFLOAT3{_right, _top, z}, colorF);
-    sm_triangleVertices.emplace_back(XMFLOAT3{_right, _bottom, z}, colorF);
-    sm_triangleVertices.emplace_back(XMFLOAT3{_left, _bottom, z}, colorF);
+    // Two triangles for the quad
+    sm_triangleVertices.emplace_back(XMFLOAT3{tl.x, tl.y, z}, colorF);
+    sm_triangleVertices.emplace_back(XMFLOAT3{br.x, tl.y, z}, colorF);
+    sm_triangleVertices.emplace_back(XMFLOAT3{tl.x, br.y, z}, colorF);
+
+    sm_triangleVertices.emplace_back(XMFLOAT3{br.x, tl.y, z}, colorF);
+    sm_triangleVertices.emplace_back(XMFLOAT3{br.x, br.y, z}, colorF);
+    sm_triangleVertices.emplace_back(XMFLOAT3{tl.x, br.y, z}, colorF);
   }
 
   void XM_CALLCONV Canvas::DrawRectangleOutline(float _left, float _top, float _right, float _bottom,
@@ -510,9 +618,14 @@ namespace Neuron::Graphics
     XMStoreFloat4(&colorF, _color);
     float z = sm_currentZ;
 
-    sm_triangleVertices.emplace_back(XMFLOAT3{_x1, _y1, z}, colorF);
-    sm_triangleVertices.emplace_back(XMFLOAT3{_x2, _y2, z}, colorF);
-    sm_triangleVertices.emplace_back(XMFLOAT3{_x3, _y3, z}, colorF);
+    // Transform logical to physical coordinates
+    XMFLOAT2 p1 = LogicalToPhysical(_x1, _y1);
+    XMFLOAT2 p2 = LogicalToPhysical(_x2, _y2);
+    XMFLOAT2 p3 = LogicalToPhysical(_x3, _y3);
+
+    sm_triangleVertices.emplace_back(XMFLOAT3{p1.x, p1.y, z}, colorF);
+    sm_triangleVertices.emplace_back(XMFLOAT3{p2.x, p2.y, z}, colorF);
+    sm_triangleVertices.emplace_back(XMFLOAT3{p3.x, p3.y, z}, colorF);
   }
 
   void XM_CALLCONV Canvas::DrawCircle(float _cx, float _cy, float _radius, FXMVECTOR _color, int _segments)
@@ -522,6 +635,11 @@ namespace Neuron::Graphics
     XMFLOAT4 colorF;
     XMStoreFloat4(&colorF, _color);
     float z = sm_currentZ;
+
+    // Transform center to physical
+    XMFLOAT2 center = LogicalToPhysical(_cx, _cy);
+    // Scale radius (use average of X/Y scale for non-uniform scaling)
+    float radiusPhysical = _radius * sm_uniformScale;
 
     float angleStep = XM_2PI / static_cast<float>(_segments);
 
@@ -535,12 +653,12 @@ namespace Neuron::Graphics
       float angle1 = static_cast<float>(i) * angleStep;
       float angle2 = static_cast<float>(i + 1) * angleStep;
 
-      float x1 = _cx + cosf(angle1) * _radius;
-      float y1 = _cy + sinf(angle1) * _radius;
-      float x2 = _cx + cosf(angle2) * _radius;
-      float y2 = _cy + sinf(angle2) * _radius;
+      float x1 = center.x + cosf(angle1) * radiusPhysical;
+      float y1 = center.y + sinf(angle1) * radiusPhysical;
+      float x2 = center.x + cosf(angle2) * radiusPhysical;
+      float y2 = center.y + sinf(angle2) * radiusPhysical;
 
-      sm_triangleVertices.emplace_back(XMFLOAT3{_cx, _cy, z}, colorF);
+      sm_triangleVertices.emplace_back(XMFLOAT3{center.x, center.y, z}, colorF);
       sm_triangleVertices.emplace_back(XMFLOAT3{x1, y1, z}, colorF);
       sm_triangleVertices.emplace_back(XMFLOAT3{x2, y2, z}, colorF);
     }
@@ -551,8 +669,14 @@ namespace Neuron::Graphics
   {
     if (_segments < 3) _segments = 3;
 
-    float innerRadius = _radius - _thickness * 0.5f;
-    float outerRadius = _radius + _thickness * 0.5f;
+    // Transform center to physical
+    XMFLOAT2 center = LogicalToPhysical(_cx, _cy);
+    // Scale radius and thickness
+    float radiusPhysical = _radius * sm_uniformScale;
+    float thicknessPhysical = _thickness * sm_uniformScale;
+
+    float innerRadius = radiusPhysical - thicknessPhysical * 0.5f;
+    float outerRadius = radiusPhysical + thicknessPhysical * 0.5f;
 
     XMFLOAT4 colorF;
     XMStoreFloat4(&colorF, _color);
@@ -573,14 +697,14 @@ namespace Neuron::Graphics
       float cos1 = cosf(angle1), sin1 = sinf(angle1);
       float cos2 = cosf(angle2), sin2 = sinf(angle2);
 
-      float innerX1 = _cx + cos1 * innerRadius;
-      float innerY1 = _cy + sin1 * innerRadius;
-      float outerX1 = _cx + cos1 * outerRadius;
-      float outerY1 = _cy + sin1 * outerRadius;
-      float innerX2 = _cx + cos2 * innerRadius;
-      float innerY2 = _cy + sin2 * innerRadius;
-      float outerX2 = _cx + cos2 * outerRadius;
-      float outerY2 = _cy + sin2 * outerRadius;
+      float innerX1 = center.x + cos1 * innerRadius;
+      float innerY1 = center.y + sin1 * innerRadius;
+      float outerX1 = center.x + cos1 * outerRadius;
+      float outerY1 = center.y + sin1 * outerRadius;
+      float innerX2 = center.x + cos2 * innerRadius;
+      float innerY2 = center.y + sin2 * innerRadius;
+      float outerX2 = center.x + cos2 * outerRadius;
+      float outerY2 = center.y + sin2 * outerRadius;
 
       // Two triangles per segment
       sm_triangleVertices.emplace_back(XMFLOAT3{innerX1, innerY1, z}, colorF);
@@ -670,15 +794,17 @@ namespace Neuron::Graphics
     XMStoreFloat4(&colorF, _tint);
     float z = sm_currentZ;
 
-    float hw = _width * 0.5f;
-    float hh = _height * 0.5f;
+    // Transform center to physical and scale dimensions
+    XMFLOAT2 center = LogicalToPhysical(_cx, _cy);
+    float hw = (_width * sm_uniformScale) * 0.5f;
+    float hh = (_height * sm_uniformScale) * 0.5f;
     float cosR = cosf(_rotation);
     float sinR = sinf(_rotation);
 
-    // Compute rotated corners
+    // Compute rotated corners in physical space
     auto rotatePoint = [&](float lx, float ly) -> XMFLOAT3 {
-      float rx = lx * cosR - ly * sinR + _cx;
-      float ry = lx * sinR + ly * cosR + _cy;
+      float rx = lx * cosR - ly * sinR + center.x;
+      float ry = lx * sinR + ly * cosR + center.y;
       return {rx, ry, z};
     };
 
@@ -709,19 +835,18 @@ namespace Neuron::Graphics
     XMStoreFloat4(&colorF, _color);
     float z = sm_currentZ;
 
-    float x0 = _x;
-    float y0 = _y;
-    float x1 = _x + _width;
-    float y1 = _y + _height;
+    // Transform logical to physical coordinates
+    XMFLOAT2 tl = LogicalToPhysical(_x, _y);
+    XMFLOAT2 br = LogicalToPhysical(_x + _width, _y + _height);
 
     // Two triangles
-    sm_spriteVertices.emplace_back(XMFLOAT3{x0, y0, z}, XMFLOAT2{_u0, _v0}, colorF);
-    sm_spriteVertices.emplace_back(XMFLOAT3{x1, y0, z}, XMFLOAT2{_u1, _v0}, colorF);
-    sm_spriteVertices.emplace_back(XMFLOAT3{x0, y1, z}, XMFLOAT2{_u0, _v1}, colorF);
+    sm_spriteVertices.emplace_back(XMFLOAT3{tl.x, tl.y, z}, XMFLOAT2{_u0, _v0}, colorF);
+    sm_spriteVertices.emplace_back(XMFLOAT3{br.x, tl.y, z}, XMFLOAT2{_u1, _v0}, colorF);
+    sm_spriteVertices.emplace_back(XMFLOAT3{tl.x, br.y, z}, XMFLOAT2{_u0, _v1}, colorF);
 
-    sm_spriteVertices.emplace_back(XMFLOAT3{x1, y0, z}, XMFLOAT2{_u1, _v0}, colorF);
-    sm_spriteVertices.emplace_back(XMFLOAT3{x1, y1, z}, XMFLOAT2{_u1, _v1}, colorF);
-    sm_spriteVertices.emplace_back(XMFLOAT3{x0, y1, z}, XMFLOAT2{_u0, _v1}, colorF);
+    sm_spriteVertices.emplace_back(XMFLOAT3{br.x, tl.y, z}, XMFLOAT2{_u1, _v0}, colorF);
+    sm_spriteVertices.emplace_back(XMFLOAT3{br.x, br.y, z}, XMFLOAT2{_u1, _v1}, colorF);
+    sm_spriteVertices.emplace_back(XMFLOAT3{tl.x, br.y, z}, XMFLOAT2{_u0, _v1}, colorF);
   }
 
   Texture* Canvas::GetTexture(int _index)
@@ -790,7 +915,20 @@ namespace Neuron::Graphics
     }
     sm_currentTextureIndex = fontTexture;
 
+    // Record the starting index to transform vertices after emission
+    size_t startIndex = sm_spriteVertices.size();
+
+    // Emit glyphs in logical coordinates (FontPrint doesn't know about physical space)
     font->EmitGlyphs(sm_spriteVertices, _x, _y, sm_currentZ, _text, _color, _scale);
+
+    // Transform all newly emitted vertices from logical to physical coordinates
+    for (size_t i = startIndex; i < sm_spriteVertices.size(); ++i)
+    {
+      auto& v = sm_spriteVertices[i];
+      XMFLOAT2 physical = LogicalToPhysical(v.m_position.x, v.m_position.y);
+      v.m_position.x = physical.x;
+      v.m_position.y = physical.y;
+    }
   }
 
   void XM_CALLCONV Canvas::DrawTextCentered(FontId _fontId, float _centerX, float _y, const char* _text,
