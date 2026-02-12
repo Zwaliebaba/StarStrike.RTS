@@ -110,11 +110,8 @@
     <Manifest Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\blake.bmp" />
     <Image Include="Assets\blake.dds" />
-    <Image Include="Assets\ecm.bmp" />
     <Image Include="Assets\ecm.dds" />
-    <Image Include="Assets\elitetx3.bmp" />
     <Image Include="Assets\elitetx3.dds" />
     <Image Include="Assets\Fonts\EditorFont-ENG.dds" />
     <Image Include="Assets\Fonts\EditorFont-FRA.dds" />
@@ -124,7 +121,6 @@
     <Image Include="Assets\Fonts\SpeccyFont-FRA.dds" />
     <Image Include="Assets\Fonts\SpeccyFont-ITA.dds" />
     <Image Include="Assets\Fonts\SpeccyFont-RUS.dds" />
-    <Image Include="Assets\greendot.bmp" />
     <Image Include="Assets\greendot.dds" />
     <Image Include="Assets\Logos\LargeTile.scale-100.png" />
     <Image Include="Assets\Logos\LargeTile.scale-125.png" />
@@ -177,17 +173,11 @@
     <Image Include="Assets\Logos\Wide310x150Logo.scale-150.png" />
     <Image Include="Assets\Logos\Wide310x150Logo.scale-200.png" />
     <Image Include="Assets\Logos\Wide310x150Logo.scale-400.png" />
-    <Image Include="Assets\missgrn.bmp" />
     <Image Include="Assets\missgrn.dds" />
-    <Image Include="Assets\missred.bmp" />
     <Image Include="Assets\missred.dds" />
-    <Image Include="Assets\missyell.bmp" />
     <Image Include="Assets\missyell.dds" />
-    <Image Include="Assets\reddot.bmp" />
     <Image Include="Assets\reddot.dds" />
-    <Image Include="Assets\safe.bmp" />
     <Image Include="Assets\safe.dds" />
-    <Image Include="Assets\scanner.bmp" />
     <Image Include="Assets\scanner.dds" />
   </ItemGroup>
   <!--
@@ -267,7 +257,6 @@
     <ClCompile Include="pilot.cpp" />
     <ClCompile Include="planet.cpp" />
     <ClCompile Include="random.cpp" />
-    <ClCompile Include="Rendering\DX12Renderer.cpp" />
     <ClCompile Include="Rendering\ShipRenderer.cpp" />
     <ClCompile Include="Rendering\Texture2D.cpp" />
     <ClCompile Include="shipdata.cpp" />
@@ -303,7 +292,6 @@
     <ClInclude Include="pilot.h" />
     <ClInclude Include="planet.h" />
     <ClInclude Include="random.h" />
-    <ClInclude Include="Rendering\DX12Renderer.h" />
     <ClInclude Include="Rendering\ShipRenderer.h" />
     <ClInclude Include="Rendering\Texture2D.h" />
     <ClInclude Include="shipdata.h" />

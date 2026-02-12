@@ -991,6 +991,20 @@ namespace Neuron::Graphics
 
     auto cmdList = Core::GetCommandList();
 
+    // Ensure we're rendering to the backbuffer
+    auto rtvHandle = Core::GetRenderTargetView();
+    cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+
+    // Set viewport for full physical backbuffer
+    D3D12_VIEWPORT viewport = {};
+    viewport.TopLeftX = 0.0f;
+    viewport.TopLeftY = 0.0f;
+    viewport.Width = static_cast<float>(sm_physicalWidth);
+    viewport.Height = static_cast<float>(sm_physicalHeight);
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
+    cmdList->RSSetViewports(1, &viewport);
+
     // Apply current clip rect
     ApplyClipRect(sm_currentClipRect);
 
@@ -1066,6 +1080,20 @@ namespace Neuron::Graphics
       sm_spriteVertices.clear();
       return;
     }
+
+    // Ensure we're rendering to the backbuffer
+    auto rtvHandle = Core::GetRenderTargetView();
+    cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+
+    // Set viewport for full physical backbuffer
+    D3D12_VIEWPORT viewport = {};
+    viewport.TopLeftX = 0.0f;
+    viewport.TopLeftY = 0.0f;
+    viewport.Width = static_cast<float>(sm_physicalWidth);
+    viewport.Height = static_cast<float>(sm_physicalHeight);
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
+    cmdList->RSSetViewports(1, &viewport);
 
     // Apply current clip rect
     ApplyClipRect(sm_currentClipRect);

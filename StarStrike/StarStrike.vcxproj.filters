@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Image Include="Assets\blake.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\ecm.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\elitetx3.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\greendot.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\missgrn.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\missred.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\missyell.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\reddot.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\safe.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\scanner.bmp">
-      <Filter>Assets</Filter>
-    </Image>
     <Image Include="Assets\Logos\LockScreenLogo.scale-200.png">
       <Filter>Assets\Logos</Filter>
     </Image>
@@ -356,7 +326,6 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="GdiBitmap.cpp" />
     <ClCompile Include="sound.cpp" />
-    <ClCompile Include="Rendering\DX12Renderer.cpp" />
     <ClCompile Include="Rendering\Texture2D.cpp" />
     <ClCompile Include="Rendering\ShipRenderer.cpp" />
   </ItemGroup>
@@ -389,7 +358,6 @@
     <ClInclude Include="SStrikeMain.h" />
     <ClInclude Include="Win32Input.h" />
     <ClInclude Include="GdiBitmap.h" />
-    <ClInclude Include="Rendering\DX12Renderer.h" />
     <ClInclude Include="Rendering\Texture2D.h" />
     <ClInclude Include="Rendering\ShipRenderer.h" />
   </ItemGroup>

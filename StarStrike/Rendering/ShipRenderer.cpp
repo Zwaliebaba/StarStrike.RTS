@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "ShipRenderer.h"
-#include "DX12Renderer.h"
 #include "GraphicsCore.h"
 #include "Color.h"
 #include "shipdata.h"

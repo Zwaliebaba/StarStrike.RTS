@@ -19,7 +19,6 @@
 #include "input.h"
 #include "Canvas.h"
 #include "SStrikeMain.h"
-#include "Rendering/DX12Renderer.h"
 #include "Rendering/ShipRenderer.h"
 
 using namespace Neuron;
@@ -350,10 +349,14 @@ void draw_screen(void)
 
   Graphics::Core::Prepare();
 
-  // Begin DX12 frame (clears batched vertices, updates projection)
-  StarStrike::DX12Renderer::BeginFrame();
+  // Clear the screen
+  auto cmdList = Graphics::Core::GetCommandList();
+  constexpr float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
+  cmdList->ClearRenderTargetView(Graphics::Core::GetRenderTargetView(), clearColor, 0, nullptr);
+  if (Graphics::Core::GetDepthBufferFormat() != DXGI_FORMAT_UNKNOWN)
+    cmdList->ClearDepthStencilView(Graphics::Core::GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-  // Begin Canvas frame for text rendering
+  // Begin Canvas frame for all 2D rendering
   Graphics::Canvas::BeginFrame();
 
   if (current_screen != SCR_GAME_OVER) update_console();
@@ -456,11 +459,8 @@ void draw_screen(void)
 
   if (!docked && hyper_ready && (current_screen != SCR_GAME_OVER) && (current_screen != SCR_ESCAPE_POD)) display_hyper_status();
 
-  // Render Canvas text (must be done before DX12Renderer::EndFrame to maintain draw order)
+  // Render all Canvas content
   Graphics::Canvas::Render();
-
-  // End DX12 frame (flushes batched primitives to GPU)
-  StarStrike::DX12Renderer::EndFrame();
 
   Graphics::Core::Present();
 }

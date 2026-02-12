@@ -4,11 +4,11 @@
 #include "elite.h"
 #include "space.h"
 #include "threed.h"
-#include "GdiBitmap.h"
 #include "Canvas.h"
 #include "Color.h"
-#include "Rendering/DX12Renderer.h"
 #include "Rendering/ShipRenderer.h"
+
+#include <unordered_map>
 
 using namespace Neuron::Graphics;
 
@@ -57,8 +57,6 @@ static XMFLOAT4 LegacyColorToFloat4(int paletteIndex)
   return result;
 }
 
-std::unique_ptr<GdiBitmap> scanner_image;
-
 // Font loaded via Canvas for text rendering
 static Neuron::Graphics::FontId g_gameFont = Neuron::Graphics::FONT_INVALID;
 
@@ -69,77 +67,83 @@ static constexpr float CANVAS_SCALE_Y = 1080.0f / 600.0f;// 1.8
 // Font scale: original game used 32x32 glyphs, SpeccyFont uses 16x16, so we need 2x additional scale
 static constexpr float FONT_GLYPH_SCALE = 32.0f / 16.0f;// 2.0
 
+// Sprite information for Canvas-based rendering
+struct SpriteData
+{
+  int canvasTextureIndex;
+  float width, height;       // Size in game coordinates
+  float u0, v0, u1, v1;      // UV coordinates for sub-region
+};
+
+// Map from legacy sprite indices (IMG_*) to sprite data
+static std::unordered_map<int, SpriteData> g_spriteMap;
+
+// Helper to register a sprite from a DDS texture
+static void RegisterSprite(int legacyIndex, const std::wstring& ddsFile, float width, float height,
+                           float u0 = 0.0f, float v0 = 0.0f, float u1 = 1.0f, float v1 = 1.0f)
+{
+  int texIndex = Canvas::LoadTexture(ddsFile);
+  if (texIndex >= 0)
+  {
+    g_spriteMap[legacyIndex] = {texIndex, width, height, u0, v0, u1, v1};
+  }
+}
+
+// Helper to check if a sprite is loaded
+static bool HasSprite(int legacyIndex)
+{
+  return g_spriteMap.contains(legacyIndex);
+}
+
+// Helper to draw a sprite using Canvas
+static void DrawSprite(int legacyIndex, float x, float y)
+{
+  auto it = g_spriteMap.find(legacyIndex);
+  if (it == g_spriteMap.end()) return;
+
+  const SpriteData& sprite = it->second;
+
+  // Convert game coordinates to Canvas logical coordinates
+  float canvasX = x * CANVAS_SCALE_X;
+  float canvasY = y * CANVAS_SCALE_Y;
+  float canvasW = sprite.width * CANVAS_SCALE_X;
+  float canvasH = sprite.height * CANVAS_SCALE_Y;
+
+  Canvas::DrawSpriteUV(sprite.canvasTextureIndex, canvasX, canvasY, canvasW, canvasH,
+                       sprite.u0, sprite.v0, sprite.u1, sprite.v1, g_XMOne);
+}
+
 int clip_tx;
 int clip_ty;
 int clip_bx;
 int clip_by;
 
-/*
- * Return the pixel value at (x, y) from a GdiBitmap
- */
-uint32_t gfx_get_pixel(const GdiBitmap *bmp, int x, int y) { return GdiBitmapLoader::GetPixel(bmp, x, y); }
-
-void gfx_get_char_size(const GdiBitmap *bmp, int x, int y, int *size_x, int *size_y)
-{
-  *size_x = 0;
-  *size_y = 0;
-
-  // Auto-detect mask convention by sampling the corner pixel (should be background)
-  uint32_t background = gfx_get_pixel(bmp, (x * 32), (y * 32));
-
-  for (int dy = 0; dy < 32; dy++)
-  {
-    for (int dx = 0; dx < 32; dx++)
-    {
-      uint32_t pixel = gfx_get_pixel(bmp, (x * 32) + dx, (y * 32) + dy);
-
-      // If this pixel differs from background, it's a character pixel
-      if (pixel != background)
-      {
-        if (dx > *size_x) *size_x = dx;
-        if (dy > *size_y) *size_y = dy;
-      }
-    }
-  }
-
-  // Add 1 to convert from max index to size, ensure minimum spacing
-  (*size_x)++;
-  (*size_y)++;
-}
-
-std::unique_ptr<GdiBitmap> gfx_load_bitmap(const char *filename)
-{
-  auto fname = FileSys::GetHomeDirectoryA() + filename;
-  auto bmap = GdiBitmapLoader::LoadBMP(fname);
-  if (!bmap) Fatal("Failed to load bitmap '{}'", fname);
-  return bmap;
-}
-
 int gfx_graphics_startup(void)
 {
-  // Set initial viewport and clip region
-  gfx_set_clip_region(0, 0, 512, 512);
+  // Set initial clip region
+  clip_tx = 0;
+  clip_ty = 0;
+  clip_bx = 512;
+  clip_by = 512;
 
-  scanner_image = gfx_load_bitmap(scanner_filename);
+  // Load sprites via Canvas using DDS textures
+  // Scanner is 512x128 split into 4 parts (each 128x128)
+  // UV coords: u0, v0, u1, v1 for each 128px section of 512px width
+  RegisterSprite(IMG_SCANNER_1, L"scanner.dds", 128.0f, 128.0f, 0.0f/512.0f, 0.0f, 128.0f/512.0f, 1.0f);
+  RegisterSprite(IMG_SCANNER_2, L"scanner.dds", 128.0f, 128.0f, 128.0f/512.0f, 0.0f, 256.0f/512.0f, 1.0f);
+  RegisterSprite(IMG_SCANNER_3, L"scanner.dds", 128.0f, 128.0f, 256.0f/512.0f, 0.0f, 384.0f/512.0f, 1.0f);
+  RegisterSprite(IMG_SCANNER_4, L"scanner.dds", 128.0f, 128.0f, 384.0f/512.0f, 0.0f, 512.0f/512.0f, 1.0f);
 
-  if (!scanner_image) Fatal("Error reading scanner bitmap file: {}.\n", scanner_filename);
-
-  // Register all legacy sprites with DX12Renderer
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_SCANNER_1, L"scanner.bmp", 0, 0, 128);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_SCANNER_2, L"scanner.bmp", 128, 0, 128);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_SCANNER_3, L"scanner.bmp", 256, 0, 128);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_SCANNER_4, L"scanner.bmp", 384, 0, 128);
-
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_BLAKE, L"blake.bmp", 0, 1, 128);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_ELITE_TXT, L"elitetx3.bmp", 0, 0, 256);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_GREEN_DOT, L"greendot.bmp", 0, 0, 16);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_MISSILE_GREEN, L"missgrn.bmp", 0, 0, 16);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_MISSILE_RED, L"missred.bmp", 0, 0, 16);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_MISSILE_YELLOW, L"missyell.bmp", 0, 0, 16);
-
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_BIG_E, L"ecm.bmp", 0, 0, 32);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_RED_DOT, L"reddot.bmp", 0, 0, 16);
-  StarStrike::DX12Renderer::RegisterLegacySprite(IMG_BIG_S, L"safe.bmp", 0, 0, 32);
+  // Other sprites (full texture)
+  RegisterSprite(IMG_BLAKE, L"blake.dds", 128.0f, 128.0f);
+  RegisterSprite(IMG_ELITE_TXT, L"elitetx3.dds", 256.0f, 256.0f);
+  RegisterSprite(IMG_GREEN_DOT, L"greendot.dds", 16.0f, 16.0f);
+  RegisterSprite(IMG_MISSILE_GREEN, L"missgrn.dds", 16.0f, 16.0f);
+  RegisterSprite(IMG_MISSILE_RED, L"missred.dds", 16.0f, 16.0f);
+  RegisterSprite(IMG_MISSILE_YELLOW, L"missyell.dds", 16.0f, 16.0f);
+  RegisterSprite(IMG_BIG_E, L"ecm.dds", 32.0f, 32.0f);
+  RegisterSprite(IMG_RED_DOT, L"reddot.dds", 16.0f, 16.0f);
+  RegisterSprite(IMG_BIG_S, L"safe.dds", 32.0f, 32.0f);
 
   // Load font via Canvas for text rendering
   // SpeccyFont-ENG.dds is 256x224 pixels with 16x16 glyph cells (16 chars per row, 14 rows)
@@ -148,19 +152,32 @@ int gfx_graphics_startup(void)
   return 0;
 }
 
-void gfx_graphics_shutdown(void) { scanner_image.reset(); }
+void gfx_graphics_shutdown(void)
+{
+  g_spriteMap.clear();
+}
 
 void gfx_plot_pixel(int x, int y, int col)
 {
-  XMFLOAT4 color = LegacyColorToFloat4(col);
-  StarStrike::DX12Renderer::DrawPixel(static_cast<float>(x + GFX_X_OFFSET), static_cast<float>(y + GFX_Y_OFFSET), color);
+  XMFLOAT4 colorF = LegacyColorToFloat4(col);
+  XMVECTOR color = XMLoadFloat4(&colorF);
+  float canvasX = static_cast<float>(x + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasY = static_cast<float>(y + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  // Draw as 1-pixel rectangle scaled to canvas
+  Neuron::Graphics::Canvas::DrawRectangle(canvasX, canvasY, canvasX + CANVAS_SCALE_X, canvasY + CANVAS_SCALE_Y, color);
 }
 
 void gfx_draw_gl_circle(int cx, int cy, int radius, int circle_colour, int type)
 {
-  XMFLOAT4 color = LegacyColorToFloat4(circle_colour);
-  bool filled = (type == FILLED_CIRCLE);
-  StarStrike::DX12Renderer::DrawCircle(static_cast<float>(cx + GFX_X_OFFSET), static_cast<float>(cy + GFX_Y_OFFSET), static_cast<float>(radius), color, filled);
+  XMFLOAT4 colorF = LegacyColorToFloat4(circle_colour);
+  XMVECTOR color = XMLoadFloat4(&colorF);
+  float canvasCX = static_cast<float>(cx + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasCY = static_cast<float>(cy + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  float canvasRadius = static_cast<float>(radius) * CANVAS_SCALE_X; // Use X scale for radius
+  if (type == FILLED_CIRCLE)
+    Neuron::Graphics::Canvas::DrawCircle(canvasCX, canvasCY, canvasRadius, color);
+  else
+    Neuron::Graphics::Canvas::DrawCircleOutline(canvasCX, canvasCY, canvasRadius, 1.0f, color);
 }
 
 void gfx_draw_filled_circle(int cx, int cy, int radius, int circle_colour) { gfx_draw_gl_circle(cx, cy, radius, circle_colour, FILLED_CIRCLE); }
@@ -171,14 +188,26 @@ void gfx_draw_line(int x1, int y1, int x2, int y2) { gfx_draw_colour_line(x1, y1
 
 void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
 {
-  XMFLOAT4 color = LegacyColorToFloat4(line_colour);
-  StarStrike::DX12Renderer::DrawLine(static_cast<float>(x1 + GFX_X_OFFSET), static_cast<float>(y1 + GFX_Y_OFFSET), static_cast<float>(x2 + GFX_X_OFFSET), static_cast<float>(y2 + GFX_Y_OFFSET), color);
+  XMFLOAT4 colorF = LegacyColorToFloat4(line_colour);
+  XMVECTOR color = XMLoadFloat4(&colorF);
+  float canvasX1 = static_cast<float>(x1 + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasY1 = static_cast<float>(y1 + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  float canvasX2 = static_cast<float>(x2 + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasY2 = static_cast<float>(y2 + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  Neuron::Graphics::Canvas::DrawLine(canvasX1, canvasY1, canvasX2, canvasY2, color);
 }
 
 void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
 {
-  XMFLOAT4 color = LegacyColorToFloat4(col);
-  StarStrike::DX12Renderer::DrawTriangle(static_cast<float>(x1 + GFX_X_OFFSET), static_cast<float>(y1 + GFX_Y_OFFSET), static_cast<float>(x2 + GFX_X_OFFSET), static_cast<float>(y2 + GFX_Y_OFFSET), static_cast<float>(x3 + GFX_X_OFFSET), static_cast<float>(y3 + GFX_Y_OFFSET), color);
+  XMFLOAT4 colorF = LegacyColorToFloat4(col);
+  XMVECTOR color = XMLoadFloat4(&colorF);
+  float canvasX1 = static_cast<float>(x1 + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasY1 = static_cast<float>(y1 + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  float canvasX2 = static_cast<float>(x2 + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasY2 = static_cast<float>(y2 + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  float canvasX3 = static_cast<float>(x3 + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasY3 = static_cast<float>(y3 + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  Neuron::Graphics::Canvas::DrawTriangle(canvasX1, canvasY1, canvasX2, canvasY2, canvasX3, canvasY3, color);
 }
 
 void gfx_display_text(int x, int y, const char *txt) { gfx_display_colour_text(x, y, txt, GFX_COL_WHITE); }
@@ -211,8 +240,13 @@ void gfx_display_centre_text(int y, const char *str, int psize, int col)
 
 void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
 {
-  XMFLOAT4 color = LegacyColorToFloat4(col);
-  StarStrike::DX12Renderer::DrawRectangle(static_cast<float>(tx + GFX_X_OFFSET), static_cast<float>(ty + GFX_Y_OFFSET), static_cast<float>(bx + GFX_X_OFFSET), static_cast<float>(by + GFX_Y_OFFSET), color);
+  XMFLOAT4 colorF = LegacyColorToFloat4(col);
+  XMVECTOR color = XMLoadFloat4(&colorF);
+  float canvasLeft = static_cast<float>(tx + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasTop = static_cast<float>(ty + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  float canvasRight = static_cast<float>(bx + GFX_X_OFFSET) * CANVAS_SCALE_X;
+  float canvasBottom = static_cast<float>(by + GFX_Y_OFFSET) * CANVAS_SCALE_Y;
+  Neuron::Graphics::Canvas::DrawRectangle(canvasLeft, canvasTop, canvasRight, canvasBottom, color);
 }
 
 void gfx_display_pretty_text(int tx, int ty, int bx, int by, const char *txt)
@@ -245,13 +279,17 @@ void gfx_display_pretty_text(int tx, int ty, int bx, int by, const char *txt)
 
 void gfx_draw_scanner(void)
 {
-  // Draw scanner using 4 textures
+  // Draw scanner using 4 textures via Canvas
   float scannerY = 385.0f + GFX_Y_OFFSET;
   float scannerX = static_cast<float>(GFX_X_OFFSET);
 
   int scannerSprites[4] = {IMG_SCANNER_1, IMG_SCANNER_2, IMG_SCANNER_3, IMG_SCANNER_4};
 
-  for (int i = 0; i < 4; i++) if (StarStrike::DX12Renderer::HasLegacySprite(scannerSprites[i])) StarStrike::DX12Renderer::DrawLegacySprite(scannerSprites[i], scannerX + (i * 128.0f), scannerY);
+  for (int i = 0; i < 4; i++)
+  {
+    if (HasSprite(scannerSprites[i]))
+      DrawSprite(scannerSprites[i], scannerX + (i * 128.0f), scannerY);
+  }
 
   // Draw border lines
   gfx_draw_line(0, 1, 0, 384);
@@ -266,7 +304,16 @@ void gfx_set_clip_region(int tx, int ty, int bx, int by)
   clip_bx = bx;
   clip_by = by;
 
-  StarStrike::DX12Renderer::SetClipRegion(tx, ty, bx, by);
+  // Convert game coordinates to Canvas logical coordinates and push clip rect
+  RECT clipRect;
+  clipRect.left = static_cast<LONG>((tx + GFX_X_OFFSET) * CANVAS_SCALE_X);
+  clipRect.top = static_cast<LONG>((ty + GFX_Y_OFFSET) * CANVAS_SCALE_Y);
+  clipRect.right = static_cast<LONG>((bx + GFX_X_OFFSET) * CANVAS_SCALE_X);
+  clipRect.bottom = static_cast<LONG>((by + GFX_Y_OFFSET) * CANVAS_SCALE_Y);
+
+  // Reset clip stack and push new region
+  Canvas::ResetClipStack();
+  Canvas::PushClipRect(clipRect);
 }
 
 void gfx_resize_window(int width, int height)
@@ -282,8 +329,9 @@ void gfx_draw_sprite(int sprite_no, int x, int y)
   float drawX = static_cast<float>(x);
   if (x == -1) drawX = static_cast<float>(((256 * GFX_SCALE) - 192) / 2);
 
-  // Draw using DX12Renderer
-  if (StarStrike::DX12Renderer::HasLegacySprite(sprite_no)) StarStrike::DX12Renderer::DrawLegacySprite(sprite_no, drawX + GFX_X_OFFSET, static_cast<float>(y + GFX_Y_OFFSET));
+  // Draw using Canvas
+  if (HasSprite(sprite_no))
+    DrawSprite(sprite_no, drawX + GFX_X_OFFSET, static_cast<float>(y + GFX_Y_OFFSET));
 }
 
 void gfx_draw_view(void)

@@ -6,7 +6,6 @@
 #include "input.h"
 #include "file.h"
 #include "Canvas.h"
-#include "Rendering/DX12Renderer.h"
 #include "Rendering/ShipRenderer.h"
 
 // External declarations for game functions and variables
@@ -27,8 +26,7 @@ void SStrikeMain::Startup()
   input_startup();
   read_config_file();
 
-  // Initialize DirectX 12 renderers BEFORE loading graphics assets
-  StarStrike::DX12Renderer::Startup();
+  // Initialize ShipRenderer for 3D ship rendering
   StarStrike::ShipRenderer::Startup();
 
   gfx_graphics_startup();
@@ -44,7 +42,6 @@ void SStrikeMain::Shutdown()
 {
   snd_sound_shutdown();
   StarStrike::ShipRenderer::Shutdown();
-  StarStrike::DX12Renderer::Shutdown();
   input_shutdown();
   gfx_graphics_shutdown();
 }
