@@ -351,12 +351,16 @@ namespace Neuron::Graphics
 
     XMStoreFloat4x4(&sm_constants.Projection, XMMatrixTranspose(proj));
 
-    // Write to current frame's constant buffer slice
+    // Write to ALL frame constant buffer slices to avoid flickering
+    // (projection rarely changes, but when it does we need all frames updated)
     if (sm_constantBufferMapped)
     {
-      UINT frameIndex = Core::GetCurrentFrameIndex();
-      auto* dest = static_cast<uint8_t*>(sm_constantBufferMapped) + (CONSTANT_BUFFER_FRAME_SIZE * frameIndex);
-      memcpy(dest, &sm_constants, sizeof(CanvasConstants));
+      static constexpr UINT MAX_FRAMES = 3;
+      for (UINT i = 0; i < MAX_FRAMES; i++)
+      {
+        auto* dest = static_cast<uint8_t*>(sm_constantBufferMapped) + (CONSTANT_BUFFER_FRAME_SIZE * i);
+        memcpy(dest, &sm_constants, sizeof(CanvasConstants));
+      }
     }
   }
 
