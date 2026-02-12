@@ -2,6 +2,7 @@
 #include "ShipRenderer.h"
 #include "DX12Renderer.h"
 #include "GraphicsCore.h"
+#include "Color.h"
 #include "shipdata.h"
 #include "shipface.h"
 #include "space.h"
@@ -234,7 +235,41 @@ namespace StarStrike
 
   XMFLOAT4 ShipRenderer::PaletteToColor(int paletteIndex)
   {
-    return DX12Renderer::PaletteToColor(paletteIndex);
+    XMFLOAT4 result;
+    switch (paletteIndex)
+    {
+      case GFX_COL_BLACK:     XMStoreFloat4(&result, Color::BLACK); break;
+      case GFX_COL_WHITE:     XMStoreFloat4(&result, Color::WHITE); break;
+      case GFX_COL_WHITE_2:   XMStoreFloat4(&result, Color::WHITE_SMOKE); break;
+      case GFX_COL_GOLD:      XMStoreFloat4(&result, Color::GOLD); break;
+      case GFX_COL_RED:       XMStoreFloat4(&result, Color::RED); break;
+      case GFX_COL_RED_3:     XMStoreFloat4(&result, Color::DARK_RED); break;
+      case GFX_COL_RED_4:     XMStoreFloat4(&result, Color::FIREBRICK); break;
+      case GFX_COL_DARK_RED:  XMStoreFloat4(&result, Color::DARK_RED); break;
+      case GFX_COL_CYAN:      XMStoreFloat4(&result, Color::CYAN); break;
+      case GFX_COL_GREY_1:    XMStoreFloat4(&result, Color::LIGHT_GRAY); break;
+      case GFX_COL_GREY_2:    XMStoreFloat4(&result, Color::GRAY); break;
+      case GFX_COL_GREY_3:    XMStoreFloat4(&result, Color::DIM_GRAY); break;
+      case GFX_COL_GREY_4:    XMStoreFloat4(&result, Color::DARK_GRAY); break;
+      case GFX_COL_BLUE_1:    XMStoreFloat4(&result, Color::BLUE); break;
+      case GFX_COL_BLUE_2:    XMStoreFloat4(&result, Color::MEDIUM_BLUE); break;
+      case GFX_COL_BLUE_3:    XMStoreFloat4(&result, Color::DARK_BLUE); break;
+      case GFX_COL_BLUE_4:    XMStoreFloat4(&result, Color::NAVY); break;
+      case GFX_COL_YELLOW_1:  XMStoreFloat4(&result, Color::YELLOW); break;
+      // GFX_COL_YELLOW_2 (39) equals GFX_COL_GOLD, handled above
+      case GFX_COL_YELLOW_3:  XMStoreFloat4(&result, Color::GOLDENROD); break;
+      case GFX_COL_YELLOW_4:  XMStoreFloat4(&result, Color::DARK_GOLDENROD); break;
+      case GFX_COL_YELLOW_5:  XMStoreFloat4(&result, Color::LIGHT_YELLOW); break;
+      case GFX_ORANGE_1:      XMStoreFloat4(&result, Color::ORANGE); break;
+      case GFX_ORANGE_2:      XMStoreFloat4(&result, Color::DARK_ORANGE); break;
+      case GFX_ORANGE_3:      XMStoreFloat4(&result, Color::ORANGE_RED); break;
+      case GFX_COL_GREEN_1:   XMStoreFloat4(&result, Color::GREEN); break;
+      case GFX_COL_GREEN_2:   XMStoreFloat4(&result, Color::DARK_GREEN); break;
+      case GFX_COL_GREEN_3:   XMStoreFloat4(&result, Color::LIME); break;
+      case GFX_COL_PINK_1:    XMStoreFloat4(&result, Color::Pink); break;
+      default:                XMStoreFloat4(&result, Color::WHITE); break;
+    }
+    return result;
   }
 
   void ShipRenderer::DrawFace(ship_face* face, ship_point* points, const XMFLOAT4& color)

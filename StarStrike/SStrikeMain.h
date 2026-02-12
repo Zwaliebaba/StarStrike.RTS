@@ -1,25 +1,17 @@
 #pragma once
 
-#include "Canvas.h"
 #include "GameMain.h"
 
-class SStrikeMain : public GameMain
+class SStrikeMain : public Neuron::GameMain
 {
 public:
   void Startup() override;
   void Shutdown() override;
+  void Update(float _deltaT) override;
+  void Render() override;
 
   void CreateDeviceDependentResources() override;
   void CreateWindowSizeDependentResources() override;
   void ReleaseDeviceDependentResources() override;
   void ReleaseWindowSizeDependentResources() override;
-
-  void Update(float _deltaT) override;
-  void Render() override;
-
-protected:
-  void RenderScene();
-  void RenderCanvas();
-
-  Graphics::FontId m_editorFont = 0;
 };

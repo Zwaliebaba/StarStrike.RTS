@@ -184,7 +184,7 @@ void Core::CreateDeviceResources()
   check_bool(static_cast<bool>(m_fenceEvent));
 
   DescriptorAllocator::Create();
-  FrameUploadAllocator::Startup();
+  FrameUploadAllocator::Startup(m_backBufferCount);
 
   // Common state was moved to GraphicsCommon.*
   InitializeCommonState();
@@ -418,6 +418,9 @@ void Core::HandleDeviceLost()
 void Core::Prepare()
 {
   ResetCommandAllocatorAndCommandlist();
+
+  // Record where this frame's ring buffer allocations start
+  FrameUploadAllocator::BeginFrame(m_backBufferIndex);
 
   DescriptorAllocator::SetDescriptorHeaps(m_commandList.get());
 

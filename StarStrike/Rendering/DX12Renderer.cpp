@@ -22,9 +22,6 @@ namespace StarStrike
     sm_lineVertices.reserve(MAX_BATCH_VERTICES);
     sm_triangleVertices.reserve(MAX_BATCH_VERTICES);
 
-    // Load legacy palette for color conversion
-    LoadPalette();
-
     // Create rendering resources
     CreateRootSignatures();
     CreatePipelineStates();
@@ -66,11 +63,6 @@ namespace StarStrike
     sm_triangleVertices.clear();
     sm_spriteVertices.clear();
     sm_sprites.clear();
-    sm_palette.clear();
-    sm_charWidthsSmall.clear();
-    sm_charWidthsLarge.clear();
-    sm_fontTextureSmall = -1;
-    sm_fontTextureLarge = -1;
   }
 
   void DX12Renderer::CreateRootSignatures()
@@ -451,44 +443,6 @@ namespace StarStrike
 
   ID3D12GraphicsCommandList *DX12Renderer::GetCommandList() { return Core::GetCommandList(); }
 
-  XMFLOAT4 DX12Renderer::PaletteToColor(int paletteIndex)
-  {
-    if (paletteIndex >= 0 && paletteIndex < static_cast<int>(sm_palette.size())) return sm_palette[paletteIndex];
-    // Default to white if invalid index
-    return XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-  }
-
-  void DX12Renderer::SetPaletteFromRGBQUAD(const RGBQUAD *palette, int count)
-  {
-    if (!palette || count <= 0) return;
-
-    sm_palette.resize(count);
-    for (int i = 0; i < count; i++) { sm_palette[i] = XMFLOAT4(palette[i].rgbRed / 255.0f, palette[i].rgbGreen / 255.0f, palette[i].rgbBlue / 255.0f, 1.0f); }
-    DebugTrace("DX12Renderer: Loaded {} palette colors\n", count);
-  }
-
-  void DX12Renderer::LoadPalette()
-  {
-    // Initialize with default palette (256 colors)
-    // This should be loaded from the scanner bitmap palette later
-    sm_palette.resize(256);
-
-    // For now, create a basic grayscale palette
-    for (int i = 0; i < 256; i++)
-    {
-      float intensity = static_cast<float>(i) / 255.0f;
-      sm_palette[i] = XMFLOAT4(intensity, intensity, intensity, 1.0f);
-    }
-
-    // Override common colors used in the game
-    sm_palette[0] = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);// GFX_COL_BLACK
-    sm_palette[255] = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);// GFX_COL_WHITE
-    sm_palette[39] = XMFLOAT4(1.0f, 0.84f, 0.0f, 1.0f);// GFX_COL_GOLD
-    sm_palette[49] = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);// GFX_COL_RED
-    sm_palette[11] = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);// GFX_COL_CYAN
-    sm_palette[28] = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);// GFX_COL_DARK_RED
-  }
-
   int DX12Renderer::LoadTexture(const std::wstring &filename)
   {
     auto texture = std::make_unique<Texture2D>();
@@ -638,140 +592,6 @@ namespace StarStrike
     sm_sprites.clear();
   }
 
-  void DX12Renderer::LoadFont(const std::wstring &fontTexture, const std::wstring &fontMask)
-  {
-    DebugTrace("DX12Renderer::LoadFont - Loading font texture: {}\n", std::string(fontTexture.begin(), fontTexture.end()));
-
-    // Load font texture
-    sm_fontTextureSmall = LoadTexture(fontTexture);
-    if (sm_fontTextureSmall < 0)
-    {
-      DebugTrace("DX12Renderer::LoadFont - FAILED to load font texture\n");
-      return;
-    }
-
-    DebugTrace("DX12Renderer::LoadFont - Font texture loaded at index {}\n", sm_fontTextureSmall);
-
-    // Get texture dimensions
-    auto *tex = GetTexture(sm_fontTextureSmall);
-    if (tex) DebugTrace("DX12Renderer::LoadFont - Font texture dimensions: {}x{}\n", tex->GetWidth(), tex->GetHeight());
-
-    // Load font mask to get character widths
-    auto fname = FileSys::GetHomeDirectoryA() + std::string(fontMask.begin(), fontMask.end());
-    DebugTrace("DX12Renderer::LoadFont - Loading font mask: {}\n", fname);
-
-    auto maskBitmap = GdiBitmapLoader::LoadBMP(fname);
-    if (maskBitmap)
-    {
-      DebugTrace("DX12Renderer::LoadFont - Font mask loaded: {}x{}, bpp={}\n", maskBitmap->width, maskBitmap->height, maskBitmap->bitsPerPixel);
-      LoadFontMetrics(maskBitmap.get(), sm_charWidthsSmall);
-    }
-    else
-    {
-      DebugTrace("DX12Renderer::LoadFont - Failed to load font mask, using default widths\n");
-      // Use default fixed width
-      sm_charWidthsSmall.resize(96, 16);
-    }
-
-    DebugTrace("DX12Renderer::LoadFont - Loaded font with {} character widths\n", sm_charWidthsSmall.size());
-  }
-
-  void DX12Renderer::LoadFontMetrics(const GdiBitmap *mask, std::vector<int> &widths)
-  {
-    widths.resize(96);
-
-    for (int charIndex = 0; charIndex < 96; charIndex++)
-    {
-      int gridX = charIndex % 16;
-      int gridY = charIndex / 16;
-
-      // Find character width by scanning for non-background pixels
-      int maxWidth = 0;
-      uint32_t background = GdiBitmapLoader::GetPixel(mask, gridX * 32, gridY * 32);
-
-      for (int dy = 0; dy < 32; dy++)
-      {
-        for (int dx = 0; dx < 32; dx++)
-        {
-          uint32_t pixel = GdiBitmapLoader::GetPixel(mask, gridX * 32 + dx, gridY * 32 + dy);
-          if (pixel != background && dx > maxWidth) maxWidth = dx;
-        }
-      }
-
-      widths[charIndex] = maxWidth + 2;// Add spacing
-    }
-  }
-
-  void DX12Renderer::DrawText(float x, float y, const char *text, const XMFLOAT4 &color, bool large)
-  {
-    if (!text || sm_fontTextureSmall < 0) return;
-
-    int fontTexture = large ? sm_fontTextureLarge : sm_fontTextureSmall;
-    if (fontTexture < 0) fontTexture = sm_fontTextureSmall;
-
-    auto &widths = large ? sm_charWidthsLarge : sm_charWidthsSmall;
-    if (widths.empty()) widths = sm_charWidthsSmall;
-
-    // Get actual texture dimensions
-    auto *tex = GetTexture(fontTexture);
-    if (!tex) return;
-
-    float curX = x;
-    // Font is a 16x6 grid of 32x32 characters in a 512x192 (or 512x256) texture
-    float charWidth = 32.0f;
-    float charHeight = 32.0f;
-    float texWidth = static_cast<float>(tex->GetWidth());
-    float texHeight = static_cast<float>(tex->GetHeight());
-
-    while (*text)
-    {
-      char c = *text++;
-      if (c < 32 || c > 127) continue;
-
-      int charIndex = c - 32;
-      int gridX = charIndex % 16;
-      int gridY = charIndex / 16;
-
-      // Calculate UV coordinates
-      float u0 = (gridX * charWidth) / texWidth;
-      float v0 = (gridY * charHeight) / texHeight;
-      float u1 = ((gridX + 1) * charWidth) / texWidth;
-      float v1 = ((gridY + 1) * charHeight) / texHeight;
-
-      DrawSpriteUV(fontTexture, curX, y, charWidth, charHeight, u0, v0, u1, v1, color);
-
-      // Advance cursor
-      int advance = (charIndex < static_cast<int>(widths.size())) ? widths[charIndex] : 16;
-      curX += advance;
-    }
-  }
-
-  void DX12Renderer::DrawTextCentered(float centerX, float y, const char *text, const XMFLOAT4 &color, bool large)
-  {
-    if (!text) return;
-
-    auto &widths = large ? sm_charWidthsLarge : sm_charWidthsSmall;
-    const auto &effectiveWidths = widths.empty() ? sm_charWidthsSmall : widths;
-    if (effectiveWidths.empty()) return;
-
-    // Calculate total width
-    float totalWidth = 0.0f;
-    const char *p = text;
-    while (*p)
-    {
-      char c = *p++;
-      if (c >= 32 && c <= 127)
-      {
-        int charIndex = c - 32;
-        int advance = (charIndex < static_cast<int>(effectiveWidths.size())) ? effectiveWidths[charIndex] : 16;
-        totalWidth += advance;
-      }
-    }
-
-    float x = centerX - (totalWidth / 2.0f);
-    DrawText(x, y, text, color, large);
-  }
-
   void DX12Renderer::RegisterLegacySprite(int legacySpriteIndex, const std::wstring &filename, int srcX, int srcY, int size)
   {
     DebugTrace("DX12Renderer::RegisterLegacySprite - Registering sprite {} from {} at ({},{}) size {}\n", legacySpriteIndex, std::string(filename.begin(), filename.end()), srcX, srcY, size);
@@ -885,59 +705,6 @@ namespace StarStrike
   {
     if (index < 0 || index >= static_cast<int>(sm_textures.size())) return nullptr;
     return sm_textures[index].get();
-  }
-
-  void DX12Renderer::DrawFullscreenTexture(D3D12_GPU_DESCRIPTOR_HANDLE srvHandle)
-  {
-    // Flush any pending primitives first
-    FlushLines();
-    FlushTriangles();
-    FlushSprites();
-
-    auto cmdList = Core::GetCommandList();
-
-    // Ensure descriptor heaps are bound
-    DescriptorAllocator::SetDescriptorHeaps(cmdList);
-
-    // Set render target (backbuffer)
-    auto rtvHandle = Core::GetRenderTargetView();
-    cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
-    cmdList->RSSetViewports(1, &Core::GetScreenViewport());
-    cmdList->RSSetScissorRects(1, &Core::GetScissorRect());
-
-    // Set pipeline state for sprites (uses alpha blending)
-    cmdList->SetPipelineState(sm_spritePSO.GetPipelineStateObject());
-    cmdList->SetGraphicsRootSignature(sm_spriteRootSignature.GetSignature());
-    cmdList->SetGraphicsRootConstantBufferView(0, GetConstantBufferGPUAddress());
-
-    // Set the provided texture SRV
-    cmdList->SetGraphicsRootDescriptorTable(1, srvHandle);
-
-    cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    // Build fullscreen quad vertices (covers 0,0 to screenWidth,screenHeight)
-    VertexPositionTextureColor vertices[6] = {
-        // Triangle 1
-        {XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f), XMFLOAT4(1, 1, 1, 1)},
-        {XMFLOAT3(sm_screenWidth, 0.0f, 0.0f), XMFLOAT2(1.0f, 0.0f), XMFLOAT4(1, 1, 1, 1)},
-        {XMFLOAT3(sm_screenWidth, sm_screenHeight, 0.0f), XMFLOAT2(1.0f, 1.0f), XMFLOAT4(1, 1, 1, 1)},
-        // Triangle 2
-        {XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f), XMFLOAT4(1, 1, 1, 1)},
-        {XMFLOAT3(sm_screenWidth, sm_screenHeight, 0.0f), XMFLOAT2(1.0f, 1.0f), XMFLOAT4(1, 1, 1, 1)},
-        {XMFLOAT3(0.0f, sm_screenHeight, 0.0f), XMFLOAT2(0.0f, 1.0f), XMFLOAT4(1, 1, 1, 1)},
-    };
-
-    // Allocate from frame-isolated ring buffer
-    size_t dataSize = sizeof(vertices);
-    auto alloc = FrameUploadAllocator::Allocate(dataSize, alignof(VertexPositionTextureColor));
-    memcpy(alloc.cpuAddress, vertices, dataSize);
-
-    D3D12_VERTEX_BUFFER_VIEW vbv = {};
-    vbv.BufferLocation = alloc.gpuAddress;
-    vbv.SizeInBytes = static_cast<UINT>(dataSize);
-    vbv.StrideInBytes = sizeof(VertexPositionTextureColor);
-    cmdList->IASetVertexBuffers(0, 1, &vbv);
-    cmdList->DrawInstanced(6, 1, 0, 0);
   }
 
   void DX12Renderer::ClearScreen()

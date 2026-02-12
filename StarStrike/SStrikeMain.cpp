@@ -1,91 +1,93 @@
 #include "pch.h"
 #include "SStrikeMain.h"
-
-#include "Color.h"
+#include "gfx.h"
+#include "elite.h"
+#include "sound.h"
+#include "input.h"
+#include "file.h"
 #include "Canvas.h"
 #include "Rendering/DX12Renderer.h"
+#include "Rendering/ShipRenderer.h"
 
-using namespace Graphics;
-using namespace StarStrike;
+// External declarations for game functions and variables
+extern int frame_count;
+extern int finish;
+extern void reset_game();
+extern int ready_to_draw();
+extern void draw_screen();
+extern void gfx_advance_frame();
+extern void handle_events();
+extern void handle_keyboard_state();
+extern void update_screen();
+
+using namespace Neuron::Graphics;
 
 void SStrikeMain::Startup()
 {
-  DX12Renderer::Startup();
-  CreateDeviceDependentResources();
-  // EditorFont is 256x224 with 16x16 pixel glyphs, 16 chars per row, starting at ASCII 32 (space)
-  m_editorFont = Canvas::LoadFont(L"Fonts\\EditorFont-ENG.dds", 16, 16, 16, 32);
+  input_startup();
+  read_config_file();
+
+  // Initialize DirectX 12 renderers BEFORE loading graphics assets
+  StarStrike::DX12Renderer::Startup();
+  StarStrike::ShipRenderer::Startup();
+
+  gfx_graphics_startup();
+  snd_sound_startup();
+
+  frame_count = 0;
+  finish = 0;
+
+  reset_game();
 }
 
 void SStrikeMain::Shutdown()
 {
-  ReleaseDeviceDependentResources();
-  DX12Renderer::Shutdown();
+  snd_sound_shutdown();
+  StarStrike::ShipRenderer::Shutdown();
+  StarStrike::DX12Renderer::Shutdown();
+  input_shutdown();
+  gfx_graphics_shutdown();
 }
 
-void SStrikeMain::CreateDeviceDependentResources() { GameMain::CreateDeviceDependentResources(); }
+void SStrikeMain::CreateDeviceDependentResources() { Neuron::GameMain::CreateDeviceDependentResources(); }
 
 void SStrikeMain::CreateWindowSizeDependentResources()
 {
-  GameMain::CreateWindowSizeDependentResources();
-  
+  Neuron::GameMain::CreateWindowSizeDependentResources();
+
   // Notify Canvas of the new backbuffer size
-  RECT outputSize = Core::GetOutputSize();
+  RECT outputSize = Graphics::Core::GetOutputSize();
   uint32_t width = static_cast<uint32_t>(outputSize.right - outputSize.left);
   uint32_t height = static_cast<uint32_t>(outputSize.bottom - outputSize.top);
   Canvas::OnResize(width, height);
 }
 
-void SStrikeMain::ReleaseDeviceDependentResources() { GameMain::ReleaseDeviceDependentResources(); }
+void SStrikeMain::ReleaseDeviceDependentResources() { Neuron::GameMain::ReleaseDeviceDependentResources(); }
 
-void SStrikeMain::ReleaseWindowSizeDependentResources() { GameMain::ReleaseWindowSizeDependentResources(); }
+void SStrikeMain::ReleaseWindowSizeDependentResources() { Neuron::GameMain::ReleaseWindowSizeDependentResources(); }
 
-void SStrikeMain::Update(float _deltaT) {}
+void SStrikeMain::Update(float _deltaT)
+{
+  snd_update_sound();
+
+  if (ready_to_draw())
+    draw_screen();
+
+  while (frame_count > 0)
+  {
+    gfx_advance_frame();
+    handle_events();
+    handle_keyboard_state();
+    update_screen();
+    frame_count--;
+  }
+
+  // Signal quit when game wants to exit
+  if (finish)
+    PostQuitMessage(0);
+}
 
 void SStrikeMain::Render()
 {
-  RenderScene();
-  RenderCanvas();
-}
-
-void SStrikeMain::RenderScene()
-{
-  auto commandlist = Core::GetCommandList();
-  // Set the viewport and scissor rectangle.
-  const auto viewport = Core::GetScreenViewport();
-  const auto scissorRect = Core::GetScissorRect();
-
-  commandlist->RSSetViewports(1, &viewport);
-  commandlist->RSSetScissorRects(1, &scissorRect);
-
-  // Indicate that the back buffer will be used as a render target.
-  auto renderTargetView = Core::GetRenderTargetView();
-  auto depthStencilView = Core::GetDepthStencilView();
-  commandlist->ClearRenderTargetView(renderTargetView, Color::BLACK, 0, nullptr);
-  commandlist->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-  commandlist->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
-
-  // TODO: Render 3D scene here
-}
-
-void SStrikeMain::RenderCanvas()
-{
-  using Canvas = Canvas;
-
-  // Ensure we're rendering to the backbuffer
-  auto commandlist = Core::GetCommandList();
-  auto renderTargetView = Core::GetRenderTargetView();
-  commandlist->OMSetRenderTargets(1, &renderTargetView, FALSE, nullptr);
-
-  Canvas::BeginFrame();
-
-  // Example: Draw some test primitives at 1920x1080 logical resolution
-  Canvas::DrawRectangle(100.0f, 100.0f, 500.0f, 300.0f, Color::BLUE);
-  Canvas::DrawRectangleOutline(100.0f, 100.0f, 500.0f, 300.0f, 3.0f, Color::WHITE);
-  Canvas::DrawLine(0.0f, 0.0f, 800.0f, 600.0f, Color::RED);
-  Canvas::DrawCircle(960.0f, 540.0f, 100.0f, Color::GREEN);
-
-  Canvas::DrawText(m_editorFont, 500.0f, 500.0f, "Test", Color::RED, 10.0f);
-
-  Canvas::Render();
+  // Rendering handled by draw_screen() in Update
 }

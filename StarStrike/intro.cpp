@@ -85,9 +85,9 @@ void draw_intro1()
 
   gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
 
-  gfx_display_centre_text(310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
-  gfx_display_centre_text(330, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);
-  gfx_display_centre_text(360, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
+  gfx_display_centre_text(310, "Original Game (C) I.Bell & D.Braben.", 1, GFX_COL_WHITE);
+  gfx_display_centre_text(330, "Re-engineered by C.J.Pinder.", 1, GFX_COL_WHITE);
+  gfx_display_centre_text(360, "Load New Commander (Y/N)?", 1, GFX_COL_GOLD);
 }
 
 void draw_intro2()

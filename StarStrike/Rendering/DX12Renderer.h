@@ -58,25 +58,11 @@ namespace StarStrike
     static bool HasLegacySprite(int legacySpriteIndex);
     static Texture2D* GetTexture(int index);
 
-    // Text rendering
-    static void LoadFont(const std::wstring& fontTexture, const std::wstring& fontMask);
-    static void DrawText(float x, float y, const char* text, const XMFLOAT4& color, bool large = false);
-    static void DrawTextCentered(float centerX, float y, const char* text, const XMFLOAT4& color, bool large = false);
-
-    // Fullscreen texture compositing (for overlays)
-    static void DrawFullscreenTexture(D3D12_GPU_DESCRIPTOR_HANDLE srvHandle);
-
     static void ClearScreen();
 
     // Flush batched primitives to GPU
     static void FlushLines();
     static void FlushTriangles();
-
-    // Convert legacy palette index to XMFLOAT4 color
-    static XMFLOAT4 PaletteToColor(int paletteIndex);
-
-    // Set palette from RGBQUAD array (call after loading scanner bitmap)
-    static void SetPaletteFromRGBQUAD(const RGBQUAD* palette, int count);
 
     // Clip region (scissor rect) - coordinates in game space (0-512)
     static void SetClipRegion(int left, int top, int right, int bottom);
@@ -131,10 +117,6 @@ namespace StarStrike
     inline static int sm_clipBottom = 512;
     inline static bool sm_clipDirty = true;
 
-    // Legacy palette for color conversion
-    inline static std::vector<XMFLOAT4> sm_palette;
-    static void LoadPalette();
-
     // Texture storage
     inline static std::vector<std::unique_ptr<Texture2D>> sm_textures;
 
@@ -144,12 +126,5 @@ namespace StarStrike
     // Sprite batching
     inline static std::vector<SpriteInfo> sm_sprites;
     inline static std::vector<VertexPositionTextureColor> sm_spriteVertices;
-
-    // Font rendering
-    inline static int sm_fontTextureSmall = -1;
-    inline static int sm_fontTextureLarge = -1;
-    inline static std::vector<int> sm_charWidthsSmall;
-    inline static std::vector<int> sm_charWidthsLarge;
-    static void LoadFontMetrics(const struct Neuron::GdiBitmap* mask, std::vector<int>& widths);
   };
 }

@@ -17,9 +17,13 @@
 #include "loadsave.h"
 #include "file.h"
 #include "input.h"
+#include "Canvas.h"
 #include "SStrikeMain.h"
 #include "Rendering/DX12Renderer.h"
 #include "Rendering/ShipRenderer.h"
+
+using namespace Neuron;
+using namespace Neuron::Graphics;
 
 int frame_count;
 int cross_timer;
@@ -349,6 +353,9 @@ void draw_screen(void)
   // Begin DX12 frame (clears batched vertices, updates projection)
   StarStrike::DX12Renderer::BeginFrame();
 
+  // Begin Canvas frame for text rendering
+  Graphics::Canvas::BeginFrame();
+
   if (current_screen != SCR_GAME_OVER) update_console();
 
   switch (current_screen)
@@ -448,6 +455,9 @@ void draw_screen(void)
   if (message_count > 0) gfx_display_centre_text(358, message_string, 120, GFX_COL_WHITE);
 
   if (!docked && hyper_ready && (current_screen != SCR_GAME_OVER) && (current_screen != SCR_ESCAPE_POD)) display_hyper_status();
+
+  // Render Canvas text (must be done before DX12Renderer::EndFrame to maintain draw order)
+  Graphics::Canvas::Render();
 
   // End DX12 frame (flushes batched primitives to GPU)
   StarStrike::DX12Renderer::EndFrame();
@@ -1130,71 +1140,12 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPWSTR _cmdL
 
   FileSys::SetHomeDirectory(path);
 
-  ClientEngine::Startup(L"Deep Space Outpost", {1024.0f, 512.0f}, _hInstance, _iCmdShow);
+  ClientEngine::Startup(L"Star Strike", {1920.0f, 1080.0f}, _hInstance, _iCmdShow);
 
   auto main = winrt::make_self<SStrikeMain>();
   ClientEngine::StartGame(std::move(main));
 
-  ClientEngine::Run();
-
-  input_startup();
-
-  read_config_file();
-
-  // Initialize DirectX 12 renderers BEFORE loading graphics assets
-  StarStrike::DX12Renderer::Startup();
-  StarStrike::ShipRenderer::Startup();
-
-  if (gfx_graphics_startup() == 1) return 1;
-
-  snd_sound_startup();
-
-  frame_count = 0;
-  finish = 0;
-
-  reset_game();
-
-  // Main game loop with Win32 message processing
-  MSG msg = {};
-  while (!finish)
-  {
-    // Process Win32 messages (non-blocking)
-    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-    {
-      if (msg.message == WM_QUIT)
-      {
-        finish = 1;
-        break;
-      }
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    }
-
-    if (finish) break;
-
-    // Update NeuronCore timer each frame
-    Timer::Core::Update();
-
-    snd_update_sound();
-    if (ready_to_draw()) draw_screen();
-
-    while (frame_count > 0)
-    {
-      gfx_advance_frame();
-
-      handle_events();
-      handle_keyboard_state();
-
-      update_screen();
-      frame_count--;
-    }
-  }
-
-  snd_sound_shutdown();
-  StarStrike::ShipRenderer::Shutdown();
-  StarStrike::DX12Renderer::Shutdown();
-  input_shutdown();
-  gfx_graphics_shutdown();
+  ClientEngine::Run();  
 
   ClientEngine::Shutdown();
 

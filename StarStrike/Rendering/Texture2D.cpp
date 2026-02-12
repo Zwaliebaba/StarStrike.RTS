@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Texture2D.h"
 #include "GraphicsCore.h"
+#include "FrameUploadAllocator.h"
 #include "GdiBitmap.h"
 
 using namespace Neuron::Graphics;
@@ -112,10 +113,9 @@ namespace StarStrike
     // Update the GpuResource's tracked state
     m_resource.SetResourceState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-    // Execute and wait for GPU
-    Core::ExecuteCommandList(true);
-    Core::WaitForGpu();
-    Core::ResetCommandAllocatorAndCommandlist();
+    // Defer upload buffer release until GPU completes using it.
+    // This avoids blocking with WaitForGpu() while ensuring the buffer lives long enough.
+    FrameUploadAllocator::DeferUploadBufferRelease(std::move(uploadBuffer));
 
     // Create SRV
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
