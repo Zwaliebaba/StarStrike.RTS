@@ -77,15 +77,12 @@ namespace StarStrike
     inline static GraphicsPSO sm_wireframePSO{L"Ship Wireframe PSO"};
     inline static GraphicsPSO sm_linePSO{L"Ship Line PSO"};
 
-    // Vertex buffer for dynamic ship geometry
+    // CPU-side vertex accumulation (GPU memory allocated per-frame from FrameUploadAllocator)
     inline static std::vector<ShipVertex> sm_vertices;
     inline static std::vector<ShipVertex> sm_lineVertices;
-    inline static com_ptr<ID3D12Resource> sm_vertexUploadBuffer;
-    inline static com_ptr<ID3D12Resource> sm_constantUploadBuffer;
 
-    // Constant buffer
+    // Constant buffer staging (copied to per-frame allocation each draw)
     inline static Ship3DConstants sm_constants;
-    inline static void* sm_constantBufferMapped = nullptr;
 
     // Camera matrix (4x4 doubles in legacy code, we use XMMATRIX)
     inline static XMMATRIX sm_cameraMatrix = XMMatrixIdentity();

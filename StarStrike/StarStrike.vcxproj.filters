@@ -324,9 +324,7 @@
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="Win32Input.cpp" />
     <ClCompile Include="input.cpp" />
-    <ClCompile Include="GdiBitmap.cpp" />
     <ClCompile Include="sound.cpp" />
-    <ClCompile Include="Rendering\Texture2D.cpp" />
     <ClCompile Include="Rendering\ShipRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -357,8 +355,6 @@
     <ClInclude Include="loadsave.h" />
     <ClInclude Include="SStrikeMain.h" />
     <ClInclude Include="Win32Input.h" />
-    <ClInclude Include="GdiBitmap.h" />
-    <ClInclude Include="Rendering\Texture2D.h" />
     <ClInclude Include="Rendering\ShipRenderer.h" />
   </ItemGroup>
   <ItemGroup>

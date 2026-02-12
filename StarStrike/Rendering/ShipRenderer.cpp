@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ShipRenderer.h"
 #include "GraphicsCore.h"
+#include "FrameUploadAllocator.h"
 #include "Color.h"
 #include "shipdata.h"
 #include "shipface.h"
@@ -25,7 +26,7 @@ namespace StarStrike
     if (sm_initialized)
       return;
 
-    DebugTrace("ShipRenderer::Startup");
+    DebugTrace("ShipRenderer::Startup\n");
 
     CreateResources();
     CreatePipelineStates();
@@ -34,7 +35,7 @@ namespace StarStrike
     sm_cameraMatrix = XMMatrixIdentity();
 
     sm_initialized = true;
-    DebugTrace("ShipRenderer initialized");
+    DebugTrace("ShipRenderer initialized\n");
   }
 
   void ShipRenderer::Shutdown()
@@ -42,27 +43,18 @@ namespace StarStrike
     if (!sm_initialized)
       return;
 
-    DebugTrace("ShipRenderer::Shutdown");
+    DebugTrace("ShipRenderer::Shutdown\n");
 
     Core::WaitForGpu();
 
-    if (sm_constantUploadBuffer && sm_constantBufferMapped)
-    {
-      sm_constantUploadBuffer->Unmap(0, nullptr);
-      sm_constantBufferMapped = nullptr;
-    }
-
-    sm_vertexUploadBuffer = nullptr;
-    sm_constantUploadBuffer = nullptr;
     sm_vertices.clear();
+    sm_lineVertices.clear();
 
     sm_initialized = false;
   }
 
   void ShipRenderer::CreateResources()
   {
-    auto device = Core::GetD3DDevice();
-
     // Create root signature: one CBV for matrices
     sm_rootSignature.Reset(1, 0);
     sm_rootSignature[0].InitAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
@@ -73,35 +65,9 @@ namespace StarStrike
       D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
       D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS);
 
-    // Create upload heap for vertices
-    auto uploadHeapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-
-    size_t vertexBufferSize = MAX_SHIP_VERTICES * sizeof(ShipVertex);
-    auto vertexBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
-    check_hresult(device->CreateCommittedResource(
-      &uploadHeapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &vertexBufferDesc,
-      D3D12_RESOURCE_STATE_GENERIC_READ,
-      nullptr,
-      IID_PPV_ARGS(sm_vertexUploadBuffer.put())));
-    sm_vertexUploadBuffer->SetName(L"Ship Vertex Upload Buffer");
-
-    // Create constant buffer
-    size_t constantBufferSize = (sizeof(Ship3DConstants) + 255) & ~255;
-    auto constantBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(constantBufferSize);
-    check_hresult(device->CreateCommittedResource(
-      &uploadHeapProps,
-      D3D12_HEAP_FLAG_NONE,
-      &constantBufferDesc,
-      D3D12_RESOURCE_STATE_GENERIC_READ,
-      nullptr,
-      IID_PPV_ARGS(sm_constantUploadBuffer.put())));
-    sm_constantUploadBuffer->SetName(L"Ship Constant Buffer");
-
-    check_hresult(sm_constantUploadBuffer->Map(0, nullptr, &sm_constantBufferMapped));
-
+    // Reserve space for vertex accumulation (actual GPU memory allocated per-frame from FrameUploadAllocator)
     sm_vertices.reserve(MAX_SHIP_VERTICES);
+    sm_lineVertices.reserve(256);
   }
 
   void ShipRenderer::CreatePipelineStates()
@@ -329,12 +295,6 @@ namespace StarStrike
 
     XMStoreFloat4x4(&sm_constants.WorldViewProj, XMMatrixTranspose(worldViewProj));
 
-    // Update constant buffer
-    if (sm_constantBufferMapped)
-    {
-      memcpy(sm_constantBufferMapped, &sm_constants, sizeof(Ship3DConstants));
-    }
-
     // Clear vertices
     sm_vertices.clear();
 
@@ -349,12 +309,14 @@ namespace StarStrike
     if (sm_vertices.empty())
       return;
 
-    // Upload vertices
-    void* mapped = nullptr;
-    size_t dataSize = sm_vertices.size() * sizeof(ShipVertex);
-    check_hresult(sm_vertexUploadBuffer->Map(0, nullptr, &mapped));
-    memcpy(mapped, sm_vertices.data(), dataSize);
-    sm_vertexUploadBuffer->Unmap(0, nullptr);
+    // Allocate per-frame constant buffer from ring buffer (256-byte aligned for CBV)
+    auto cbAlloc = FrameUploadAllocator::Allocate(sizeof(Ship3DConstants), 256);
+    memcpy(cbAlloc.cpuAddress, &sm_constants, sizeof(Ship3DConstants));
+
+    // Allocate per-frame vertex buffer from ring buffer
+    size_t vertexDataSize = sm_vertices.size() * sizeof(ShipVertex);
+    auto vbAlloc = FrameUploadAllocator::Allocate(vertexDataSize, 16);
+    memcpy(vbAlloc.cpuAddress, sm_vertices.data(), vertexDataSize);
 
     auto cmdList = Core::GetCommandList();
 
@@ -378,12 +340,12 @@ namespace StarStrike
     }
 
     cmdList->SetGraphicsRootSignature(sm_rootSignature.GetSignature());
-    cmdList->SetGraphicsRootConstantBufferView(0, sm_constantUploadBuffer->GetGPUVirtualAddress());
+    cmdList->SetGraphicsRootConstantBufferView(0, cbAlloc.gpuAddress);
 
     // Set vertex buffer
     D3D12_VERTEX_BUFFER_VIEW vbv = {};
-    vbv.BufferLocation = sm_vertexUploadBuffer->GetGPUVirtualAddress();
-    vbv.SizeInBytes = static_cast<UINT>(dataSize);
+    vbv.BufferLocation = vbAlloc.gpuAddress;
+    vbv.SizeInBytes = static_cast<UINT>(vertexDataSize);
     vbv.StrideInBytes = sizeof(ShipVertex);
     cmdList->IASetVertexBuffers(0, 1, &vbv);
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -465,33 +427,34 @@ namespace StarStrike
     XMMATRIX proj = BuildProjectionMatrix();
     XMStoreFloat4x4(&sm_constants.WorldViewProj, XMMatrixTranspose(proj));
 
-    if (sm_constantBufferMapped)
-    {
-      memcpy(sm_constantBufferMapped, &sm_constants, sizeof(Ship3DConstants));
-    }
+    // Allocate per-frame constant buffer from ring buffer (256-byte aligned for CBV)
+    auto cbAlloc = FrameUploadAllocator::Allocate(sizeof(Ship3DConstants), 256);
+    memcpy(cbAlloc.cpuAddress, &sm_constants, sizeof(Ship3DConstants));
 
-    // Upload line vertices
-    void* mapped = nullptr;
-    size_t dataSize = sm_lineVertices.size() * sizeof(ShipVertex);
-    check_hresult(sm_vertexUploadBuffer->Map(0, nullptr, &mapped));
-    memcpy(mapped, sm_lineVertices.data(), dataSize);
-    sm_vertexUploadBuffer->Unmap(0, nullptr);
+    // Allocate per-frame vertex buffer from ring buffer
+    size_t vertexDataSize = sm_lineVertices.size() * sizeof(ShipVertex);
+    auto vbAlloc = FrameUploadAllocator::Allocate(vertexDataSize, 16);
+    memcpy(vbAlloc.cpuAddress, sm_lineVertices.data(), vertexDataSize);
 
     auto cmdList = Core::GetCommandList();
 
-    // Set render target
+    // Set viewport and scissor rect for line rendering
+    cmdList->RSSetViewports(1, &Core::GetScreenViewport());
+    cmdList->RSSetScissorRects(1, &Core::GetScissorRect());
+
+    // Set render target (no depth needed for lasers drawn on top)
     auto rtvHandle = Core::GetRenderTargetView();
     cmdList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 
     // Set line pipeline state
     cmdList->SetPipelineState(sm_linePSO.GetPipelineStateObject());
     cmdList->SetGraphicsRootSignature(sm_rootSignature.GetSignature());
-    cmdList->SetGraphicsRootConstantBufferView(0, sm_constantUploadBuffer->GetGPUVirtualAddress());
+    cmdList->SetGraphicsRootConstantBufferView(0, cbAlloc.gpuAddress);
 
     // Set vertex buffer
     D3D12_VERTEX_BUFFER_VIEW vbv = {};
-    vbv.BufferLocation = sm_vertexUploadBuffer->GetGPUVirtualAddress();
-    vbv.SizeInBytes = static_cast<UINT>(dataSize);
+    vbv.BufferLocation = vbAlloc.gpuAddress;
+    vbv.SizeInBytes = static_cast<UINT>(vertexDataSize);
     vbv.StrideInBytes = sizeof(ShipVertex);
     cmdList->IASetVertexBuffers(0, 1, &vbv);
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);

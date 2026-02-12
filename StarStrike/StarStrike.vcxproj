@@ -245,7 +245,6 @@
     <ClCompile Include="docked.cpp" />
     <ClCompile Include="elite.cpp" />
     <ClCompile Include="file.cpp" />
-    <ClCompile Include="GdiBitmap.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="intro.cpp" />
     <ClCompile Include="loadsave.cpp" />
@@ -258,7 +257,6 @@
     <ClCompile Include="planet.cpp" />
     <ClCompile Include="random.cpp" />
     <ClCompile Include="Rendering\ShipRenderer.cpp" />
-    <ClCompile Include="Rendering\Texture2D.cpp" />
     <ClCompile Include="shipdata.cpp" />
     <ClCompile Include="shipface.cpp" />
     <ClCompile Include="sound.cpp" />
@@ -280,7 +278,6 @@
     <ClInclude Include="docked.h" />
     <ClInclude Include="elite.h" />
     <ClInclude Include="file.h" />
-    <ClInclude Include="GdiBitmap.h" />
     <ClInclude Include="gfx.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="intro.h" />
@@ -293,7 +290,6 @@
     <ClInclude Include="planet.h" />
     <ClInclude Include="random.h" />
     <ClInclude Include="Rendering\ShipRenderer.h" />
-    <ClInclude Include="Rendering\Texture2D.h" />
     <ClInclude Include="shipdata.h" />
     <ClInclude Include="shipface.h" />
     <ClInclude Include="sound.h" />
