@@ -2,7 +2,6 @@
 
 #include "DescriptorHeap.h"
 #include "ResourceStateTracker.h"
-#include "FrameUploadAllocator.h"
 
 namespace Neuron::Graphics
 {

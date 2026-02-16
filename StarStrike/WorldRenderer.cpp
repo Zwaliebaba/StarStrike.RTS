@@ -243,7 +243,7 @@ namespace Neuron
     cmdList->SetGraphicsRootSignature(m_rootSig.GetSignature());
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    for (const auto& [id, obj] : _objects)
+    for (const auto &obj: _objects | std::views::values)
     {
       // Find mesh
       uint32_t key = MeshKey(obj.type, obj.subclass);

@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "GraphicsCore.h"
 #include "GraphicsCommon.h"
-#include "FrameUploadAllocator.h"
 
 using namespace Neuron::Graphics;
 
@@ -184,7 +183,6 @@ void Core::CreateDeviceResources()
   check_bool(static_cast<bool>(m_fenceEvent));
 
   DescriptorAllocator::Create();
-  FrameUploadAllocator::Startup(m_backBufferCount);
 
   // Common state was moved to GraphicsCommon.*
   InitializeCommonState();
@@ -192,7 +190,6 @@ void Core::CreateDeviceResources()
 
 void Core::ReleaseDeviceResources()
 {
-  FrameUploadAllocator::Shutdown();
   DestroyCommonState();
 
   m_fenceEvent.close();
@@ -422,9 +419,6 @@ void Core::Prepare()
 {
   ResetCommandAllocatorAndCommandlist();
 
-  // Record where this frame's ring buffer allocations start
-  FrameUploadAllocator::BeginFrame(m_backBufferIndex);
-
   DescriptorAllocator::SetDescriptorHeaps(m_commandList.get());
 
   sm_gpuResourceStateTracker.TransitionResource(m_renderTargets[m_backBufferIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, true);
@@ -536,9 +530,6 @@ void Core::MoveToNextFrame()
     check_hresult(m_fence->SetEventOnCompletion(m_fenceValues[m_backBufferIndex], m_fenceEvent.get()));
     WaitForSingleObjectEx(m_fenceEvent.get(), INFINITE, FALSE);
   }
-
-  // Notify upload allocator that this frame's GPU work is complete
-  FrameUploadAllocator::OnFrameComplete(m_backBufferIndex);
 
   // Set the fence value for the next frame.
   m_fenceValues[m_backBufferIndex] = currentFenceValue + 1;

@@ -6,11 +6,11 @@ namespace
 {
   float windowWidthAdd, windowHeightAdd;
   constexpr bool SHOW_BORDER = true;
-} // namespace
+}// namespace
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-void ClientEngine::Startup(const wchar_t* _gameName, Windows::Foundation::Size _size, HINSTANCE _hInstance, int nCmdShow)
+void ClientEngine::Startup(const wchar_t *_gameName, Windows::Foundation::Size _size, HINSTANCE _hInstance, int nCmdShow)
 {
   CoreEngine::Startup();
 
@@ -59,7 +59,7 @@ void ClientEngine::Startup(const wchar_t* _gameName, Windows::Foundation::Size _
     DWORD dw = GetLastError();
 
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, dw,
-                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, nullptr);
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &lpMsgBuf, 0, nullptr);
 
     std::wstring errorMsg = lpMsgBuf ? lpMsgBuf : L"Unknown error";
     LocalFree(lpMsgBuf);
@@ -95,7 +95,7 @@ void ClientEngine::Shutdown()
 
   Audio::Core::Shutdown();
 
-  Graphics::Core::Shutdown();  
+  Graphics::Core::Shutdown();
 
   CoreEngine::Shutdown();
 }
@@ -115,6 +115,10 @@ void ClientEngine::Run()
     {
       auto deltaT = Timer::Core::Update();
       m_main->Update(deltaT);
+
+      Graphics::Core::Prepare();
+      m_main->Render();
+      Graphics::Core::Present();
     }
   }
 }
@@ -128,7 +132,7 @@ Windows::Foundation::Point ClientEngine::OutputTopLeft()
   return {rc.left + windowWidthAdd, rc.top + windowHeightAdd};
 }
 
-static void HandlePointer(GameMain* _app, HWND hwnd, WPARAM wParam, LPARAM lParam)
+static void HandlePointer(GameMain *_app, HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   const UINT32 pointerId = GET_POINTERID_WPARAM(wParam);
   POINTER_INFO pi{};
@@ -159,23 +163,23 @@ LRESULT CALLBACK WndProc(const HWND _hWnd, const UINT _message, WPARAM _wParam, 
   static bool s_minimized = false;
   static bool s_fullscreen = false;
 
-  auto* game = reinterpret_cast<GameMain*>(GetWindowLongPtr(_hWnd, GWLP_USERDATA));
+  auto *game = reinterpret_cast<GameMain *>(GetWindowLongPtr(_hWnd, GWLP_USERDATA));
 
   switch (_message)
   {
-  case WM_CREATE:
-    if (_lParam)
-    {
-      const auto params = reinterpret_cast<LPCREATESTRUCTW>(_lParam);
-      SetWindowLongPtr(_hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(params->lpCreateParams));
-    }
-    break;
+    case WM_CREATE:
+      if (_lParam)
+      {
+        const auto params = reinterpret_cast<LPCREATESTRUCTW>(_lParam);
+        SetWindowLongPtr(_hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(params->lpCreateParams));
+      }
+      break;
 
-  case WM_CLOSE:
-    DestroyWindow(_hWnd);
-    break;
+    case WM_CLOSE:
+      DestroyWindow(_hWnd);
+      break;
 
-  case WM_PAINT:
+    case WM_PAINT:
     {
       PAINTSTRUCT ps;
       BeginPaint(_hWnd, &ps);
@@ -183,126 +187,50 @@ LRESULT CALLBACK WndProc(const HWND _hWnd, const UINT _message, WPARAM _wParam, 
       return 0;
     }
 
-  case WM_POINTERDOWN:
-  case WM_POINTERUPDATE:
-  case WM_POINTERUP:
-    HandlePointer(game, _hWnd, _wParam, _lParam);
-    return 0;
+    case WM_POINTERDOWN:
+    case WM_POINTERUPDATE:
+    case WM_POINTERUP:
+      HandlePointer(game, _hWnd, _wParam, _lParam);
+      return 0;
 
-  case WM_DISPLAYCHANGE:
-    if (game)
-      game->OnDisplayChange();
-    break;
+    case WM_DISPLAYCHANGE:
+      if (game)
+        game->OnDisplayChange();
+      break;
 
-  case WM_MOVE:
-    if (game)
-      game->OnWindowMoved();
-    break;
+    case WM_MOVE:
+      if (game)
+        game->OnWindowMoved();
+      break;
 
-  case WM_SIZE:
-    if (_wParam == SIZE_MINIMIZED)
-    {
-      if (!s_minimized)
+    case WM_SIZE:
+      if (_wParam == SIZE_MINIMIZED)
       {
-        s_minimized = true;
-        if (!s_in_suspend && game)
-          game->OnSuspending();
-        s_in_suspend = true;
+        if (!s_minimized)
+        {
+          s_minimized = true;
+          if (!s_in_suspend && game)
+            game->OnSuspending();
+          s_in_suspend = true;
+        }
       }
-    }
-    else if (s_minimized)
-    {
-      s_minimized = false;
-      if (s_in_suspend && game)
-        game->OnResuming();
-      s_in_suspend = false;
-    }
-    else if (!s_in_sizemove && game)
-      game->OnWindowSizeChanged(LOWORD(_lParam), HIWORD(_lParam));
-    break;
-
-  case WM_ENTERSIZEMOVE:
-    s_in_sizemove = true;
-    break;
-
-  case WM_EXITSIZEMOVE:
-    s_in_sizemove = false;
-    if (game)
-    {
-      RECT rc;
-      GetClientRect(_hWnd, &rc);
-
-      game->OnWindowSizeChanged(rc.right - rc.left, rc.bottom - rc.top);
-    }
-    break;
-
-  case WM_GETMINMAXINFO:
-    if (_lParam)
-    {
-      auto* info = reinterpret_cast<MINMAXINFO*>(_lParam);
-      info->ptMinTrackSize.x = 320;
-      info->ptMinTrackSize.y = 200;
-    }
-    break;
-
-  case WM_ACTIVATEAPP:
-    if (game)
-    {
-      if (_wParam)
-        game->OnActivated();
-      else
-        game->OnDeactivated();
-    }
-    break;
-
-  case WM_POWERBROADCAST:
-    switch (_wParam)
-    {
-    case PBT_APMQUERYSUSPEND:
-      if (!s_in_suspend && game)
-        game->OnSuspending();
-      s_in_suspend = true;
-      return TRUE;
-
-    case PBT_APMRESUMESUSPEND:
-      if (!s_minimized)
+      else if (s_minimized)
       {
+        s_minimized = false;
         if (s_in_suspend && game)
           game->OnResuming();
         s_in_suspend = false;
       }
-      return TRUE;
-    }
-    break;
+      else if (!s_in_sizemove && game)
+        game->OnWindowSizeChanged(LOWORD(_lParam), HIWORD(_lParam));
+      break;
 
-  case WM_DESTROY:
-    PostQuitMessage(0);
-    break;
+    case WM_ENTERSIZEMOVE:
+      s_in_sizemove = true;
+      break;
 
-  case WM_SYSKEYDOWN:
-    if (_wParam == VK_RETURN && (_lParam & 0x60000000) == 0x20000000)
-    {
-      // Implements the classic ALT+ENTER fullscreen toggle
-      if (s_fullscreen)
-      {
-        SetWindowLongPtr(_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-        SetWindowLongPtr(_hWnd, GWL_EXSTYLE, 0);
-
-        ShowWindow(_hWnd, SW_SHOWNORMAL);
-
-        const auto outputSize = ClientEngine::OutputSize();
-        SetWindowPos(_hWnd, HWND_TOP, 0, 0, outputSize.Width, outputSize.Height, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
-      }
-      else
-      {
-        SetWindowLongPtr(_hWnd, GWL_STYLE, WS_POPUP);
-        SetWindowLongPtr(_hWnd, GWL_EXSTYLE, WS_EX_TOPMOST);
-
-        SetWindowPos(_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-
-        ShowWindow(_hWnd, SW_SHOWMAXIMIZED);
-      }
-
+    case WM_EXITSIZEMOVE:
+      s_in_sizemove = false;
       if (game)
       {
         RECT rc;
@@ -310,15 +238,91 @@ LRESULT CALLBACK WndProc(const HWND _hWnd, const UINT _message, WPARAM _wParam, 
 
         game->OnWindowSizeChanged(rc.right - rc.left, rc.bottom - rc.top);
       }
+      break;
 
-      s_fullscreen = !s_fullscreen;
-    }
-    break;
+    case WM_GETMINMAXINFO:
+      if (_lParam)
+      {
+        auto *info = reinterpret_cast<MINMAXINFO *>(_lParam);
+        info->ptMinTrackSize.x = 320;
+        info->ptMinTrackSize.y = 200;
+      }
+      break;
 
-  case WM_MENUCHAR:
-    // A menu is active and the user presses a key that does not correspond
-    // to any mnemonic or accelerator key. Ignore so we don't produce an error beep.
-    return MAKELRESULT(0, MNC_CLOSE);
+    case WM_ACTIVATEAPP:
+      if (game)
+      {
+        if (_wParam)
+          game->OnActivated();
+        else
+          game->OnDeactivated();
+      }
+      break;
+
+    case WM_POWERBROADCAST:
+      switch (_wParam)
+      {
+        case PBT_APMQUERYSUSPEND:
+          if (!s_in_suspend && game)
+            game->OnSuspending();
+          s_in_suspend = true;
+          return TRUE;
+
+        case PBT_APMRESUMESUSPEND:
+          if (!s_minimized)
+          {
+            if (s_in_suspend && game)
+              game->OnResuming();
+            s_in_suspend = false;
+          }
+          return TRUE;
+      }
+      break;
+
+    case WM_DESTROY:
+      PostQuitMessage(0);
+      break;
+
+    case WM_SYSKEYDOWN:
+      if (_wParam == VK_RETURN && (_lParam & 0x60000000) == 0x20000000)
+      {
+        // Implements the classic ALT+ENTER fullscreen toggle
+        if (s_fullscreen)
+        {
+          SetWindowLongPtr(_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+          SetWindowLongPtr(_hWnd, GWL_EXSTYLE, 0);
+
+          ShowWindow(_hWnd, SW_SHOWNORMAL);
+
+          const auto outputSize = ClientEngine::OutputSize();
+          SetWindowPos(_hWnd, HWND_TOP, 0, 0, outputSize.Width, outputSize.Height, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+        }
+        else
+        {
+          SetWindowLongPtr(_hWnd, GWL_STYLE, WS_POPUP);
+          SetWindowLongPtr(_hWnd, GWL_EXSTYLE, WS_EX_TOPMOST);
+
+          SetWindowPos(_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+
+          ShowWindow(_hWnd, SW_SHOWMAXIMIZED);
+        }
+
+        if (game)
+        {
+          RECT rc;
+          GetClientRect(_hWnd, &rc);
+
+          game->OnWindowSizeChanged(rc.right - rc.left, rc.bottom - rc.top);
+        }
+
+        s_fullscreen = !s_fullscreen;
+      }
+      break;
+
+    case WM_MENUCHAR:
+      // A menu is active and the user presses a key that does not correspond
+      // to any mnemonic or accelerator key. Ignore so we don't produce an error beep.
+      return MAKELRESULT(0, MNC_CLOSE);
   }
 
   if (WndProcManager::WndProc(_hWnd, _message, _wParam, _lParam) == -1)
