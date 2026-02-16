@@ -104,7 +104,7 @@ void ClientEngine::Run()
 {
   // Main message loop
   MSG msg = {};
-  while (WM_QUIT != msg.message)
+  while (msg.message != WM_QUIT)
   {
     if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
@@ -115,10 +115,6 @@ void ClientEngine::Run()
     {
       auto deltaT = Timer::Core::Update();
       m_main->Update(deltaT);
-
-      Graphics::Core::Prepare();
-      m_main->Render();
-      Graphics::Core::Present();
     }
   }
 }

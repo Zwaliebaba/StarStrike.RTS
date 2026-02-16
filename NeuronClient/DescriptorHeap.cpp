@@ -41,7 +41,19 @@ void DescriptorHeap::Create(const std::wstring& Name, D3D12_DESCRIPTOR_HEAP_TYPE
 
 DescriptorHandle DescriptorHeap::Alloc(uint32_t Count)
 {
-  DEBUG_ASSERT_TEXT(HasAvailableSpace(Count), "Descriptor Heap out of space.  Increase heap size.");
+  // Release-build safety: fail gracefully instead of corrupting heap
+  if (!HasAvailableSpace(Count))
+  {
+    ASSERT_TEXT(false, L"Descriptor Heap out of space. Increase heap size.\n");
+  }
+
+  // Warn when heap is running low (< 10% remaining)
+  if (m_NumFreeDescriptors < m_HeapDesc.NumDescriptors / 10)
+  {
+    DebugTrace("WARNING: Descriptor heap type {} running low: {} of {} remaining\n", 
+               static_cast<int>(m_HeapDesc.Type), m_NumFreeDescriptors, m_HeapDesc.NumDescriptors);
+  }
+
   DescriptorHandle ret = m_NextFreeHandle;
   m_NextFreeHandle += Count * m_DescriptorSize;
   m_NumFreeDescriptors -= Count;
@@ -69,7 +81,7 @@ void DescriptorAllocator::DestroyAll()
 void DescriptorAllocator::Create()
 {
   sm_descriptorHeapPool[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].Create(L"CBV_SRV_UAV Descriptor Heap", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, NUM_DESCRIPTORS_PER_HEAP);
-  sm_descriptorHeapPool[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER].Create(L"Sampler Descriptor Heap", D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, NUM_DESCRIPTORS_PER_HEAP);
+  sm_descriptorHeapPool[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER].Create(L"Sampler Descriptor Heap", D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, NUM_SAMPLER_DESCRIPTORS_PER_HEAP);
   sm_descriptorHeapPool[D3D12_DESCRIPTOR_HEAP_TYPE_RTV].Create(L"RTV Descriptor Heap", D3D12_DESCRIPTOR_HEAP_TYPE_RTV, NUM_DESCRIPTORS_PER_HEAP);
   sm_descriptorHeapPool[D3D12_DESCRIPTOR_HEAP_TYPE_DSV].Create(L"DSV Descriptor Heap", D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1);
   sm_descriptorHeapPool[D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES].Create(L"CBV_SRV_UAV CPU Descriptor Heap", D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, NUM_DESCRIPTORS_PER_HEAP);

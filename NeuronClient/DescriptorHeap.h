@@ -93,7 +93,8 @@ namespace Neuron::Graphics
 
   protected:
 
-    static constexpr uint32_t NUM_DESCRIPTORS_PER_HEAP = 256;
+    static constexpr uint32_t NUM_DESCRIPTORS_PER_HEAP = 4096;  // Increased from 256 for production use
+   static constexpr uint32_t NUM_SAMPLER_DESCRIPTORS_PER_HEAP = 2048;  // D3D12 shader-visible sampler heap limit
     inline static std::mutex sm_allocationMutex;
     inline static std::array<DescriptorHeap, D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES+1> sm_descriptorHeapPool;
   };
