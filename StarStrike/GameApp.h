@@ -25,5 +25,7 @@ namespace Neuron
     bool           m_connected       = false;
     float          m_heartbeatTimer  = 0.f;
     bool           m_rendererReady   = false;
+    XMFLOAT3       m_smoothedEye     = {0.f, 300.f, -200.f};
+    XMFLOAT3       m_smoothedLookAt  = {0.f, 0.f, 50.f};
   };
 }

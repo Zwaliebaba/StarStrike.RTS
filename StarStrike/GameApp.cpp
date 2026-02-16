@@ -67,7 +67,7 @@ namespace Neuron
     // Update client world (prediction + interpolation)
     m_clientWorld.Update(_deltaT);
 
-    // Camera follows local player
+    // Camera follows local player with smoothing
     if (m_connected)
     {
       auto localId = m_clientWorld.GetLocalPlayerId();
@@ -76,10 +76,22 @@ namespace Neuron
       if (it != objects.end())
       {
         const auto &pos = it->second.position;
-        XMFLOAT3 eye = {pos.x, 300.f, pos.z - 200.f};
-        XMFLOAT3 lookAt = {pos.x, 0.f, pos.z + 50.f};
+        XMFLOAT3 desiredEye = {pos.x, 300.f, pos.z - 200.f};
+        XMFLOAT3 desiredLookAt = {pos.x, 0.f, pos.z + 50.f};
+
+        constexpr float CAM_SMOOTH = 12.0f;
+        float t = 1.0f - expf(-CAM_SMOOTH * _deltaT);
+
+        XMVECTOR curEye = XMLoadFloat3(&m_smoothedEye);
+        XMVECTOR curLookAt = XMLoadFloat3(&m_smoothedLookAt);
+        XMVECTOR targetEye = XMLoadFloat3(&desiredEye);
+        XMVECTOR targetLookAt = XMLoadFloat3(&desiredLookAt);
+
+        XMStoreFloat3(&m_smoothedEye, XMVectorLerp(curEye, targetEye, t));
+        XMStoreFloat3(&m_smoothedLookAt, XMVectorLerp(curLookAt, targetLookAt, t));
+
         XMFLOAT3 up = {0.f, 1.f, 0.f};
-        m_camera.SetViewParams(eye, lookAt, up);
+        m_camera.SetViewParams(m_smoothedEye, m_smoothedLookAt, up);
       }
     }
 

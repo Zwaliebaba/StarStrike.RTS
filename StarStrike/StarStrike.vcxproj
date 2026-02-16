@@ -185,6 +185,12 @@
     the Windows App SDK Nuget package has not yet been restored.
   -->
   <ItemGroup>
+    <None Include="Assets\Objects\Asteroids\asteroid_01.cmo" />
+    <None Include="Assets\Objects\Asteroids\asteroid_02.cmo" />
+    <None Include="Assets\Objects\Asteroids\asteroid_03.cmo" />
+    <None Include="Assets\Objects\Asteroids\asteroid_04.cmo" />
+    <None Include="Assets\Objects\Asteroids\asteroid_05.cmo" />
+    <None Include="Assets\Objects\Asteroids\asteroid_06.cmo" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
