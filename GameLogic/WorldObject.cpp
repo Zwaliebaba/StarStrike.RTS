@@ -1,0 +1,120 @@
+#include "pch.h"
+#include "WorldObject.h"
+
+namespace Neuron
+{
+  void WorldObject::Update(float _deltaT)
+  {
+    switch (state.type)
+    {
+    case WorldObjectType::Ship:
+      UpdateShip(_deltaT);
+      break;
+    case WorldObjectType::Asteroid:
+    case WorldObjectType::Crate:
+    case WorldObjectType::JumpGate:
+    case WorldObjectType::Projectile:
+    case WorldObjectType::Station:
+    case WorldObjectType::Turret:
+    default:
+      UpdateStatic(_deltaT);
+      break;
+    }
+  }
+
+  float WorldObject::GetMaxSpeed() const noexcept
+  {
+    if (state.type == WorldObjectType::Ship)
+    {
+      auto sc = static_cast<ShipClass>(state.subclass);
+      if (static_cast<uint8_t>(sc) < static_cast<uint8_t>(ShipClass::Count))
+        return GetShipDef(sc).maxSpeed;
+    }
+    return 0.0f;
+  }
+
+  float WorldObject::GetAcceleration() const noexcept
+  {
+    if (state.type == WorldObjectType::Ship)
+    {
+      auto sc = static_cast<ShipClass>(state.subclass);
+      if (static_cast<uint8_t>(sc) < static_cast<uint8_t>(ShipClass::Count))
+        return GetShipDef(sc).acceleration;
+    }
+    return 0.0f;
+  }
+
+  void WorldObject::UpdateShip(float _deltaT)
+  {
+    if (!hasTarget)
+    {
+      // Decelerate to stop
+      XMVECTOR vel = XMLoadFloat3(&state.velocity);
+      float speed = Math::Length(vel);
+      if (speed > 0.01f)
+      {
+        float decel = GetAcceleration() * _deltaT;
+        float newSpeed = (std::max)(0.0f, speed - decel);
+        vel = XMVectorScale(Math::Normalize(vel), newSpeed);
+        XMStoreFloat3(&state.velocity, vel);
+      }
+      else
+      {
+        state.velocity = {0.f, 0.f, 0.f};
+        state.flags &= ~static_cast<uint16_t>(ObjectFlags::Moving);
+      }
+    }
+    else
+    {
+      XMVECTOR pos = XMLoadFloat3(&state.position);
+      XMVECTOR target = XMLoadFloat3(&targetPosition);
+      XMVECTOR toTarget = XMVectorSubtract(target, pos);
+      float dist = Math::Length(toTarget);
+
+      float maxSpeed = GetMaxSpeed();
+      float accel = GetAcceleration();
+      float stoppingDist = (maxSpeed * maxSpeed) / (2.0f * accel);
+
+      if (dist < 1.0f)
+      {
+        hasTarget = false;
+        state.velocity = {0.f, 0.f, 0.f};
+        state.flags &= ~static_cast<uint16_t>(ObjectFlags::Moving);
+      }
+      else
+      {
+        XMVECTOR dir = Math::Normalize(toTarget);
+
+        // Face toward target (yaw)
+        state.yaw = atan2f(Math::GetX(dir), Math::GetZ(dir));
+
+        // Accelerate or decelerate
+        XMVECTOR vel = XMLoadFloat3(&state.velocity);
+        float currentSpeed = Math::Length(vel);
+
+        float desiredSpeed = maxSpeed;
+        if (dist < stoppingDist)
+          desiredSpeed = maxSpeed * (dist / stoppingDist);
+
+        float newSpeed = currentSpeed + accel * _deltaT;
+        if (newSpeed > desiredSpeed)
+          newSpeed = desiredSpeed;
+
+        vel = XMVectorScale(dir, newSpeed);
+        XMStoreFloat3(&state.velocity, vel);
+        state.flags |= static_cast<uint16_t>(ObjectFlags::Moving);
+      }
+    }
+
+    // Integrate position
+    XMVECTOR pos = XMLoadFloat3(&state.position);
+    XMVECTOR vel = XMLoadFloat3(&state.velocity);
+    pos = XMVectorAdd(pos, XMVectorScale(vel, _deltaT));
+    XMStoreFloat3(&state.position, pos);
+  }
+
+  void WorldObject::UpdateStatic([[maybe_unused]] float _deltaT)
+  {
+    // Static objects do nothing in MVP
+  }
+}

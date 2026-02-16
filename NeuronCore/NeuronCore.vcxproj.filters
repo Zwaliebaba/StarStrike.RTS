@@ -21,6 +21,8 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="WndProcManager.h" />
     <ClInclude Include="TimerCore.h" />
+    <ClInclude Include="WorldTypes.h" />
+    <ClInclude Include="NetProtocol.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Project Files">

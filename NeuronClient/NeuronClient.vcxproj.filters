@@ -40,12 +40,7 @@
     <ClCompile Include="DDSTextureLoader.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Canvas.cpp">
-      <Filter>Canvas</Filter>
-    </ClCompile>
-    <ClCompile Include="FontPrint.cpp">
-      <Filter>Canvas</Filter>
-    </ClCompile>
+    <ClCompile Include="ClientNet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -104,18 +99,12 @@
     <ClInclude Include="SoundEffect.h">
       <Filter>Audio</Filter>
     </ClInclude>
-    <ClInclude Include="MusicTrack.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="DDSTextureLoader.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Canvas.h">
-      <Filter>Canvas</Filter>
-    </ClInclude>
-    <ClInclude Include="FontPrint.h">
-      <Filter>Canvas</Filter>
-    </ClInclude>
+    <ClInclude Include="ClientNet.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Project Files">
@@ -146,19 +135,5 @@
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
       <Filter>Project Files</Filter>
     </Natvis>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders\BasicPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\BasicVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\SpritePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\SpriteVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

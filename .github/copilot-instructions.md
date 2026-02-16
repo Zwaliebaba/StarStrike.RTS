@@ -130,29 +130,20 @@ __declspec(align(256)) struct MyConstants {
 };
 ```
 
-### 2D Rendering (DX12Renderer)
-Use `StarStrike::DX12Renderer` for batched 2D primitives and sprites:
-```cpp
-DX12Renderer::BeginFrame();
-DX12Renderer::DrawLine(x1, y1, x2, y2, color);
-DX12Renderer::DrawRectangle(left, top, right, bottom, color);
-DX12Renderer::DrawSprite(textureIndex, x, y, width, height);
-DX12Renderer::DrawText(x, y, "text", color);
-DX12Renderer::EndFrame();  // Flushes all batched primitives
-```
+### 2D & UI Rendering
+TBD: 2D rendering system implementation (planned for StarStrike game layer).
+Currently use DirectX 12 command lists directly for custom rendering.
 
 ### Audio
 Separate engines for music vs sound effects:
 ```cpp
-// Load and play music (loops by default)
-MusicTrack music;
-music.Load(Audio::Core::MusicEngine(), L"theme.wav");
-music.Play(true);  // true = loop
-
 // Load and play sound effects
 SoundEffect sfx;
 sfx.Load(Audio::Core::SoundEffectEngine(), L"laser.wav");
-sfx.Play();  // one-shot
+sfx.Play();  // one-shot playback
+
+// For music: Plan to implement MusicTrack class
+// Music will use Audio::Core::MusicEngine()
 ```
 
 ### Debug Utilities

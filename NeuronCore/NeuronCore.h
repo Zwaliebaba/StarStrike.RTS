@@ -87,6 +87,8 @@ using namespace Neuron;
 
 #include "FileSys.h"
 #include "TimerCore.h"
+#include "WorldTypes.h"
+#include "NetProtocol.h"
 
 namespace Neuron
 {

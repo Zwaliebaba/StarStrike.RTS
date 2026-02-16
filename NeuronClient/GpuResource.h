@@ -70,6 +70,8 @@ class GpuResource
     {
       m_pResource = nullptr;
       m_gpuVirtualAddress = D3D12_GPU_VIRTUAL_ADDRESS_NULL;
+     m_usageState = D3D12_RESOURCE_STATE_COMMON;
+     m_transitioningState = static_cast<D3D12_RESOURCE_STATES>(-1);
       ++m_versionID;
     }
 

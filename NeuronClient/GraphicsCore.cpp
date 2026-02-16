@@ -283,6 +283,9 @@ void Core::CreateWindowSizeDependentResources()
   {
     check_hresult(m_swapChain->GetBuffer(n, IID_PPV_ARGS(m_renderTargets[n].Put())));
 
+   // Swap chain buffers are always in PRESENT/COMMON state initially.
+   m_renderTargets[n].SetResourceState(D3D12_RESOURCE_STATE_PRESENT);
+
     wchar_t name[25] = {};
     swprintf_s(name, L"Render target %u", n);
     m_renderTargets[n]->SetName(name);

@@ -85,7 +85,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)NeuronCore;$(SolutionDir)NeuronClient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)NeuronCore;$(SolutionDir)NeuronClient;$(SolutionDir)GameLogic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ConformanceMode Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ConformanceMode>
     </ClCompile>
     <Link>
@@ -95,6 +95,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)NeuronClient;$(SolutionDir)GameLogic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -110,9 +111,6 @@
     <Manifest Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\blake.bmp" />
-    <Image Include="Assets\ecm.bmp" />
-    <Image Include="Assets\elitetx3.bmp" />
     <Image Include="Assets\Fonts\EditorFont-ENG.dds" />
     <Image Include="Assets\Fonts\EditorFont-FRA.dds" />
     <Image Include="Assets\Fonts\EditorFont-ITA.dds" />
@@ -121,7 +119,6 @@
     <Image Include="Assets\Fonts\SpeccyFont-FRA.dds" />
     <Image Include="Assets\Fonts\SpeccyFont-ITA.dds" />
     <Image Include="Assets\Fonts\SpeccyFont-RUS.dds" />
-    <Image Include="Assets\greendot.bmp" />
     <Image Include="Assets\Logos\LargeTile.scale-100.png" />
     <Image Include="Assets\Logos\LargeTile.scale-125.png" />
     <Image Include="Assets\Logos\LargeTile.scale-150.png" />
@@ -173,16 +170,6 @@
     <Image Include="Assets\Logos\Wide310x150Logo.scale-150.png" />
     <Image Include="Assets\Logos\Wide310x150Logo.scale-200.png" />
     <Image Include="Assets\Logos\Wide310x150Logo.scale-400.png" />
-    <Image Include="Assets\missgrn.bmp" />
-    <Image Include="Assets\missred.bmp" />
-    <Image Include="Assets\missyell.bmp" />
-    <Image Include="Assets\reddot.bmp" />
-    <Image Include="Assets\safe.bmp" />
-    <Image Include="Assets\scanner.bmp" />
-    <Image Include="Assets\verd2.bmp" />
-    <Image Include="Assets\verd2msk.bmp" />
-    <Image Include="Assets\verd4.bmp" />
-    <Image Include="Assets\verd4msk.bmp" />
   </ItemGroup>
   <!--
     Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
@@ -198,195 +185,37 @@
     the Windows App SDK Nuget package has not yet been restored.
   -->
   <ItemGroup>
-    <None Include="Assets\elite.dat">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\Adder.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\Anaconda.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\Asp.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\Asteroid.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\Boa.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\Boulder.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\Cargo.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\CobraFS.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\CobraMK1.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\CobraMK3.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\Meshes\Constrictor.cmo">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\newkind.cfg">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
-    <None Include="Assets\newscan.cfg">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </None>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="alg_gfx.cpp" />
-    <ClCompile Include="alg_main.cpp" />
-    <ClCompile Include="dirlist.cpp" />
-    <ClCompile Include="docked.cpp" />
-    <ClCompile Include="elite.cpp" />
-    <ClCompile Include="file.cpp" />
-    <ClCompile Include="GdiBitmap.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="intro.cpp" />
-    <ClCompile Include="loadsave.cpp" />
-    <ClCompile Include="missions.cpp" />
-    <ClCompile Include="options.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="pilot.cpp" />
-    <ClCompile Include="planet.cpp" />
-    <ClCompile Include="random.cpp" />
-    <ClCompile Include="Rendering\DX12Renderer.cpp" />
-    <ClCompile Include="Rendering\ShipRenderer.cpp" />
-    <ClCompile Include="Rendering\Texture2D.cpp" />
-    <ClCompile Include="shipdata.cpp" />
-    <ClCompile Include="shipface.cpp" />
-    <ClCompile Include="sound.cpp" />
-    <ClCompile Include="space.cpp" />
-    <ClCompile Include="stars.cpp" />
-    <ClCompile Include="SStrikeMain.cpp" />
-    <ClCompile Include="swat.cpp" />
-    <ClCompile Include="threed.cpp" />
-    <ClCompile Include="trade.cpp" />
-    <ClCompile Include="vector.cpp" />
-    <ClCompile Include="Win32Input.cpp" />
-    <ClCompile Include="WinMain.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="config.h" />
-    <ClInclude Include="dirlist.h" />
-    <ClInclude Include="docked.h" />
-    <ClInclude Include="elite.h" />
-    <ClInclude Include="file.h" />
-    <ClInclude Include="GdiBitmap.h" />
-    <ClInclude Include="gfx.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="intro.h" />
-    <ClInclude Include="loadsave.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="missions.h" />
-    <ClInclude Include="options.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="pilot.h" />
-    <ClInclude Include="planet.h" />
-    <ClInclude Include="random.h" />
-    <ClInclude Include="Rendering\DX12Renderer.h" />
-    <ClInclude Include="Rendering\ShipRenderer.h" />
-    <ClInclude Include="Rendering\Texture2D.h" />
-    <ClInclude Include="shipdata.h" />
-    <ClInclude Include="shipface.h" />
-    <ClInclude Include="sound.h" />
-    <ClInclude Include="space.h" />
-    <ClInclude Include="stars.h" />
-    <ClInclude Include="SStrikeMain.h" />
-    <ClInclude Include="swat.h" />
-    <ClInclude Include="threed.h" />
-    <ClInclude Include="trade.h" />
-    <ClInclude Include="vector.h" />
-    <ClInclude Include="Win32Input.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NeuronClient\NeuronClient.vcxproj">
       <Project>{892ecec9-aac2-4ff4-ad71-d6c4baa48281}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GameLogic\GameLogic.vcxproj">
+      <Project>{87345e76-b181-46fd-9c8d-8be631df29c0}</Project>
     </ProjectReference>
     <ProjectReference Include="..\NeuronCore\NeuronCore.vcxproj">
       <Project>{d437df12-5193-4fb5-859f-0a728702c521}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="Assets\Audio\Ambient.wav" />
-    <Media Include="Assets\Audio\beep.wav" />
-    <Media Include="Assets\Audio\boop.wav" />
-    <Media Include="Assets\Audio\crash.wav" />
-    <Media Include="Assets\Audio\dock.wav" />
-    <Media Include="Assets\Audio\ecm.wav" />
-    <Media Include="Assets\Audio\explode.wav" />
-    <Media Include="Assets\Audio\gameover.wav" />
-    <Media Include="Assets\Audio\hitem.wav" />
-    <Media Include="Assets\Audio\hyper.wav" />
-    <Media Include="Assets\Audio\incom1.wav" />
-    <Media Include="Assets\Audio\incom2.wav" />
-    <Media Include="Assets\Audio\launch.wav" />
-    <Media Include="Assets\Audio\missile.wav" />
-    <Media Include="Assets\Audio\OpeningTheme.wav" />
-    <Media Include="Assets\Audio\pulse.wav" />
+    <ClCompile Include="ClientWorld.cpp" />
+    <ClCompile Include="GameApp.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\BasicPS.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.7</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ObjectFileOutput>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)CompiledShaders\%(Filename).h</HeaderFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shaders\BasicVS.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.7</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ObjectFileOutput>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)CompiledShaders\%(Filename).h</HeaderFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shaders\Ship3DPS.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.7</ShaderModel>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ObjectFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)CompiledShaders\%(Filename).h</HeaderFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shaders\Ship3DVS.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.7</ShaderModel>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ObjectFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)CompiledShaders\%(Filename).h</HeaderFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shaders\SpritePS.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.7</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ObjectFileOutput>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)CompiledShaders\%(Filename).h</HeaderFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shaders\SpriteVS.hlsl">
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.7</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ObjectFileOutput>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)CompiledShaders\%(Filename).h</HeaderFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-    </FxCompile>
+    <ClInclude Include="ClientWorld.h" />
+    <ClInclude Include="GameApp.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="WorldRenderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\WorldPS.hlsl" />
+    <None Include="Shaders\WorldVS.hlsl" />
   </ItemGroup>
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>

@@ -1,48 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Image Include="Assets\blake.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\ecm.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\elitetx3.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\greendot.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\missgrn.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\missred.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\missyell.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\reddot.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\safe.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\scanner.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\verd2.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\verd2msk.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\verd4.bmp">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\verd4msk.bmp">
-      <Filter>Assets</Filter>
-    </Image>
     <Image Include="Assets\Logos\LockScreenLogo.scale-200.png">
       <Filter>Assets\Logos</Filter>
     </Image>
@@ -196,6 +154,30 @@
     <Image Include="Assets\Logos\StoreLogo.scale-400.png">
       <Filter>Assets\Logos</Filter>
     </Image>
+    <Image Include="Assets\Fonts\EditorFont-ENG.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\EditorFont-FRA.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\EditorFont-ITA.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\EditorFont-RUS.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\SpeccyFont-ENG.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\SpeccyFont-FRA.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\SpeccyFont-ITA.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
+    <Image Include="Assets\Fonts\SpeccyFont-RUS.dds">
+      <Filter>Assets\Fonts</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">
@@ -216,6 +198,9 @@
     <Filter Include="Assets\Meshes">
       <UniqueIdentifier>{7ebcc28f-c691-44f4-a987-c11e9804313a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Fonts">
+      <UniqueIdentifier>{4a3831b3-942c-44fb-870a-498b577006e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="app.manifest">
@@ -231,48 +216,6 @@
     <None Include="packages.config">
       <Filter>Project Files</Filter>
     </None>
-    <None Include="Assets\elite.dat">
-      <Filter>Assets</Filter>
-    </None>
-    <None Include="Assets\newkind.cfg">
-      <Filter>Assets</Filter>
-    </None>
-    <None Include="Assets\newscan.cfg">
-      <Filter>Assets</Filter>
-    </None>
-    <None Include="Assets\Meshes\CobraMK3.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\Adder.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\Anaconda.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\Asp.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\Asteroid.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\Boa.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\Boulder.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\Cargo.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\CobraFS.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\CobraMK1.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
-    <None Include="Assets\Meshes\Constrictor.cmo">
-      <Filter>Assets\Meshes</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
@@ -283,143 +226,16 @@
     </Natvis>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="alg_gfx.cpp" />
-    <ClCompile Include="alg_main.cpp" />
-    <ClCompile Include="docked.cpp" />
-    <ClCompile Include="elite.cpp" />
-    <ClCompile Include="file.cpp" />
-    <ClCompile Include="intro.cpp" />
-    <ClCompile Include="missions.cpp" />
-    <ClCompile Include="options.cpp" />
-    <ClCompile Include="pilot.cpp" />
-    <ClCompile Include="planet.cpp" />
-    <ClCompile Include="random.cpp" />
-    <ClCompile Include="shipdata.cpp" />
-    <ClCompile Include="shipface.cpp" />
-    <ClCompile Include="space.cpp" />
-    <ClCompile Include="stars.cpp" />
-    <ClCompile Include="swat.cpp" />
-    <ClCompile Include="threed.cpp" />
-    <ClCompile Include="trade.cpp" />
-    <ClCompile Include="vector.cpp" />
-    <ClCompile Include="pch.cpp" />
-    <ClCompile Include="dirlist.cpp" />
-    <ClCompile Include="loadsave.cpp" />
-    <ClCompile Include="SStrikeMain.cpp" />
     <ClCompile Include="WinMain.cpp" />
-    <ClCompile Include="Win32Input.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="GdiBitmap.cpp" />
-    <ClCompile Include="sound.cpp" />
-    <ClCompile Include="Rendering\DX12Renderer.cpp" />
-    <ClCompile Include="Rendering\Texture2D.cpp" />
-    <ClCompile Include="Rendering\ShipRenderer.cpp" />
-    
-    
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="ClientWorld.cpp" />
+    <ClCompile Include="WorldRenderer.cpp" />
+    <ClCompile Include="GameApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config.h" />
-    <ClInclude Include="docked.h" />
-    <ClInclude Include="elite.h" />
-    <ClInclude Include="file.h" />
-    <ClInclude Include="gfx.h" />
-    <ClInclude Include="intro.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="missions.h" />
-    <ClInclude Include="options.h" />
-    <ClInclude Include="pilot.h" />
-    <ClInclude Include="planet.h" />
-    <ClInclude Include="random.h" />
-    <ClInclude Include="shipdata.h" />
-    <ClInclude Include="shipface.h" />
-    <ClInclude Include="sound.h" />
-    <ClInclude Include="space.h" />
-    <ClInclude Include="stars.h" />
-    <ClInclude Include="swat.h" />
-    <ClInclude Include="threed.h" />
-    <ClInclude Include="trade.h" />
-    <ClInclude Include="vector.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="dirlist.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="loadsave.h" />
-    <ClInclude Include="SStrikeMain.h" />
-    <ClInclude Include="Win32Input.h" />
-    <ClInclude Include="GdiBitmap.h" />
-    <ClInclude Include="Rendering\DX12Renderer.h" />
-    <ClInclude Include="Rendering\Texture2D.h" />
-    <ClInclude Include="Rendering\ShipRenderer.h" />
-    
-    
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Assets\Audio\beep.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\boop.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\crash.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\dock.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\ecm.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\explode.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\gameover.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\hitem.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\hyper.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\incom1.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\incom2.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\launch.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\missile.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\pulse.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\Ambient.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-    <Media Include="Assets\Audio\OpeningTheme.wav">
-      <Filter>Assets\Audio</Filter>
-    </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders\SpritePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\SpriteVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\BasicPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\BasicVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\Ship3DPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\Ship3DVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
+    <ClInclude Include="ClientWorld.h" />
+    <ClInclude Include="WorldRenderer.h" />
+    <ClInclude Include="GameApp.h" />
   </ItemGroup>
 </Project>

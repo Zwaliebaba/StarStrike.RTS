@@ -1,0 +1,29 @@
+#pragma once
+
+#include "Camera.h"
+#include "ClientWorld.h"
+#include "WorldRenderer.h"
+
+namespace Neuron
+{
+  class GameApp : public GameMain
+  {
+  public:
+    void Startup() override;
+    void Shutdown() override;
+    void Update(float _deltaT) override;
+    void Render() override;
+
+  private:
+    void SetupIsometricCamera();
+    void HandleInput();
+    XMFLOAT3 ScreenToWorld(float _screenX, float _screenY) const;
+
+    Camera         m_camera;
+    ClientWorld    m_clientWorld;
+    WorldRenderer  m_worldRenderer;
+    bool           m_connected       = false;
+    float          m_heartbeatTimer  = 0.f;
+    bool           m_rendererReady   = false;
+  };
+}
