@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "WorldRenderer.h"
 #include "GraphicsCommon.h"
-#include "CompiledShaders/BasicVS.h"
-#include "CompiledShaders/BasicPS.h"
+#include "CompiledShaders/WorldVS.h"
+#include "CompiledShaders/WorldPS.h"
 
 namespace Neuron
 {
@@ -20,8 +20,8 @@ namespace Neuron
     // Create PSO
     m_pso = GraphicsPSO(L"WorldPSO");
     m_pso.SetRootSignature(m_rootSig);
-    m_pso.SetVertexShader(g_pBasicVS, sizeof(g_pBasicVS));
-    m_pso.SetPixelShader(g_pBasicPS, sizeof(g_pBasicPS));
+    m_pso.SetVertexShader(g_pWorldVS, sizeof(g_pWorldVS));
+    m_pso.SetPixelShader(g_pWorldPS, sizeof(g_pWorldPS));
     m_pso.SetInputLayout(&VertexPositionColor::INPUT_LAYOUT);
     m_pso.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
     m_pso.SetRenderTargetFormat(Graphics::Core::GetBackBufferFormat(),

@@ -231,11 +231,31 @@
     <ClCompile Include="ClientWorld.cpp" />
     <ClCompile Include="WorldRenderer.cpp" />
     <ClCompile Include="GameApp.cpp" />
+    <ClCompile Include="BitmapFont.cpp" />
+    <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="CanvasWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="ClientWorld.h" />
     <ClInclude Include="WorldRenderer.h" />
     <ClInclude Include="GameApp.h" />
+    <ClInclude Include="BitmapFont.h" />
+    <ClInclude Include="Canvas.h" />
+    <ClInclude Include="CanvasWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\WorldVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\WorldPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\CanvasVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\CanvasPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

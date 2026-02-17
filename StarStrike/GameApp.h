@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Camera.h"
+#include "Canvas.h"
+#include "CanvasWindow.h"
 #include "ClientWorld.h"
 #include "WorldRenderer.h"
 
@@ -28,5 +30,10 @@ namespace Neuron
     bool           m_rendererReady   = false;
     XMFLOAT3       m_smoothedEye     = {0.f, 300.f, -200.f};
     XMFLOAT3       m_smoothedLookAt  = {0.f, 0.f, 50.f};
+
+    Canvas      m_canvas;
+    BitmapFont  m_editorFont;
+    BitmapFont  m_monoFont;
+    std::unique_ptr<CanvasWindow> m_debugWindow;
   };
 }

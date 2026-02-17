@@ -139,7 +139,11 @@
     </Natvis>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\SkyBoxVS.hlsl" />
-    <FxCompile Include="Shaders\SkyBoxPS.hlsl" />
+    <FxCompile Include="Shaders\SkyBoxPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SkyBoxVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

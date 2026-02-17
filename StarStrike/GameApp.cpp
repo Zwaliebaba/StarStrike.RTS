@@ -10,6 +10,12 @@ namespace Neuron
 
     m_worldRenderer.Startup();
     m_skyBox.Startup(L"Textures/starbox_1024.dds");
+
+    m_canvas.Startup();
+    m_editorFont.Load(L"Fonts/EditorFont-ENG.dds", 16, 16);
+    m_monoFont.Load(L"Fonts/SpeccyFont-ENG.dds", 16, 16);
+    m_debugWindow = std::make_unique<CanvasWindow>("PROFILER", 800, 30, 400, 200);
+
     m_rendererReady = true;
 
     m_clientWorld.Startup();
@@ -31,6 +37,8 @@ namespace Neuron
     ClientNet::Disconnect();
     ClientNet::Shutdown();
     m_clientWorld.Shutdown();
+    m_debugWindow.reset();
+    m_canvas.Shutdown();
     m_skyBox.Shutdown();
     m_worldRenderer.Shutdown();
     m_rendererReady = false;
@@ -185,5 +193,17 @@ namespace Neuron
     // Render world objects
     XMMATRIX viewProj = m_camera.ViewProj();
     m_worldRenderer.Render(m_clientWorld.GetObjects(), m_clientWorld.GetLocalPlayerId(), viewProj);
+
+    // --- 2D Canvas Overlay ---
+    m_canvas.Begin();
+    m_debugWindow->BeginWindow(m_canvas, m_monoFont);
+    float elapsedSec = Timer::Core::GetElapsedSeconds();
+    float deltaMs = elapsedSec * 1000.0f;
+    int fps = (elapsedSec > 0.0f) ? static_cast<int>(1.0f / elapsedSec) : 0;
+    char fpsText[64];
+    sprintf_s(fpsText, "%.2f ms (%d fps)", deltaMs, fps);
+    m_debugWindow->TextLine(fpsText);
+    m_debugWindow->EndWindow();
+    m_canvas.End();
   }
 }
