@@ -26,6 +26,8 @@ namespace Neuron
     [[nodiscard]] float GetWorldSize() const noexcept { return m_worldSize; }
 
   private:
+    void ResolveCollisions();
+    static void CancelVelocityIntoCollision(SpaceObject& _obj, float _nx, float _nz);
     std::unordered_map<ObjectId, SpaceObject> m_objects;
     ObjectId m_nextId = 1;
     float m_worldSize = WORLD_DEFAULT_SIZE;

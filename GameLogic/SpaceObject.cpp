@@ -44,6 +44,27 @@ namespace Neuron
     return 0.0f;
   }
 
+  float SpaceObject::GetCollisionRadius() const noexcept
+  {
+    if (state.type == SpaceObjectType::Ship)
+    {
+      auto sc = static_cast<ShipClass>(state.subclass);
+      if (static_cast<uint8_t>(sc) < static_cast<uint8_t>(ShipClass::Count))
+        return GetShipDef(sc).collisionRadius;
+    }
+
+    // Default radii for non-ship types
+    switch (state.type)
+    {
+    case SpaceObjectType::Asteroid:  return 10.0f;
+    case SpaceObjectType::Station:   return 20.0f;
+    case SpaceObjectType::JumpGate:  return 15.0f;
+    case SpaceObjectType::Crate:     return 3.0f;
+    case SpaceObjectType::Turret:    return 5.0f;
+    default:                         return 0.0f;
+    }
+  }
+
   void SpaceObject::UpdateShip(float _deltaT)
   {
     if (!hasTarget)

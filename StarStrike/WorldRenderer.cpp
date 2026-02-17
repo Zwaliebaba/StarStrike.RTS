@@ -91,6 +91,9 @@ namespace Neuron
     Graphics::Core::WaitForGpu();
     Graphics::Core::ResetCommandAllocatorAndCommandlist();
 
+    // Upload buffer no longer needed after GPU copy is confirmed complete
+    mesh.uploadBuffer = nullptr;
+
     mesh.vbView.BufferLocation = mesh.vertexBuffer->GetGPUVirtualAddress();
     mesh.vbView.SizeInBytes = bufferSize;
     mesh.vbView.StrideInBytes = sizeof(VertexPositionColor);
@@ -234,48 +237,67 @@ namespace Neuron
     return {1.0f, 1.0f, 1.0f, 1.0f};
   }
 
+  uint32_t WorldRenderer::ResolveMeshKey(SpaceObjectType _type, uint8_t _subclass) const
+  {
+    uint32_t key = MeshKey(_type, _subclass);
+    if (m_meshes.contains(key))
+      return key;
+
+    key = MeshKey(_type, 0);
+    if (m_meshes.contains(key))
+      return key;
+
+    return 0xFFFF; // fallback
+  }
+
   void XM_CALLCONV WorldRenderer::Render(const std::unordered_map<ObjectId, ObjectState>& _objects,
                               [[maybe_unused]] ObjectId _localPlayerId, FXMMATRIX _viewProj)
   {
+    if (_objects.empty())
+      return;
+
+    // Build sorted draw list (sort by mesh key to batch VB binds)
+    m_drawList.clear();
+    m_drawList.reserve(_objects.size());
+
+    for (const auto& obj : _objects | std::views::values)
+    {
+      uint32_t key = ResolveMeshKey(obj.type, obj.subclass);
+      if (!m_meshes.contains(key))
+        continue;
+
+      XMMATRIX world = XMMatrixRotationY(obj.yaw) *
+                       XMMatrixTranslation(obj.position.x, obj.position.y, obj.position.z);
+      XMMATRIX wvp = world * _viewProj;
+
+      DrawItem item;
+      item.meshKey = key;
+      XMStoreFloat4x4(&item.wvpTransposed, XMMatrixTranspose(wvp));
+      m_drawList.push_back(item);
+    }
+
+    std::ranges::sort(m_drawList, {}, &DrawItem::meshKey);
+
+    // Record draw commands with minimal state changes
     auto* cmdList = Graphics::Core::GetCommandList();
 
     cmdList->SetPipelineState(m_pso.GetPipelineStateObject());
     cmdList->SetGraphicsRootSignature(m_rootSig.GetSignature());
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    for (const auto &obj: _objects | std::views::values)
+    uint32_t boundKey = UINT32_MAX;
+
+    for (const auto& item : m_drawList)
     {
-      // Find mesh
-      uint32_t key = MeshKey(obj.type, obj.subclass);
-      auto it = m_meshes.find(key);
-      if (it == m_meshes.end())
+      if (item.meshKey != boundKey)
       {
-        // Try type-only
-        key = MeshKey(obj.type, 0);
-        it = m_meshes.find(key);
-        if (it == m_meshes.end())
-        {
-          // Fallback
-          key = 0xFFFF;
-          it = m_meshes.find(key);
-          if (it == m_meshes.end())
-            continue;
-        }
+        boundKey = item.meshKey;
+        const auto& mesh = m_meshes.at(boundKey);
+        cmdList->IASetVertexBuffers(0, 1, &mesh.vbView);
       }
 
-      const auto& mesh = it->second;
-
-      // Build world matrix
-      XMMATRIX world = XMMatrixRotationY(obj.yaw) *
-                       XMMatrixTranslation(obj.position.x, obj.position.y, obj.position.z);
-      XMMATRIX wvp = world * _viewProj;
-
-      // Transpose for HLSL column-major
-      XMFLOAT4X4 wvpT;
-      XMStoreFloat4x4(&wvpT, XMMatrixTranspose(wvp));
-
-      cmdList->SetGraphicsRoot32BitConstants(0, 16, &wvpT, 0);
-      cmdList->IASetVertexBuffers(0, 1, &mesh.vbView);
+      const auto& mesh = m_meshes.at(boundKey);
+      cmdList->SetGraphicsRoot32BitConstants(0, 16, &item.wvpTransposed, 0);
       cmdList->DrawInstanced(mesh.vertexCount, 1, 0, 0);
     }
   }

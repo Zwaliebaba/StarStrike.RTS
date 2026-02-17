@@ -17,6 +17,7 @@ namespace Neuron
 
     [[nodiscard]] float GetMaxSpeed() const noexcept;
     [[nodiscard]] float GetAcceleration() const noexcept;
+    [[nodiscard]] float GetCollisionRadius() const noexcept;
 
   private:
     void UpdateShip(float _deltaT);

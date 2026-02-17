@@ -8,6 +8,10 @@
 
 namespace Neuron
 {
+  // Thread-safety note: Currently single-threaded. When moving to MT rendering,
+  // GetObjects() must not be called concurrently with Update/OnSnapshotReceived.
+  // Recommended approach: double-buffer m_objects (write buffer + read-only snapshot)
+  // and swap atomically at frame boundaries.
   class ClientWorld
   {
   public:
@@ -50,6 +54,7 @@ namespace Neuron
     std::unordered_map<ObjectId, InterpolationState> m_interpolation;
 
     std::vector<PendingInput> m_pendingInputs;
+    std::vector<ObjectId>     m_seenIds;  // reused each snapshot to avoid per-frame allocation
     uint32_t m_inputSequence   = 0;
     ObjectId m_localPlayerId   = INVALID_OBJECT_ID;
     uint32_t m_lastSnapshotId  = 0;

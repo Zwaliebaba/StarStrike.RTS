@@ -212,13 +212,14 @@ namespace Neuron
       [&](const PendingInput& input) { return input.sequence <= _snapshot.lastProcessedInput; });
     m_pendingInputs.erase(removeEnd, m_pendingInputs.end());
 
-    // Track which objects are in this snapshot
-    std::unordered_map<ObjectId, bool> seenObjects;
+    // Track which objects are in this snapshot (reuse vector to avoid per-snapshot allocation)
+    m_seenIds.clear();
+    m_seenIds.reserve(_snapshot.objectCount);
 
     for (uint16_t i = 0; i < _snapshot.objectCount; ++i)
     {
       const auto& sd = _snapshot.objects[i];
-      seenObjects[sd.objectId] = true;
+      m_seenIds.push_back(sd.objectId);
 
       ObjectState newState;
       newState.id        = sd.objectId;
@@ -299,11 +300,11 @@ namespace Neuron
     }
 
     // Remove objects no longer in snapshot
-    std::erase_if(m_objects, [&](const auto& pair) {
-      return seenObjects.find(pair.first) == seenObjects.end();
+    std::erase_if(m_objects, [this](const auto& pair) {
+      return !std::ranges::contains(m_seenIds, pair.first);
     });
-    std::erase_if(m_interpolation, [&](const auto& pair) {
-      return seenObjects.find(pair.first) == seenObjects.end();
+    std::erase_if(m_interpolation, [this](const auto& pair) {
+      return !std::ranges::contains(m_seenIds, pair.first);
     });
   }
 }

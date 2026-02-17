@@ -19,17 +19,17 @@ class Camera
     void XM_CALLCONV Eye(FXMVECTOR _position);
     void RotateYawPitch(float deltaYaw, float deltaPitch);
 
-    XMMATRIX View() { return m_viewMatrix; }
-    XMMATRIX Projection() { return m_projectionMatrix; }
-    XMMATRIX ViewProj() const { return m_viewProj; }
-    XMMATRIX World() { return m_inverseView; }
-    XMFLOAT3 Eye();
-    XMFLOAT3 LookAt();
-    XMFLOAT3 Up();
-    float NearClipPlane() { return m_nearPlane; }
-    float FarClipPlane() { return m_farPlane; }
-    float Pitch() { return m_cameraPitchAngle; }
-    float Yaw() { return m_cameraYawAngle; }
+    [[nodiscard]] XMMATRIX View() const { return m_viewMatrix; }
+    [[nodiscard]] XMMATRIX Projection() const { return m_projectionMatrix; }
+    [[nodiscard]] XMMATRIX ViewProj() const { return m_viewProj; }
+    [[nodiscard]] XMMATRIX World() const { return m_inverseView; }
+    [[nodiscard]] XMFLOAT3 Eye() const;
+    [[nodiscard]] XMFLOAT3 LookAt() const;
+    [[nodiscard]] XMFLOAT3 Up() const;
+    [[nodiscard]] float NearClipPlane() const { return m_nearPlane; }
+    [[nodiscard]] float FarClipPlane() const { return m_farPlane; }
+    [[nodiscard]] float Pitch() const { return m_cameraPitchAngle; }
+    [[nodiscard]] float Yaw() const { return m_cameraYawAngle; }
 
   private:
     XMMATRIX m_viewMatrix;

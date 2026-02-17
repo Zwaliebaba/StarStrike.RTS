@@ -97,11 +97,14 @@ namespace Neuron
         XMVECTOR targetEye = XMLoadFloat3(&desiredEye);
         XMVECTOR targetLookAt = XMLoadFloat3(&desiredLookAt);
 
-        XMStoreFloat3(&m_smoothedEye, XMVectorLerp(curEye, targetEye, t));
-        XMStoreFloat3(&m_smoothedLookAt, XMVectorLerp(curLookAt, targetLookAt, t));
+        XMVECTOR newEye = XMVectorLerp(curEye, targetEye, t);
+        XMVECTOR newLookAt = XMVectorLerp(curLookAt, targetLookAt, t);
+
+        XMStoreFloat3(&m_smoothedEye, newEye);
+        XMStoreFloat3(&m_smoothedLookAt, newLookAt);
 
         XMFLOAT3 up = {0.f, 1.f, 0.f};
-        m_camera.SetViewParams(XMLoadFloat3(&m_smoothedEye), XMLoadFloat3(&m_smoothedLookAt), XMLoadFloat3(&up));
+        m_camera.SetViewParams(newEye, newLookAt, XMLoadFloat3(&up));
       }
     }
 
@@ -200,9 +203,7 @@ namespace Neuron
     float elapsedSec = Timer::Core::GetElapsedSeconds();
     float deltaMs = elapsedSec * 1000.0f;
     int fps = (elapsedSec > 0.0f) ? static_cast<int>(1.0f / elapsedSec) : 0;
-    char fpsText[64];
-    sprintf_s(fpsText, "%.2f ms (%d fps)", deltaMs, fps);
-    m_debugWindow->TextLine(fpsText);
+    m_debugWindow->TextLine(std::format("{:.2f} ms ({} fps)", deltaMs, fps));
     m_debugWindow->EndWindow();
     m_canvas.End();
   }

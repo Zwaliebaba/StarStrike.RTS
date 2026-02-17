@@ -30,14 +30,25 @@ namespace Neuron
     void CreateDefaultMesh();
     MeshData CreateUploadedMesh(const VertexPositionColor* _vertices, uint32_t _count);
 
-    uint32_t MeshKey(SpaceObjectType _type, uint8_t _subclass) const
+    static uint32_t MeshKey(SpaceObjectType _type, uint8_t _subclass)
     {
       return (static_cast<uint32_t>(_type) << 8) | _subclass;
     }
 
+    [[nodiscard]] uint32_t ResolveMeshKey(SpaceObjectType _type, uint8_t _subclass) const;
+
     XMFLOAT4 GetObjectColor(SpaceObjectType _type, uint8_t _subclass, bool _isLocal) const;
 
     std::unordered_map<uint32_t, MeshData> m_meshes;
+
+    // Per-frame draw batches sorted by mesh key to minimize VB rebinding
+    struct DrawItem
+    {
+      uint32_t  meshKey;
+      XMFLOAT4X4 wvpTransposed;
+    };
+    std::vector<DrawItem> m_drawList;
+
     RootSignature m_rootSig;
     GraphicsPSO m_pso;
 

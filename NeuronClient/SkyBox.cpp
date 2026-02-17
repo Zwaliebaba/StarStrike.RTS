@@ -121,6 +121,9 @@ namespace Neuron
     Graphics::Core::WaitForGpu();
     Graphics::Core::ResetCommandAllocatorAndCommandlist();
 
+    // Upload buffer no longer needed after GPU copy is confirmed complete
+    m_uploadBuffer = nullptr;
+
     m_vbView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
     m_vbView.SizeInBytes = bufferSize;
     m_vbView.StrideInBytes = sizeof(VertexPosition);

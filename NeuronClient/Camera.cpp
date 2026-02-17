@@ -56,9 +56,11 @@ void Camera::SetProjParams(_In_ float fieldOfView, _In_ float aspectRatio, _In_ 
   m_viewProj = XMMatrixMultiply(m_viewMatrix, m_projectionMatrix);
 }
 
-XMFLOAT3 Camera::Eye() { return m_eye; }
+XMFLOAT3 Camera::Eye() const { return m_eye; }
 
-XMFLOAT3 Camera::LookAt() { return m_lookAt; }
+XMFLOAT3 Camera::LookAt() const { return m_lookAt; }
+
+XMFLOAT3 Camera::Up() const { return m_up; }
 
 void Camera::RotateYawPitch(float deltaYaw, float deltaPitch)
 {
