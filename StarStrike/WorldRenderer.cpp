@@ -234,8 +234,8 @@ namespace Neuron
     return {1.0f, 1.0f, 1.0f, 1.0f};
   }
 
-  void WorldRenderer::Render(const std::unordered_map<ObjectId, ObjectState>& _objects,
-                              [[maybe_unused]] ObjectId _localPlayerId, const XMMATRIX& _viewProj)
+  void XM_CALLCONV WorldRenderer::Render(const std::unordered_map<ObjectId, ObjectState>& _objects,
+                              [[maybe_unused]] ObjectId _localPlayerId, FXMMATRIX _viewProj)
   {
     auto* cmdList = Graphics::Core::GetCommandList();
 

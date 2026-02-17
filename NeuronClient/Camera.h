@@ -12,11 +12,11 @@ class Camera
     Camera(const Camera&) = delete;
     void operator=(const Camera&) = delete;
 
-    void SetViewParams(_In_ XMFLOAT3 eye, _In_ XMFLOAT3 lookAt, _In_ XMFLOAT3 up);
+    void XM_CALLCONV SetViewParams(FXMVECTOR _eye, FXMVECTOR _lookAt, FXMVECTOR _up);
     void SetProjParams(_In_ float fieldOfView, _In_ float aspectRatio, _In_ float nearPlane, _In_ float farPlane);
 
-    void LookDirection(_In_ XMFLOAT3 lookDirection);
-    void Eye(_In_ XMFLOAT3 position);
+    void XM_CALLCONV LookDirection(FXMVECTOR _lookDirection);
+    void XM_CALLCONV Eye(FXMVECTOR _position);
     void RotateYawPitch(float deltaYaw, float deltaPitch);
 
     XMMATRIX View() { return m_viewMatrix; }

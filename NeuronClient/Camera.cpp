@@ -4,32 +4,29 @@
 Camera::Camera()
 {
   // Setup the view matrix.
-  SetViewParams(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+  SetViewParams(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f), XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
   // Setup the projection matrix.
   SetProjParams(XM_PI / 4, 1.0f, 1.0f, 1000.0f);
 }
 
-void Camera::LookDirection(_In_ XMFLOAT3 lookDirection)
+void XM_CALLCONV Camera::LookDirection(FXMVECTOR _lookDirection)
 {
-  XMFLOAT3 lookAt;
-  lookAt.x = m_eye.x + lookDirection.x;
-  lookAt.y = m_eye.y + lookDirection.y;
-  lookAt.z = m_eye.z + lookDirection.z;
+  XMVECTOR lookAt = XMVectorAdd(XMLoadFloat3(&m_eye), _lookDirection);
 
-  SetViewParams(m_eye, lookAt, m_up);
+  SetViewParams(XMLoadFloat3(&m_eye), lookAt, XMLoadFloat3(&m_up));
 }
 
-void Camera::Eye(_In_ XMFLOAT3 eye) { SetViewParams(eye, m_lookAt, m_up); }
+void XM_CALLCONV Camera::Eye(FXMVECTOR _position) { SetViewParams(_position, XMLoadFloat3(&m_lookAt), XMLoadFloat3(&m_up)); }
 
-void Camera::SetViewParams(_In_ XMFLOAT3 eye, _In_ XMFLOAT3 lookAt, _In_ XMFLOAT3 up)
+void XM_CALLCONV Camera::SetViewParams(FXMVECTOR _eye, FXMVECTOR _lookAt, FXMVECTOR _up)
 {
-  m_eye = eye;
-  m_lookAt = lookAt;
-  m_up = up;
+  XMStoreFloat3(&m_eye, _eye);
+  XMStoreFloat3(&m_lookAt, _lookAt);
+  XMStoreFloat3(&m_up, _up);
 
   // Calculate the view matrix.
-  m_viewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&m_eye), XMLoadFloat3(&m_lookAt), XMLoadFloat3(&m_up));
+  m_viewMatrix = XMMatrixLookAtLH(_eye, _lookAt, _up);
 
   XMVECTOR det;
   XMMATRIX inverseView = XMMatrixInverse(&det, m_viewMatrix);
@@ -86,5 +83,5 @@ void Camera::RotateYawPitch(float deltaYaw, float deltaPitch)
   newLookAt.y = m_eye.y + lookDir.y;
   newLookAt.z = m_eye.z + lookDir.z;
 
-  SetViewParams(m_eye, newLookAt, m_up);
+  SetViewParams(XMLoadFloat3(&m_eye), XMLoadFloat3(&newLookAt), XMLoadFloat3(&m_up));
 }

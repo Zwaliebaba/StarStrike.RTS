@@ -9,24 +9,24 @@ using namespace DirectX;
 namespace Neuron::Math
 {
   [[nodiscard]] inline XMVECTOR XM_CALLCONV Set(float _x, float _y, float _z) { return XMVectorSet(_x, _y, _z, 0.0f); }
-  [[nodiscard]] inline XMVECTOR XM_CALLCONV Normalize(const XMVECTOR _v) { return XMVector3Normalize(_v); }
-  [[nodiscard]] inline XMVECTOR XM_CALLCONV Cross(const XMVECTOR _v1, const XMVECTOR _v2) { return XMVector3Cross(_v1, _v2); }
-  [[nodiscard]] inline XMVECTOR XM_CALLCONV Dot(const XMVECTOR _v1, const XMVECTOR _v2) { return XMVector3Dot(_v1, _v2); }
-  [[nodiscard]] inline float XM_CALLCONV Dotf(const XMVECTOR _v1, const XMVECTOR _v2) { return XMVectorGetX(XMVector3Dot(_v1, _v2)); }
+  [[nodiscard]] inline XMVECTOR XM_CALLCONV Normalize(FXMVECTOR _v) { return XMVector3Normalize(_v); }
+  [[nodiscard]] inline XMVECTOR XM_CALLCONV Cross(FXMVECTOR _v1, FXMVECTOR _v2) { return XMVector3Cross(_v1, _v2); }
+  [[nodiscard]] inline XMVECTOR XM_CALLCONV Dot(FXMVECTOR _v1, FXMVECTOR _v2) { return XMVector3Dot(_v1, _v2); }
+  [[nodiscard]] inline float XM_CALLCONV Dotf(FXMVECTOR _v1, FXMVECTOR _v2) { return XMVectorGetX(XMVector3Dot(_v1, _v2)); }
 
-  [[nodiscard]] inline float XM_CALLCONV Length(const XMVECTOR _v) { return XMVectorGetX(XMVector3Length(_v)); }
-  [[nodiscard]] inline float XM_CALLCONV LengthSquare(const XMVECTOR _v) { return XMVectorGetX(XMVector3LengthSq(_v)); }
+  [[nodiscard]] inline float XM_CALLCONV Length(FXMVECTOR _v) { return XMVectorGetX(XMVector3Length(_v)); }
+  [[nodiscard]] inline float XM_CALLCONV LengthSquare(FXMVECTOR _v) { return XMVectorGetX(XMVector3LengthSq(_v)); }
 
-  [[nodiscard]] inline XMVECTOR XM_CALLCONV SetLength(const XMVECTOR _v1, float _length)
+  [[nodiscard]] inline XMVECTOR XM_CALLCONV SetLength(FXMVECTOR _v1, float _length)
   {
     return XMVectorScale(XMVector3Normalize(_v1), _length);
   }
 
-  [[nodiscard]] inline float XM_CALLCONV GetX(const XMVECTOR _v) { return XMVectorGetX(_v); }
-  [[nodiscard]] inline float XM_CALLCONV GetY(const XMVECTOR _v) { return XMVectorGetY(_v); }
-  [[nodiscard]] inline float XM_CALLCONV GetZ(const XMVECTOR _v) { return XMVectorGetZ(_v); }
+  [[nodiscard]] inline float XM_CALLCONV GetX(FXMVECTOR _v) { return XMVectorGetX(_v); }
+  [[nodiscard]] inline float XM_CALLCONV GetY(FXMVECTOR _v) { return XMVectorGetY(_v); }
+  [[nodiscard]] inline float XM_CALLCONV GetZ(FXMVECTOR _v) { return XMVectorGetZ(_v); }
 
-  [[nodiscard]] inline XMVECTOR XM_CALLCONV RotateAround(const XMVECTOR _v1, const XMVECTOR _v2)
+  [[nodiscard]] inline XMVECTOR XM_CALLCONV RotateAround(FXMVECTOR _v1, FXMVECTOR _v2)
   {
     float angle = Length(_v2);
     if (angle < 1e-8)
@@ -35,32 +35,32 @@ namespace Neuron::Math
     return XMVector3Transform(_v1, XMMatrixRotationAxis(_v2, angle));
   }
 
-  [[nodiscard]] inline XMVECTOR XM_CALLCONV RotateAroundX(const XMVECTOR _v, float _angle)
+  [[nodiscard]] inline XMVECTOR XM_CALLCONV RotateAroundX(FXMVECTOR _v, float _angle)
   {
     return XMVector3Transform(_v, XMMatrixRotationX(_angle));
   }
 
-  [[nodiscard]] inline XMVECTOR XM_CALLCONV RotateAroundY(const XMVECTOR _v, float _angle)
+  [[nodiscard]] inline XMVECTOR XM_CALLCONV RotateAroundY(FXMVECTOR _v, float _angle)
   {
     return XMVector3Transform(_v, XMMatrixRotationY(_angle));
   }
 
-  [[nodiscard]] inline XMVECTOR XM_CALLCONV RotateAroundZ(const XMVECTOR _v, float _angle)
+  [[nodiscard]] inline XMVECTOR XM_CALLCONV RotateAroundZ(FXMVECTOR _v, float _angle)
   {
     return XMVector3Transform(_v, XMMatrixRotationZ(_angle));
   }
 
-  [[nodiscard]] inline XMMATRIX XM_CALLCONV CreateRotationMatrix(XMVECTOR _axis, float _angle)
+  [[nodiscard]] inline XMMATRIX XM_CALLCONV CreateRotationMatrix(FXMVECTOR _axis, float _angle)
   {
     return XMMatrixRotationAxis(_axis, _angle);
   }
 
-  inline bool XM_CALLCONV operator==(const XMVECTOR _v1, const XMVECTORF32 _v2)
+  inline bool XM_CALLCONV operator==(FXMVECTOR _v1, const XMVECTORF32 _v2)
   {
     return XMVector4EqualInt(XMVectorEqual(_v1, _v2), XMVectorTrueInt());
   }
 
-  [[nodiscard]] inline XMMATRIX XM_CALLCONV Invert(const XMMATRIX _m) noexcept { return XMMatrixInverse(nullptr, _m); }
+  [[nodiscard]] inline XMMATRIX XM_CALLCONV Invert(FXMMATRIX _m) noexcept { return XMMatrixInverse(nullptr, _m); }
 
   namespace Vector3
   {

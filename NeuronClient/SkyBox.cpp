@@ -126,7 +126,7 @@ namespace Neuron
     m_vbView.StrideInBytes = sizeof(VertexPosition);
   }
 
-  void SkyBox::Render(const XMMATRIX& _view, const XMMATRIX& _projection)
+  void XM_CALLCONV SkyBox::Render(FXMMATRIX _view, CXMMATRIX _projection)
   {
     if (!m_texture || !m_texture->IsValid())
       return;

@@ -25,7 +25,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioCore.cpp" />
+    <ClCompile Include="BitmapFont.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="CanvasWindow.cpp" />
     <ClCompile Include="ClientNet.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
@@ -48,7 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioCore.h" />
+    <ClInclude Include="BitmapFont.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Canvas.h" />
+    <ClInclude Include="GuiWindow.h" />
     <ClInclude Include="ClientNet.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="d3dx12.h" />
@@ -84,6 +90,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shaders\CanvasPS.hlsl">
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)CompiledShaders\%(Filename).h</HeaderFileOutput>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/Qembed_debug %(AdditionalOptions)</AdditionalOptions>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.7</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shaders\CanvasVS.hlsl">
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ObjectFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)CompiledShaders\%(Filename).h</HeaderFileOutput>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/Qembed_debug %(AdditionalOptions)</AdditionalOptions>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.7</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shaders\SkyBoxPS.hlsl">
       <FileType>Document</FileType>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_p%(Filename)</VariableName>

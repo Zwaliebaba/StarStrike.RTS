@@ -12,7 +12,7 @@ namespace Neuron
   public:
     void Startup(const std::wstring& _texturePath);
     void Shutdown();
-    void Render(const XMMATRIX& _view, const XMMATRIX& _projection);
+    void XM_CALLCONV Render(FXMMATRIX _view, CXMMATRIX _projection);
 
   private:
     void CreateCubeMesh();

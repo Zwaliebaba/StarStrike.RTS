@@ -64,6 +64,14 @@ ClientEngine::Shutdown();
 ### Legacy Code Warning
 Files like `elite.h`, `space.h`, `trade.h` contain ported C-style code. **Always use modern C++ patterns for new code** - do not match legacy style.
 
+### DirectXMath Calling Convention
+Functions that accept `XMVECTOR` parameters must use the `XM_CALLCONV` calling convention to ensure correct register passing across architectures:
+```cpp
+void XM_CALLCONV SetPosition(FXMVECTOR _position);
+XMVECTOR XM_CALLCONV ComputeDirection(FXMVECTOR _from, FXMVECTOR _to);
+```
+Use the appropriate parameter aliases (`FXMVECTOR`, `GXMVECTOR`, `HXMVECTOR`, `CXMVECTOR`) based on parameter position per DirectXMath rules. Store persistent data as `XMFLOAT3`/`XMFLOAT4` members and load/store via `XMLoadFloat3`/`XMStoreFloat3` at the function boundary.
+
 ### Modern C++
 - C++20 (`std::format`, `std::ranges`, `[[nodiscard]]`)
 - DirectXMath types (`XMVECTOR`, `XMMATRIX`, `XMFLOAT3`, `XMFLOAT4`)

@@ -1,14 +1,14 @@
 #include "pch.h"
-#include "CanvasWindow.h"
+#include "GuiWindow.h"
 
 namespace Neuron
 {
-  CanvasWindow::CanvasWindow(std::string _title, float _x, float _y, float _w, float _h)
+  GuiWindow::GuiWindow(std::string _title, float _x, float _y, float _w, float _h)
     : m_title(std::move(_title)), m_x(_x), m_y(_y), m_width(_w), m_height(_h)
   {
   }
 
-  void CanvasWindow::BeginWindow(Canvas& _canvas, BitmapFont& _font)
+  void GuiWindow::BeginWindow(Canvas& _canvas, BitmapFont& _font)
   {
     m_canvas = &_canvas;
     m_font = &_font;
@@ -37,7 +37,7 @@ namespace Neuron
     m_cursorY = m_y + titleBarHeight + PADDING_Y;
   }
 
-  void CanvasWindow::LabelRow(const std::string& _label, const std::string& _value)
+  void GuiWindow::LabelRow(const std::string& _label, const std::string& _value)
   {
     if (!m_visible || !m_canvas || !m_font) return;
 
@@ -55,7 +55,7 @@ namespace Neuron
     m_cursorY += rowHeight;
   }
 
-  void CanvasWindow::DropdownRow(const std::string& _label, const std::string& _currentValue)
+  void GuiWindow::DropdownRow(const std::string& _label, const std::string& _currentValue)
   {
     if (!m_visible || !m_canvas || !m_font) return;
 
@@ -73,7 +73,7 @@ namespace Neuron
     m_cursorY += rowHeight;
   }
 
-  void CanvasWindow::Separator()
+  void GuiWindow::Separator()
   {
     if (!m_visible || !m_canvas) return;
 
@@ -83,7 +83,7 @@ namespace Neuron
     m_cursorY += 1.0f + PADDING_Y * 0.5f;
   }
 
-  void CanvasWindow::TextLine(const std::string& _text, const XMFLOAT4& _color)
+  void GuiWindow::TextLine(const std::string& _text, const XMFLOAT4& _color)
   {
     if (!m_visible || !m_canvas || !m_font) return;
 
@@ -93,7 +93,7 @@ namespace Neuron
     m_cursorY += rowHeight;
   }
 
-  void CanvasWindow::ProgressBar(float _fraction, const XMFLOAT4& _fillColor)
+  void GuiWindow::ProgressBar(float _fraction, const XMFLOAT4& _fillColor)
   {
     if (!m_visible || !m_canvas) return;
 
@@ -112,7 +112,7 @@ namespace Neuron
     m_cursorY += barH + PADDING_Y;
   }
 
-  void CanvasWindow::GraphLine(const std::vector<float>& _values, float _maxValue, const XMFLOAT4& _color)
+  void GuiWindow::GraphLine(const std::vector<float>& _values, float _maxValue, const XMFLOAT4& _color)
   {
     if (!m_visible || !m_canvas || _values.empty() || _maxValue <= 0.0f) return;
 
@@ -137,13 +137,13 @@ namespace Neuron
     m_cursorY += graphH + PADDING_Y;
   }
 
-  void CanvasWindow::EndWindow()
+  void GuiWindow::EndWindow()
   {
     m_canvas = nullptr;
     m_font = nullptr;
   }
 
-  bool CanvasWindow::HandleMouseDown(float _mx, float _my)
+  bool GuiWindow::HandleMouseDown(float _mx, float _my)
   {
     if (!m_visible || !m_draggable) return false;
 
@@ -159,7 +159,7 @@ namespace Neuron
     return false;
   }
 
-  void CanvasWindow::HandleMouseMove(float _mx, float _my)
+  void GuiWindow::HandleMouseMove(float _mx, float _my)
   {
     if (m_dragging)
     {
@@ -168,7 +168,7 @@ namespace Neuron
     }
   }
 
-  void CanvasWindow::HandleMouseUp()
+  void GuiWindow::HandleMouseUp()
   {
     m_dragging = false;
   }

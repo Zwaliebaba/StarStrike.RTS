@@ -2,7 +2,7 @@
 
 #include "Camera.h"
 #include "Canvas.h"
-#include "CanvasWindow.h"
+#include "GuiWindow.h"
 #include "ClientWorld.h"
 #include "WorldRenderer.h"
 
@@ -34,6 +34,6 @@ namespace Neuron
     Canvas      m_canvas;
     BitmapFont  m_editorFont;
     BitmapFont  m_monoFont;
-    std::unique_ptr<CanvasWindow> m_debugWindow;
+    std::unique_ptr<GuiWindow> m_debugWindow;
   };
 }

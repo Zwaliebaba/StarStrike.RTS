@@ -4,10 +4,10 @@
 
 namespace Neuron
 {
-  class CanvasWindow
+  class GuiWindow
   {
   public:
-    CanvasWindow(std::string _title, float _x, float _y, float _w, float _h);
+    GuiWindow(std::string _title, float _x, float _y, float _w, float _h);
 
     void SetVisible(bool _visible) { m_visible = _visible; }
     void SetDraggable(bool _draggable) { m_draggable = _draggable; }

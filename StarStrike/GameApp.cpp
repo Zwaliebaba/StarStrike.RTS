@@ -14,7 +14,7 @@ namespace Neuron
     m_canvas.Startup();
     m_editorFont.Load(L"Fonts/EditorFont-ENG.dds", 16, 16);
     m_monoFont.Load(L"Fonts/SpeccyFont-ENG.dds", 16, 16);
-    m_debugWindow = std::make_unique<CanvasWindow>("PROFILER", 800, 30, 400, 200);
+    m_debugWindow = std::make_unique<GuiWindow>("PROFILER", 800, 30, 400, 200);
 
     m_rendererReady = true;
 
@@ -51,7 +51,7 @@ namespace Neuron
     XMFLOAT3 eye = {0.f, 300.f, -200.f};
     XMFLOAT3 lookAt = {0.f, 0.f, 50.f};
     XMFLOAT3 up = {0.f, 1.f, 0.f};
-    m_camera.SetViewParams(eye, lookAt, up);
+    m_camera.SetViewParams(XMLoadFloat3(&eye), XMLoadFloat3(&lookAt), XMLoadFloat3(&up));
 
     auto outputSize = ClientEngine::OutputSize();
     float aspect = outputSize.Width / outputSize.Height;
@@ -101,7 +101,7 @@ namespace Neuron
         XMStoreFloat3(&m_smoothedLookAt, XMVectorLerp(curLookAt, targetLookAt, t));
 
         XMFLOAT3 up = {0.f, 1.f, 0.f};
-        m_camera.SetViewParams(m_smoothedEye, m_smoothedLookAt, up);
+        m_camera.SetViewParams(XMLoadFloat3(&m_smoothedEye), XMLoadFloat3(&m_smoothedLookAt), XMLoadFloat3(&up));
       }
     }
 

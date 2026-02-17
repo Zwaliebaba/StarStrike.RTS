@@ -13,8 +13,8 @@ namespace Neuron
   public:
     void Startup();
     void Shutdown();
-    void Render(const std::unordered_map<ObjectId, ObjectState>& _objects,
-                ObjectId _localPlayerId, const XMMATRIX& _viewProj);
+    void XM_CALLCONV Render(const std::unordered_map<ObjectId, ObjectState>& _objects,
+                ObjectId _localPlayerId, FXMMATRIX _viewProj);
 
   private:
     struct MeshData

@@ -42,6 +42,15 @@
     </ClCompile>
     <ClCompile Include="ClientNet.cpp" />
     <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="BitmapFont.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasWindow.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -107,6 +116,15 @@
     </ClInclude>
     <ClInclude Include="ClientNet.h" />
     <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="BitmapFont.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiWindow.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Project Files">
@@ -143,6 +161,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\SkyBoxVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\CanvasPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\CanvasVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
