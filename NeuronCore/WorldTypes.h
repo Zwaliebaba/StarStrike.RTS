@@ -1,14 +1,11 @@
 #pragma once
 
-#include <cstdint>
-#include <DirectXMath.h>
-
 namespace Neuron
 {
   using ObjectId = uint32_t;
   constexpr ObjectId INVALID_OBJECT_ID = 0;
 
-  enum class WorldObjectType : uint8_t
+  enum class SpaceObjectType : uint8_t
   {
     Ship,
     Asteroid,
@@ -38,7 +35,7 @@ namespace Neuron
   struct ObjectState
   {
     ObjectId            id        = INVALID_OBJECT_ID;
-    WorldObjectType     type      = WorldObjectType::Ship;
+    SpaceObjectType     type      = SpaceObjectType::Ship;
     uint8_t             subclass  = 0;
     uint16_t            flags     = 0;
     DirectX::XMFLOAT3   position  = {0.f, 0.f, 0.f};

@@ -40,6 +40,7 @@
     <ClCompile Include="ResourceStateTracker.cpp" />
     <ClCompile Include="RootSignature.cpp" />
     <ClCompile Include="SamplerManager.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Strings.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -66,6 +67,7 @@
     <ClInclude Include="ResourceStateTracker.h" />
     <ClInclude Include="RootSignature.h" />
     <ClInclude Include="SamplerManager.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="Strings.h" />
     <ClInclude Include="Texture.h" />
@@ -80,6 +82,10 @@
     <ProjectReference Include="..\NeuronCore\NeuronCore.vcxproj">
       <Project>{d437df12-5193-4fb5-859f-0a728702c521}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\SkyBoxPS.hlsl" />
+    <None Include="Shaders\SkyBoxVS.hlsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

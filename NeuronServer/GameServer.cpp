@@ -8,9 +8,9 @@ namespace Neuron::Server
     sm_world.Startup(WORLD_DEFAULT_SIZE);
 
     // Spawn some static asteroids for visual interest
-    (void)sm_world.SpawnObject(WorldObjectType::Asteroid, 0, {100.f, 0.f, 100.f});
-    (void)sm_world.SpawnObject(WorldObjectType::Asteroid, 0, {-150.f, 0.f, 200.f});
-    (void)sm_world.SpawnObject(WorldObjectType::Asteroid, 0, {300.f, 0.f, -100.f});
+    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, 0, {100.f, 0.f, 100.f});
+    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, 0, {-150.f, 0.f, 200.f});
+    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, 0, {300.f, 0.f, -100.f});
 
     ServerNet::SetConnectHandler(OnClientConnect);
     ServerNet::SetDisconnectHandler(OnClientDisconnect);
@@ -87,7 +87,7 @@ namespace Neuron::Server
 
     // Spawn position offset per client
     float offsetX = static_cast<float>(_clientId) * 30.0f - 50.0f;
-    ObjectId objId = sm_world.SpawnObject(WorldObjectType::Ship, shipClass, {offsetX, 0.f, 0.f}, _clientId);
+    ObjectId objId = sm_world.SpawnObject(SpaceObjectType::Ship, shipClass, {offsetX, 0.f, 0.f}, _clientId);
 
     ServerNet::SetPlayerObjectId(_clientId, objId);
     std::cout << "[Server] Spawned ship (class=" << static_cast<int>(shipClass)

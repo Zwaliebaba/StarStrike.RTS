@@ -9,6 +9,7 @@ namespace Neuron
     SetupIsometricCamera();
 
     m_worldRenderer.Startup();
+    m_skyBox.Startup(L"Textures/starbox_1024.dds");
     m_rendererReady = true;
 
     m_clientWorld.Startup();
@@ -30,6 +31,7 @@ namespace Neuron
     ClientNet::Disconnect();
     ClientNet::Shutdown();
     m_clientWorld.Shutdown();
+    m_skyBox.Shutdown();
     m_worldRenderer.Shutdown();
     m_rendererReady = false;
     DebugTrace("GameApp shutdown\n");
@@ -176,6 +178,9 @@ namespace Neuron
     auto scissor = Graphics::Core::GetScissorRect();
     cmdList->RSSetViewports(1, &viewport);
     cmdList->RSSetScissorRects(1, &scissor);
+
+    // Render skybox first (writes at depth=1.0, all world geometry renders in front)
+    m_skyBox.Render(m_camera.View(), m_camera.Projection());
 
     // Render world objects
     XMMATRIX viewProj = m_camera.ViewProj();

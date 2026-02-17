@@ -18,6 +18,7 @@ using namespace winrt;
 #include "DirectXHelper.h"
 #include "GraphicsCore.h"
 #include "PixProfiler.h"
+#include "SkyBox.h"
 #include "Strings.h"
 #include "Texture.h"
 #include "TextureManager.h"

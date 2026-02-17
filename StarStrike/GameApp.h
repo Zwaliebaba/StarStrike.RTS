@@ -22,6 +22,7 @@ namespace Neuron
     Camera         m_camera;
     ClientWorld    m_clientWorld;
     WorldRenderer  m_worldRenderer;
+    SkyBox         m_skyBox;
     bool           m_connected       = false;
     float          m_heartbeatTimer  = 0.f;
     bool           m_rendererReady   = false;

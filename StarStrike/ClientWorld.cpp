@@ -82,7 +82,7 @@ namespace Neuron
     return seq;
   }
 
-  uint32_t ClientWorld::GetObjectCountByType(WorldObjectType _type) const
+  uint32_t ClientWorld::GetObjectCountByType(SpaceObjectType _type) const
   {
     uint32_t count = 0;
     for (const auto& [id, obj] : m_objects)
@@ -104,7 +104,7 @@ namespace Neuron
 
     auto& state = it->second;
 
-    if (state.type != WorldObjectType::Ship)
+    if (state.type != SpaceObjectType::Ship)
       return;
 
     auto sc = static_cast<ShipClass>(state.subclass);

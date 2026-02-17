@@ -30,12 +30,12 @@ namespace Neuron
     void CreateDefaultMesh();
     MeshData CreateUploadedMesh(const VertexPositionColor* _vertices, uint32_t _count);
 
-    uint32_t MeshKey(WorldObjectType _type, uint8_t _subclass) const
+    uint32_t MeshKey(SpaceObjectType _type, uint8_t _subclass) const
     {
       return (static_cast<uint32_t>(_type) << 8) | _subclass;
     }
 
-    XMFLOAT4 GetObjectColor(WorldObjectType _type, uint8_t _subclass, bool _isLocal) const;
+    XMFLOAT4 GetObjectColor(SpaceObjectType _type, uint8_t _subclass, bool _isLocal) const;
 
     std::unordered_map<uint32_t, MeshData> m_meshes;
     RootSignature m_rootSig;

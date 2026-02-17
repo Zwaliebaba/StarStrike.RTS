@@ -162,7 +162,7 @@ namespace Neuron
       {{0.0f,    0.5f * s,  s * -0.5f}, color},
     };
 
-    uint32_t key = MeshKey(WorldObjectType::Ship, static_cast<uint8_t>(_class));
+    uint32_t key = MeshKey(SpaceObjectType::Ship, static_cast<uint8_t>(_class));
     m_meshes[key] = CreateUploadedMesh(vertices, _countof(vertices));
   }
 
@@ -194,7 +194,7 @@ namespace Neuron
       {bottom, color},{front, color}, {left, dark},
     };
 
-    uint32_t key = MeshKey(WorldObjectType::Asteroid, 0);
+    uint32_t key = MeshKey(SpaceObjectType::Asteroid, 0);
     m_meshes[key] = CreateUploadedMesh(vertices, _countof(vertices));
   }
 
@@ -225,7 +225,7 @@ namespace Neuron
     m_meshes[key] = CreateUploadedMesh(vertices, _countof(vertices));
   }
 
-  XMFLOAT4 WorldRenderer::GetObjectColor([[maybe_unused]] WorldObjectType _type,
+  XMFLOAT4 WorldRenderer::GetObjectColor([[maybe_unused]] SpaceObjectType _type,
                                           [[maybe_unused]] uint8_t _subclass,
                                           bool _isLocal) const
   {

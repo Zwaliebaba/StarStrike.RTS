@@ -170,6 +170,7 @@
     <Image Include="Assets\Logos\Wide310x150Logo.scale-150.png" />
     <Image Include="Assets\Logos\Wide310x150Logo.scale-200.png" />
     <Image Include="Assets\Logos\Wide310x150Logo.scale-400.png" />
+    <Image Include="Assets\Textures\starbox_1024.dds" />
   </ItemGroup>
   <!--
     Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging

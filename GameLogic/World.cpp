@@ -30,11 +30,11 @@ namespace Neuron
     }
   }
 
-  ObjectId World::SpawnObject(WorldObjectType _type, uint8_t _subclass, XMFLOAT3 _position, uint32_t _ownerClientId)
+  ObjectId World::SpawnObject(SpaceObjectType _type, uint8_t _subclass, XMFLOAT3 _position, uint32_t _ownerClientId)
   {
     ObjectId id = m_nextId++;
 
-    WorldObject obj;
+    SpaceObject obj;
     obj.state.id = id;
     obj.state.type = _type;
     obj.state.subclass = _subclass;
@@ -42,7 +42,7 @@ namespace Neuron
     obj.state.flags = static_cast<uint16_t>(ObjectFlags::Active);
     obj.ownerClientId = _ownerClientId;
 
-    if (_type == WorldObjectType::Ship)
+    if (_type == SpaceObjectType::Ship)
     {
       auto sc = static_cast<ShipClass>(_subclass);
       if (static_cast<uint8_t>(sc) < static_cast<uint8_t>(ShipClass::Count))
@@ -59,13 +59,13 @@ namespace Neuron
     m_objects.erase(_id);
   }
 
-  WorldObject* World::GetObject(ObjectId _id)
+  SpaceObject* World::GetObject(ObjectId _id)
   {
     auto it = m_objects.find(_id);
     return it != m_objects.end() ? &it->second : nullptr;
   }
 
-  const WorldObject* World::GetObject(ObjectId _id) const
+  const SpaceObject* World::GetObject(ObjectId _id) const
   {
     auto it = m_objects.find(_id);
     return it != m_objects.end() ? &it->second : nullptr;

@@ -70,7 +70,7 @@ namespace Neuron::Net
   struct SnapshotObjectData
   {
     ObjectId            objectId   = INVALID_OBJECT_ID;
-    WorldObjectType     objectType = WorldObjectType::Ship;
+    SpaceObjectType     objectType = SpaceObjectType::Ship;
     uint8_t             subclass   = 0;
     uint16_t            flags      = 0;
     DirectX::XMFLOAT3   position   = {0.f, 0.f, 0.f};

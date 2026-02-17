@@ -23,7 +23,7 @@ namespace Neuron
     [[nodiscard]] ObjectId GetLocalPlayerId() const noexcept { return m_localPlayerId; }
     void SetLocalPlayerId(ObjectId _id) noexcept { m_localPlayerId = _id; }
 
-    [[nodiscard]] uint32_t GetObjectCountByType(WorldObjectType _type) const;
+    [[nodiscard]] uint32_t GetObjectCountByType(SpaceObjectType _type) const;
     [[nodiscard]] uint32_t GetTotalObjectCount() const noexcept { return static_cast<uint32_t>(m_objects.size()); }
 
   private:

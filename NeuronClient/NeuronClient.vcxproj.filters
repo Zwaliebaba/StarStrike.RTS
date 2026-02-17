@@ -41,6 +41,7 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="ClientNet.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -105,6 +106,7 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="ClientNet.h" />
+    <ClInclude Include="SkyBox.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Project Files">
@@ -135,5 +137,9 @@
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
       <Filter>Project Files</Filter>
     </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\SkyBoxVS.hlsl" />
+    <FxCompile Include="Shaders\SkyBoxPS.hlsl" />
   </ItemGroup>
 </Project>
