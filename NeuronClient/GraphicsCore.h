@@ -33,7 +33,7 @@ namespace Neuron::Graphics
       static void CreateWindowSizeDependentResources();
       static void ReleaseWindowSizeDependentResources();
 
-      static void SetWindow(HWND window, int width, int height) noexcept;
+      static void SetWindow(HWND window, int width, int height);
       static bool WindowSizeChanged(int width, int height);
       static void HandleDeviceLost();
       static void RegisterDeviceNotify(IDeviceNotify* deviceNotify) noexcept { m_deviceNotify = deviceNotify; }

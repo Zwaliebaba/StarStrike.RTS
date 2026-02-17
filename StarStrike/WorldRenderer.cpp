@@ -49,6 +49,8 @@ namespace Neuron
 
   WorldRenderer::MeshData WorldRenderer::CreateUploadedMesh(const VertexPositionColor* _vertices, uint32_t _count)
   {
+    ASSERT(_vertices != nullptr && _count > 0);
+
     MeshData mesh;
     mesh.vertexCount = _count;
 
@@ -76,7 +78,8 @@ namespace Neuron
 
     // Copy
     auto* cmdList = Graphics::Core::GetCommandList();
-    if (!Graphics::Core::IsCommandListOpen())
+    bool wasOpen = Graphics::Core::IsCommandListOpen();
+    if (!wasOpen)
       Graphics::Core::ResetCommandAllocatorAndCommandlist();
 
     auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
@@ -89,7 +92,10 @@ namespace Neuron
 
     Graphics::Core::ExecuteCommandList(true);
     Graphics::Core::WaitForGpu();
-    Graphics::Core::ResetCommandAllocatorAndCommandlist();
+
+    // Only re-open the command list if it was open before we started
+    if (wasOpen)
+      Graphics::Core::ResetCommandAllocatorAndCommandlist();
 
     // Upload buffer no longer needed after GPU copy is confirmed complete
     mesh.uploadBuffer = nullptr;
@@ -223,8 +229,8 @@ namespace Neuron
       {{-s, -s, -s}, color}, {{ s, -s,  s}, color}, {{-s, -s,  s}, color},
     };
 
-    // Use a "fallback" key
-    uint32_t key = 0xFFFF;
+    // Use a "fallback" key that cannot collide with MeshKey (which only uses low 16 bits)
+    uint32_t key = 0xFFFF'FFFFu;
     m_meshes[key] = CreateUploadedMesh(vertices, _countof(vertices));
   }
 
@@ -247,7 +253,7 @@ namespace Neuron
     if (m_meshes.contains(key))
       return key;
 
-    return 0xFFFF; // fallback
+    return 0xFFFF'FFFFu; // fallback
   }
 
   void XM_CALLCONV WorldRenderer::Render(const std::unordered_map<ObjectId, ObjectState>& _objects,
@@ -286,6 +292,7 @@ namespace Neuron
     cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     uint32_t boundKey = UINT32_MAX;
+    uint32_t boundVertexCount = 0;
 
     for (const auto& item : m_drawList)
     {
@@ -294,11 +301,11 @@ namespace Neuron
         boundKey = item.meshKey;
         const auto& mesh = m_meshes.at(boundKey);
         cmdList->IASetVertexBuffers(0, 1, &mesh.vbView);
+        boundVertexCount = mesh.vertexCount;
       }
 
-      const auto& mesh = m_meshes.at(boundKey);
       cmdList->SetGraphicsRoot32BitConstants(0, 16, &item.wvpTransposed, 0);
-      cmdList->DrawInstanced(mesh.vertexCount, 1, 0, 0);
+      cmdList->DrawInstanced(boundVertexCount, 1, 0, 0);
     }
   }
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GraphicsCore.h"
 #include "GraphicsCommon.h"
+#include "TextureManager.h"
 
 using namespace Neuron::Graphics;
 
@@ -35,11 +36,15 @@ void Core::Startup(DXGI_FORMAT backBufferFormat, DXGI_FORMAT depthBufferFormat, 
   DEBUG_ASSERT_TEXT(minFeatureLevel >= D3D_FEATURE_LEVEL_12_0, "invalid minFeatureLevel");
 
   CreateDeviceResources();
+
+  TextureManager::Startup();
 }
 
 void Core::Shutdown()
 {
   WaitForGpu();
+
+  TextureManager::Shutdown();
 
   ReleaseWindowSizeDependentResources();
   ReleaseDeviceResources();
@@ -99,7 +104,7 @@ void Core::CreateDeviceResources()
     if (FAILED(hr) || !allowTearing)
     {
       m_options &= ~ALLOW_TEARING;
-      DebugTrace("WARNING: Variable refresh rate displays not supported");
+      DebugTrace("WARNING: Variable refresh rate displays not supported\n");
     }
   }
 
@@ -133,9 +138,11 @@ void Core::CreateDeviceResources()
 
   // Determine maximum supported feature level for this device
   static constexpr D3D_FEATURE_LEVEL FEATURE_LEVELS[] = {
-    D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0, D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0,
+      D3D_FEATURE_LEVEL_12_2,
+      D3D_FEATURE_LEVEL_12_1,
+      D3D_FEATURE_LEVEL_12_0
   };
-
+  
   D3D12_FEATURE_DATA_FEATURE_LEVELS featLevels = {static_cast<UINT>(std::size(FEATURE_LEVELS)), FEATURE_LEVELS, D3D_FEATURE_LEVEL_11_0};
 
   hr = m_d3dDevice->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featLevels, sizeof(featLevels));
@@ -322,6 +329,7 @@ void Core::CreateWindowSizeDependentResources()
                                                        D3D12_RESOURCE_STATE_DEPTH_WRITE, &depthOptimizedClearValue,
                                                        IID_PPV_ARGS(m_depthStencil.Put())));
 
+    m_depthStencil.SetResourceState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
     m_depthStencil->SetName(L"Depth stencil");
 
     D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
@@ -353,16 +361,18 @@ void Core::ReleaseWindowSizeDependentResources()
   {
     m_commandAllocators[n] = nullptr;
     m_renderTargets[n].Destroy();
+    m_rtvDescriptors[n] = {};
   }
 
   m_depthStencil.Destroy();
+  m_dsvDescriptor = {};
   m_commandQueue = nullptr;
   m_commandList = nullptr;
   sm_gpuResourceStateTracker.Reset();
 }
 
 // This method is called when the Win32 window is created (or re-created).
-void Core::SetWindow(HWND window, int width, int height) noexcept
+void Core::SetWindow(HWND window, int width, int height)
 {
   m_window = window;
   WindowSizeChanged(width, height);
@@ -379,7 +389,8 @@ bool Core::WindowSizeChanged(int width, int height)
     bottom)
   {
     // Handle color space settings for HDR
-    UpdateColorSpace();
+    if (m_swapChain)
+      UpdateColorSpace();
 
     return false;
   }
@@ -401,7 +412,7 @@ void Core::HandleDeviceLost()
 #ifdef _DEBUG
   {
     com_ptr<IDXGIDebug1> dxgiDebug;
-    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebug))))
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_GRAPHICS_PPV_ARGS(dxgiDebug))))
       dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL,
                                    static_cast<DXGI_DEBUG_RLO_FLAGS>(DXGI_DEBUG_RLO_SUMMARY | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
   }
@@ -632,8 +643,11 @@ void Core::UpdateColorSpace()
 
   m_colorSpace = colorSpace;
 
-  UINT colorSpaceSupport = 0;
-  if (SUCCEEDED(m_swapChain->CheckColorSpaceSupport(colorSpace, &colorSpaceSupport)) && (colorSpaceSupport &
-    DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
-    check_hresult(m_swapChain->SetColorSpace1(colorSpace));
+  if (m_swapChain)
+  {
+    UINT colorSpaceSupport = 0;
+    if (SUCCEEDED(m_swapChain->CheckColorSpaceSupport(colorSpace, &colorSpaceSupport)) && (colorSpaceSupport &
+      DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
+      check_hresult(m_swapChain->SetColorSpace1(colorSpace));
+  }
 }
