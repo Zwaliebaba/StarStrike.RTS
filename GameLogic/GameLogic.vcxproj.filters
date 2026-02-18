@@ -2,11 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="ShipDefs.h" />
-    <ClInclude Include="WorldObject.h" />
     <ClInclude Include="World.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="SpaceObject.h" />
+    <ClInclude Include="AsteroidDefs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WorldObject.cpp" />
     <ClCompile Include="World.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="SpaceObject.cpp" />
   </ItemGroup>
 </Project>

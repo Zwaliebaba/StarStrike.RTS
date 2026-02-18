@@ -51,6 +51,7 @@
     <ClCompile Include="CanvasWindow.cpp">
       <Filter>Canvas</Filter>
     </ClCompile>
+    <ClCompile Include="CmoMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -125,6 +126,7 @@
     <ClInclude Include="GuiWindow.h">
       <Filter>Canvas</Filter>
     </ClInclude>
+    <ClInclude Include="CmoMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Project Files">

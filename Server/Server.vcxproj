@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -76,7 +76,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard><AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic;$(SolutionDir)NeuronServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic;$(SolutionDir)NeuronServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -91,7 +92,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard><AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic;$(SolutionDir)NeuronServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic;$(SolutionDir)NeuronServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,7 +106,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard><AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic;$(SolutionDir)NeuronServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic;$(SolutionDir)NeuronServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,7 +124,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard><AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic;$(SolutionDir)NeuronServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic;$(SolutionDir)NeuronServer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,12 +134,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NeuronCore\NeuronCore.vcxproj"><Project>{d437df12-5193-4fb5-859f-0a728702c521}</Project></ProjectReference>
-    <ProjectReference Include="..\GameLogic\GameLogic.vcxproj"><Project>{87345e76-b181-46fd-9c8d-8be631df29c0}</Project></ProjectReference>
-    <ProjectReference Include="..\NeuronServer\NeuronServer.vcxproj"><Project>{7e33e5ee-e1e9-45c1-94ed-c8c294c86031}</Project></ProjectReference>
+    <ProjectReference Include="..\NeuronCore\NeuronCore.vcxproj">
+      <Project>{d437df12-5193-4fb5-859f-0a728702c521}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GameLogic\GameLogic.vcxproj">
+      <Project>{87345e76-b181-46fd-9c8d-8be631df29c0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\NeuronServer\NeuronServer.vcxproj">
+      <Project>{7e33e5ee-e1e9-45c1-94ed-c8c294c86031}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="deploy.cmd" />
+    <None Include="docker-compose.yml" />
+    <None Include="Dockerfile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -120,3 +120,33 @@ struct VertexPositionTextureColor
 
 static_assert(sizeof(VertexPositionTextureColor) == 36, "Vertex struct/layout mismatch");
 
+struct VertexPositionNormalTexture
+{
+  VertexPositionNormalTexture() = default;
+
+  VertexPositionNormalTexture(const VertexPositionNormalTexture&) = default;
+  VertexPositionNormalTexture& operator=(const VertexPositionNormalTexture&) = default;
+
+  VertexPositionNormalTexture(VertexPositionNormalTexture&&) = default;
+  VertexPositionNormalTexture& operator=(VertexPositionNormalTexture&&) = default;
+
+  VertexPositionNormalTexture(const XMFLOAT3& iposition, const XMFLOAT3& inormal, const XMFLOAT2& itexcoord) noexcept
+    : m_position(iposition), m_normal(inormal), m_texcoord(itexcoord) {}
+
+  XMFLOAT3 m_position;
+  XMFLOAT3 m_normal;
+  XMFLOAT2 m_texcoord;
+
+  static constexpr unsigned int INPUT_ELEMENT_COUNT = 3;
+
+  static constexpr D3D12_INPUT_ELEMENT_DESC INPUT_ELEMENTS[INPUT_ELEMENT_COUNT]{
+    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+    {"NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+  };
+
+  static constexpr D3D12_INPUT_LAYOUT_DESC INPUT_LAYOUT{INPUT_ELEMENTS, INPUT_ELEMENT_COUNT};
+};
+
+static_assert(sizeof(VertexPositionNormalTexture) == 32, "Vertex struct/layout mismatch");
+

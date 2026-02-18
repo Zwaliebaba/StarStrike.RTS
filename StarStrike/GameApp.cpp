@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameApp.h"
 #include "ClientNet.h"
+#include "WndProcManager.h"
 
 namespace Neuron
 {
@@ -15,10 +16,13 @@ namespace Neuron
     m_editorFont.Load(L"Fonts/EditorFont-ENG.dds", 16, 16);
     m_monoFont.Load(L"Fonts/SpeccyFont-ENG.dds", 16, 16);
     m_debugWindow = std::make_unique<GuiWindow>("PROFILER", 800, 30, 400, 200);
+    m_objectsWindow = std::make_unique<GuiWindow>("OBJECTS", 800, 240, 400, 200);
 
     m_rendererReady = true;
 
     m_clientWorld.Startup();
+
+    WndProcManager::AddWndProc(WndProc);
 
     // Start networking and connect to server
     ClientNet::Startup();
@@ -36,8 +40,10 @@ namespace Neuron
   {
     ClientNet::Disconnect();
     ClientNet::Shutdown();
+    WndProcManager::RemoveWndProc(WndProc);
     m_clientWorld.Shutdown();
     m_debugWindow.reset();
+    m_objectsWindow.reset();
     m_canvas.Shutdown();
     m_skyBox.Shutdown();
     m_worldRenderer.Shutdown();
@@ -45,11 +51,22 @@ namespace Neuron
     DebugTrace("GameApp shutdown\n");
   }
 
+  LRESULT CALLBACK GameApp::WndProc(HWND _hWnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
+  {
+    if (_message == WM_MOUSEWHEEL)
+    {
+      int delta = GET_WHEEL_DELTA_WPARAM(_wParam);
+      sm_scrollAccum.fetch_add(delta, std::memory_order_relaxed);
+      return 0;
+    }
+    return DefWindowProc(_hWnd, _message, _wParam, _lParam);
+  }
+
   void GameApp::SetupIsometricCamera()
   {
     // Fixed isometric-style camera looking down at the world
-    XMFLOAT3 eye = {0.f, 300.f, -200.f};
-    XMFLOAT3 lookAt = {0.f, 0.f, 50.f};
+    XMFLOAT3 eye = {0.f, 80.f, -50.f};
+    XMFLOAT3 lookAt = {0.f, 0.f, 15.f};
     XMFLOAT3 up = {0.f, 1.f, 0.f};
     m_camera.SetViewParams(XMLoadFloat3(&eye), XMLoadFloat3(&lookAt), XMLoadFloat3(&up));
 
@@ -86,8 +103,8 @@ namespace Neuron
       if (it != objects.end())
       {
         const auto &pos = it->second.position;
-        XMFLOAT3 desiredEye = {pos.x, 300.f, pos.z - 200.f};
-        XMFLOAT3 desiredLookAt = {pos.x, 0.f, pos.z + 50.f};
+        XMFLOAT3 desiredEye = {pos.x, 80.f * m_zoomDistance, pos.z - 50.f * m_zoomDistance};
+        XMFLOAT3 desiredLookAt = {pos.x, 0.f, pos.z + 15.f};
 
         constexpr float CAM_SMOOTH = 12.0f;
         float t = 1.0f - expf(-CAM_SMOOTH * _deltaT);
@@ -119,6 +136,17 @@ namespace Neuron
 
   void GameApp::HandleInput()
   {
+    // Mouse wheel zoom
+    int scroll = sm_scrollAccum.exchange(0, std::memory_order_relaxed);
+    if (scroll != 0)
+    {
+      constexpr float ZOOM_SPEED = 0.1f;
+      constexpr float ZOOM_MIN = 0.2f;
+      constexpr float ZOOM_MAX = 3.0f;
+      m_zoomDistance -= static_cast<float>(scroll) / WHEEL_DELTA * ZOOM_SPEED;
+      m_zoomDistance = std::clamp(m_zoomDistance, ZOOM_MIN, ZOOM_MAX);
+    }
+
     if (!m_connected) return;
 
     // Right-click to move
@@ -205,6 +233,28 @@ namespace Neuron
     int fps = (elapsedSec > 0.0f) ? static_cast<int>(1.0f / elapsedSec) : 0;
     m_debugWindow->TextLine(std::format("{:.2f} ms ({} fps)", deltaMs, fps));
     m_debugWindow->EndWindow();
+
+    static constexpr const char* OBJECT_TYPE_NAMES[] = {
+      "Ship", "Asteroid", "Crate", "JumpGate", "Projectile", "Station", "Turret"
+    };
+    static_assert(std::size(OBJECT_TYPE_NAMES) == static_cast<size_t>(SpaceObjectType::Count));
+
+    const auto& stats = m_worldRenderer.GetRenderStats();
+    m_objectsWindow->BeginWindow(m_canvas, m_monoFont);
+    uint32_t totalObjects = 0;
+    for (size_t i = 0; i < static_cast<size_t>(SpaceObjectType::Count); i++)
+    {
+      if (stats.counts[i] > 0)
+      {
+        m_objectsWindow->LabelRow(OBJECT_TYPE_NAMES[i], std::to_string(stats.counts[i]));
+        totalObjects += stats.counts[i];
+      }
+    }
+    m_objectsWindow->Separator();
+    m_objectsWindow->LabelRow("Total", std::to_string(totalObjects));
+    m_objectsWindow->LabelRow("Draw calls", std::to_string(stats.totalDrawCalls));
+    m_objectsWindow->EndWindow();
+
     m_canvas.End();
   }
 }

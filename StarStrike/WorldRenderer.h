@@ -1,8 +1,11 @@
 #pragma once
 
 #include "WorldTypes.h"
+#include "ShipDefs.h"
+#include "AsteroidDefs.h"
 #include "RootSignature.h"
 #include "PipelineState.h"
+#include "CmoMesh.h"
 #include "VertexTypes.h"
 #include <unordered_map>
 
@@ -11,24 +14,22 @@ namespace Neuron
   class WorldRenderer
   {
   public:
+    struct RenderStats
+    {
+      uint32_t counts[static_cast<size_t>(SpaceObjectType::Count)] = {};
+      uint32_t totalDrawCalls = 0;
+    };
+
     void Startup();
     void Shutdown();
     void XM_CALLCONV Render(const std::unordered_map<ObjectId, ObjectState>& _objects,
                 ObjectId _localPlayerId, FXMMATRIX _viewProj);
 
-  private:
-    struct MeshData
-    {
-      com_ptr<ID3D12Resource> vertexBuffer;
-      com_ptr<ID3D12Resource> uploadBuffer;
-      D3D12_VERTEX_BUFFER_VIEW vbView = {};
-      uint32_t vertexCount = 0;
-    };
+    [[nodiscard]] const RenderStats& GetRenderStats() const noexcept { return m_renderStats; }
 
-    void CreateShipMesh(ShipClass _class);
-    void CreateAsteroidMesh();
-    void CreateDefaultMesh();
-    MeshData CreateUploadedMesh(const VertexPositionColor* _vertices, uint32_t _count);
+  private:
+    void LoadShipMeshes();
+    void LoadAsteroidMeshes();
 
     static uint32_t MeshKey(SpaceObjectType _type, uint8_t _subclass)
     {
@@ -39,22 +40,29 @@ namespace Neuron
 
     XMFLOAT4 GetObjectColor(SpaceObjectType _type, uint8_t _subclass, bool _isLocal) const;
 
-    std::unordered_map<uint32_t, MeshData> m_meshes;
+    // CMO meshes keyed by MeshKey
+    std::unordered_map<uint32_t, Graphics::CmoMesh> m_cmoMeshes;
 
     // Per-frame draw batches sorted by mesh key to minimize VB rebinding
     struct DrawItem
     {
-      uint32_t  meshKey;
+      uint32_t   meshKey;
       XMFLOAT4X4 wvpTransposed;
+      XMFLOAT4X4 worldTransposed;
+      XMFLOAT4   color;
     };
     std::vector<DrawItem> m_drawList;
 
     RootSignature m_rootSig;
     GraphicsPSO m_pso;
 
-    __declspec(align(256)) struct WorldConstants
+    __declspec(align(256)) struct CmoConstants
     {
       XMFLOAT4X4 WorldViewProj;
+      XMFLOAT4X4 World;
+      XMFLOAT4   ObjectColor;
     };
+
+    RenderStats m_renderStats = {};
   };
 }

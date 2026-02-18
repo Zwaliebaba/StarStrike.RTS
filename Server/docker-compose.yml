@@ -1,0 +1,11 @@
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: Server/Dockerfile
+      args:
+        CONFIG: ${CONFIG:-Release}
+    ports:
+      - "27015:27015/udp"
+    restart: unless-stopped
+    isolation: process

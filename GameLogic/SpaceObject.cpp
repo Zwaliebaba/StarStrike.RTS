@@ -11,6 +11,8 @@ namespace Neuron
       UpdateShip(_deltaT);
       break;
     case SpaceObjectType::Asteroid:
+      UpdateAsteroid(_deltaT);
+      break;
     case SpaceObjectType::Crate:
     case SpaceObjectType::JumpGate:
     case SpaceObjectType::Projectile:
@@ -53,10 +55,16 @@ namespace Neuron
         return GetShipDef(sc).collisionRadius;
     }
 
+    if (state.type == SpaceObjectType::Asteroid)
+    {
+      auto ac = static_cast<AsteroidClass>(state.subclass);
+      if (static_cast<uint8_t>(ac) < static_cast<uint8_t>(AsteroidClass::Count))
+        return GetAsteroidDef(ac).collisionRadius;
+    }
+
     // Default radii for non-ship types
     switch (state.type)
     {
-    case SpaceObjectType::Asteroid:  return 10.0f;
     case SpaceObjectType::Station:   return 20.0f;
     case SpaceObjectType::JumpGate:  return 15.0f;
     case SpaceObjectType::Crate:     return 3.0f;
@@ -132,6 +140,17 @@ namespace Neuron
     XMVECTOR vel = XMLoadFloat3(&state.velocity);
     pos = XMVectorAdd(pos, XMVectorScale(vel, _deltaT));
     XMStoreFloat3(&state.position, pos);
+  }
+
+  void SpaceObject::UpdateAsteroid(float _deltaT)
+  {
+    auto ac = static_cast<AsteroidClass>(state.subclass);
+    if (static_cast<uint8_t>(ac) < static_cast<uint8_t>(AsteroidClass::Count))
+    {
+      state.yaw += GetAsteroidDef(ac).rotationSpeed * _deltaT;
+      if (state.yaw > XM_2PI)
+        state.yaw -= XM_2PI;
+    }
   }
 
   void SpaceObject::UpdateStatic([[maybe_unused]] float _deltaT)

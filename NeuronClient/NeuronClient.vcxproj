@@ -30,6 +30,7 @@
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CanvasWindow.cpp" />
     <ClCompile Include="ClientNet.cpp" />
+    <ClCompile Include="CmoMesh.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="GpuBuffer.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="BitmapFont.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Canvas.h" />
+    <ClInclude Include="CmoMesh.h" />
     <ClInclude Include="GuiWindow.h" />
     <ClInclude Include="ClientNet.h" />
     <ClInclude Include="Color.h" />

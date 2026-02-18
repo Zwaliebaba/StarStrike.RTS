@@ -178,6 +178,9 @@
     <Image Include="Assets\Fonts\SpeccyFont-RUS.dds">
       <Filter>Assets\Fonts</Filter>
     </Image>
+    <Image Include="Assets\Textures\starbox_1024.dds">
+      <Filter>Assets\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">
@@ -195,11 +198,20 @@
     <Filter Include="Assets\Logos">
       <UniqueIdentifier>{fcc0230a-c07a-4d24-98b8-5f8c669b414a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Assets\Meshes">
-      <UniqueIdentifier>{7ebcc28f-c691-44f4-a987-c11e9804313a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Assets\Fonts">
       <UniqueIdentifier>{4a3831b3-942c-44fb-870a-498b577006e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Objects">
+      <UniqueIdentifier>{7ebcc28f-c691-44f4-a987-c11e9804313a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Objects\Asteroids">
+      <UniqueIdentifier>{9b6b1f03-c521-435a-8328-b804663c09c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Textures">
+      <UniqueIdentifier>{f6e0343f-560d-46cd-994b-12473e7e4950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Objects\Hulls">
+      <UniqueIdentifier>{58dc4ed4-67db-495e-b50c-2a1ae3a15674}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +228,114 @@
     <None Include="packages.config">
       <Filter>Project Files</Filter>
     </None>
+    <None Include="Assets\Objects\Asteroids\asteroid_01.cmo">
+      <Filter>Assets\Objects\Asteroids</Filter>
+    </None>
+    <None Include="Assets\Objects\Asteroids\asteroid_02.cmo">
+      <Filter>Assets\Objects\Asteroids</Filter>
+    </None>
+    <None Include="Assets\Objects\Asteroids\asteroid_03.cmo">
+      <Filter>Assets\Objects\Asteroids</Filter>
+    </None>
+    <None Include="Assets\Objects\Asteroids\asteroid_04.cmo">
+      <Filter>Assets\Objects\Asteroids</Filter>
+    </None>
+    <None Include="Assets\Objects\Asteroids\asteroid_05.cmo">
+      <Filter>Assets\Objects\Asteroids</Filter>
+    </None>
+    <None Include="Assets\Objects\Asteroids\asteroid_06.cmo">
+      <Filter>Assets\Objects\Asteroids</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_asteria.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_aurora.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_avalanche.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_avalanche_mk2.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_banshee.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_banshee_mk2.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_boomerang.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_crab.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_death_bringer.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_endeavor.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_fang.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_freighter.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_hammer.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_heretic.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_hive.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_megalisk.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_orca.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_pest_brown.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_pest_red.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_pirate_platform.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_scarab.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_shuttle.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_stingray.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_stingray_mk2.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_stryker.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_turret_platform.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_turret_xengatarn.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_violator.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_wasp.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
+    <None Include="Assets\Objects\Hulls\hull_yamato.cmo">
+      <Filter>Assets\Objects\Hulls</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
@@ -231,30 +351,18 @@
     <ClCompile Include="ClientWorld.cpp" />
     <ClCompile Include="WorldRenderer.cpp" />
     <ClCompile Include="GameApp.cpp" />
-    <ClCompile Include="BitmapFont.cpp" />
-    <ClCompile Include="Canvas.cpp" />
-    <ClCompile Include="CanvasWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="ClientWorld.h" />
     <ClInclude Include="WorldRenderer.h" />
     <ClInclude Include="GameApp.h" />
-    <ClInclude Include="BitmapFont.h" />
-    <ClInclude Include="Canvas.h" />
-    <ClInclude Include="CanvasWindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\WorldVS.hlsl">
+    <FxCompile Include="Shaders\CmoPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\WorldPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\CanvasVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\CanvasPS.hlsl">
+    <FxCompile Include="Shaders\CmoVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

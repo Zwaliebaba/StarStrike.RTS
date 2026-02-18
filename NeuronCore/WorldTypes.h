@@ -25,6 +25,17 @@ namespace Neuron
     Count
   };
 
+  enum class AsteroidClass : uint8_t
+  {
+    Asteroid01,
+    Asteroid02,
+    Asteroid03,
+    Asteroid04,
+    Asteroid05,
+    Asteroid06,
+    Count
+  };
+
   enum class ObjectFlags : uint16_t
   {
     None   = 0x0000,

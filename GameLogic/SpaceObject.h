@@ -2,6 +2,7 @@
 
 #include "WorldTypes.h"
 #include "ShipDefs.h"
+#include "AsteroidDefs.h"
 
 namespace Neuron
 {
@@ -21,6 +22,7 @@ namespace Neuron
 
   private:
     void UpdateShip(float _deltaT);
+    void UpdateAsteroid(float _deltaT);
     void UpdateStatic(float _deltaT);
   };
 }

@@ -45,7 +45,7 @@
 
 // DirectX apps don't need GDI
 #define NODRAWTEXT
-// #define NOGDI
+#define NOGDI
 #define NOBITMAP
 
 // Include <mcx.h> if you need this
@@ -58,7 +58,7 @@
 #define NOHELP
 
 #if !defined WIN32_LEAN_AND_MEAN
-// #define WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #endif
 
 #include <winsock2.h>

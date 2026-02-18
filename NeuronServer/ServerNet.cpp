@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ServerNet.h"
 
+#include <iostream>
+
 namespace Neuron::Server
 {
   void ServerNet::Startup(uint16_t _port)

@@ -1,5 +1,9 @@
 #include "pch.h"
 #include "GameServer.h"
+#include "AsteroidDefs.h"
+
+#include <iostream>
+#include <random>
 
 namespace Neuron::Server
 {
@@ -7,10 +11,12 @@ namespace Neuron::Server
   {
     sm_world.Startup(WORLD_DEFAULT_SIZE);
 
-    // Spawn some static asteroids for visual interest
-    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, 0, {100.f, 0.f, 100.f});
-    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, 0, {-150.f, 0.f, 200.f});
-    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, 0, {300.f, 0.f, -100.f});
+    // Spawn some static asteroids with random classes for visual variety
+    std::mt19937 rng(42);
+    std::uniform_int_distribution<int> asteroidDist(0, static_cast<int>(AsteroidClass::Count) - 1);
+    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, static_cast<uint8_t>(asteroidDist(rng)), {100.f, 0.f, 100.f});
+    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, static_cast<uint8_t>(asteroidDist(rng)), {-150.f, 0.f, 200.f});
+    (void)sm_world.SpawnObject(SpaceObjectType::Asteroid, static_cast<uint8_t>(asteroidDist(rng)), {300.f, 0.f, -100.f});
 
     ServerNet::SetConnectHandler(OnClientConnect);
     ServerNet::SetDisconnectHandler(OnClientDisconnect);
