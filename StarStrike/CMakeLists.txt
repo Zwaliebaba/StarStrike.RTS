@@ -1,12 +1,18 @@
-﻿# CMakeList.txt : CMake project for StarStrike, include source and define
-# project specific logic here.
+# CMakeLists.txt : StarStrike executable
+# Depends on NeuronClient (which transitively brings in NeuronCore).
 #
+# CONFIGURE_DEPENDS: CMake will re-glob and re-configure automatically
+# whenever .c or .h files are added to or removed from this directory.
 
-# Add source to this project's executable.
-add_executable (StarStrike "StarStrike.cpp" "StarStrike.h")
+file(GLOB STARSTRIKE_SRC CONFIGURE_DEPENDS
+    "*.c"
+    "*.h"
+)
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET StarStrike PROPERTY CXX_STANDARD 20)
-endif()
+add_executable (StarStrike ${STARSTRIKE_SRC})
 
-# TODO: Add tests and install targets if needed.
+# PRIVATE: StarStrike is the final executable; nothing consumes it downstream.
+target_link_libraries (StarStrike
+    PRIVATE
+        NeuronClient
+)
