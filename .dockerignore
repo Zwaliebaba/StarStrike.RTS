@@ -1,6 +1,0 @@
-# Ignore everything by default
-*
-
-# Allow only the pre-built server binaries
-!x64/Release/Server.exe
-!x64/Debug/Server.exe
