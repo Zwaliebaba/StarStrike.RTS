@@ -9,10 +9,29 @@ file(GLOB STARSTRIKE_SRC CONFIGURE_DEPENDS
     "*.h"
 )
 
-add_executable (StarStrike ${STARSTRIKE_SRC})
+add_executable (StarStrike WIN32 ${STARSTRIKE_SRC} Deliv.rc)
+
+# Make lex-generated scanner symbols static (same as NeuronClient).
+target_compile_definitions (StarStrike
+    PRIVATE
+        YY_STATIC
+)
 
 # PRIVATE: StarStrike is the final executable; nothing consumes it downstream.
 target_link_libraries (StarStrike
     PRIVATE
         NeuronClient
+        # DirectX SDK libraries
+        ${CMAKE_SOURCE_DIR}/DX9/Lib/ddraw.lib
+        ${CMAKE_SOURCE_DIR}/DX9/Lib/dplayx.lib
+        ${CMAKE_SOURCE_DIR}/DX9/Lib/dxguid.lib
+        ${CMAKE_SOURCE_DIR}/DX9/Lib/dsound.lib
+        ${CMAKE_SOURCE_DIR}/DX9/Lib/dinput.lib
+        ${CMAKE_SOURCE_DIR}/DX9/Lib/d3dx.lib
+        # Third-party libraries
+        ${CMAKE_SOURCE_DIR}/NeuronClient/Sound/QMixer.lib
+        ${CMAKE_SOURCE_DIR}/NeuronClient/Sequence/WINSTR.LIB
+        ${CMAKE_SOURCE_DIR}/NeuronClient/Netplay/Mplayer.lib
+        # Windows system libraries
+        winmm
 )

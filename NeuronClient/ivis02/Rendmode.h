@@ -2,8 +2,7 @@
 #ifndef _rendmode_h_
 #define _rendmode_h_
 #include "Ivisdef.h"
-#include "V4101.h"
-#include "Vsr.h"
+#include "Ivi.h"
 #ifdef WIN32
 #include "PieBlitFunc.h"
 #endif
@@ -14,7 +13,7 @@
 #endif
 #include "TextDraw.h"
 
-//*************************************************************************
+
 //patch
 
 #define iV_RenderBegin			pie_LocalRenderBegin
@@ -59,19 +58,22 @@
 #define pie_ScaleBitmapRGB		ScaleBitmapRGB_PSX
 
 #endif
-//*************************************************************************
 
-#define iV_MODE_4101		0x4101			// DDX 640x480x256
+
 #define REND_D3D_RGB		0x133			// Direct3D 640x480x16bit RGB renderer (mmx)
 #define REND_D3D_HAL		0x143			// Direct3D 640x480x16bit hardware
 #define REND_D3D_REF		0x153			// Direct3D 640x480x16bit hardware
-#define REND_GLIDE_3DFX		0x200			// 3dfx Glide API
-#define REND_16BIT			0x400			// 16bit software mode for video
-#define iV_MODE_SURFACE		0x10000			// off-screen surface
 #define REND_PSX			0x20000			// PlayStation - added by tjc
 #define REND_UNDEFINED		-1				// undefined mode
 
-//*************************************************************************
+/* ---------- DEAD MODE CONSTANTS ------------------------------------------
+ * Kept only so legacy if-branches referencing these values still compile.
+ * iV_RenderAssign() no longer handles them; they are unreachable dead code.
+ * ----------------------------------------------------------------------- */
+#define iV_MODE_4101		0x4101
+#define iV_MODE_SURFACE		0x10000
+
+
 // polygon flags	b0..b7: col, b24..b31: anim index
 
 //#define PIE_FLAT			0x00000100
@@ -86,7 +88,7 @@
 #define PIE_NOHALFPSXTEX	0x00020000
 #define PIE_ALPHA			0x00040000
 
-//*************************************************************************
+
 
 #define REND_SURFACE_UNDEFINED	0
 #define REND_SURFACE_SCREEN		1
@@ -103,19 +105,19 @@
 #define iV_SCREEN_HEIGHT	(rendSurface.height)
 #define iV_SCREEN_BUFFER	(rendSurface.buffer)
 
-//*************************************************************************
+
 
 extern iSurface	rendSurface;
 extern iSurface	*psRendSurface;
 
-//*************************************************************************
+
 
 #ifdef PSX
 extern void	_iv_vid_setup(void);
 extern iBool iV_VideoOpen(int n);
 #endif
 
-//*************************************************************************
+
 
 extern int32 iV_VideoMemorySize(int mode);
 extern iBool iV_VideoMemoryLock(int mode);
@@ -128,19 +130,19 @@ extern void iV_RenderAssign(int mode, iSurface *s);
 extern void iV_SurfaceDestroy(iSurface *s);
 extern iSurface *iV_SurfaceCreate(uint32 flags, int width, int height, int xp, int yp, uint8 *buffer);
 
-//*************************************************************************
+
 
 extern int iV_GetDisplayWidth(void);
 extern int iV_GetDisplayHeight(void);
 #ifdef WIN32
-extern BOOL	weHave3DNow( void );	// called whenever - returns a boolean
-
+// Deprecated: always returns FALSE now that software renderer is removed
+#define weHave3DNow() (FALSE)
 #endif
 
 
-//*************************************************************************
+
 // vid stuff still to be cut down
-//*************************************************************************
+
 
 //extern void (*pie_VideoShutDown)(void);
 //extern void (*pie_Draw3DShape)(iIMDShape *shape, int frame, int team, UDWORD colour, UDWORD specular, int pieFlag, int pieData);
@@ -228,6 +230,6 @@ iColour *GetRGBLookup(void);
 
 extern void iV_DrawMousePointer(int x,int y);
 extern void iV_SetMousePointer(IMAGEFILE *ImageFile,UWORD ImageID);
-//*************************************************************************
+
 extern void (*iV_ppBitmapColourTrans)(iBitmap *bmp, int x, int y, int w, int h, int ow,int ColourIndex);
 #endif

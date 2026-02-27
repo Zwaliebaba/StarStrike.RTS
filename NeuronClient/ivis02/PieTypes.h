@@ -43,11 +43,11 @@ typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
 
-//*************************************************************************
+
 //
 // Simple derived types
 //
-//*************************************************************************
+
 typedef struct {int left, top, right, bottom;} iClip;
 typedef uint8 iBitmap;
 typedef struct {uint8 r, g, b;} iColour;

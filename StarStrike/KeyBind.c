@@ -31,7 +31,6 @@
 #include "Multiplay.h"
 #include "MultiMenu.h"
 #include "Atmos.h"
-#include "Dglide.h"
 #include "RayCast.h"
 #include "AdvVis.h"
 #include "Game.h"
@@ -775,11 +774,6 @@ void	kf_LowerTile( void )
 void	kf_SystemClose( void )
 {
 #ifdef WIN32
-	if(pie_GetRenderEngine() == ENGINE_GLIDE)
-	{
-		grSstControl(GR_CONTROL_DEACTIVATE);
-	}
-
 //	ExitProcess(4);
 	loopFastExit();
 #endif

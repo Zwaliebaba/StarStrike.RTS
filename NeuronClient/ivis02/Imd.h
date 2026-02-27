@@ -21,13 +21,13 @@
 
 #endif
 
-//*************************************************************************
+
 
 #define iV_IMD_MAX_POINTS	256
 #define iV_IMD_MAX_POLYS	256
 #define iV_IMD_MAX_TEXANIM	256
 
-//*************************************************************************
+
 
 // polygon flags	b0..b7: col, b24..b31: anim index
 
@@ -71,7 +71,7 @@
 #define iV_IMDX_GRID			(iV_IMDX_XGRID | iV_IMDX_YGRID | iV_IMDX_ZGRID)
 
 
-//*************************************************************************
+
 
 extern BOOL iV_setImagePath(char *path);
 extern iIMDShape *iV_IMDLoad(char *filename, iBool palkeep);

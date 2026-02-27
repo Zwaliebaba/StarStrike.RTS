@@ -1,0 +1,42 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+IDC_DEST                CURSOR  DISCARDABLE     "cur00001.cur"
+IDC_SIGHT               CURSOR  DISCARDABLE     "cur00002.cur"
+IDC_TARGET              CURSOR  DISCARDABLE     "cursor1.cur"
+IDC_LARROW              CURSOR  DISCARDABLE     "cur00003.cur"
+IDC_RARROW              CURSOR  DISCARDABLE     "cur00004.cur"
+IDC_DARROW              CURSOR  DISCARDABLE     "cursor2.cur"
+IDC_UARROW              CURSOR  DISCARDABLE     "cursor3.cur"
+IDC_DEFAULT             CURSOR  DISCARDABLE     "cur00005.cur"
+IDC_NOTPOSSIBLE         CURSOR  DISCARDABLE     "cur00006.cur"
+IDC_SELECT              CURSOR  DISCARDABLE     "cur00007.cur"
+IDC_ATTACK              CURSOR  DISCARDABLE     "cur00008.cur"
+IDC_MOVE                CURSOR  DISCARDABLE     "cur00009.cur"
+IDC_JAM                 CURSOR  DISCARDABLE     "cur00010.cur"
+IDC_PICKUP              CURSOR  DISCARDABLE     "cur00011.cur"
+IDC_MENU                CURSOR  DISCARDABLE     "cur00012.cur"
+IDC_SEEKREPAIR          CURSOR  DISCARDABLE     "cur00013.cur"
+IDC_BUILD               CURSOR  DISCARDABLE     "cur00014.cur"
+IDC_GUARD               CURSOR  DISCARDABLE     "cur00015.cur"
+IDC_EMBARK              CURSOR  DISCARDABLE     "cur00016.cur"
+IDC_BRIDGE              CURSOR  DISCARDABLE     "cur00017.cur"
+IDC_ATTACH              CURSOR  DISCARDABLE     "cur00018.cur"
+IDC_LOCKON              CURSOR  DISCARDABLE     "cur00019.cur"
+IDC_FIX                 CURSOR  DISCARDABLE     "cur00020.cur"
+IDC_BOMB                CURSOR  DISCARDABLE     "cur00021.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "icon1.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+
+

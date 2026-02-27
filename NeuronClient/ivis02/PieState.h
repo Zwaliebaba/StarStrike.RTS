@@ -26,13 +26,23 @@
 typedef	enum	REND_ENGINE
 				{
 					ENGINE_UNDEFINED,
-					ENGINE_16Bit,
-					ENGINE_4101,
-					ENGINE_SR,
-					ENGINE_GLIDE,
-					ENGINE_D3D
+					ENGINE_D3D,
+					/* ---------- DEAD VALUES ------------------------------------------------
+					 * Kept only so legacy switch/if branches compile. The runtime engine is
+					 * always ENGINE_D3D; these values are never assigned, so branches that
+					 * test for them are unreachable dead code awaiting removal.
+					 * --------------------------------------------------------------------- */
+					ENGINE_4101_REMOVED,
+					ENGINE_SR_REMOVED,
+					ENGINE_GLIDE_REMOVED
 				}
 				REND_ENGINE;
+
+/* Legacy aliases – map to the dead enum values above. */
+#define ENGINE_4101		ENGINE_4101_REMOVED
+#define ENGINE_SR		ENGINE_SR_REMOVED
+#define ENGINE_GLIDE	ENGINE_GLIDE_REMOVED
+#define ENGINE_16Bit	ENGINE_UNDEFINED   /* was never actually used */
 
 typedef	enum	REND_MODE
 				{

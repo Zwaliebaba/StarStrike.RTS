@@ -40,7 +40,6 @@
 #ifdef WIN32
 #include "Keyedit.h"
 #include "SeqDisp.h"
-#include "3DfxFunc.h"
 #include "Vid.h"
 #include "Config.h"
 #include "Resource.h"

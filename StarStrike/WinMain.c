@@ -22,7 +22,6 @@
 #include "Console.h"
 #include "Rendmode.h"
 #include "PieMode.h"
-#include "Dglide.h"
 #include "Levels.h"
 #include "Research.h"
 #include "WarzoneConfig.h"
@@ -61,20 +60,10 @@ BOOL	bGlideFound=FALSE;
 BOOL	bDisableLobby;
 
 
-// Some prototypes because I can't be arse to create a .h file
-BOOL InitGlideDLL(void);
-BOOL ShutdownGlideDLL(void);
-
-
 // callback functions for message boxes and assert boxes
 DB_MBRETVAL fxMBCallback(SBYTE *pBuffer)
 {
 	(void)pBuffer;
-
-	if(pie_GetRenderEngine() == ENGINE_GLIDE)
-	{
-		grSstControl(GR_CONTROL_DEACTIVATE);
-	}
 
 	return DBR_USE_WINDOWS_MB;
 }
@@ -140,13 +129,7 @@ int WINAPI WinMain(
 
 	war_SetRendMode(REND_MODE_HAL);
 
-	if (InitGlideDLL())	// In ivis02/3dfxdyn.c - returns FALSE if no glide2x.dll is not found
-	{
-		bGlideFound = TRUE;
-		war_SetRendMode(REND_MODE_GLIDE);//default to glide this will be over writen by Registry or Command line if found
-	}
 
-   
 init://jump here from the end if re_initialising
 
 
@@ -414,16 +397,8 @@ init://jump here from the end if re_initialising
 			{
 			case FRAME_KILLFOCUS:
 				paused = TRUE;
-				gameTimeStop();
-				if (pie_GetRenderEngine() == ENGINE_GLIDE)
-				{
-					if (!gl_Deactivate())
-					{
-						quit = TRUE;
-						Restart = TRUE;
-					}
-				}
-				mixer_SaveIngameVols();
+					gameTimeStop();
+					mixer_SaveIngameVols();
 				mixer_RestoreWinVols();
 				audio_StopAll();
 				break;
@@ -435,18 +410,7 @@ init://jump here from the end if re_initialising
 					quit = TRUE;
 					Restart = TRUE;
 				}
-				if (pie_GetRenderEngine() == ENGINE_GLIDE)
-				{
-					if (!gl_Reactivate())
-					{
-						quit = TRUE;
-						Restart = TRUE;
-					}
-				}
-				else if (pie_GetRenderEngine() == ENGINE_D3D)
-				{
-					dtm_RestoreTextures();
-				}
+				dtm_RestoreTextures();
 				mixer_SaveWinVols();
 				mixer_RestoreIngameVols();
 				break;
@@ -684,8 +648,6 @@ init://jump here from the end if re_initialising
 
 	frameShutDown();
 
-	ShutdownGlideDLL();
-
 	if (reInit) goto init;
 
 	PostQuitMessage(0);
@@ -701,8 +663,6 @@ exit:
 	pal_ShutDown();
 
 	frameShutDown();
-
-	ShutdownGlideDLL();
 
 	PostQuitMessage(1);
 

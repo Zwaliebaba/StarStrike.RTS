@@ -7,6 +7,9 @@
 #ifndef _DXInput_h
 #define _DXInput_h
 
+#ifndef DIRECTINPUT_VERSION
+#define DIRECTINPUT_VERSION 0x0500
+#endif
 #include <dinput.h>
 
 // The direct input object

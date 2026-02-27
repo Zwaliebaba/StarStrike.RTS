@@ -69,7 +69,7 @@ void pie_VectorNormalise(iVector *v)
 }
 
 
-//*************************************************************************
+
 //*** calculate surface normal
 //*
 //* params	p1,p2,p3	= points for forming 2 vector for cross product
@@ -111,21 +111,21 @@ void pie_SurfaceNormal(iVector *p1, iVector *p2, iVector *p3, iVector *v)
 
 #define SC_TABLESIZE	4096
 
-//*************************************************************************
+
 
 #define X_INTERCEPT(pt1,pt2,yy)														\
 	(pt2->x - (((pt2->y - yy)  * (pt1->x - pt2->x)) / (pt1->y - pt2->y)))
 
-//*************************************************************************
+
 
 static SDMATRIX	_MATRIX_ID = {FP12_MULTIPLIER,0,0, 0,FP12_MULTIPLIER,0, 0,0,FP12_MULTIPLIER, 0L,0L,0L};
 static SDWORD	_MATRIX_INDEX;
 
-//*************************************************************************
+
 
 int		aSinTable[SC_TABLESIZE + (SC_TABLESIZE/4)];
 
-//*************************************************************************
+
 //*** reset transformation matrix stack and make current identity
 //*
 //******
@@ -141,7 +141,7 @@ void pie_MatReset(void)
 }
 
 
-//*************************************************************************
+
 //*** create new matrix from current transformation matrix and make current
 //*
 //******
@@ -159,7 +159,7 @@ void pie_MatBegin(void)
 }
 
 
-//*************************************************************************
+
 //*** make current transformation matrix previous one on stack
 //*
 //******
@@ -173,7 +173,7 @@ void pie_MatEnd(void)
 }
 
 
-//*************************************************************************
+
 //*** matrix rotate y (yaw) current transformation matrix
 //*
 //******
@@ -203,7 +203,7 @@ void pie_MatRotY(int y)
 }
 
 
-//*************************************************************************
+
 //*** matrix rotate z (roll) current transformation matrix
 //*
 //******
@@ -233,7 +233,7 @@ void pie_MatRotZ(int z)
 }
 
 
-//*************************************************************************
+
 //*** matrix rotate x (pitch) current transformation matrix
 //*
 //******
@@ -263,7 +263,7 @@ void pie_MatRotX(int x)
 }
 
 
-//*************************************************************************
+
 //*** 3D vector perspective projection
 //*
 //* params	v1 = 3D vector to project
@@ -315,7 +315,7 @@ int32 pie_RotProj(iVector *v3d, iPoint *v2d)
 
 
 
-//*************************************************************************
+
 //*** create 3x3 matrix from given euler angles
 //*
 //* params	r	= vector x,y,z euler rotation angles
@@ -345,7 +345,7 @@ void pie_MatCreate(iVector *r, SDMATRIX *m)
 	m->i = ((cry * crx)>>FP12_SHIFT);
 }
 
-//*************************************************************************
+
 
 void pie_SetGeometricOffset(int x, int y)
 
@@ -358,7 +358,7 @@ void pie_SetGeometricOffset(int x, int y)
 
 #ifndef PIEPSX		// was #ifdef WIN32
 // all these routines use the PC format of iVertex ... and are not used on the PSX
-//*************************************************************************
+
 
 BOOL pie_Clockwise(iVertex *s)
 {
@@ -373,7 +373,7 @@ BOOL pie_PieClockwise(PIEVERTEX *s)
 }
 #endif
 
-//*************************************************************************
+
 //*** inverse rotate 3D vector with current rotation matrix
 //*
 //* params	v1 = pointer to 3D vector to rotate
@@ -394,7 +394,7 @@ void pie_VectorInverseRotate0(iVector *v1, iVector *v2)
 	v2->z = (x * psMatrix->g+y * psMatrix->h+z * psMatrix->i) >> FP12_SHIFT;
 }
 
-//*************************************************************************
+
 //*** setup transformation matrices/quaternions and trig tables
 //*
 //******

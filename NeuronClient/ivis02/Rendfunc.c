@@ -24,9 +24,7 @@
 #endif
 
 
-#ifdef WIN32
-#include "3DfxFunc.h"
-#else
+#ifndef WIN32
 
 #include "vpsx.h"
 #include "psxvram.h"
@@ -66,10 +64,10 @@ void	pie_BuildTransTable(UDWORD tableNo);
 void (*iV_pBox)(int x0, int y0, int x1, int y1, uint32 colour);
 void (*iV_pBoxFill)(int x0, int y0, int x1, int y1, uint32 colour);
 
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
+
+
+
+
 /***************************************************************************/
 /*
  *	Source
@@ -95,7 +93,7 @@ void pie_Set2DClip(int x0, int y0, int x1, int y1)
 
 #if(1) 	//#ifndef PIEPSX		// was #ifdef WIN32
 
-//*************************************************************************
+
 //*** line plot 2D line - clipped
 //*
 //* params	x0,y0  = line point 1
@@ -203,7 +201,7 @@ void line(int x0, int y0, int x1, int y1, uint32 colour)
 		iV_pLine(x0,y0,x,y,colour);
 }
 
-//*************************************************************************
+
 
 void box(int x0, int y0, int x1, int y1, uint32 colour)
 {
@@ -225,7 +223,7 @@ void box(int x0, int y0, int x1, int y1, uint32 colour)
 
 }
 
-//*************************************************************************
+
 
 void	SetTransFilter(UDWORD rgb,UDWORD tablenumber)
 {
@@ -233,7 +231,7 @@ void	SetTransFilter(UDWORD rgb,UDWORD tablenumber)
 	pie_BuildTransTable(tablenumber);			/* Need to recalculate the transparency table */
 }
 
-//*************************************************************************
+
 
 void	TransBoxFill(UDWORD x0, UDWORD y0, UDWORD x1, UDWORD y1)
 {
@@ -281,7 +279,7 @@ UDWORD	i,j;
 #endif
 }
 
-//*************************************************************************
+
 
 void DrawImageDef(IMAGEDEF *Image,iBitmap *Bmp,UDWORD Modulus,int x,int y)
 {
@@ -322,7 +320,7 @@ void DrawImage(IMAGEFILE *ImageFile,UWORD ID,int x,int y)
 			   	Image->Width,Image->Height,Modulus);
 }
 
-//*************************************************************************
+
 
 void DrawImageRect(IMAGEFILE *ImageFile,UWORD ID,int x,int y,int x0,int y0,int Width,int Height)
 {
@@ -400,7 +398,7 @@ void DrawImageRect(IMAGEFILE *ImageFile,UWORD ID,int x,int y,int x0,int y0,int W
 	}
 }
 
-//*************************************************************************
+
 
 void DrawTransImage(IMAGEFILE *ImageFile,UWORD ID,int x,int y)
 {
@@ -420,7 +418,7 @@ void DrawTransImage(IMAGEFILE *ImageFile,UWORD ID,int x,int y)
 			   	Image->Width,Image->Height,Modulus);
 }
 
-//*************************************************************************
+
 
 void DrawTransImageRect(IMAGEFILE *ImageFile,UWORD ID,int x,int y,int x0,int y0,int Width,int Height)
 {
@@ -498,7 +496,7 @@ void DrawTransImageRect(IMAGEFILE *ImageFile,UWORD ID,int x,int y,int x0,int y0,
 	}
 }
 
-//*************************************************************************
+
 
 void DrawTransColourImage(IMAGEFILE *ImageFile,UWORD ID,int x,int y,SWORD ColourIndex)
 {
@@ -595,7 +593,7 @@ void DrawTransColourImage(IMAGEFILE *ImageFile,UWORD ID,int x,int y,SWORD Colour
 
 
 
-//*************************************************************************
+
 
 void iV_SetMousePointer(IMAGEFILE *ImageFile,UWORD ImageID)
 {
@@ -649,7 +647,7 @@ void iV_DrawMousePointer(int x,int y)
 }
 
 #endif
-//*************************************************************************
+
 
 // Software version does nothing.
 void DownLoadRadar(unsigned char *buffer)
@@ -657,7 +655,7 @@ void DownLoadRadar(unsigned char *buffer)
 	return;
 }
 
-//*************************************************************************
+
 
 // Upload the current display back buffer into system memory.
 //
@@ -699,7 +697,7 @@ void DownloadDisplayBuffer(UBYTE *DisplayBuffer)
 
 
 #ifdef WIN32
-//*************************************************************************
+
 
 void	DownloadDisplayBuffer(UBYTE *DisplayBuffer)
 {
@@ -734,7 +732,7 @@ void	DownloadDisplayBuffer(UBYTE *DisplayBuffer)
 	}
 }
 
-//*************************************************************************
+
 // Scale a bitmaps colours.
 //
 void ScaleBitmapRGB(UBYTE *DisplayBuffer,int Width,int Height,int ScaleR,int ScaleG,int ScaleB)
@@ -750,11 +748,11 @@ void ScaleBitmapRGB(UBYTE *DisplayBuffer,int Width,int Height,int ScaleR,int Sca
 }
 #endif
 
-//*************************************************************************
+
 //
 // local functions
 //
-//*************************************************************************
+
 
 void	iVBlitPixelTransRect(UDWORD x0, UDWORD y0, UDWORD x1, UDWORD y1)
 {
@@ -779,7 +777,7 @@ UDWORD	i,j;
 #endif
 }
 
-//*************************************************************************
+
 
 void	pie_BuildTransTable(UDWORD tableNo)
 {
@@ -874,23 +872,23 @@ iColour* psPalette = pie_GetGamePal();
 #endif
 }
 
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
-//*************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #endif

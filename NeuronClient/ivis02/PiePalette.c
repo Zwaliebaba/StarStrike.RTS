@@ -6,11 +6,8 @@
 #include "Rendmode.h"
 #include "Bug.h"
 #include "Fractions.h"
-#ifdef INC_GLIDE
-#include "Dglide.h"
-#endif
 
-#define RED_CHROMATICITY	1
+#define RED_CHROMATICITY
 #define GREEN_CHROMATICITY	1
 #define BLUE_CHROMATICITY	1
 
@@ -184,7 +181,7 @@ ULONG				mask;
 }
 
 
-//*************************************************************************
+
 //*** add a new palette
 //*
 //* params	pal = pointer to palette to add
@@ -223,25 +220,6 @@ BOOL pal_AddNewPalette(iColour *pal)
 		}	
 	}
 #ifndef   PIETOOL			// ffs
-	/* If we're adding a palette and running on a 3dfx, then bang it down to the card */
-	if (pie_GetRenderEngine() == ENGINE_GLIDE)
-	{
-		for(i=0; i<PALETTE_SIZE; i++)
-		{
-			entry = 0;
-			entry = pal[i].r;
-			entry = entry<<8;
-			entry = entry | (long)pal[i].g;
-			entry = entry<<8;
-			entry = entry | (long)pal[i].b;
-			cardPal[i] = (long)entry;
-		}
-		if (pie_GetRenderEngine() == ENGINE_GLIDE)
-		{
-			/* Make sure we send our palette to the 3dfx card via a glide call */
-			grTexDownloadTable(GR_TMU0, GR_TEXTABLE_PALETTE, &cardPal);
-		}
-	}
 #endif
 	p = psGamePal;
 	w = psWinPal;
@@ -299,7 +277,7 @@ void pal_SelectPalette(int n)
 }
 
 
-//*************************************************************************
+
 //***
 //*
 //******
@@ -309,7 +287,7 @@ void pal_SetPalette(void)
 {
 }
 
-//*************************************************************************
+
 //*** calculate primary colours for current palette (store in COL_ ..
 //*
 //* on exit	_iVCOLS[0..15] contain colour values matched
@@ -336,7 +314,7 @@ void pie_SetColourDefines(void)
 	COL_WHITE 			= pal_GetNearestColour( 255, 255, 255);
 }
 
-//*************************************************************************
+
 //*** init palette (sets default palette and calc primary colours)
 //*
 //* on exit	psCurrentPalette = pointer to default palette (palette 0)
@@ -490,7 +468,7 @@ PALETTEENTRY*	pie_GetWinPal(void)
 
 */
 
-//*************************************************************************
+
 
 uint8		palShades[PALETTE_SIZE * PALETTE_SHADE_LEVEL];
 uint8		colours[16];	// common primary colours - point to which entry in gamePal that is used for each colour
@@ -502,7 +480,7 @@ iColour		gamePal[256];			// This is the one 256 colour palette that is used by t
 
 
 
-//*************************************************************************
+
 //*** add a new palette
 //*
 //* params	pal = pointer to palette to add
@@ -516,7 +494,7 @@ int pal_AddNewPalette(iColour *pal)
 	return 0;
 }
 
-//*************************************************************************
+
 //***
 //*
 //******
@@ -529,7 +507,7 @@ iBool iV_PaletteRemove(void)
 }
 
 
-//*************************************************************************
+
 //***
 //*
 //******
@@ -570,7 +548,7 @@ void pal_SetgamePalette(UBYTE *pFileData)
 }	
 
 
-//*************************************************************************
+
 //***
 //*
 //******
@@ -581,12 +559,12 @@ void pal_SetPalette(void)
 }
 
 
-//*************************************************************************
+
 //***
 //*
 //******
 
-//*************************************************************************
+
 //*** calculate primary colours for current palette (store in COL_ ..
 //*
 //* on exit	_iVCOLS[0..15] contain colour values matched
@@ -614,7 +592,7 @@ static void pie_SetColourDefines(void)
 }
 
 
-//*************************************************************************
+
 //*** init palette (sets default palette and calc primary colours)
 //*
 //* on exit	psCurrentPalette = pointer to default palette (palette 0)
@@ -657,7 +635,7 @@ uint8 pal_GetNearestColour(uint8 r, uint8 g, uint8 b)
 	return ((uint8) best_colour);
 }
 
-//*************************************************************************
+
 //*** create shading table 256 x PALETTE_SHADE_LEVEL shades for
 //* specified colour
 //*

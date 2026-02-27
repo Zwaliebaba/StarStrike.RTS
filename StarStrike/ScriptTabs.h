@@ -7,6 +7,8 @@
 #ifndef _scripttabs_h
 #define _scripttabs_h
 
+#include "Script.h"
+
 // How many game ticks for one event tick
 #define SCR_TICKRATE	100
 

@@ -451,6 +451,18 @@ BOOL loadRenderMode()
 	// renderMode
 	if(getWarzoneKeyNumeric("renderMode",&val))		
 	{
+		// Migrate legacy persisted values: old enum had SOFTWARE=0, GLIDE=1, RGB=2, HAL=3, HAL2=4, REF=5
+		// New enum has RGB=0, HAL=1, HAL2=2, REF=3
+		if (val <= 1)
+		{
+			// Old SOFTWARE(0) or GLIDE(1) -> default to HAL
+			val = REND_MODE_HAL;
+		}
+		else
+		{
+			// Old RGB(2)->new RGB(0), old HAL(3)->new HAL(1), old HAL2(4)->new HAL2(2), old REF(5)->new REF(3)
+			val = val - 2;
+		}
 		war_SetRendMode(val);
 		if (val == REND_MODE_HAL)//d3d
 		{

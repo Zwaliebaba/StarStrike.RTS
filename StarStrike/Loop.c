@@ -34,7 +34,6 @@
 #include "Message.h"
 #include "Bucket3d.h"
 #include "Display3D.h"
-#include "3DfxFunc.h"
 #include "Multiplay.h" //ajl
 #include "Script.h"
 #include "ScriptTabs.h"

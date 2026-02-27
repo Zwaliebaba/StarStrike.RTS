@@ -19,20 +19,16 @@
 #include "Tex.h"
 //#include "pdv.h"
 #include "Ivispatch.h"
-#ifdef INC_GLIDE
-	#include "3Dfxmode.h"
-	#include "3DfxText.h"
-#endif
 
-//*************************************************************************
 
-//*************************************************************************
+
+
 
 #ifdef WIN32
 iError	_iVERROR;
 #endif
 
-//*************************************************************************
+
 
 #ifdef PSX
 void iV_Initialise(void)
@@ -50,16 +46,10 @@ void iV_Initialise(void)
 }
 #endif
 
-//*************************************************************************
+
 // pass in true to reset the palette too.
 void iV_Reset(int bPalReset)
 {
-#ifdef WIN32
-	if (pie_GetRenderEngine() == ENGINE_GLIDE)
-	{
-		reset3dfx();
-	}
-#endif
 	_TEX_INDEX = 0;
 	iV_ClearFonts();		// Initialise the IVIS font module.
 }
@@ -100,7 +90,7 @@ void iV_ShutDown(void)
 	iV_DEBUG0("iVi[ShutDown] = successful\n");
 }
 
-//*************************************************************************
+
 
 void iV_Stop(char *string, ...)
 
@@ -114,7 +104,7 @@ void iV_Stop(char *string, ...)
 	exit(0);
 }
 
-//*************************************************************************
+
 
 void iV_Abort(char *string, ...)
 
@@ -126,7 +116,7 @@ void iV_Abort(char *string, ...)
 	va_end(argptr);
 }
 
-//*************************************************************************
+
 
 #ifndef FINALBUILD
 void iV_Error(long errorn, char *msge, ...)

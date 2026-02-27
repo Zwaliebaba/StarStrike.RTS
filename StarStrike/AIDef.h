@@ -7,6 +7,8 @@
 #ifndef _aidef_h
 #define _aidef_h
 
+struct BASE_OBJECT;
+
 typedef enum _ai_state
 {
 	AI_PAUSE,			// do no ai
@@ -20,7 +22,7 @@ typedef enum _ai_state
 typedef struct _ai_data
 {
 	AI_STATE				state;
-	BASE_OBJECT		*psTarget;
+	struct BASE_OBJECT		*psTarget;
 /*	removed 27.2.98		john.
 	struct _weapon			*psSelectedWeapon;
 	struct _structure_stats	*psStructToBuild;

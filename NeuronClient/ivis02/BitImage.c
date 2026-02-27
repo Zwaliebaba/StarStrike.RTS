@@ -11,12 +11,6 @@
 
 #ifdef WIN32
 
-#ifdef INC_GLIDE
-	#include "Tex.h"
-	#include "3DfxText.h"
-	#include "3DfxFunc.h"
-#endif
-
 #else
 
 #include "vpsx.h"
@@ -216,19 +210,8 @@ static BOOL LoadTextureFile(char *FileName,iSprite *pSprite,int *texPageID)
 	{
 		if (stricmp(FileName,_TEX_PAGE[i].name) == 0)
 		{
-			/* Send back 3dfx texpage number if we're on 3dfx - they're NOT the same */
-		 	if(rendSurface.usr == REND_GLIDE_3DFX)
-			{
-
-				*texPageID = (_TEX_PAGE[i].textPage3dfx);
-				return TRUE;
-			}
-			else
-			{
-				/* Otherwise send back the software one */
-				*texPageID = i;
-				return TRUE;
-			}
+			*texPageID = i;
+			return TRUE;
 		}
 		i++;
 	}

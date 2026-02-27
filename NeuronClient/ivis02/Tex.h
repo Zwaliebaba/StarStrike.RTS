@@ -3,7 +3,7 @@
 
 #include "Ivi.h"
 
-//*************************************************************************
+
 
 #ifdef PSX
 #define iV_TEX_MAX (12)		// 256 
@@ -14,7 +14,7 @@
 
 #endif
 
-//*************************************************************************
+
 
 #define iV_TEXTEX(i)		((iTexture *) (&_TEX_PAGE[(i)].tex))
 #define iV_TEXPAGE(i)	((iTexPage *) (&_TEX_PAGE[(i)]))
@@ -28,7 +28,7 @@
 #define iV_TEX_PSXCLUT(i) (_TEX_PAGE[(i)].tex.clut)
 #endif
 
-//*************************************************************************
+
 
 typedef struct
 {
@@ -42,11 +42,11 @@ typedef struct
 }
 iTexPage;
 
-//*************************************************************************
+
 extern int _TEX_INDEX;
 extern iTexPage	_TEX_PAGE[iV_TEX_MAX];
 
-//*************************************************************************
+
 
 extern int iV_TexLoad( char *path, char *filename, int type,
 						iBool palkeep, iBool bColourKeyed );
@@ -56,7 +56,7 @@ extern int pie_ReloadTexPage(char *filename,UBYTE *pBuffer);
 extern int pie_AddBMPtoTexPages( 	iSprite* s, char* filename, int type, iBool bColourKeyed, iBool bResource);
 extern void pie_TexInit(void);
 
-//*************************************************************************
+
 
 extern void pie_TexShutDown(void);
 

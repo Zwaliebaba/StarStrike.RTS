@@ -855,7 +855,7 @@ void fpathOptimiseRoute(SDWORD sx, SDWORD sy, SDWORD fx, SDWORD fy,
 
 
 // Append points from a wall hug to the end of a route
-BOOL fpathAppendRoute(FP_POINT *asPoints, SDWORD numPoints)
+static BOOL fpathAppendRoute(FP_POINT *asPoints, SDWORD numPoints)
 {
 	if (numPoints + pathPoints >= FPATH_ROUTEMAX)
 	{
@@ -1224,16 +1224,16 @@ BOOL fpathTileRoute(MOVE_CONTROL *psMoveCntl,
 		}
 		for(i=0; i<pathPoints; i++)
 		{
-			psMoveCntl->MovementList[i].XCoordinate = asRoutePoints[i].x;
-			psMoveCntl->MovementList[i].YCoordinate = asRoutePoints[i].y;
+			psMoveCntl->asPath[i].x = (UBYTE)asRoutePoints[i].x;
+			psMoveCntl->asPath[i].y = (UBYTE)asRoutePoints[i].y;
 		}
-		psMoveCntl->MovementList[pathPoints].XCoordinate = -1;
-		psMoveCntl->MovementList[pathPoints].YCoordinate = -1;
+		psMoveCntl->asPath[pathPoints].x = 0xff;
+		psMoveCntl->asPath[pathPoints].y = 0xff;
 	}
 	else
 	{
-		psMoveCntl->MovementList[0].XCoordinate = -1;
-		psMoveCntl->MovementList[0].YCoordinate = -1;
+		psMoveCntl->asPath[0].x = 0xff;
+		psMoveCntl->asPath[0].y = 0xff;
 	}
 
 	return routeState == RS_SUCCESS;

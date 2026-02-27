@@ -22,14 +22,22 @@
 /***************************************************************************/
 typedef	enum	WAR_REND_MODE
 				{
-					REND_MODE_SOFTWARE,
-					REND_MODE_GLIDE,
 					REND_MODE_RGB,
 					REND_MODE_HAL,
 					REND_MODE_HAL2,
 					REND_MODE_REF,
+					/* ---------- DEAD VALUES ----------------------------------------
+					 * Kept only so legacy switch/if branches compile.  Never assigned
+					 * at runtime; all branches that test for these are dead code.
+					 * -------------------------------------------------------------- */
+					REND_MODE_SOFTWARE_REMOVED,
+					REND_MODE_GLIDE_REMOVED
 				}
 				WAR_REND_MODE;
+
+/* Legacy aliases – map to dead enum values above. */
+#define REND_MODE_SOFTWARE	REND_MODE_SOFTWARE_REMOVED
+#define REND_MODE_GLIDE		REND_MODE_GLIDE_REMOVED
 
 /*
 typedef	enum	TEX_MODE

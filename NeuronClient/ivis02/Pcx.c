@@ -14,14 +14,14 @@
 //#include "Bug.h"
 //#include "ivisheap.h"
 
-//*************************************************************************
+
 
 #ifdef WIN32
 
 #define PCX_BUFFER_SIZE		65536
 //#define PCX_PIXEL(s,x,y)	(* ((uint8 *) ((s)->bmp + (x) + ((y) * (s)->width))))
 
-//*************************************************************************
+
 
 typedef struct {
 	uint8	manufacturer;
@@ -39,13 +39,13 @@ typedef struct {
 	uint8	filler[58];
 } iPCX_header;
 
-//*************************************************************************
+
 
 static int 	_PCX_FI;
 static int8	*_PCX_MI;
 static iBool _PCX_MEM;
 
-//*************************************************************************
+
 
 
 static int _pcx_read_int8(void)
@@ -58,7 +58,7 @@ static int _pcx_read_int8(void)
 }
 
 
-//*************************************************************************
+
 
 static void _pcx_info(char *filename, iPCX_header *h)
 
@@ -86,7 +86,7 @@ static void _pcx_info(char *filename, iPCX_header *h)
 			h->palette_type);
 }
 
-//*************************************************************************
+
 
 static void _load_image(iBitmap *bmp, long size)
 
@@ -112,7 +112,7 @@ static void _load_image(iBitmap *bmp, long size)
 	}
 }
 
-//*************************************************************************
+
 
 static void _load_palette(iColour *pal)
 
@@ -130,7 +130,7 @@ static void _load_palette(iColour *pal)
 	}
 }
 
-//*************************************************************************
+
 
 static void _load_palette_mem(iColour *pal)
 
@@ -147,7 +147,7 @@ static void _load_palette_mem(iColour *pal)
 	}
 }
 
-//*************************************************************************
+
 BOOL pie_PCXLoadToBuffer(char *file, iSprite *s, iColour* pal)
 {
 	iPCX_header header;
@@ -385,8 +385,8 @@ BOOL pie_PCXLoadMemToBuffer(int8 *pcximge, iSprite *s, iColour *pal)
 	return TRUE;
 }
 
-//*************************************************************************
-//*************************************************************************
+
+
 
 
 #else // PSX version.

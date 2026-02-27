@@ -79,41 +79,74 @@ void strlwr(char *String)
 #ifdef WIN32
 // psx version is in sscanf.c
 
-int __cdecl _input (FILE *infile, const char *format, va_list arglist );
-
-// Special re-mix of sscanf that moves the string pointer along
+// Special re-mix of sscanf that moves the string pointer along.
+// Portable replacement for the old CRT-internal-based version.
+// Works by appending %n to the format string to measure consumed bytes,
+// then builds a suppressed-assignment copy to get the byte count separately.
 int __cdecl sscanf1 (
-        char **stringPos,
-        const char *format,
-        ...
-        )
-/*
- * 'S'tring 'SCAN', 'F'ormatted
- */
+		char **stringPos,
+		const char *format,
+		...
+		)
 {
-        va_list arglist;
-        FILE str;
-        FILE *infile = &str;
-        int retval;
+		va_list arglist;
+		int retval;
 		char *string;
 
-		string=*stringPos;
+		string = *stringPos;
 
-        va_start(arglist, format);
+		va_start(arglist, format);
+		retval = vsscanf(string, format, arglist);
+		va_end(arglist);
 
-//        _ASSERTE(string != NULL);
-//        _ASSERTE(format != NULL);
+		// Advance pointer: build a format with all assignments suppressed + %n
+		if (retval > 0)
+		{
+			char supFmt[512];
+			const char *src = format;
+			char *dst = supFmt;
+			char *dstEnd = supFmt + sizeof(supFmt) - 3;
+			int consumed = 0;
 
-        infile->_flag = _IOREAD|_IOSTRG|_IOMYBUF;
-        infile->_ptr = infile->_base = (char *) string;
-//        infile->_cnt = strlen(string);		// This is wrong ... what if the string isn't zero terminated it'll take forwever (and it does!)
-		infile->_cnt = 32768;		// dummy length ... to see if it will fail
+			while (*src && dst < dstEnd)
+			{
+				if (*src == '%')
+				{
+					if (*(src + 1) == '%')
+					{
+						*dst++ = *src++;
+						*dst++ = *src++;
+					}
+					else
+					{
+						*dst++ = *src++; // copy '%'
+						*dst++ = '*';    // suppress assignment
+						while (*src && dst < dstEnd)
+						{
+							int isConv = (*src >= 'a' && *src <= 'z') ||
+										 (*src >= 'A' && *src <= 'Z');
+							*dst++ = *src++;
+							if (isConv) break;
+						}
+					}
+				}
+				else
+				{
+					*dst++ = *src++;
+				}
+			}
+			*dst++ = '%';
+			*dst++ = 'n';
+			*dst = '\0';
 
-        retval = (_input(infile,format,arglist));
+			sscanf(string, supFmt, &consumed);
+			if (consumed > 0)
+			{
+				*stringPos = string + consumed;
+			}
+		}
 
-		*stringPos=infile->_ptr;
-
-        return(retval);
+		return(retval);
 }
 #endif
 
@@ -150,7 +183,7 @@ BOOL AtEndOfFile(char *CurPos, char *EndOfFile)
 }
 
 
-//*************************************************************************
+
 //*** load IMD shape
 //*
 //* params	filename = IMD file to load (including extention)
@@ -697,7 +730,7 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 	return (s);
 }
 
-//*************************************************************************
+
 //*** load shape level polygons
 //*
 //* pre		fp open
@@ -1263,7 +1296,7 @@ BOOL ReadPoints(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s)
 
 }
 
-//*************************************************************************
+
 //*** load shape level vertices
 //*
 //* pre		fp open
@@ -1723,7 +1756,7 @@ static iBool _imd_load_connectors(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDSh
 
 
 
-//*************************************************************************
+
 //*** load shape levels recurrsively
 //*
 //* pre		fp open

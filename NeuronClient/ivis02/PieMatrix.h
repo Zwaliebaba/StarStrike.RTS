@@ -28,7 +28,7 @@ typedef struct {SDWORD a, b, c,  d, e, f,  g, h, i,  j, k, l;} SDMATRIX;
 extern SDMATRIX *psMatrix;
 extern SDWORD	aSinTable[];
 
-//*************************************************************************
+
 
 #ifdef WIN32
 #define SIN(X)					aSinTable[(uint16)(X) >> 4]
@@ -45,7 +45,7 @@ extern SDWORD	aSinTable[];
 #define pie_MATTRANS(X,Y,Z)		{	psMatrix->j = (X)<<FP12_SHIFT;				\
 									psMatrix->k = (Y)<<FP12_SHIFT;				\
 									psMatrix->l = (Z)<<FP12_SHIFT;	}
-//*************************************************************************
+
 
 #define pie_SETUP_ROTATE_PROJECT																\
 	int32 _ivzfx, _ivzfy, _ivx, _ivy, _ivz
@@ -72,7 +72,7 @@ extern SDWORD	aSinTable[];
 	}																		\
 }
 
-//*************************************************************************
+
 
 #define pie_ROTATE_TRANSLATE(x,y,z,xs,ys,zs)										\
 {																			\
@@ -87,7 +87,7 @@ extern SDWORD	aSinTable[];
 	zs >>=FP12_SHIFT;												\
 }
 
-//*************************************************************************
+
 
 #define pie_TRANSLATE(x, y, z)																\
 {																									\
@@ -99,12 +99,12 @@ extern SDWORD	aSinTable[];
 						(z) * psMatrix->i);													\
 }
 
-//*************************************************************************
+
 
 #define pie_CLOCKWISE(x0,y0,x1,y1,x2,y2) ((((y1)-(y0)) * ((x2)-(x1))) <=	\
 															(((x1)-(x0)) * ((y2)-(y1))))
 
-//*************************************************************************
+
 
 #ifdef WIN32
 extern void pie_MatInit(void);
@@ -112,7 +112,7 @@ extern void pie_MatInit(void);
 extern void _iv_geo_setup(void);
 #endif
 
-//*************************************************************************
+
 
 extern void pie_MatBegin(void);
 extern void pie_MatEnd(void);
@@ -121,7 +121,7 @@ extern void pie_MatRotY(int y);
 extern void pie_MatRotZ(int z);
 extern int32 pie_RotProj(iVector *v3d, iPoint *v2d);
 
-//*************************************************************************
+
 
 extern void pie_VectorNormalise(iVector *v);
 extern void pie_VectorInverseRotate0(iVector *v1, iVector *v2);

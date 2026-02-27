@@ -26,9 +26,7 @@ extern	void	pie_DrawTextNew(unsigned char *string, int x, int y);
 extern SDWORD DisplayXFactor;
 #ifndef PIETOOL	// if we are in the pie tool then don't compile any of this
 
-#ifdef WIN32
-#include "3DfxFunc.h"
-#else
+#ifndef WIN32
 
 #include "vpsx.h"
 #include "psxvram.h"
@@ -1298,27 +1296,9 @@ void pie_DrawText270(unsigned char *String,int XPos,int YPos)
 #ifdef WIN32
 void pie_BeginTextRender(SWORD ColourIndex)
 {
-	switch (pie_GetRenderEngine())
-	{
-	case ENGINE_4101:
-	case ENGINE_SR:
-		TextColourIndex = ColourIndex;
-		pie_SetRendMode(REND_TEXT);
-		pie_SetBilinear(FALSE); 
-		break;
-	case ENGINE_D3D:
-		TextColourIndex = ColourIndex;
-		pie_SetRendMode(REND_TEXT);
-		pie_SetBilinear(FALSE); 
-		break;
-	case ENGINE_GLIDE:
-		TextColourIndex = ColourIndex;
-		pie_SetRendMode(REND_TEXT);
-		pie_SetBilinear(FALSE); 
-		break;
-	default:
-		break;
-	}
+	TextColourIndex = ColourIndex;
+	pie_SetRendMode(REND_TEXT);
+	pie_SetBilinear(FALSE); 
 }
 
 void pie_TextRender(IMAGEFILE *ImageFile,UWORD ID,int x,int y)
@@ -1338,42 +1318,28 @@ void pie_TextRender(IMAGEFILE *ImageFile,UWORD ID,int x,int y)
 	}
 	else
 	{
-		switch (pie_GetRenderEngine())
+		if (TextColourIndex == PIE_TEXT_WHITE)
 		{
-		case ENGINE_4101:
-		case ENGINE_SR:
-			DrawTransColourImage(ImageFile,ID,x,y,TextColourIndex);
-			break;
-		case ENGINE_GLIDE:
-			gl_DrawTransColourImage(ImageFile,ID,x,y,TextColourIndex);
-			break;
-		case ENGINE_D3D:
-			if (TextColourIndex == PIE_TEXT_WHITE)
-			{
-				pie_SetColour(PIE_TEXT_WHITE_COLOUR);
-			}
-			else if (TextColourIndex == PIE_TEXT_LIGHTBLUE)
-			{
-				pie_SetColour(PIE_TEXT_LIGHTBLUE_COLOUR);
-			}
-			else if (TextColourIndex == PIE_TEXT_DARKBLUE)
-			{
-				pie_SetColour(PIE_TEXT_DARKBLUE_COLOUR);
-			}
-			else
-			{
-				psPalette = pie_GetGamePal();
-				Red  = psPalette[TextColourIndex].r;
-				Green= psPalette[TextColourIndex].g;
-				Blue = psPalette[TextColourIndex].b;
-				pie_SetColour(((Alpha<<24) | (Red<<16) | (Green<<8) | Blue));
-			}
-			pie_SetColourKeyedBlack(TRUE);
-			pie_DrawImageFileID(ImageFile,ID,x,y);
-			break;
-		default:
-			break;
+			pie_SetColour(PIE_TEXT_WHITE_COLOUR);
 		}
+		else if (TextColourIndex == PIE_TEXT_LIGHTBLUE)
+		{
+			pie_SetColour(PIE_TEXT_LIGHTBLUE_COLOUR);
+		}
+		else if (TextColourIndex == PIE_TEXT_DARKBLUE)
+		{
+			pie_SetColour(PIE_TEXT_DARKBLUE_COLOUR);
+		}
+		else
+		{
+			psPalette = pie_GetGamePal();
+			Red  = psPalette[TextColourIndex].r;
+			Green= psPalette[TextColourIndex].g;
+			Blue = psPalette[TextColourIndex].b;
+			pie_SetColour(((Alpha<<24) | (Red<<16) | (Green<<8) | Blue));
+		}
+		pie_SetColourKeyedBlack(TRUE);
+		pie_DrawImageFileID(ImageFile,ID,x,y);
 	}
 }
 
@@ -1466,54 +1432,40 @@ void pie_TextRender270(IMAGEFILE *ImageFile, UWORD ImageID,int x,int y)
 	PIESTYLE	rendStyle;
 	iColour* psPalette;
 
-		switch (pie_GetRenderEngine())
+		Image = &(ImageFile->ImageDefs[ImageID]);
+		//not coloured yet
+		if (TextColourIndex == PIE_TEXT_WHITE)
 		{
-		case ENGINE_4101:
-		case ENGINE_SR:
-			TextRender270( ImageFile, ImageID, x, y);
-			break;
-		case ENGINE_GLIDE:
-			gl_TextRender270( ImageFile, ImageID, x, y);
-			break;
-		case ENGINE_D3D:
-			Image = &(ImageFile->ImageDefs[ImageID]);
-			//not coloured yet
-			if (TextColourIndex == PIE_TEXT_WHITE)
-			{
-				pie_SetColour(PIE_TEXT_WHITE_COLOUR & 0x80ffffff);//special case semi transparent for rotated text
-				pie_SetRendMode(REND_ALPHA_TEXT);
-			}
-			else if (TextColourIndex == PIE_TEXT_LIGHTBLUE)
-			{
-				pie_SetColour(PIE_TEXT_LIGHTBLUE_COLOUR);
-			}
-			else if (TextColourIndex == PIE_TEXT_DARKBLUE)
-			{
-				pie_SetColour(PIE_TEXT_DARKBLUE_COLOUR);
-			}
-			else
-			{
-				psPalette = pie_GetGamePal();
-				Red  = psPalette[TextColourIndex].r;
-				Green= psPalette[TextColourIndex].g;
-				Blue = psPalette[TextColourIndex].b;
-				pie_SetColour(((Alpha<<24) | (Red<<16) | (Green<<8) | Blue));
-			}
-			pie_SetColourKeyedBlack(TRUE);
-			pieImage.texPage = ImageFile->TPageIDs[Image->TPageID];
-			pieImage.tu = Image->Tu;
-			pieImage.tv = Image->Tv;
-			pieImage.tw = Image->Width;
-			pieImage.th = Image->Height;
-			dest.x = x+Image->YOffset;
-			dest.y = y+Image->XOffset - Image->Width;
-			dest.w = Image->Width;
-			dest.h = Image->Height;
-			pie_DrawImage270(&pieImage, &dest, &rendStyle);
-			break;
-		default:
-			break;
+			pie_SetColour(PIE_TEXT_WHITE_COLOUR & 0x80ffffff);//special case semi transparent for rotated text
+			pie_SetRendMode(REND_ALPHA_TEXT);
 		}
+		else if (TextColourIndex == PIE_TEXT_LIGHTBLUE)
+		{
+			pie_SetColour(PIE_TEXT_LIGHTBLUE_COLOUR);
+		}
+		else if (TextColourIndex == PIE_TEXT_DARKBLUE)
+		{
+			pie_SetColour(PIE_TEXT_DARKBLUE_COLOUR);
+		}
+		else
+		{
+			psPalette = pie_GetGamePal();
+			Red  = psPalette[TextColourIndex].r;
+			Green= psPalette[TextColourIndex].g;
+			Blue = psPalette[TextColourIndex].b;
+			pie_SetColour(((Alpha<<24) | (Red<<16) | (Green<<8) | Blue));
+		}
+		pie_SetColourKeyedBlack(TRUE);
+		pieImage.texPage = ImageFile->TPageIDs[Image->TPageID];
+		pieImage.tu = Image->Tu;
+		pieImage.tv = Image->Tv;
+		pieImage.tw = Image->Width;
+		pieImage.th = Image->Height;
+		dest.x = x+Image->YOffset;
+		dest.y = y+Image->XOffset - Image->Width;
+		dest.w = Image->Width;
+		dest.h = Image->Height;
+		pie_DrawImage270(&pieImage, &dest, &rendStyle);
 
 }
 

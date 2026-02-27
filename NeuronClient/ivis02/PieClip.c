@@ -13,11 +13,6 @@
 #include "PieState.h"
 #include "Rendmode.h"
 #include "D3drender.h"
-#ifdef INC_GLIDE
-	#include "Dglide.h"
-//	#include "3DfxFunc.h"
-//	#include "3DfxText.h"
-#endif
 
 /***************************************************************************/
 /*
@@ -127,7 +122,7 @@ void pie_Set2DClip(int x0, int y0, int x1, int y1)
 }
 
 
-//*************************************************************************
+
 
 int pie_PolyClipTex2D(int npoints, iVertex *points, iVertex *clip)
 
@@ -165,7 +160,7 @@ int pie_PolyClipTex2D(int npoints, iVertex *points, iVertex *clip)
 #endif
 }
 
-//*************************************************************************
+
 // New clipper that clips rgb lighting values
 int pie_ClipTextured(int npoints, PIEVERTEX *points, PIEVERTEX *clip, BOOL bSpecular)
 
@@ -202,7 +197,7 @@ int pie_ClipTextured(int npoints, PIEVERTEX *points, PIEVERTEX *clip, BOOL bSpec
 	return n;
 }
 
-//*************************************************************************
+
 /* Alex - much faster tri clipper - won't clip owt else tho' */
 int	pie_ClipTexturedTriangleFast(PIEVERTEX *v1, PIEVERTEX *v2, PIEVERTEX *v3, PIEVERTEX *clipped, BOOL bSpecular)
 {
@@ -248,7 +243,7 @@ UDWORD	i;
 
 	return numAll;
 }
-//*************************************************************************
+
 
 int iV_PolyClip2D(int npoints, iVertex *points, iVertex *clip)
 
@@ -558,7 +553,7 @@ static int pie_ClipXT(PIEVERTEX *s1, PIEVERTEX *s2, PIEVERTEX *clip)
 	}
 }
 
-//*************************************************************************
+
 
 static int _ytclip_edge2d(iVertex *s1, iVertex *s2, iVertex *clip)
 
@@ -680,7 +675,7 @@ static int _ytclip_edge2d(iVertex *s1, iVertex *s2, iVertex *clip)
 	}
 #endif
 }
-//*************************************************************************
+
 // New version - clips rgb lighting values
 static int pie_ClipYT(PIEVERTEX *s1, PIEVERTEX *s2, PIEVERTEX *clip)
 
@@ -927,7 +922,7 @@ static int _xclip_edge2d(iVertex *s1, iVertex *s2, iVertex *clip)
 #endif
 }
 
-//*************************************************************************
+
 
 static int _yclip_edge2d(iVertex *s1, iVertex *s2, iVertex *clip)
 

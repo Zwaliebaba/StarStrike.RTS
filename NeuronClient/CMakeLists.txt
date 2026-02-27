@@ -14,6 +14,8 @@ file(GLOB FRAMEWORK_SRC CONFIGURE_DEPENDS
     "Framework/*.c"
     "Framework/*.h"
 )
+# Resource.c is obsolete and replaced by FrameResource.c; it contains #error.
+list(FILTER FRAMEWORK_SRC EXCLUDE REGEX "Framework/Resource\\.c$")
 
 file(GLOB GAMELIB_SRC CONFIGURE_DEPENDS
     "Gamelib/*.c"
@@ -25,7 +27,27 @@ file(GLOB WIDGET_SRC CONFIGURE_DEPENDS
     "Widget/*.h"
 )
 
-# Only C sources – getdxver.cpp is intentionally excluded.
+file(GLOB SOUND_SRC CONFIGURE_DEPENDS
+    "Sound/*.c"
+    "Sound/*.h"
+)
+
+file(GLOB SCRIPT_SRC CONFIGURE_DEPENDS
+    "Script/*.c"
+    "Script/*.h"
+)
+
+file(GLOB NETPLAY_SRC CONFIGURE_DEPENDS
+    "Netplay/*.c"
+    "Netplay/*.h"
+)
+
+file(GLOB SEQUENCE_SRC CONFIGURE_DEPENDS
+    "Sequence/*.c"
+    "Sequence/*.h"
+)
+
+# Only C sources
 file(GLOB IVIS02_SRC CONFIGURE_DEPENDS
     "ivis02/*.c"
     "ivis02/*.h"
@@ -35,6 +57,10 @@ add_library (NeuronClient STATIC
     ${FRAMEWORK_SRC}
     ${GAMELIB_SRC}
     ${WIDGET_SRC}
+    ${SOUND_SRC}
+    ${SCRIPT_SRC}
+    ${NETPLAY_SRC}
+    ${SEQUENCE_SRC}
     ${IVIS02_SRC}
 )
 
@@ -46,6 +72,18 @@ target_include_directories (NeuronClient
         ${CMAKE_CURRENT_SOURCE_DIR}/Gamelib
         ${CMAKE_CURRENT_SOURCE_DIR}/Widget
         ${CMAKE_CURRENT_SOURCE_DIR}/ivis02
+        ${CMAKE_CURRENT_SOURCE_DIR}/Sound
+        ${CMAKE_CURRENT_SOURCE_DIR}/Script
+        ${CMAKE_CURRENT_SOURCE_DIR}/Netplay
+        ${CMAKE_CURRENT_SOURCE_DIR}/Sequence
+        ${CMAKE_SOURCE_DIR}/DX9/Include
+)
+
+# Make lex-generated scanner symbols static to avoid duplicate-symbol link errors
+# when multiple *L.c files each define input() / unput().
+target_compile_definitions (NeuronClient
+    PRIVATE
+        YY_STATIC
 )
 
 # PUBLIC: NeuronCore's headers and lib are forwarded transitively to StarStrike.

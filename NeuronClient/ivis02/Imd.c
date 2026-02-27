@@ -35,16 +35,16 @@
 #endif
 		 
 
-//*************************************************************************
 
-//*************************************************************************
+
+
 
 #define MAX_SHAPE_RADIUS	160
 
-//*************************************************************************
 
 
-//*************************************************************************
+
+
 #ifdef WIN32
 void iV_IMDDrawTextureRaise(iIMDShape *shape, float scale);
 void iV_IMDDrawTexturedHeightScaled(iIMDShape *shape, float scale);
@@ -292,7 +292,7 @@ void _imd_save_connectors(FILE *fp, iIMDShape *s)
 
 
 
-//*************************************************************************
+
 //*** save IMD file
 //*
 //* pre		shape successfully loaded
@@ -423,7 +423,7 @@ iBool iV_IMDSave(char *filename, iIMDShape *s, BOOL PieIMD)
 
 
 
-//*************************************************************************
+
 //*** print IMD file info
 //*
 //* pre		shape successfully loaded
@@ -498,7 +498,7 @@ void iV_IMDDebug(iIMDShape *s)
 }
 
 
-//*************************************************************************
+
 //*** free IMD shape memory
 //*
 //* pre		shape successfully allocated

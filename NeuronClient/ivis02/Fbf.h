@@ -17,7 +17,7 @@
 #define iV_FBF_SEEK_END			SEEK_END
 #define iV_FBF_DEFAULT_BUFFER	-1
 
-//*************************************************************************
+
 
 extern int iV_FileOpen(char *fname, int mode, int buffersize);
 extern int iV_FileGet(int fd);

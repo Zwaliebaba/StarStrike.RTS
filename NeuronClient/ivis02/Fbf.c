@@ -15,7 +15,7 @@
 #define BUFFERSIZE			1024
 #define CMASK					0377
 
-//*************************************************************************
+
 
 static struct {
 	int	open;
@@ -27,7 +27,7 @@ static struct {
 	int 	buffersize;
 } fbf[MAXBUFFERS];
 
-//*************************************************************************
+
 //*** (internal)
 //* find free file descriptor block
 //*
@@ -47,7 +47,7 @@ static int _fbf_getslot(void)
 	return (-1);
 }
 
-//*************************************************************************
+
 //*** open file for read or write (mutually exclusive)
 //*
 //* on entry:	fname = filename to open
@@ -109,7 +109,7 @@ int iV_FileOpen(char *fname, int mode, int buffersize)
 }
 
 
-//*************************************************************************
+
 //*** read one char from file
 //*
 //* pre:		iV_FileOpen(fd,iV_FBF_MODE_R,...)
@@ -132,7 +132,7 @@ int iV_FileGet(int fd)
 	return (( --fbf[fd].n>= 0) ? (*fbf[fd].b++ & CMASK) : EOF);
 }
 
-//*************************************************************************
+
 //*** close an open file
 //*
 //* pre:		iV_FileOpen(fd,...,...)
@@ -161,7 +161,7 @@ void iV_FileClose(int fd)
 	}
 }
 
-//*************************************************************************
+
 //*** write one char to file
 //*
 //* pre:			iV_FileOpen(fd,iV_FBF_MODE_W,...)
@@ -191,7 +191,7 @@ int iV_FilePut(int fd, int8 c)
 	return (i);
 }
 
-//*************************************************************************
+
 //*** seek to absolute file position
 //*
 //* pre:			iV_FileOpen(fd,iV_FBF_MODE_R,...)
@@ -211,7 +211,7 @@ int iV_FileSeek(int fd, int where, int seek)
 	return (fseek(fbf[fd].fp,where,seek));
 }
 
-//*************************************************************************
+
 //*** find size of an open file
 //*
 //* pre:			iV_FileOpen(fd,iV_FBF_MODE_R,...)
@@ -243,7 +243,7 @@ int32 iV_FileSizeOpen(int fd)
 	return (size);
 }
 
-//*************************************************************************
+
 //*** find size of a file (opens file, get size, close)
 //*
 //*
@@ -271,7 +271,7 @@ int32 iV_FileSize(char *filename)
 	return (size);
 }
 
-//*************************************************************************
+
 //*** save file
 //*
 //* on entry:	filename = file name to save
@@ -298,7 +298,7 @@ iBool iV_FileSave(char *filename, uint8 *data, int32 size)
 	return TRUE;
 }
 
-//*************************************************************************
+
 //*** load file
 //*
 //* on entry:	filename = file name to load

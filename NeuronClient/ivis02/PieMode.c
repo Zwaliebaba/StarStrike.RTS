@@ -15,9 +15,6 @@
 #include "Piefunc.h"
 #include "Tex.h"
 #include "D3dmode.h"
-#include "V4101.h"
-#include "Vsr.h"
-#include "3DfxFunc.h"
 #include "Texd3d.h"
 #include "Rendmode.h"
 #include "PieClip.h"
@@ -46,10 +43,6 @@ static	BOOL	bDither = FALSE;
  *	Local ProtoTypes
  */
 /***************************************************************************/
-//okay just this once
-extern void GetDXVersion(LPDWORD pdwDXVersion, LPDWORD pdwDXPlatform);
-
-/***************************************************************************/
 /*
  *	Source
  */
@@ -68,11 +61,8 @@ void	pie_SetDitherStatus( BOOL val )
 
 BOOL pie_CheckForDX6(void)
 {
-	UDWORD	DXVersion, DXPlatform;
-
-	GetDXVersion(&DXVersion, &DXPlatform);
-
-	return (DXVersion >= 0x600);
+	// Always TRUE — we require DirectX 9 which supersedes DX6
+	return TRUE;
 }
 
 BOOL pie_Initialise(SDWORD mode)
@@ -101,16 +91,7 @@ BOOL pie_Initialise(SDWORD mode)
 	_TEX_INDEX = 0;
 
 	//mode specific initialisation
-	if (mode == REND_GLIDE_3DFX)
-	{
-		pie_SetRenderEngine(ENGINE_GLIDE);
-		r = gl_VideoOpen();
-#if 1 //FOG ON from Start
-		pie_EnableFog(TRUE);
-		pie_SetFogColour(0x00B08f5f);//nicks colour
-#endif
-	}
-	else if (mode == REND_D3D_HAL)
+	if (mode == REND_D3D_HAL)
 	{
 		iV_RenderAssign(REND_D3D_HAL,&rendSurface);
 		pie_SetRenderEngine(ENGINE_D3D);
@@ -131,10 +112,10 @@ BOOL pie_Initialise(SDWORD mode)
 		rendSurface.usr = mode;
 		r = _mode_D3D_RGB();
 	}
-	else//REND_MODE_SOFTWARE
+	else//unknown mode
 	{
-		pie_SetRenderEngine(ENGINE_4101);
-		r = _mode_4101();	// we always want success as jon's stuff does the init
+		DBERROR(("Unknown render mode"));
+		r = FALSE;
 	}
 
 #ifdef WIN32
@@ -164,15 +145,6 @@ void pie_ShutDown(void)
 {
 	switch (pie_GetRenderEngine())
 	{
-	case ENGINE_4101:
-		_close_4101();
-		break;
-	case ENGINE_SR:
-		_close_sr();
-		break;
-	case ENGINE_GLIDE:
-		gl_VideoClose();
-		break;
 	case ENGINE_D3D:
 		_close_D3D();
 		break;
@@ -186,19 +158,8 @@ void pie_ShutDown(void)
 
 void pie_ScreenFlip(CLEAR_MODE clearMode)
 {
-	UWORD * backDrop;
 	switch (pie_GetRenderEngine())
 	{
-	case ENGINE_4101:
-			if (clearMode == CLEAR_OFF OR clearMode == CLEAR_OFF_AND_NO_BUFFER_DOWNLOAD)
-			{
-				screenFlip(FALSE);//automatically downloads active backdrop and never fogs
-			}
-			else
-			{
-				screenFlip(TRUE);//automatically downloads active backdrop and never fogs
-			}
-		break;
 	case ENGINE_D3D:
 		pie_D3DRenderForFlip();
 
@@ -226,44 +187,6 @@ void pie_ScreenFlip(CLEAR_MODE clearMode)
 			break;
 		}
 		break;
-	case ENGINE_GLIDE:
-		if (clearMode == CLEAR_OFF OR clearMode == CLEAR_OFF_AND_NO_BUFFER_DOWNLOAD)
-		{
-			gl_ScreenFlip(FALSE,TRUE);
-		}
-		else if (clearMode == CLEAR_FOG)
-		{
-			backDrop = screen_GetBackDrop();
-			if (backDrop != NULL)
-			{
-				gl_ScreenFlip(TRUE,TRUE);
-	   		}
-			else
-			{
-				gl_ScreenFlip(TRUE,FALSE);
-			}
-		}
-		else
-		{
-			pie_SetFogStatus(FALSE);
-			gl_ScreenFlip(TRUE,TRUE);
-		}
-		
-		backDrop = screen_GetBackDrop();
-
-		if (backDrop != NULL AND clearMode!=CLEAR_OFF_AND_NO_BUFFER_DOWNLOAD)
-		{
-			if (screen_GetBackDropWidth() == 640)
-			{
-		   		gl_Download640Buffer(backDrop);	// note the change!!! (centered)
-			}
-			else
-			{
-		   		gl_DownloadDisplayBuffer(backDrop);	// note the change!!! (centered)
-			}
-		}
-		break;
-	case ENGINE_SR:
 	default:
 		break;
 	}
@@ -274,17 +197,7 @@ void pie_ScreenFlip(CLEAR_MODE clearMode)
 void pie_Clear(UDWORD colour)
 {
 #ifndef PIEPSX    // Arse	
-	switch (pie_GetRenderEngine())
-	{
-	case ENGINE_SR:
-		_clear_sr(colour);
-		break;
-	case ENGINE_4101:
-	case ENGINE_D3D:
-	case ENGINE_GLIDE:
-	default:
-		break;
-	}
+	// No-op for D3D renderer
 #endif
 }
 /***************************************************************************/
@@ -293,17 +206,6 @@ void pie_GlobalRenderBegin(void)
 {
 	switch (pie_GetRenderEngine())
 	{
-	case ENGINE_GLIDE:
-		if (pie_GetFogEnabled())
-		{
-			gl_SetFogColour(pie_GetFogColour());
-			fogColourSet = TRUE;
-		}
-		else
-		{
-//			gl_SetFogColour(pie_GetFogColour(0));
-		}
-		break;
 	case ENGINE_D3D:
 		if (d3dActive == 0)
 		{
@@ -320,13 +222,6 @@ void pie_GlobalRenderEnd(BOOL bForceClearToBlack)
 {
 	switch (pie_GetRenderEngine())
 	{
-	case ENGINE_GLIDE:
-		if ((fogColourSet) && (bForceClearToBlack))
-		{
-			gl_SetFogColour(0);
-			fogColourSet = FALSE;
-		}
-		break;
 	case ENGINE_D3D:
 		if (d3dActive != 0)
 		{
@@ -374,32 +269,12 @@ UDWORD	resWidth;	//n.b. resolution width implies resolution height...!
 /***************************************************************************/
 void pie_LocalRenderBegin(void)
 {
-	switch (pie_GetRenderEngine())
-	{
-	case ENGINE_4101:
-		_bank_off_4101();
-		break;
-	case ENGINE_SR:
-		_bank_off_sr();
-		break;
-	default:
-		break;
-	}
+	// No-op for D3D renderer
 }
 
 void pie_LocalRenderEnd(void)
 {
-	switch (pie_GetRenderEngine())
-	{
-	case ENGINE_4101:
-		_bank_on_4101();
-		break;
-	case ENGINE_SR:
-		_bank_on_sr();
-		break;
-	default:
-		break;
-	}
+	// No-op for D3D renderer
 }
 
 

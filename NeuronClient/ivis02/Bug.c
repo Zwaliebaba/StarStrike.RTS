@@ -17,7 +17,7 @@ char dbgbuffer[MAXDBGSIZE];	// global for debugging buffer
 
 #endif
 
-//*************************************************************************
+
 
 void _debug_create_log(void)
 

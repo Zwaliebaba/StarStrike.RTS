@@ -23,7 +23,6 @@
 #include "Mission.h"
 #ifdef WIN32
 #include "Multiplay.h"
-#include "3DfxFunc.h"
 #include "Piefunc.h"
 #endif
 

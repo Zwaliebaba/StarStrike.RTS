@@ -68,12 +68,12 @@ extern char dbgbuffer[MAXDBGSIZE];
 
 #endif
 
-//*************************************************************************
+
 
 extern void iV_Debug(char *string, ...);
 extern void iV_DebugDisplayLog(void);
 
-//*************************************************************************
+
 
 extern void _debug_create_log(void);
 
