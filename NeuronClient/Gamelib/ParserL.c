@@ -290,12 +290,12 @@ static int fprintf(FILE* f,char* c,...)
 #pragma warning ( disable : 4102 4129 4305 )
 
 /* include framework */
-#include "frame.h"
+#include "Frame.h"
 
-#include "parser.h"
+#include "Parser.h"
 
 /* Get the Yacc definitions */
-#include "parser_y.h"
+#include "ParserY.h"
 
 /* Maximum length for any TEXT value */
 #define YYLMAX	255

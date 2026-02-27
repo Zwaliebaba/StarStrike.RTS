@@ -6,32 +6,32 @@
  * Routines for setting the game options and starting the init process.
  */
 
-#include "frame.h"			// for everything
-#include "map.h"
-#include "game.h"			// for loading maps
-#include "message.h"		// for clearing messages.
-#include "winmain.h"
+#include "Frame.h"			// for everything
+#include "Map.h"
+#include "Game.h"			// for loading maps
+#include "Message.h"		// for clearing messages.
+#include "WinMain.h"
 #include "Display3D.h"		// for changing the viewpoint
-#include "power.h"
-#include "widget.h"
-#include "gtime.h"
-#include "NetPlay.h"
+#include "Power.h"
+#include "Widget.h"
+#include "GTime.h"
+#include "Netplay.h"
 #include "HCI.h"
-#include "config.h"			// lobby cfg.
-#include "clparse.h"
-#include "piestate.h"
-#include "dGlide.h"
-#include "component.h"
-#include "console.h"
-#include "multiplay.h"
-#include "audio.h"
-#include "multijoin.h"
-#include "frontend.h"
-#include "levels.h"
-#include "multistat.h"
-#include "multiint.h"
-#include "multilimit.h"
-#include "multigifts.h"
+#include "Config.h"			// lobby cfg.
+#include "ClParse.h"
+#include "PieState.h"
+#include "Dglide.h"
+#include "Component.h"
+#include "Console.h"
+#include "Multiplay.h"
+#include "Audio.h"
+#include "Multijoin.h"
+#include "FrontEnd.h"
+#include "Levels.h"
+#include "Multistat.h"
+#include "MultiInt.h"
+#include "Multilimit.h"
+#include "Multigifts.h"
 // ////////////////////////////////////////////////////////////////////////////
 // GUID for warzone lobby and MPATH stuff.  i hate this stuff.
 #include <INITGUID.h>

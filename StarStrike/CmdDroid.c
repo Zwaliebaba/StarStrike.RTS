@@ -13,7 +13,7 @@
 #include "Group.h"
 #include "Order.h"
 #ifdef WIN32
-#include "multiplay.h"
+#include "Multiplay.h"
 #endif
 
 extern UDWORD selectedPlayer;

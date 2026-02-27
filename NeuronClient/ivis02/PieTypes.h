@@ -10,7 +10,7 @@
 #ifndef _pieTypes_h
 #define _pieTypes_h
 
-#include "frame.h"
+#include "Frame.h"
 
 #ifdef PSX
 #define PIEPSX

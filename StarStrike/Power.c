@@ -5,24 +5,24 @@
  *
  */
 #include "ObjectDef.h"
-#include "power.h"
+#include "Power.h"
 #include "HCI.h"
 #include "GTime.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "ObjMem.h"
-#include "Frontend.h"
+#include "FrontEnd.h"
 #ifdef WIN32
-#include "MultiPlay.h"
+#include "Multiplay.h"
 #include "MultiInt.h"
 #endif
 #include "Feature.h"
 #include "Structure.h"
-#include "mission.h"
+#include "Mission.h"
 #include "Research.h"
-#include "intDisplay.h"
-#include "action.h"
-#include "difficulty.h"
+#include "IntDisplay.h"
+#include "Action.h"
+#include "Difficulty.h"
 #include "PowerCrypt.h"
 
 

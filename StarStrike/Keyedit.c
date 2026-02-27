@@ -6,20 +6,20 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // includes 
-#include "frame.h"
-#include "widget.h"
-#include "frontend.h"
-#include "frend.h"
-#include "text.h"
-#include "textdraw.h"
-#include "hci.h"
-#include "loadsave.h"
-#include "keymap.h"
-#include "csnap.h"
-#include "intimage.h"
-#include "bitimage.h"
+#include "Frame.h"
+#include "Widget.h"
+#include "FrontEnd.h"
+#include "Frend.h"
+#include "Text.h"
+#include "TextDraw.h"
+#include "HCI.h"
+#include "Loadsave.h"
+#include "KeyMap.h"
+#include "Csnap.h"
+#include "IntImage.h"
+#include "BitImage.h"
 #include "IntDisplay.h"
-#include "Audio_id.h"
+#include "AudioId.h"
 
 // ////////////////////////////////////////////////////////////////////////////
 // defines

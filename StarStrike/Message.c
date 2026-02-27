@@ -7,18 +7,18 @@
 #include <stdio.h>
 
 #include "Frame.h"
-#include "message.h"
-#include "stats.h"
-#include "text.h"
+#include "Message.h"
+#include "Stats.h"
+#include "Text.h"
 #include "Console.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "HCI.h"
-#include "piedef.h"
-#include "objMem.h"
-#include "map.h"
+#include "Piedef.h"
+#include "ObjMem.h"
+#include "Map.h"
 #ifdef WIN32
-#include "multiplay.h"
+#include "Multiplay.h"
 #endif
 /* Allocation sizes for the message heaps */
 #define MESSAGE_INIT		20

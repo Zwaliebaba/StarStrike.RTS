@@ -3,8 +3,8 @@
  * functions regarding specific players
  */
 
-#include "frame.h"
-#include "netplay.h"
+#include "Frame.h"
+#include "Netplay.h"
 
 BOOL			NETuseNetwork			(BOOL val);
 BOOL FAR PASCAL Playercounter			(DPID dpId,DWORD dwPlayerType,LPCDPNAME lpName,DWORD dwFlags,LPVOID lpContext);

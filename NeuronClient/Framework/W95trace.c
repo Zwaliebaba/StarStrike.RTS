@@ -12,7 +12,7 @@
 /* Allow frame header files to be singly included */
 #define FRAME_LIB_INCLUDE
 
-#include "w95trace.h"
+#include "W95trace.h"
 
 void OutputDebugStringW95( LPCTSTR lpOutputString, ...)
 {

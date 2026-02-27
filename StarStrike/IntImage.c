@@ -16,21 +16,21 @@
 #include "Edit2D.h"
 #include "Map.h"
 /* Includes direct access to render library */
-#include "ivisdef.h"
-#include "pieState.h"
+#include "Ivisdef.h"
+#include "PieState.h"
 
 #ifdef WIN32
-#include "pieMode.h"
+#include "PieMode.h"
 #endif
 
-#include "vid.h"
+#include "Vid.h"
 #include "BitImage.h"
 
 #ifdef PSX
 #include "primatives.h"
 #endif
 
-#include "Display3d.h"
+#include "Display3D.h"
 #include "Edit3D.h"
 #include "Disp2D.h"
 #include "Structure.h"
@@ -39,18 +39,18 @@
 #include "GTime.h"
 #include "HCI.h"
 #include "Stats.h"
-#include "game.h"
-#include "power.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Game.h"
+#include "Power.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "WidgInt.h"
-#include "bar.h"
-#include "form.h"
-#include "label.h"
-#include "button.h"
-#include "editbox.h"
-#include "slider.h"
-#include "fractions.h"
+#include "Bar.h"
+#include "Form.h"
+#include "Label.h"
+#include "Button.h"
+#include "EditBox.h"
+#include "Slider.h"
+#include "Fractions.h"
 #include "Order.h"
 #include "WinMain.h"
 

@@ -7,20 +7,20 @@
 */
 
 /* Includes direct access to matrix code */
-#include "piedef.h"
-#include "pieState.h"
-#include "rendmode.h"
-#include "geo.h"//matrix code
+#include "Piedef.h"
+#include "PieState.h"
+#include "Rendmode.h"
+#include "Geo.h"//matrix code
 /* Includes from PUMPKIN stuff */
 #include "Frame.h"
 #include "ObjectDef.h"
-#include "map.h"
+#include "Map.h"
 #include "Display3D.h"
 #include "MiscImd.h"
 #include "Effects.h"
 #include "Component.h"
-#include "bucket3D.h"
-#include "message.h"
+#include "Bucket3d.h"
+#include "Message.h"
 #include "Console.h"
 #ifdef WIN32
 #include "Atmos.h"

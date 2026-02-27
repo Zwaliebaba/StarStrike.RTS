@@ -10,8 +10,8 @@
 #ifndef _ivisdef_h
 #define _ivisdef_h
 
-#include "frame.h"
-#include "pieTypes.h"
+#include "Frame.h"
+#include "PieTypes.h"
 
 // on the psx we need piepsx defined ... on the pc we need it when creating binary pie's
 #ifdef PSX
@@ -112,7 +112,7 @@ typedef struct {
 #ifdef BSPIMD
 typedef uint16 BSPPOLYID;			// lets hope this can work as a byte ... that will limit it to 255 polygons in 1 imd
 #endif
-#include "bspimd.h" //structure defintions only
+#include "Bspimd.h" //structure defintions only
 
 #ifdef PIEPSX
 typedef UBYTE VERTEXID;	// lets try it as a byte on the psx ... MAX_POINTS is already set to 256 so all should be ok

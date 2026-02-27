@@ -6,23 +6,23 @@
  * files to cope with multiplayer structure related stuff.. 
  */
 
-#include "frame.h"
+#include "Frame.h"
 #include "Droid.h"					
 #include "DroidDef.h"
 #include "Base.h"					
-#include "power.h"	
-#include "geometry.h"								// for gettilestructure
-#include "anim_id.h"
+#include "Power.h"	
+#include "Geometry.h"								// for gettilestructure
+#include "AnimId.h"
 #include "Stats.h"
 #include "Map.h"
-#include "console.h"
-#include "action.h"
+#include "Console.h"
+#include "Action.h"
 #include "Order.h"
-#include "projectile.h"
+#include "Projectile.h"
 #include "Netplay.h"								// the netplay library.					
-#include "multiplay.h"
-#include "multigifts.h"
-#include "audio_id.h"
+#include "Multiplay.h"
+#include "Multigifts.h"
+#include "AudioId.h"
 
 // ////////////////////////////////////////////////////////////////////////////
 // External Variables

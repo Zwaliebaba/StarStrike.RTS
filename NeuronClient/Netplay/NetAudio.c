@@ -5,8 +5,8 @@
  */
 
 #include "dsound.h"
-#include "frame.h"
-#include "netplay.h"
+#include "Frame.h"
+#include "Netplay.h"
 
 // ////////////////////////////////////////////////////////////////////////
 
@@ -192,7 +192,7 @@ BOOL NETinitAudioCapture(VOID)
 
 	captureBuff.dwSize		= sizeof(DSCBUFFERDESC);
 	captureBuff.dwFlags		= DSCBCAPS_WAVEMAPPED;
-	captureBuff.dwBufferBytes= SAMPLETIME * wfx.nAvgBytesPerSec;		// SAMPLETIME second’s worth of audio
+	captureBuff.dwBufferBytes= SAMPLETIME * wfx.nAvgBytesPerSec;		// SAMPLETIME secondï¿½s worth of audio
 	captureBuff.lpwfxFormat =  &wfx;
  
 	hr = IDirectSoundCapture_CreateCaptureBuffer(lpDirectSoundCapture,

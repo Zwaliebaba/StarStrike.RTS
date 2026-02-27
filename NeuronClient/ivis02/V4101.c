@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "rendmode.h"
-#include "piemode.h"
-#include "bug.h"
-#include "piePalette.h"
-#include "pieMatrix.h" // clockwise check
-#include "pieClip.h"
+#include "Rendmode.h"
+#include "PieMode.h"
+#include "Bug.h"
+#include "PiePalette.h"
+#include "PieMatrix.h" // clockwise check
+#include "PieClip.h"
 
 #ifndef PIEPSX		// was #ifdef WIN32
 

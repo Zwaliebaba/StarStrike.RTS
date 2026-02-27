@@ -1,11 +1,11 @@
 // vid.c 0.1 10-01-96.22-11-96
 #ifndef _rendmode_h_
 #define _rendmode_h_
-#include "ivisdef.h"
-#include "v4101.h"
-#include "vsr.h"
+#include "Ivisdef.h"
+#include "V4101.h"
+#include "Vsr.h"
 #ifdef WIN32
-#include "pieBlitFunc.h"
+#include "PieBlitFunc.h"
 #endif
 //#include "ivid3d.h"
 #include "BitImage.h"

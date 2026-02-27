@@ -2,30 +2,30 @@
 #include <stdlib.h>
 #include <math.h>
 #include <dos.h>
-#include "rendmode.h"
+#include "Rendmode.h"
 #ifdef WIN32
-#include "pieClip.h"
+#include "PieClip.h"
 #endif
 #ifdef WIN32
-#include "d3dmode.h"
-#include "v4101.h"
+#include "D3dmode.h"
+#include "V4101.h"
 #endif
-#include "rendFunc.h"
-#include "vsr.h"
-//#include "3dfxfunc.h"
-//#include "rendFunc.h"
-#include "textDraw.h"
+#include "Rendfunc.h"
+#include "Vsr.h"
+//#include "3DfxFunc.h"
+//#include "Rendfunc.h"
+#include "TextDraw.h"
 
-#include "bug.h"
-#include "piePalette.h"
-#include "pieState.h"
-#include "ivispatch.h"
-#include "fractions.h"
+#include "Bug.h"
+#include "PiePalette.h"
+#include "PieState.h"
+#include "Ivispatch.h"
+#include "Fractions.h"
 
 #ifdef WIN32
 #ifdef INC_GLIDE
-#include "dGlide.h"
-#include "3dfxfunc.h"
+#include "Dglide.h"
+#include "3DfxFunc.h"
 #endif
 #else
 

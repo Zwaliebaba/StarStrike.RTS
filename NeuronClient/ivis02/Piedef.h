@@ -12,9 +12,9 @@
 
 /***************************************************************************/
 
-#include "frame.h"
-#include "ivisdef.h"
-#include "ivispatch.h"
+#include "Frame.h"
+#include "Ivisdef.h"
+#include "Ivispatch.h"
 
 
 #ifdef WIN32

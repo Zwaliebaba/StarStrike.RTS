@@ -8,8 +8,8 @@
 #include "Frame.h"
 #include "Objects.h"
 #include "Projectile.h"
-#include "console.h"
-#include "oprint.h"
+#include "Console.h"
+#include "OPrint.h"
 
 #ifndef FINALBUILD
 #define OPRINTF	CONPRINTF

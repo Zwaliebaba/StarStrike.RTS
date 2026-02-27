@@ -21,17 +21,17 @@
 
 
 
-#include "ivisdef.h"
-#include "imd.h"		  
-//#include "geo.h"
+#include "Ivisdef.h"
+#include "Imd.h"		  
+//#include "Geo.h"
 //#include "txt.h"
-#include "bug.h"
+#include "Bug.h"
 //#include "pal.h"
-#include "tex.h"
-#include "ivispatch.h"
+#include "Tex.h"
+#include "Ivispatch.h"
 
 #ifdef PIETOOL
-#include "bspimd.h"
+#include "Bspimd.h"
 #endif
 		 
 

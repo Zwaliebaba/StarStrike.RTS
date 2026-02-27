@@ -14,54 +14,54 @@
 
 #include "stdio.h"
 #include "Frame.h"
-#include "winMain.h"
+#include "WinMain.h"
 #include "Objects.h"
-#include "display.h"
-#include "widget.h"
+#include "Display.h"
+#include "Widget.h"
 /* Includes direct access to render library */
-#include "ivisdef.h"
-#include "pieState.h"
+#include "Ivisdef.h"
+#include "PieState.h"
 #ifdef WIN32
-#include "keyedit.h"
-#include "pieFunc.h"
-#include "warzoneConfig.h"
+#include "Keyedit.h"
+#include "Piefunc.h"
+#include "WarzoneConfig.h"
 #endif
-#include "vid.h"
+#include "Vid.h"
 
-#include "display3d.h"
-#include "intdisplay.h"
-#include "audio.h"					// for sound.
-#include "audio_id.h"				// for sound..
+#include "Display3D.h"
+#include "IntDisplay.h"
+#include "Audio.h"					// for sound.
+#include "AudioId.h"				// for sound..
 #ifdef WIN32
-#include "cdaudio.h"
-#include "mixer.h"
-#include "config.h"
+#include "Cdaudio.h"
+#include "Mixer.h"
+#include "Config.h"
 #endif
 
-#include "design.h"					// for intadddesign
-#include "hci.h"					// for intShowPower
-#include "text.h"					// to get at string resources.
+#include "Design.h"					// for intadddesign
+#include "HCI.h"					// for intShowPower
+#include "Text.h"					// to get at string resources.
 #include "FrontEnd.h"
 #include "Console.h"
-#include "wrappers.h"
-#include "component.h"
-#include "loadsave.h"
-#include "CSnap.h"
-//#include "wrappers.h"				// for bUsingKeyboard.
+#include "Wrappers.h"
+#include "Component.h"
+#include "Loadsave.h"
+#include "Csnap.h"
+//#include "Wrappers.h"				// for bUsingKeyboard.
 #include "Frend.h"
-#include "game.h"
+#include "Game.h"
 #include "Init.h"
-#include "difficulty.h"
+#include "Difficulty.h"
 #include "InGameOp.h"
 
 #ifdef WIN32
-#include "advvis.h"
-#include "seqDisp.h"
-#include "multiplay.h"
-#include "multiint.h"
-#include "multilimit.h"
-#include "multistat.h"
-#include "netplay.h"
+#include "AdvVis.h"
+#include "SeqDisp.h"
+#include "Multiplay.h"
+#include "MultiInt.h"
+#include "Multilimit.h"
+#include "Multistat.h"
+#include "Netplay.h"
 #endif
 
 #ifdef PSX

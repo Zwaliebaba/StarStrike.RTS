@@ -11,16 +11,16 @@
 #include <stdlib.h>
 #include <string.h>
 /* Includes direct access to render library */
-#include "piedef.h"
-#include "pieState.h"
-#include "pieTexture.h"
-#include "pieClip.h"
-#include "piePalette.h"
-#include "pieMatrix.h"
-#include "pieMode.h"
-#include "pieFunc.h"
-#include "rendMode.h"
-#include "bspfunc.h"
+#include "Piedef.h"
+#include "PieState.h"
+#include "PieTexture.h"
+#include "PieClip.h"
+#include "PiePalette.h"
+#include "PieMatrix.h"
+#include "PieMode.h"
+#include "Piefunc.h"
+#include "Rendmode.h"
+#include "Bspfunc.h"
 #include "E3Demo.h"	// on the psx?
 #include "Loop.h"
 #ifdef WIN32					
@@ -40,7 +40,7 @@
 #include "Disp2D.h"
 #include "Geometry.h"
 #include "GTime.h"
-#include "resource.h"
+#include "Resource.h"
 #include "MessageDef.h"
 #include "MiscImd.h"
 #include "Effects.h"
@@ -48,18 +48,18 @@
 #include "Feature.h"
 #include "HCI.h"
 #include "Display.h"
-#include "intDisplay.h"
+#include "IntDisplay.h"
 #include "Radar.h"
 #include "Display3D.h"
-#include "fractions.h"
+#include "Fractions.h"
 #include "Lighting.h"
 #include "Console.h"
-#include "animobj.h"
-#include "projectile.h"
-#include "bucket3d.h"
-#include "intelmap.h"
-#include "mapdisplay.h"
-#include "message.h"
+#include "Animobj.h"
+#include "Projectile.h"
+#include "Bucket3d.h"
+#include "IntelMap.h"
+#include "MapDisplay.h"
+#include "Message.h"
 #include "Component.h"
 #include "Bridge.h"
 #include "WarCAM.h"
@@ -67,31 +67,31 @@
 #include "ScriptTabs.h"
 #include "ScriptExtern.h"
 #include "ScriptCB.h"
-#include "target.h"
-#include "keymap.h"
-#include "drive.h"
-#include "fpath.h"
-#include "gateway.h"
+#include "Target.h"
+#include "KeyMap.h"
+#include "Drive.h"
+#include "FPath.h"
+#include "Gateway.h"
 #include "Transporter.h"
-#include "WarZoneConfig.h"
-#include "audio.h"
-#include "audio_id.h"
-#include "action.h"
+#include "WarzoneConfig.h"
+#include "Audio.h"
+#include "AudioId.h"
+#include "Action.h"
 #include "KeyBind.h"
 #include "Combat.h"
-#include "order.h"
+#include "Order.h"
 
 #ifdef WIN32
 #include "Scores.h"
 #endif
 #ifdef ARROWS
-#include "arrow.h"
+#include "Arrow.h"
 #endif
 
 #ifdef WIN32
-#include "multiplay.h"
+#include "Multiplay.h"
 
-#include "environ.h"
+#include "Environ.h"
 #include "AdvVis.h"
 
 #endif
@@ -101,7 +101,7 @@
 //#include "Glide.h"
 //#endif
 
-#include "anim_id.h"
+#include "AnimId.h"
 
 #include "CmdDroid.h"
 

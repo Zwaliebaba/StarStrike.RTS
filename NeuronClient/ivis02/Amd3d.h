@@ -55,7 +55,7 @@
  * Used Microsoft VC++ 5.0
  *
  * #include <stdio.h>                    
- * #include "amd3d.h"                   
+ * #include "Amd3d.h"                   
  *                                       
  * void main ()                          
  * {                                     

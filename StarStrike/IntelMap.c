@@ -8,39 +8,39 @@
 #include "Frame.h"
 #include "Widget.h"
 /* Includes direct access to render library */
-#include "piedef.h"
-#include "rendmode.h"
+#include "Piedef.h"
+#include "Rendmode.h"
 
-//#include "geo.h"
+//#include "Geo.h"
 #include "Display3D.h"
-#include "map.h"
+#include "Map.h"
 #include "IntDisplay.h"
 #include "Objects.h"
-#include "display.h"
-#include "design.h"
+#include "Display.h"
+#include "Design.h"
 #include "Message.h"
 #include "HCI.h"
 #include "IntelMap.h"
-#include "mapDisplay.h"
-#include "audio.h"
+#include "MapDisplay.h"
+#include "Audio.h"
 #include "Text.h"
 #include "Console.h"
-#include "research.h"
-#include "gtime.h"
-#include "loop.h"
-#include "script.h"
-#include "scriptTabs.h"
+#include "Research.h"
+#include "GTime.h"
+#include "Loop.h"
+#include "Script.h"
+#include "ScriptTabs.h"
 
-#include "seqDisp.h"
+#include "SeqDisp.h"
 
 #ifdef WIN32
-#include "multiplay.h"
-#include "cdaudio.h"
+#include "Multiplay.h"
+#include "Cdaudio.h"
 #endif
-#include "scriptextern.h"
+#include "ScriptExtern.h"
 
 #ifdef PSX
-#include "component.h"
+#include "Component.h"
 #include "primatives.h"
 #include "dcache.h"
 #include "VPad.h"
@@ -55,7 +55,7 @@ extern BOOL	doDisplayWorld;
 UBYTE *ResearchStrings = NULL;
 #endif
 
-#include "csnap.h"
+#include "Csnap.h"
 extern CURSORSNAP InterfaceSnap;
 
 // See research.txt for research entry to be displayed

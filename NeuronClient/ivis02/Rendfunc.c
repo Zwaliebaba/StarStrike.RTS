@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include <dos.h>
-#include "rendfunc.h"
-#include "rendmode.h"
-#include "bug.h"
-#include "piePalette.h"
-#include "ivispatch.h"
-#include "fractions.h"
+#include "Rendfunc.h"
+#include "Rendmode.h"
+#include "Bug.h"
+#include "PiePalette.h"
+#include "Ivispatch.h"
+#include "Fractions.h"
 #ifdef WIN32
-#include "pieClip.h"
+#include "PieClip.h"
 #endif
 //#ifdef INC_GLIDE
 //#include "Glide.h"
@@ -25,7 +25,7 @@
 
 
 #ifdef WIN32
-#include "3dfxfunc.h"
+#include "3DfxFunc.h"
 #else
 
 #include "vpsx.h"

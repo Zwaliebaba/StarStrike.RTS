@@ -10,10 +10,10 @@
 #include <stdio.h>
 
 
-#include "piedef.h"
-#include "pieMatrix.h"
-#include "rendMode.h"
-#include "bug.h"
+#include "Piedef.h"
+#include "PieMatrix.h"
+#include "Rendmode.h"
+#include "Bug.h"
 
 /***************************************************************************/
 /*

@@ -9,26 +9,26 @@
 #include <gtime.h>
 #include <animobj.h>
 
-#include "statsdef.h"
-#include "base.h"
-#include "featuredef.h"
-#include "weapons.h"
-#include "structuredef.h"
-#include "display.h"
-#include "visibility.h"
+#include "StatsDef.h"
+#include "Base.h"
+#include "FeatureDef.h"
+#include "Weapons.h"
+#include "StructureDef.h"
+#include "Display.h"
+#include "Visibility.h"
 #include "ObjectDef.h"
-#include "droid.h"
+#include "Droid.h"
 
-#include "geo.h"
-#include "imd.h"
-#include "vid.h"
+#include "Geo.h"
+#include "Imd.h"
+#include "Vid.h"
 
 #ifdef PSX
 #include "vpsx.h"
 #include "primatives.h"
 #endif
 
-#include "target.h"
+#include "Target.h"
 
 extern UDWORD selectedPlayer;
 

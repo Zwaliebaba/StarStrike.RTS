@@ -3,13 +3,13 @@
  * mplayer specific code. Keep it out of the main game!
  */
 
-#include "frame.h"
-#include "droid.h"
-#include "netplay.h"
-#include "multiplay.h"
-#include "multistat.h"
+#include "Frame.h"
+#include "Droid.h"
+#include "Netplay.h"
+#include "Multiplay.h"
+#include "Multistat.h"
 
-#include "mpdpxtra.h"
+#include "Mpdpxtra.h"
 
 // submission fields.
 // obveall stats , based on local store 

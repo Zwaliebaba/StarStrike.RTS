@@ -20,16 +20,16 @@
 #include "Formation.h"
 #include "Geometry.h"
 #include "Projectile.h"
-#include "effects.h"	// for waypoint display
+#include "Effects.h"	// for waypoint display
 #include "GTime.h"
-#include "intOrder.h"
-#include "orderdef.h"	
+#include "IntOrder.h"
+#include "Orderdef.h"	
 #include "Transporter.h"
-#include "group.h"
+#include "Group.h"
 #include "CmdDroid.h"
-#include "script.h"
-#include "scripttabs.h"
-#include "scriptCB.h"
+#include "Script.h"
+#include "ScriptTabs.h"
+#include "ScriptCB.h"
 #ifdef WIN32
 #include "Multiplay.h"  //ajl
 #else
@@ -39,12 +39,12 @@ extern UDWORD selectedPlayer;
 #include "HCI.h"
 #include "Visibility.h"
 #include "Display.h"
-#include "ai.h"
-#include "warcam.h"
-#include "audio_id.h"
+#include "AI.h"
+#include "WarCAM.h"
+#include "AudioId.h"
 #include "FPath.h"
-#include "display3d.h"
-#include "combat.h"
+#include "Display3D.h"
+#include "Combat.h"
 
 // how long to run for
 #define RUN_TIME		8000

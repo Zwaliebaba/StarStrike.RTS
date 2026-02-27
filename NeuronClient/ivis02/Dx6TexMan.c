@@ -7,13 +7,13 @@
  */
 /***************************************************************************/
 
-#include "frame.h"
-#include "piedef.h"
-#include "pieState.h"
-#include "piePalette.h"
-#include "d3dRender.h"
-#include "dx6TexMan.h"
-#include "tex.h"
+#include "Frame.h"
+#include "Piedef.h"
+#include "PieState.h"
+#include "PiePalette.h"
+#include "D3drender.h"
+#include "Dx6TexMan.h"
+#include "Tex.h"
 
 
 /***************************************************************************/

@@ -2,19 +2,19 @@
 #include <stdlib.h>
 #include <math.h>
 #include <dos.h>
-#include "rendmode.h"
-#include "bug.h"
-#include "piePalette.h"
-#include "pcx.h"
-#include "tex.h"
-#include "ivispatch.h"
+#include "Rendmode.h"
+#include "Bug.h"
+#include "PiePalette.h"
+#include "Pcx.h"
+#include "Tex.h"
+#include "Ivispatch.h"
 
 #ifdef WIN32
 
 #ifdef INC_GLIDE
-	#include "tex.h"
-	#include "3dfxText.h"
-	#include "3dfxfunc.h"
+	#include "Tex.h"
+	#include "3DfxText.h"
+	#include "3DfxFunc.h"
 #endif
 
 #else

@@ -7,14 +7,14 @@
  */
 /***************************************************************************/
 
-#include "frame.h"
-#include "pieTexture.h"
-#include "piedef.h"
-#include "pieState.h"
-#include "dx6TexMan.h"
-#include "tex.h"
+#include "Frame.h"
+#include "PieTexture.h"
+#include "Piedef.h"
+#include "PieState.h"
+#include "Dx6TexMan.h"
+#include "Tex.h"
 #ifdef INC_GLIDE
-	#include "3dfxText.h"
+	#include "3DfxText.h"
 #endif
 
 

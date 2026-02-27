@@ -6,39 +6,39 @@
  * Contains the day to day networking stuff, and received message handler.
  */
 
-#include "frame.h"
+#include "Frame.h"
 #include "Map.h"
 
 #include "Stats.h"									// for templates.
-#include "game.h"									// for loading maps
+#include "Game.h"									// for loading maps
 #include "HCI.h"
 
 #include "time.h"									// for recording ping times.
 #include "Research.h"
 #include "Display3D.h"								// for changing the viewpoint
-#include "console.h"								// for screen messages
-#include "power.h"
-#include "text.h"
-#include "cmddroid.h"								//  for commanddroidupdatekills
-#include "wrappers.h"								// for game over
-#include "component.h"
-#include "frontend.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Console.h"								// for screen messages
+#include "Power.h"
+#include "Text.h"
+#include "CmdDroid.h"								//  for commanddroidupdatekills
+#include "Wrappers.h"								// for game over
+#include "Component.h"
+#include "FrontEnd.h"
+#include "Audio.h"
+#include "AudioId.h"
 
-#include "multiwdg.h"
+#include "MultiWDG.h"
 
-#include "warcam.h"	// these 4 for fireworks
-#include "effects.h"
-#include "gtime.h"
-#include "keybind.h"
+#include "WarCAM.h"	// these 4 for fireworks
+#include "Effects.h"
+#include "GTime.h"
+#include "KeyBind.h"
 
 #include "Netplay.h"								// the netplay library.
-#include "multiplay.h"								// warzone net stuff.	
-#include "multijoin.h"								// player management stuff.
-#include "multirecv.h"								// incoming messages stuff
-#include "multistat.h"
-#include "multigifts.h"								// gifts and alliances.
+#include "Multiplay.h"								// warzone net stuff.	
+#include "Multijoin.h"								// player management stuff.
+#include "Multirecv.h"								// incoming messages stuff
+#include "Multistat.h"
+#include "Multigifts.h"								// gifts and alliances.
 
 // ////////////////////////////////////////////////////////////////////////////
 // ////////////////////////////////////////////////////////////////////////////

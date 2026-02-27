@@ -1,7 +1,7 @@
 #ifndef _piePalette_
 #define _piePalette_
 
-#include "piedef.h"
+#include "Piedef.h"
 //*************************************************************************
 
 #define PALETTE_MAX	8

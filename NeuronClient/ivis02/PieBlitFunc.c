@@ -7,22 +7,22 @@
  */
 /***************************************************************************/
 
-#include "frame.h"
+#include "Frame.h"
 #include <time.h>
-#include "pieBlitFunc.h"
-#include "dx6TexMan.h"
-#include "bug.h"
-#include "piedef.h"
-#include "pieMode.h"
-#include "pieState.h"
-#include "3dfxFunc.h"
-#include "rendFunc.h"
-#include "rendMode.h"
-#include "texd3d.h"
-#include "pcx.h"
-#include "pieClip.h"
-#include "pieFunc.h"
-#include "pieMatrix.h"
+#include "PieBlitFunc.h"
+#include "Dx6TexMan.h"
+#include "Bug.h"
+#include "Piedef.h"
+#include "PieMode.h"
+#include "PieState.h"
+#include "3DfxFunc.h"
+#include "Rendfunc.h"
+#include "Rendmode.h"
+#include "Texd3d.h"
+#include "Pcx.h"
+#include "PieClip.h"
+#include "Piefunc.h"
+#include "PieMatrix.h"
 #ifndef PIEPSX
 /***************************************************************************/
 /*

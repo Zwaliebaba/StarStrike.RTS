@@ -11,11 +11,11 @@
 
 #include <string.h>
 
-#include "frame.h"
-#include "geo.h"
+#include "Frame.h"
+#include "Geo.h"
 
-#include "anim.h"
-#include "parser.h"
+#include "Anim.h"
+#include "Parser.h"
 
 /***************************************************************************/
 /* structs */

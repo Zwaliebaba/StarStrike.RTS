@@ -34,44 +34,44 @@ BOOL	moveDoMessage;
 
 #include "Objects.h"
 #include "Move.h"
-#include "FindPath.h"
+#include "Findpath.h"
 #include "Visibility.h"
 #include "Map.h"
 #include "FPath.h"
 #include "Loop.h"
 #include "GTime.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "Geometry.h"
-#include "animobj.h"
-#include "anim_id.h"
+#include "Animobj.h"
+#include "AnimId.h"
 #include "FormationDef.h"
 #include "Formation.h"
-#include "action.h"
-#include "display3d.h"
-#include "order.h"
-#include "astar.h"
+#include "Action.h"
+#include "Display3D.h"
+#include "Order.h"
+#include "AStar.h"
 #include "Combat.h"
 #include "MapGrid.h"
-#include "display.h"	// needed for widgetsOn flag.
+#include "Display.h"	// needed for widgetsOn flag.
 #include "Effects.h"
-#include "fractions.h"
-#include "power.h"
+#include "Fractions.h"
+#include "Power.h"
 #include "Scores.h"
 #ifdef WIN32
 #include "OptimisePath.h"
 #endif
-//#include "multigifts.h"
-#include "drive.h"
+//#include "Multigifts.h"
+#include "Drive.h"
 
 #ifdef ARROWS
-#include "arrow.h"
+#include "Arrow.h"
 #endif
 
 #ifdef WIN32
-#include "netplay.h"
-#include "MultiPlay.h"
-#include "multigifts.h"
+#include "Netplay.h"
+#include "Multiplay.h"
+#include "Multigifts.h"
 #endif
 
 #ifdef PSX

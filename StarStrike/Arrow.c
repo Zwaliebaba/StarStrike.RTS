@@ -1,8 +1,8 @@
 /***************************************************************************/
 
-#include "pietypes.h"
-#include "piestate.h"
-#include "arrow.h"
+#include "PieTypes.h"
+#include "PieState.h"
+#include "Arrow.h"
 
 /***************************************************************************/
 

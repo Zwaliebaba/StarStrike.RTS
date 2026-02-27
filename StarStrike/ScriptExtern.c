@@ -13,7 +13,7 @@
 #include "ScriptExtern.h"
 
 #ifdef WIN32
-#include "multiplay.h"
+#include "Multiplay.h"
 #endif
 
 #include "WinMain.h"

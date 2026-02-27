@@ -8,17 +8,17 @@
  */
 /***************************************************************************/
 
-#include "frame.h"
-#include "base.h"
-#include "map.h"
-#include "disp2d.h"
-#include "display3d.h"
-#include "piedef.h"
-#include "gtime.h"
+#include "Frame.h"
+#include "Base.h"
+#include "Map.h"
+#include "Disp2D.h"
+#include "Display3D.h"
+#include "Piedef.h"
+#include "GTime.h"
 
-#include "cluster.h"
-#include "aud.h"
-#include "audio_id.h"
+#include "Cluster.h"
+#include "Aud.h"
+#include "AudioId.h"
 
 /***************************************************************************/
 

@@ -4,7 +4,7 @@
  *Alex Lee 1997/98, Pumpkin Studios, Bath.
  */
 
-#include "group.h"
+#include "Group.h"
 
 // Different Message Structures allowed to be sent between players. 
 // Each message must have type = to one of these.

@@ -6,8 +6,8 @@
 #ifndef _messageDef_h
 #define _messageDef_h
 
-#include "deliverance.h"
-#include "pieTypes.h"
+#include "Deliverance.h"
+#include "PieTypes.h"
 	
 typedef enum _message_type
 {

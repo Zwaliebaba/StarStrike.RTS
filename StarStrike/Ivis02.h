@@ -8,14 +8,14 @@
 #define _ivis02_h
 
 /* Includes direct access to render modes */
-#include "ivisdef.h"
-#include "rendmode.h"
-//#include "geo.h"
-//#include "bug.h"
+#include "Ivisdef.h"
+#include "Rendmode.h"
+//#include "Geo.h"
+//#include "Bug.h"
 //#include "pal.h"
-//#include "imd.h"
-//#include "pcx.h"
+//#include "Imd.h"
+//#include "Pcx.h"
 //#include "ivisheap.h"
-//#include "tex.h"
+//#include "Tex.h"
 #endif //_ivis02_h
 

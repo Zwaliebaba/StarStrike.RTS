@@ -14,18 +14,18 @@
 #include "FrontEnd.h"
 
 #include "PieClip.h"
-#include "warzoneConfig.h"
+#include "WarzoneConfig.h"
 
-#include "clParse.h"
-#include "pieState.h"
-#include "loadsave.h"
+#include "ClParse.h"
+#include "PieState.h"
+#include "Loadsave.h"
 #include "Objects.h"
 #include "AdvVis.h"
-#include "multiplay.h"
-#include "multiint.h"
-#include "netplay.h"
+#include "Multiplay.h"
+#include "MultiInt.h"
+#include "Netplay.h"
 #include "Wrappers.h"
-#include "cheat.h"
+#include "Cheat.h"
 
 BOOL scanGameSpyFlags(LPSTR gflag,LPSTR value);
 

@@ -10,10 +10,10 @@
 
 #include <string.h>
 
-#include "frame.h"
-#include "hashtabl.h"
-#include "gtime.h"
-#include "animobj.h"
+#include "Frame.h"
+#include "Hashtabl.h"
+#include "GTime.h"
+#include "Animobj.h"
 
 /***************************************************************************/
 

@@ -3,9 +3,9 @@
 #include <limits.h>
 #include <memory.h>
 
-#include "frame.h"
+#include "Frame.h"
 
-#include "hashtabl.h"
+#include "Hashtabl.h"
 
 extern void *	g_ElementToBeRemoved;
 

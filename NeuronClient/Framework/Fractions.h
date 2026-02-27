@@ -43,7 +43,7 @@
 #error Framework header files MUST be included from Frame.h ONLY.
 #endif
 
-#include "types.h"
+#include "Types.h"
 
 #ifdef DEBUG
 

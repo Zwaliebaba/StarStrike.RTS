@@ -2,7 +2,7 @@
 #define _fbf_
 
 #include <stdio.h>
-#include "ivisdef.h"
+#include "Ivisdef.h"
 
 #define iV_FBF_OPENFAILED		-1
 #define iV_FBF_TOOMANYOPEN		-2

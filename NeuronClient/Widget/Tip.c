@@ -14,7 +14,7 @@
 
 #ifdef PSX
 #include "PiePalette.h"
-#include "ivis02.h"
+#include "Ivis02.h"
 #include "Primatives.h"
 #endif
 

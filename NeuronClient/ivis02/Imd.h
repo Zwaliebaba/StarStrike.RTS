@@ -2,7 +2,7 @@
 #define _imd_
 
 
-#include "ivisdef.h"
+#include "Ivisdef.h"
 
 #define IMD_NAME				"IMD"
 #define PIE_NAME				"PIE"  // Pumpkin image export data file
@@ -16,8 +16,8 @@
 #define BSPPOLYID_MAXPOLYID (65534)
 #define BSPPOLYID_TERMINATE (BSPPOLYID_MAXPOLYID+1)	// This is used as a terminator
 
-#include "bspimd.h"
-#include "frame.h"
+#include "Bspimd.h"
+#include "Frame.h"
 
 #endif
 

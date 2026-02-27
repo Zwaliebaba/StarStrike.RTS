@@ -7,7 +7,7 @@
 #ifndef _ivi_
 #define _ivi_
 
-#include "piedef.h"
+#include "Piedef.h"
 
 #define iV_SWAP(a,b)			{ (a) ^= (b); (b) ^= (a); (a) ^= (b); }
 

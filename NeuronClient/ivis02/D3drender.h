@@ -6,9 +6,9 @@
 /***************************************************************************/
 
 #include "d3d.h"
-#include "frame.h"
-#include "texd3d.h"
-#include "pieState.h"
+#include "Frame.h"
+#include "Texd3d.h"
+#include "PieState.h"
 
 /***************************************************************************/
 

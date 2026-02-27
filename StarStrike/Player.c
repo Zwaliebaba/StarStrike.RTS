@@ -10,12 +10,12 @@
 #include "Objects.h"
 #include "Map.h"
 #include "Player.h"
-#include "game.h"
+#include "Game.h"
 #include "Order.h"
 #include "ObjectDef.h"
 
 #ifdef WIN32
-#include "MultiPlay.h"
+#include "Multiplay.h"
 #endif
 
 /* The position for the computer players to attack */

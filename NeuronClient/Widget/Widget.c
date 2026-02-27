@@ -21,7 +21,7 @@
 #include "Tip.h"
 
 #ifdef PSX
-#include "ivis02.h"
+#include "Ivis02.h"
 #include "Primatives.h"
 #include "DCache.h"
 #endif

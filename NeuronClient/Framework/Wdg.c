@@ -15,7 +15,7 @@
 #include <assert.h>
 
 #include "Frame.h"
-#include "wdg.h"
+#include "Wdg.h"
 #include "MultiWDG.h"
 
 #ifdef PSX

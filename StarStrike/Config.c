@@ -3,27 +3,27 @@
  * 
  */
 
-#include "frame.h"
+#include "Frame.h"
 
-#include "objmem.h"
-#include "display.h"	// gamma
-#include "track.h"		// audio
-#include "cdaudio.h"	// audio
-#include "piestate.h"	// setgamma.
-#include "warzoneConfig.h"	// renderMode
-#include "component.h"
-#include "text.h"
-#include "seqdisp.h"
-#include "difficulty.h"
-#include "netplay.h"
-#include "display3d.h"
-#include "multiplay.h"
-#include "ai.h"
+#include "ObjMem.h"
+#include "Display.h"	// gamma
+#include "Track.h"		// audio
+#include "Cdaudio.h"	// audio
+#include "PieState.h"	// setgamma.
+#include "WarzoneConfig.h"	// renderMode
+#include "Component.h"
+#include "Text.h"
+#include "SeqDisp.h"
+#include "Difficulty.h"
+#include "Netplay.h"
+#include "Display3D.h"
+#include "Multiplay.h"
+#include "AI.h"
 #include "AdvVis.h"
-#include "mixer.h"
+#include "Mixer.h"
 #include "HCI.h"
-#include "Fpath.h"
-#include "d3drender.h"
+#include "FPath.h"
+#include "D3drender.h"
 
 // ////////////////////////////////////////////////////////////////////////////
 

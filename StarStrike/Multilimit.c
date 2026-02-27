@@ -4,32 +4,32 @@
  * interface for setting limits to the game, bots, structlimits etc...
  */ 
 
-#include "frame.h"
-#include "csnap.h"
-#include "widget.h"
-#include "hci.h"
-#include "text.h"
-#include "intimage.h"
-#include "intdisplay.h"
-#include "init.h"		// for gameheap
-#include "frend.h"
-#include "stats.h"
-#include "frontend.h"
-#include "component.h"
-#include "loadsave.h"
-#include "wrappers.h"	// for loading screen
-#include "gtime.h"
-#include "console.h"
-#include "bitimage.h"	// GFX incs
-#include "textdraw.h"
-#include "piematrix.h"
-#include "piestate.h"
-#include "netplay.h"
-#include "multiplay.h"
-#include "multirecv.h"
-#include "multiint.h"
-#include "multilimit.h"
-#include "pieMode.h"
+#include "Frame.h"
+#include "Csnap.h"
+#include "Widget.h"
+#include "HCI.h"
+#include "Text.h"
+#include "IntImage.h"
+#include "IntDisplay.h"
+#include "Init.h"		// for gameheap
+#include "Frend.h"
+#include "Stats.h"
+#include "FrontEnd.h"
+#include "Component.h"
+#include "Loadsave.h"
+#include "Wrappers.h"	// for loading screen
+#include "GTime.h"
+#include "Console.h"
+#include "BitImage.h"	// GFX incs
+#include "TextDraw.h"
+#include "PieMatrix.h"
+#include "PieState.h"
+#include "Netplay.h"
+#include "Multiplay.h"
+#include "Multirecv.h"
+#include "MultiInt.h"
+#include "Multilimit.h"
+#include "PieMode.h"
 
 // ////////////////////////////////////////////////////////////////////////////
 // externs

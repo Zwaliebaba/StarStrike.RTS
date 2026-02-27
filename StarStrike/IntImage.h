@@ -98,7 +98,7 @@ extern TABDEF SmallTab;
 #endif
 
 #ifdef WIN32
-#include "intfac.h"		// Interface image id's.
+#include "Intfac.h"		// Interface image id's.
 #else
 #include "intpsx.h"
 #endif

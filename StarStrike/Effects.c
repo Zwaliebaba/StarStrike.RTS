@@ -20,37 +20,37 @@
 #include <stdio.h>
 #include <assert.h>
 #include "Frame.h"
-#include "ivisdef.h" //ivis matrix code
-#include "piedef.h" //ivis matrix code
-#include "pieState.h"
-#include "geo.h" //ivis matrix code
+#include "Ivisdef.h" //ivis matrix code
+#include "Piedef.h" //ivis matrix code
+#include "PieState.h"
+#include "Geo.h" //ivis matrix code
 #include "GTime.h"
-#include "Display3d.h"
+#include "Display3D.h"
 #include "Map.h"
-#include "Bucket3D.h"
+#include "Bucket3d.h"
 #ifdef WIN32
-#include "pieMode.h"
+#include "PieMode.h"
 #include "Mission.h"
 #endif
 
 /*Remove this one!!! :-( */
 #include "MiscImd.h"
 #include "Effects.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "HCI.h"
 #include "Lighting.h"
 #include "Console.h"
 #include "Loop.h"
 #ifdef PSX
-#include "vid.h"
+#include "Vid.h"
 #include "vpsx.h"
 #include "primatives.h"
 #include "drawIMD_psx.h"
 #include <inline_c.h>
 #include <gtemac.h>
 #else
-#include "MultiPlay.h"
+#include "Multiplay.h"
 #endif
 
 #include "Game.h"

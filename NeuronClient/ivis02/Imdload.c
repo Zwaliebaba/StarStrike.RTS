@@ -18,21 +18,21 @@
 #define PIEPSX	// define all the time for the psx ... only for the binary util on the pc
 #endif
 
-#include "frame.h"
-#include "pieMatrix.h" //for surface normals
-#include "ivisdef.h"	// for imd structures
-#include "imd.h"	// for imd structures
-#include "rendmode.h"
-#include "ivispatch.h"
-#include "bug.h"
-#include "tex.h"		// texture page loading
+#include "Frame.h"
+#include "PieMatrix.h" //for surface normals
+#include "Ivisdef.h"	// for imd structures
+#include "Imd.h"	// for imd structures
+#include "Rendmode.h"
+#include "Ivispatch.h"
+#include "Bug.h"
+#include "Tex.h"		// texture page loading
 
 #ifdef PSX
 #include "file_psx.h"
 #include "drawimd_psx.h"	// for the scrvertex structure
 #endif
 
-#include "bspfunc.h"	// for imd functions
+#include "Bspfunc.h"	// for imd functions
 
 
 #ifndef FINALBUILD

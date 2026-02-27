@@ -8,46 +8,46 @@
 
 #include <stdio.h>
 #include <Math.h>
-#include "imd.h"
-#include "vid.h"
+#include "Imd.h"
+#include "Vid.h"
 #include "Frame.h"
 #include "Objects.h"
 #include "Move.h"
-#include "FindPath.h"
+#include "Findpath.h"
 #include "Visibility.h"
 #include "Map.h"
 #include "FPath.h"
 #include "Loop.h"
 #include "GTime.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "Geometry.h"
-#include "animobj.h"
-#include "anim_id.h"
+#include "Animobj.h"
+#include "AnimId.h"
 #include "FormationDef.h"
 #include "Formation.h"
-#include "action.h"
-#include "order.h"
-#include "astar.h"
+#include "Action.h"
+#include "Order.h"
+#include "AStar.h"
 #include "Combat.h"
 #include "MapGrid.h"
-#include "display.h"	// needed for widgetsOn flag.
+#include "Display.h"	// needed for widgetsOn flag.
 #include "Effects.h"
-#include "fractions.h"
-#include "hci.h"
-#include "warcam.h"
-#include "radar.h"
-#include "display3ddef.h"
-#include "display3d.h"
+#include "Fractions.h"
+#include "HCI.h"
+#include "WarCAM.h"
+#include "Radar.h"
+#include "Display3Ddef.h"
+#include "Display3D.h"
 #include "Console.h"
 #include "Text.h"
 
 // all the bollox needed for script callbacks
-#include "interp.h"				// needed to define types in scripttabs.h
-#include "parse.h"				// needed to define types in scripttabs.h (Arse!)
-#include "scripttabs.h"			// needed to define the callback
+#include "Interp.h"				// needed to define types in scripttabs.h
+#include "Parse.h"				// needed to define types in scripttabs.h (Arse!)
+#include "ScriptTabs.h"			// needed to define the callback
 #include "ScriptExtern.h"		// needed to include the GLOBAL for checking bInTutorial
-#include "group.h"
+#include "Group.h"
 
 #define DEBUG_DRIVE_SPEED
 
@@ -58,7 +58,7 @@
 #define PITCHCHANGE (512)
 
 #ifdef WIN32
-#include "MultiPlay.h"
+#include "Multiplay.h"
 #endif
 
 #ifdef PSX
@@ -66,8 +66,8 @@
 #include "ctrlpsx.h"
 #endif
 
-#include "target.h"
-#include "drive.h"
+#include "Target.h"
+#include "Drive.h"
 
 static	SWORD DrivingAudioTrack=-1;		// Which hardware channel are we using for the car driving noise
 

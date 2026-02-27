@@ -4,33 +4,33 @@
  * Also home to Deathmatch hardcoded RULES.
  */
 
-#include "frame.h"
-#include "widget.h"
-#include "objmem.h"	
-#include "console.h"
-#include "map.h"
-#include "research.h"
-#include "power.h"
-#include "group.h"
-#include "anim_id.h"
-#include "hci.h"
-#include "text.h"
-#include "scriptfuncs.h"		// for objectinrange.
-#include "gtime.h"
-#include "effects.h"		
-#include "audio.h"
-#include "audio_id.h"			// for samples.
-#include "wrappers.h"			// for gameover..
+#include "Frame.h"
+#include "Widget.h"
+#include "ObjMem.h"	
+#include "Console.h"
+#include "Map.h"
+#include "Research.h"
+#include "Power.h"
+#include "Group.h"
+#include "AnimId.h"
+#include "HCI.h"
+#include "Text.h"
+#include "ScriptFuncs.h"		// for objectinrange.
+#include "GTime.h"
+#include "Effects.h"		
+#include "Audio.h"
+#include "AudioId.h"			// for samples.
+#include "Wrappers.h"			// for gameover..
 #include "Script.h"
 #include "ScriptTabs.h"
 #include "ScriptCB.h"
 
-#include "netplay.h"
-#include "multiplay.h"
-#include "multigifts.h"
-#include "multiint.h"			// for force name.
-#include "multimenu.h"			// for multimenu
-#include "multistat.h"
+#include "Netplay.h"
+#include "Multiplay.h"
+#include "Multigifts.h"
+#include "MultiInt.h"			// for force name.
+#include "MultiMenu.h"			// for multimenu
+#include "Multistat.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -2,13 +2,13 @@
 
 #include <stdio.h>
 
-#include "frame.h"
-#include "pcx.h"
-#include "tex.h"
-#include "rendmode.h"
+#include "Frame.h"
+#include "Pcx.h"
+#include "Tex.h"
+#include "Rendmode.h"
 
-#include "d3drender.h"
-#include "texd3d.h"
+#include "D3drender.h"
+#include "Texd3d.h"
 
 /***************************************************************************/
 /*

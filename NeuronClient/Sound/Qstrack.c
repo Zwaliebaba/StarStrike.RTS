@@ -7,16 +7,16 @@
 #include <windows.h>
 #include <mmreg.h>
 
-#include "frame.h"
-#include "tracklib.h"
-#include "audio.h"
+#include "Frame.h"
+#include "Tracklib.h"
+#include "Audio.h"
 
 #define	PI	 3.14159265359
 
 #define QMIXER	1
 
 #if QMIXER
-#include "qmixer.h"
+#include "QMIXER.h"
 #else
 #include "qmdx.h"
 #endif

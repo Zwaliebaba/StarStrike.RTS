@@ -8,7 +8,7 @@
 #ifndef _multiwdg_h
 #define _multiwdg_h
 
-#include "wdg.h"
+#include "Wdg.h"
 
 // maximum number of characters in the wdg name
 #define WDG_NAMEMAX		16

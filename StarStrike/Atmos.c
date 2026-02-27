@@ -6,10 +6,10 @@
 	system and aren't properly implemented in the software mode 
 */
 #include "Frame.h"
-#include "PieDef.h"
+#include "Piedef.h"
 #include "PieState.h"
 #include "Display3D.h"
-#include "Display3dDef.h"
+#include "Display3Ddef.h"
 #include "GTime.h"
 #include "MiscImd.h"
 #include "Map.h"
@@ -17,8 +17,8 @@
 #include "Loop.h"
 #include "Geo.h"
 #include "Effects.h"
-#include "lighting.h"
-#include "bucket3d.h"
+#include "Lighting.h"
+#include "Bucket3d.h"
 #include "HCI.h"
 
 // -----------------------------------------------------------------------------

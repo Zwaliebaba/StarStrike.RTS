@@ -7,10 +7,10 @@
 #ifndef _mission_h
 #define _mission_h
 
-#include "map.h"
-#include "power.h"
-#include "missiondef.h"
-#include "group.h"
+#include "Map.h"
+#include "Power.h"
+#include "MissionDef.h"
+#include "Group.h"
 
 /*the number of areas that can be defined to prevent buildings being placed - 
 used for Transporter Landing Zones 0-7 are for players, 8 = LIMBO_LANDING*/

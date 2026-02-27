@@ -1,7 +1,7 @@
 #ifndef _3dfxtext_h
 #define _3dfxtext_h
 #ifdef INC_GLIDE
-#include "dGlide.h"
+#include "Dglide.h"
 
 
 extern void	init3dfxTexMemory( void );

@@ -7,55 +7,55 @@
 #include <stdio.h>
 
 #include "Frame.h"
-#include "ivisdef.h" //ivis palette code
-#include "pieState.h"
-#include "textdraw.h" //ivis text code
+#include "Ivisdef.h" //ivis palette code
+#include "PieState.h"
+#include "TextDraw.h" //ivis text code
 
 #ifdef WIN32
-#include "piemode.h"
-#include "pieMatrix.h"
-#include "pieFunc.h"
+#include "PieMode.h"
+#include "PieMatrix.h"
+#include "Piefunc.h"
 #endif
 
-#include "hci.h"		// access to widget screen.
-#include "widget.h"
+#include "HCI.h"		// access to widget screen.
+#include "Widget.h"
 #include "Wrappers.h"
 #include "WinMain.h"
 #include "Objects.h"
 #include "Display.h"
-#include "Display3d.h"
+#include "Display3D.h"
 #include "FrontEnd.h"
 #include "Frend.h"		// display logo.
-#include "console.h"
-#include "intimage.h"
-#include "text.h"
-#include "intdisplay.h"	//for shutdown
-#include "audio.h"		
-#include "audio_id.h"		
-#include "gtime.h"
-#include "ingameop.h"
+#include "Console.h"
+#include "IntImage.h"
+#include "Text.h"
+#include "IntDisplay.h"	//for shutdown
+#include "Audio.h"		
+#include "AudioId.h"		
+#include "GTime.h"
+#include "InGameOp.h"
 #include "KeyMap.h"
-#include "mission.h"
+#include "Mission.h"
 
 #ifdef WIN32
-#include "keyedit.h"
+#include "Keyedit.h"
 #include "SeqDisp.h"
-#include "3dfxfunc.h"
-#include "vid.h"
-#include "config.h"
-#include "resource.h"
-#include "netPlay.h"	// multiplayer 
-#include "multiplay.h"
-#include "Multiint.h"				
-#include "multistat.h"
-#include "multilimit.h"
+#include "3DfxFunc.h"
+#include "Vid.h"
+#include "Config.h"
+#include "Resource.h"
+#include "Netplay.h"	// multiplayer 
+#include "Multiplay.h"
+#include "MultiInt.h"				
+#include "Multistat.h"
+#include "Multilimit.h"
 #endif
 
 #ifdef PSX
-#include "map.h"
+#include "Map.h"
 #include "display3d_psx.h"
 #include "libsn.h"
-#include "vid.h"
+#include "Vid.h"
 #include "Primatives.h"
 #include "VPad.h"
 #include "CtrlPSX.h"

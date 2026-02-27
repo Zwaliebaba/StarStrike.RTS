@@ -2,23 +2,23 @@
 #include <stdlib.h>
 #include <math.h>
 #include <dos.h>
-#include "ivisdef.h"
-#include "pieState.h"
-#include "rendmode.h"
-#include "rendfunc.h"
+#include "Ivisdef.h"
+#include "PieState.h"
+#include "Rendmode.h"
+#include "Rendfunc.h"
 #ifdef WIN32
-#include "pieClip.h"
+#include "PieClip.h"
 #endif
 #include <ddraw.h>
 
 #ifdef WIN32
-#include "pieBlitFunc.h"
+#include "PieBlitFunc.h"
 //#include "Intfac.h"			// ffs am
 #endif
 
-#include "bug.h"
-#include "piePalette.h"
-#include "ivispatch.h"
+#include "Bug.h"
+#include "PiePalette.h"
+#include "Ivispatch.h"
 #include "TextDraw.h"
 #include "BitImage.h"
 
@@ -27,7 +27,7 @@ extern SDWORD DisplayXFactor;
 #ifndef PIETOOL	// if we are in the pie tool then don't compile any of this
 
 #ifdef WIN32
-#include "3dfxfunc.h"
+#include "3DfxFunc.h"
 #else
 
 #include "vpsx.h"
@@ -425,7 +425,7 @@ void pie_TestFormattedText(void)
 
 	// Draw some left justified appended to the last print.
 	ty = pie_DrawFormattedText(
-		(UBYTE*)"ÜThis stÜruÛcture contains technology vital for the success of the Project.",
+		(UBYTE*)"ï¿½This stï¿½ruï¿½cture contains technology vital for the success of the Project.",
 		16,ty,640-32,FTEXT_LEFTJUSTIFYAPPEND,TRUE);
 
 	// Draw some centre justified text.

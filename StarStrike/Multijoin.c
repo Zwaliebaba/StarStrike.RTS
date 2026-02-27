@@ -8,43 +8,43 @@
 
 #include <stdio.h>					// for sprintf
 
-#include "frame.h"
+#include "Frame.h"
 
-#include "Objmem.h"
-#include "statsdef.h"
-#include "droiddef.h"
-#include "textdraw.h"
-#include "gtime.h"
-#include "game.h"
-#include "projectile.h"
-#include "droid.h"
-#include "map.h"
-#include "power.h"
-#include "game.h"					// for loading maps
-#include "player.h"
-#include "message.h"				// for clearing game messages
-#include "text.h"					// for string resources.
-#include "order.h"
-#include "console.h"
-#include "orderdef.h"				// for droid_order_data
-#include "hci.h"
-#include "component.h"
-#include "research.h"
-#include "audio.h"
-#include "audio_id.h"
-#include "wrappers.h"
-#include "intimage.h"
-#include "data.h"
+#include "ObjMem.h"
+#include "StatsDef.h"
+#include "DroidDef.h"
+#include "TextDraw.h"
+#include "GTime.h"
+#include "Game.h"
+#include "Projectile.h"
+#include "Droid.h"
+#include "Map.h"
+#include "Power.h"
+#include "Game.h"					// for loading maps
+#include "Player.h"
+#include "Message.h"				// for clearing game messages
+#include "Text.h"					// for string resources.
+#include "Order.h"
+#include "Console.h"
+#include "Orderdef.h"				// for droid_order_data
+#include "HCI.h"
+#include "Component.h"
+#include "Research.h"
+#include "Audio.h"
+#include "AudioId.h"
+#include "Wrappers.h"
+#include "IntImage.h"
+#include "Data.h"
 #include "Script.h"
 #include "ScriptTabs.h"
 
 #include "Netplay.h"
-#include "multiplay.h"
-#include "multijoin.h"
-#include "multirecv.h"
-#include "multiint.h"
-#include "multistat.h"
-#include "multigifts.h"
+#include "Multiplay.h"
+#include "Multijoin.h"
+#include "Multirecv.h"
+#include "MultiInt.h"
+#include "Multistat.h"
+#include "Multigifts.h"
 
 // ////////////////////////////////////////////////////////////////////////////
 // External Variables

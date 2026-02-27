@@ -6,10 +6,10 @@
 #ifndef _hci_h
 #define _hci_h
 
-#include "widget.h"
+#include "Widget.h"
 #include "Message.h"
 #ifdef WIN32
-#include "cdspan.h"
+#include "CDSpan.h"
 #include "PieClip.h"
 #endif
 //#include "IntImage.h"

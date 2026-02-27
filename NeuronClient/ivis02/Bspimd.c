@@ -11,12 +11,12 @@
 */
 
 
-#include "frame.h"	// just for the typedef's
-#include "pieTypes.h"
-#include "pieMatrix.h"
-#include "ivisdef.h"// this can have the #define for BSPIMD in it
-#include "imd.h"// this has the #define for BSPPOLYID_TERMINATE
-#include "ivi.h"
+#include "Frame.h"	// just for the typedef's
+#include "PieTypes.h"
+#include "PieMatrix.h"
+#include "Ivisdef.h"// this can have the #define for BSPIMD in it
+#include "Imd.h"// this has the #define for BSPPOLYID_TERMINATE
+#include "Ivi.h"
 
 #ifdef BSPIMD		// covers the whole file
 
@@ -24,14 +24,14 @@
 
 //#define BSP_MAXDEBUG		// define this if you want max debug options (runs very slow)
 
-#include "bspimd.h"
+#include "Bspimd.h"
 
 #ifdef PSX
 #include "drawimd_psx.h"	// for the scrvertex structure
 #include "dcache.h"
 #endif
 
-#include "bspfunc.h"
+#include "Bspfunc.h"
 
 
 #include <stdio.h>

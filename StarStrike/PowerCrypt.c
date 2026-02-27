@@ -11,7 +11,7 @@
 #include "GTime.h"
 #include "Objects.h"
 #include "Multiplay.h"
-#include "NetPlay.h"
+#include "Netplay.h"
 
 // how long to pause between sending cheat messages
 #define PWRC_MESSAGE_PAUSE		10000

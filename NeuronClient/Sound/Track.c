@@ -6,8 +6,8 @@
 
 #include "Frame.h"
 
-#include "tracklib.h"
-#include "priority.h"
+#include "Tracklib.h"
+#include "Priority.h"
 
 /***************************************************************************/
 /* defines */

@@ -7,9 +7,9 @@
 #include "file_psx.h"
 #endif
 
-#include "fbf.h"
-#include "ivispatch.h"
-#include "frame.h"
+#include "Fbf.h"
+#include "Ivispatch.h"
+#include "Frame.h"
 
 #define MAXBUFFERS			5
 #define BUFFERSIZE			1024

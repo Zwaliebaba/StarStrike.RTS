@@ -7,9 +7,9 @@
  */
 /***************************************************************************/
 
-#include "frame.h"
-#include "warzoneConfig.h"
-#include "pieState.h"
+#include "Frame.h"
+#include "WarzoneConfig.h"
+#include "PieState.h"
 
 
 /***************************************************************************/

@@ -11,11 +11,11 @@
 
 /***************************************************************************/
 
-#include "types.h"
-#include "base.h"
-#include "statsdef.h"
-#include "movedef.h"
-#include "anim.h"
+#include "Types.h"
+#include "Base.h"
+#include "StatsDef.h"
+#include "MoveDef.h"
+#include "Anim.h"
 
 /***************************************************************************/
 

@@ -8,19 +8,19 @@
  */
 
 #include <stdio.h>
-#include "frame.h"
-#include "objmem.h"
-#include "power.h"
-#include "map.h"
-#include "widget.h"
-#include "text.h"
-#include "effects.h"	// for discovery flash
-#include "netplay.h"
-#include "cmddroid.h"
-#include "multiplay.h"
-#include "multirecv.h"
-#include "multistat.h"
-#include "multiint.h"
+#include "Frame.h"
+#include "ObjMem.h"
+#include "Power.h"
+#include "Map.h"
+#include "Widget.h"
+#include "Text.h"
+#include "Effects.h"	// for discovery flash
+#include "Netplay.h"
+#include "CmdDroid.h"
+#include "Multiplay.h"
+#include "Multirecv.h"
+#include "Multistat.h"
+#include "MultiInt.h"
 #include "FPath.h"
 
 // ////////////////////////////////////////////////////////////////////////////

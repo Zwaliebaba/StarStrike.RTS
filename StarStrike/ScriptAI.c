@@ -18,14 +18,14 @@
 #include "Order.h"
 #include "Map.h"
 #include "Cluster.h"
-#include "NetPlay.h"
+#include "Netplay.h"
 #include "CmdDroid.h"
 #include "Projectile.h"
-#include "research.h"
-#include "gateway.h"
-#include "multiplay.h"
+#include "Research.h"
+#include "Gateway.h"
+#include "Multiplay.h"
 #ifdef PSX
-#include "text.h"
+#include "Text.h"
 #endif
 
 // Add a droid to a group

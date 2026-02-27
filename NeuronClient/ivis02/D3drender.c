@@ -2,17 +2,17 @@
 
 #include <stdio.h>
 
-#include "ivi.h"
-#include "rendmode.h"
-#include "tex.h"
-#include "piePalette.h"
-#include "pieState.h"
-#include "pieClip.h"
-#include "frameint.h"
+#include "Ivi.h"
+#include "Rendmode.h"
+#include "Tex.h"
+#include "PiePalette.h"
+#include "PieState.h"
+#include "PieClip.h"
+#include "FrameInt.h"
 
-#include "d3drender.h"
-#include "texd3d.h"
-#include "dx6TexMan.h"
+#include "D3drender.h"
+#include "Texd3d.h"
+#include "Dx6TexMan.h"
 
 #ifndef PIEPSX		// was #ifdef WIN32
 

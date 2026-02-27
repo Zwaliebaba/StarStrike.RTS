@@ -4,36 +4,36 @@
  * Pumpkin Studios. 98
  */
 
-#include "frame.h"
-#include "widget.h"
-#include "Display3d.h"
-#include "intDisplay.h"
+#include "Frame.h"
+#include "Widget.h"
+#include "Display3D.h"
+#include "IntDisplay.h"
 #include "HCI.h"			// for wFont def.& intmode.
-#include "loop.h"
-#include "text.h"
-#include "piestate.h"		// for getrendertype
-#include "resource.h"
-//#include "display.h"		// for gamma.
-#include "frontend.h"		// for textdisplay function
-#include "loadSave.h"		// for textdisplay function
-#include "console.h"		// to add console message
+#include "Loop.h"
+#include "Text.h"
+#include "PieState.h"		// for getrendertype
+#include "Resource.h"
+//#include "Display.h"		// for gamma.
+#include "FrontEnd.h"		// for textdisplay function
+#include "Loadsave.h"		// for textdisplay function
+#include "Console.h"		// to add console message
 
 #include "ScriptExtern.h"	// for tutorial 
-#include "rendmode.h"
-#include "keyBind.h"
+#include "Rendmode.h"
+#include "KeyBind.h"
 
-#include "audio.h"					// for sound.
+#include "Audio.h"					// for sound.
 #ifdef WIN32
-#include "cdaudio.h"
-#include "mixer.h"
-#include "multiplay.h"
+#include "Cdaudio.h"
+#include "Mixer.h"
+#include "Multiplay.h"
 #endif
 
-#include "csnap.h"
-#include "inGameOp.h"
-#include "mission.h"
-#include "transporter.h"
-#include "netplay.h"
+#include "Csnap.h"
+#include "InGameOp.h"
+#include "Mission.h"
+#include "Transporter.h"
+#include "Netplay.h"
 #ifdef PSX
 #include "Primatives.h"
 #include "ctrlpsx.h"

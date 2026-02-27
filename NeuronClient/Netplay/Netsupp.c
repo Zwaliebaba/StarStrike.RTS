@@ -9,9 +9,9 @@
 
 // ////////////////////////////////////////////////////////////////////////
 // Includes
-//#include "frame.h"
-#include "netplay.h"
-#include "netsupp.h"
+//#include "Frame.h"
+#include "Netplay.h"
+#include "Netsupp.h"
 
 #include <time.h>
 #include <stdio.h>

@@ -1,8 +1,8 @@
 #ifndef _bspfunc_h_
 #define _bspfunc_h_
 
-#include "ivisdef.h"
-#include "bspImd.h"
+#include "Ivisdef.h"
+#include "Bspimd.h"
 
 /***************************************************************************/
 

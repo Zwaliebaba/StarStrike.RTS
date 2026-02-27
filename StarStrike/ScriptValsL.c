@@ -302,7 +302,7 @@ static int fprintf(FILE* f,char* c,...)
 #include "ScriptVals.h"
 
 /* Get the Yacc definitions */
-#include "ScriptVals_y.h"
+#include "ScriptValsY.h"
 
 /* Turn off a couple of warnings that the lex generated code gives */
 #pragma warning ( disable : 4102 4305 )

@@ -10,51 +10,51 @@
 /* Warzone src and library headers */
 #include "Frame.h"
 #include "FrameInt.h"
-#include "ivis02.h"
+#include "Ivis02.h"
 #include "Script.h"
 #include "GTime.h"
 #include "Map.h"
-#include "edit2d.h"
-#include "droid.h"
-#include "action.h"
-#include "game.h"
-#include "research.h"
-#include "power.h"
+#include "Edit2D.h"
+#include "Droid.h"
+#include "Action.h"
+#include "Game.h"
+#include "Research.h"
+#include "Power.h"
 #include "Player.h"
-#include "projectile.h"
-#include "LoadSave.h"
-#include "text.h"
-#include "message.h"
+#include "Projectile.h"
+#include "Loadsave.h"
+#include "Text.h"
+#include "Message.h"
 #include "HCI.h"
 #include "Display.h"
-#include "Display3d.h"
+#include "Display3D.h"
 #include "Map.h"
 #include "Effects.h"
-#include "init.h"
-#include "mission.h"
-#include "pieState.h"
+#include "Init.h"
+#include "Mission.h"
+#include "PieState.h"
 #include "Scores.h"
-#include "audio_id.h"
-#include "anim_id.h"
-#include "design.h"
-#include "lighting.h"
+#include "AudioId.h"
+#include "AnimId.h"
+#include "Design.h"
+#include "Lighting.h"
 #include "Component.h"
 #include "Radar.h"
 #include "CmdDroid.h"
 #include "Formation.h"
 #include "FormationDef.h"
-#include "warzoneConfig.h"		
-#include "MultiPlay.h"
-#include "NetPlay.h"
+#include "WarzoneConfig.h"		
+#include "Multiplay.h"
+#include "Netplay.h"
 #include "FrontEnd.h"
 #include "Levels.h"
 #include "Mission.h"
 #include "Geometry.h"
-#include "audio.h"
+#include "Audio.h"
 #include "Gateway.h"
 #include "ScriptTabs.h"
 #include "ScriptExtern.h"
-#include "multistat.h"
+#include "Multistat.h"
 #include "Wrappers.h"
 
 
@@ -4531,7 +4531,7 @@ DROID* buildDroidFromSaveDroidV19(SAVE_DROID_V18* psSaveDroid, UDWORD version)
 
 
 	// ignore brains for now
-	// not any *$£&!!! more - JOHN
+	// not any *$ï¿½&!!! more - JOHN
 //	psTemplate->asParts[COMP_BRAIN] = 0;
 
 	if(psSaveDroid->x == INVALID_XY)
@@ -4783,7 +4783,7 @@ DROID* buildDroidFromSaveDroid(SAVE_DROID* psSaveDroid, UDWORD version)
 	/*create the Droid */
 
 	// ignore brains for now
-	// not any *$£&!!! more - JOHN
+	// not any *$ï¿½&!!! more - JOHN
 //	psTemplate->asParts[COMP_BRAIN] = 0;
 
 

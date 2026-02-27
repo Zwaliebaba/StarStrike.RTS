@@ -1,7 +1,7 @@
 #ifndef _pcx_
 #define _pcx_
 
-#include "ivisdef.h"
+#include "Ivisdef.h"
 
 extern iBool iV_PCXLoad(char *file, iSprite *s, iColour *pal);
 extern BOOL pie_PCXLoadToBuffer(char *file, iSprite *s, iColour *pal);

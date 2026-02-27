@@ -6,12 +6,12 @@
 
 #include "Frame.h"
 #include "stdlib.h"
-#include "dGlide.h"
+#include "Dglide.h"
 #include "stdio.h"
-#include "3dfxText.h"
-#include "pieState.h"
-#include "bug.h"
-#include "tex.h"
+#include "3DfxText.h"
+#include "PieState.h"
+#include "Bug.h"
+#include "Tex.h"
 
 static	unsigned long	g3dfxMinVideo;
 static	unsigned long	g3dfxMaxVideo;

@@ -83,11 +83,11 @@
 #endif
 
 #include <stdarg.h>
-#include "types.h"
+#include "Types.h"
 
 #ifdef WIN32
 /* Include the mono printing stuff */
-#include "mono.h"
+#include "Mono.h"
 #else
 #include "printf.h"
 #endif

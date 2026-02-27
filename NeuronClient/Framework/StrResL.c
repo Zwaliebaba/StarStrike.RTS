@@ -344,16 +344,16 @@ static int fprintf(FILE* f,char* c,...)
 #define FRAME_LIB_INCLUDE
 
 #include <string.h>
-#include "types.h"
-#include "debug.h"
-#include "mem.h"
-#include "heap.h"
-#include "treap.h"
+#include "Types.h"
+#include "Debug.h"
+#include "Mem.h"
+#include "Heap.h"
+#include "Treap.h"
 #include "StrRes.h"
 #include "StrResLY.h"
 
 /* Get the Yacc definitions */
-#include "StrRes_y.h"
+#include "StrResY.h"
 
 /* Turn off a couple of warnings that the lex generated code gives */
 #pragma warning ( disable : 4102 4305 )

@@ -3,9 +3,9 @@
  * join related stuff
  */ 
 
-#include "frame.h"
-#include "netplay.h"
-#include "netsupp.h"
+#include "Frame.h"
+#include "Netplay.h"
+#include "Netsupp.h"
 
 
 BOOL			NEThaltJoining		(VOID);

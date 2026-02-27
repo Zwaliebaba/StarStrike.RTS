@@ -4,23 +4,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "frame.h"
-#include "ivisdef.h"
-#include "pieState.h"
+#include "Frame.h"
+#include "Ivisdef.h"
+#include "PieState.h"
 #ifdef WIN32
-#include "dx6TexMan.h"
+#include "Dx6TexMan.h"
 #endif
-#include "tex.h"
-#include "rendmode.h"
-#include "pcx.h"
-#include "piePalette.h"
-#include "bug.h"
-#include "ivispatch.h"
+#include "Tex.h"
+#include "Rendmode.h"
+#include "Pcx.h"
+#include "PiePalette.h"
+#include "Bug.h"
+#include "Ivispatch.h"
 #ifdef INC_GLIDE
-#include "3dfxText.h"
+#include "3DfxText.h"
 #endif
 #ifdef WIN32
-#include "d3drender.h"
+#include "D3drender.h"
 #endif
 
 #ifdef PSX

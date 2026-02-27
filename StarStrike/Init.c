@@ -12,57 +12,57 @@
 #include "Objects.h"
 #include "Display.h"
 #include "AI.h"
-#include "astar.h"
+#include "AStar.h"
 #include "Disp2D.h"
 #include "HCI.h"
-#include "audio.h"
-#include "csnap.h"
+#include "Audio.h"
+#include "Csnap.h"
 #include "Wrappers.h"
 #include "time.h"
 #include "Game.h"
-#include "animobj.h"
-#include "ani.h"
-#include "drive.h"
-#include "bucket3d.h"
-#include "message.h"
-#include "data.h"
+#include "Animobj.h"
+#include "Ani.h"
+#include "Drive.h"
+#include "Bucket3d.h"
+#include "Message.h"
+#include "Data.h"
 #include "RayCast.h"
 #include "Text.h"
 #include "Console.h"
 
-#include "piedef.h"
-#include "pieState.h" 
+#include "Piedef.h"
+#include "PieState.h" 
 #ifdef WIN32
-#include "config.h"
-#include "pieMode.h"
-#include "tex.h"
+#include "Config.h"
+#include "PieMode.h"
+#include "Tex.h"
 #endif
-#include "resource.h"
-#include "rendmode.h"
-#include "ivi.h"
+#include "Resource.h"
+#include "Rendmode.h"
+#include "Ivi.h"
 #include "Group.h"
-#include "wrappers.h"
-#include "display3D.h"
+#include "Wrappers.h"
+#include "Display3D.h"
 #ifdef WIN32
 #include "Atmos.h"
 #include "Environ.h"
-#include "warzoneConfig.h"
-#include "multiplay.h"
+#include "WarzoneConfig.h"
+#include "Multiplay.h"
 #endif
 #include "Script.h"
 #include "ScriptTabs.h"
 #include "ScriptVals.h"
 #include "MiscImd.h"
 #include "KeyMap.h"
-#include "edit3D.h"
-#include "component.h"
-#include "Fpath.h"
+#include "Edit3D.h"
+#include "Component.h"
+#include "FPath.h"
 #include "WinMain.h"
-#include "wdg.h"
-#include "multiWDG.h"
+#include "Wdg.h"
+#include "MultiWDG.h"
 
 #ifdef ARROWS
-#include "arrow.h"
+#include "Arrow.h"
 #endif
 
 #ifdef WIN32
@@ -77,18 +77,18 @@
 #endif
 
 #include "IntImage.h"
-#include "power.h"
-#include "deliverance.h"
+#include "Power.h"
+#include "Deliverance.h"
 #include "Radar.h"
-#include "Audio_ID.h"
+#include "AudioId.h"
 #include "IntDisplay.h"
 #include "FormationDef.h"
 #include "Formation.h"
 
 #ifdef WIN32
 //#include "Glide.h"
-#include "cdaudio.h"
-#include "mixer.h"
+#include "Cdaudio.h"
+#include "Mixer.h"
 #include "AdvVis.h"
 #endif
 
@@ -913,8 +913,8 @@ UWORD SmallAsciiLookup[256] =
 	IMAGE_S_ASCII63,	//185   
 	IMAGE_S_ASCII63,	//186   
 	IMAGE_S_ASCII63,	//187   
-	IMAGE_S_ASCII63,	//188   ¼
-	IMAGE_S_ASCII63,	//189	½   
+	IMAGE_S_ASCII63,	//188   ï¿½
+	IMAGE_S_ASCII63,	//189	ï¿½   
 	IMAGE_S_ASCII63,	//190   
 	IMAGE_S_ASCII191,	//191   
 	IMAGE_S_ASCII192,	//192   
@@ -933,7 +933,7 @@ UWORD SmallAsciiLookup[256] =
 	IMAGE_S_ASCII205,	//205   
 	IMAGE_S_ASCII206,	//206   
 	IMAGE_S_ASCII207,	//207   
-	IMAGE_S_ASCII63,	//208   Ð
+	IMAGE_S_ASCII63,	//208   ï¿½
 	IMAGE_S_ASCII63,	//209   
 	IMAGE_S_ASCII210,	//210   
 	IMAGE_S_ASCII211,	//211   

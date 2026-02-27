@@ -15,33 +15,33 @@
 #include "stdio.h"
 
 /* Includes direct access to render library */
-#include "ivisdef.h"
-#include "piedef.h"
-#include "piestate.h"
+#include "Ivisdef.h"
+#include "Piedef.h"
+#include "PieState.h"
 #ifdef WIN32
-#include "piemode.h"
-#include "pietexture.h"
+#include "PieMode.h"
+#include "PieTexture.h"
 #endif
-#include "pieMatrix.h"
-#include "vid.h"
+#include "PieMatrix.h"
+#include "Vid.h"
 
 #include "Map.h"
 #include "MapDisplay.h"
 #include "Component.h"
 #include "Disp2D.h"
-#include "Display3d.h"
+#include "Display3D.h"
 #include "HCI.h"
-#include "intelmap.h"
+#include "IntelMap.h"
 #include "IntImage.h"
 #ifdef WIN32
-//#include "dGlide.h"
+//#include "Dglide.h"
 #include "Texture.h"
 #include "IntDisplay.h"
 #endif
 
 
 #ifdef PSX
-#include "component.h"
+#include "Component.h"
 #include "primatives.h"
 #include "DrawIMD_psx.h"
 #endif

@@ -2,11 +2,11 @@
 
 #include "d3d.h"
 
-//#include "ivi.h"
-#include "rendMode.h"
-#include "pieClip.h"
-#include "d3drender.h"
-#include "dx6TexMan.h"
+//#include "Ivi.h"
+#include "Rendmode.h"
+#include "PieClip.h"
+#include "D3drender.h"
+#include "Dx6TexMan.h"
 
 /***************************************************************************/
 

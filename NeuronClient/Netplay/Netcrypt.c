@@ -14,9 +14,9 @@
  * but not good enough for storing files securely on harddisk. Try encryptstrength=32;
  */
 
-#include "frame.h"
-#include "netplay.h"
-#include "netsupp.h"
+#include "Frame.h"
+#include "Netplay.h"
+#include "Netsupp.h"
 
 #define			ENCRYPTSTRENGTH 16		// 32=ample, 16=sufficient, 8=maybe ok, good dispersion after 6.
 #define			NIBBLELENGTH	8		// bytes done per encrypt step.

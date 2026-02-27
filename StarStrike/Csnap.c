@@ -8,7 +8,7 @@
 
 #include "Frame.h"
 #include "Widget.h"
-#include "deliverance.h"
+#include "Deliverance.h"
 #include "Fractions.h"
 
 #ifdef WIN32
@@ -20,8 +20,8 @@
 #include "CtrlPSX.h"
 #endif
 
-#include "CSnap.h"
-#include "audio_id.h"
+#include "Csnap.h"
+#include "AudioId.h"
 
 #define V_BIAS 8
 #define H_BIAS 8

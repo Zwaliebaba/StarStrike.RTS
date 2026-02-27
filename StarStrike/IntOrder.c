@@ -7,26 +7,26 @@
 #include "Loop.h"
 #include "Edit2D.h"
 #include "Map.h"
-#include "bitimage.h"//bitmap routines
+#include "BitImage.h"//bitmap routines
 
 #ifdef PSX
 #include "Primatives.h"
-#include "csnap.h"
+#include "Csnap.h"
 #include "dcache.h"
 extern CURSORSNAP InterfaceSnap;
 #endif
 
-#include "Display3d.h"
+#include "Display3D.h"
 #include "HCI.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "WidgInt.h"
-#include "bar.h"
-#include "form.h"
-#include "label.h"
-#include "button.h"
-#include "editbox.h"
-#include "slider.h"
+#include "Bar.h"
+#include "Form.h"
+#include "Label.h"
+#include "Button.h"
+#include "EditBox.h"
+#include "Slider.h"
 #include "Order.h"
 #include "IntImage.h"
 #include "IntDisplay.h"

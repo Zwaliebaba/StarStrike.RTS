@@ -6,30 +6,30 @@
  * these don't actually do any loading or saving, but just
  * return a filename to use for the ops.
  */
-#include "frame.h"
-#include "widget.h"
-#include "piePalette.h"		// for predefined colours.
-#include "rendMode.h"		// for boxfill
-#include "hci.h"
-#include "loadsave.h"
+#include "Frame.h"
+#include "Widget.h"
+#include "PiePalette.h"		// for predefined colours.
+#include "Rendmode.h"		// for boxfill
+#include "HCI.h"
+#include "Loadsave.h"
 #ifdef WIN32
-#include "multiplay.h"
-#include "game.h"
-#include "audio_id.h"
-#include "frontend.h"
-#include "winmain.h"
-#include "display3d.h"
-#include "display.h"
+#include "Multiplay.h"
+#include "Game.h"
+#include "AudioId.h"
+#include "FrontEnd.h"
+#include "WinMain.h"
+#include "Display3D.h"
+#include "Display.h"
 #endif
-#include "netplay.h"
-#include "loop.h"
-#include "intdisplay.h"
-#include "text.h"
-#include "mission.h"
-#include "gTime.h"
+#include "Netplay.h"
+#include "Loop.h"
+#include "IntDisplay.h"
+#include "Text.h"
+#include "Mission.h"
+#include "GTime.h"
 #ifdef PSX
 #include "primatives.h"
-#include "csnap.h"
+#include "Csnap.h"
 #include "dcache.h"
 extern CURSORSNAP InterfaceSnap;
 #endif

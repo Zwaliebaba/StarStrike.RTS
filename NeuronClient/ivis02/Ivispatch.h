@@ -10,8 +10,8 @@
 #ifndef _ivispatch_h
 #define _ivispatch_h
 
-#include "frame.h"
-#include "pieTypes.h"
+#include "Frame.h"
+#include "PieTypes.h"
 
 /***************************************************************************/
 /***************************************************************************/
@@ -50,7 +50,7 @@
 #define iV_PaletteNearestColour		pal_GetNearestColour
 #define	iV_PaletteAdd				pal_AddNewPalette
 #define	iV_PaletteSelect			pal_SelectPalette
-#include "piePalette.h"
+#include "PiePalette.h"
 
 //matrixstuff
 #define iV_setGeometricOffset		pie_setGeometricOffset

@@ -9,9 +9,9 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <dos.h>
-#include "rendmode.h"
-#include "piemode.h"
-#include "bug.h"
+#include "Rendmode.h"
+#include "PieMode.h"
+#include "Bug.h"
 
 #ifndef PIEPSX		// was #ifdef WIN32
 

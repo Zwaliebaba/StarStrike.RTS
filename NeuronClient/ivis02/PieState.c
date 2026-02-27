@@ -7,18 +7,18 @@
  */
 /***************************************************************************/
 
-#include "frame.h"
-#include "pieState.h"
-#include "piedef.h"
-#include "d3dRender.h"
-#include "dx6TexMan.h"
-#include "tex.h"
-#include "texd3d.h"
+#include "Frame.h"
+#include "PieState.h"
+#include "Piedef.h"
+#include "D3drender.h"
+#include "Dx6TexMan.h"
+#include "Tex.h"
+#include "Texd3d.h"
 #ifdef INC_GLIDE
-	#include "rendfunc.h"
-	#include "dGlide.h"
-	#include "3dfxFunc.h"
-	#include "3dfxText.h"
+	#include "Rendfunc.h"
+	#include "Dglide.h"
+	#include "3DfxFunc.h"
+	#include "3DfxText.h"
 #endif
 
 

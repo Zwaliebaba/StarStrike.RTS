@@ -4,53 +4,53 @@
  * all the stuff relevant to a mission
  */
 #include "stdio.h"
-#include "mission.h"
+#include "Mission.h"
 #include "GTime.h"
-#include "game.h"
+#include "Game.h"
 #include "Projectile.h"
 #include "Power.h"
 #include "Structure.h"
-#include "message.h"
+#include "Message.h"
 #include "Research.h"
 #include "HCI.h"
 #include "Player.h"
 #include "Order.h"
 #include "Action.h"
-#include "display3D.h"
-#include "pieState.h"
+#include "Display3D.h"
+#include "PieState.h"
 #include "Effects.h"
-#include "radar.h"
-#include "resource.h"		// for mousecursors
+#include "Radar.h"
+#include "Resource.h"		// for mousecursors
 #include "Transporter.h"
 #include "Group.h"
-#include "text.h"
-#include "frontend.h"		// for displaytextoption.
-#include "csnap.h"			// cursor snapping
-#include "intDisplay.h"
-#include "display.h"
-#include "loadsave.h"
+#include "Text.h"
+#include "FrontEnd.h"		// for displaytextoption.
+#include "Csnap.h"			// cursor snapping
+#include "IntDisplay.h"
+#include "Display.h"
+#include "Loadsave.h"
 #include "Script.h"
 #include "ScriptTabs.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "CmdDroid.h"
-#include "WarCam.h"
+#include "WarCAM.h"
 #include "Wrappers.h"
 #include "Widget.h"
 #include "WidgInt.h"
 #include "Console.h"
-#include "droid.h"
+#include "Droid.h"
 #ifdef WIN32
-#include "data.h"
-#include "multiplay.h"
-#include "rendmode.h"		// for downloadbuffer
-#include "pieFunc.h"
-#include "pieBlitFunc.h"
-#include "environ.h"
+#include "Data.h"
+#include "Multiplay.h"
+#include "Rendmode.h"		// for downloadbuffer
+#include "Piefunc.h"
+#include "PieBlitFunc.h"
+#include "Environ.h"
 #endif
 #include "Loop.h"
 #include "Levels.h"
-#include "visibility.h"
+#include "Visibility.h"
 #include "MapGrid.h"
 #include "Cluster.h"
 #include "Gateway.h"
@@ -59,16 +59,16 @@
 #include "KeyMap.h"
 
 #ifdef WIN32
-#include "cdspan.h"
-#include "cdaudio.h"
+#include "CDSpan.h"
+#include "Cdaudio.h"
 #endif
-//#include "texture.h"	   // ffs 
+//#include "Texture.h"	   // ffs 
 #ifdef WIN32
 #include "Texture.h"
 #endif
 #ifdef PSX
-#include "rendmode.h"
-#include "csnap.h"
+#include "Rendmode.h"
+#include "Csnap.h"
 #include "initpsx.h"
 #include "Primatives.h"
 #include "DCache.h"

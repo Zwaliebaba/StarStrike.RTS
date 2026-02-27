@@ -1,6 +1,6 @@
 #ifndef _3dfxfunc_h
 #define _3dfxfunc_h
-#include "piedef.h"
+#include "Piedef.h"
 
 /* 3dfx function headers */
 

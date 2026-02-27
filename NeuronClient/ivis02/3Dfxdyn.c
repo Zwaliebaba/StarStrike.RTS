@@ -6,7 +6,7 @@
 
 */
 #include <windows.h>
-#include "frame.h"
+#include "Frame.h"
 
 #define dllName "glide2x.dll"
 

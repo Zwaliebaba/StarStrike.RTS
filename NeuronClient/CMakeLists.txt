@@ -32,8 +32,6 @@ file(GLOB IVIS02_SRC CONFIGURE_DEPENDS
 )
 
 add_library (NeuronClient STATIC
-    "NeuronClient.c"
-    "NeuronClient.h"
     ${FRAMEWORK_SRC}
     ${GAMELIB_SRC}
     ${WIDGET_SRC}

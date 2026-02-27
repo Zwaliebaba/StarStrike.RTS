@@ -7,16 +7,16 @@
 #include <stdio.h>
 
 #include "Frame.h"
-#include "function.h"
+#include "Function.h"
 #include "Stats.h"
-#include "structure.h"
-#include "text.h"
-#include "research.h"
-#include "droid.h"
-#include "group.h"
+#include "Structure.h"
+#include "Text.h"
+#include "Research.h"
+#include "Droid.h"
+#include "Group.h"
 
 #ifdef WIN32
-#include "multiplay.h"
+#include "Multiplay.h"
 #endif
 
 //holder for all functions

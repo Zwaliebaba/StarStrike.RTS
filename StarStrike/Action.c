@@ -22,7 +22,7 @@
 #include "Combat.h"
 #include "Geometry.h"
 #include "GTime.h"
-#include "ivisdef.h"
+#include "Ivisdef.h"
 #include "Visibility.h"
 #include "Projectile.h"
 #include "Order.h"
@@ -31,16 +31,16 @@
 #include "Console.h"
 #include "Research.h"
 #include "Drive.h"
-#include "mission.h"
-#include "audio_id.h"
+#include "Mission.h"
+#include "AudioId.h"
 #ifdef WIN32
-#include "multiplay.h"
+#include "Multiplay.h"
 #endif
-#include "formation.h"
-#include "intdisplay.h"
-#include "fpath.h"
-#include "script.h"
-#include "scripttabs.h"
+#include "Formation.h"
+#include "IntDisplay.h"
+#include "FPath.h"
+#include "Script.h"
+#include "ScriptTabs.h"
 #ifdef PSX
 #include "dcache.h"
 #endif

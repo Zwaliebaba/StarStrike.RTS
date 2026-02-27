@@ -9,27 +9,27 @@
 #include "Objects.h"
 #include "GTime.h"
 #include "Research.h"
-#include "message.h"
-#include "text.h"
-#include "audio.h"
-#include "audio_id.h"
+#include "Message.h"
+#include "Text.h"
+#include "Audio.h"
+#include "AudioId.h"
 #include "Script.h"
 #include "ScriptTabs.h"
 #include "HCI.h"
-#include "console.h"
+#include "Console.h"
 #include "CmdDroid.h"
 #include "Power.h"
-#include "mission.h"
+#include "Mission.h"
 
 #include "Frend.h"		// frontend ids.
 #include "IntImage.h"
 
 #ifdef WIN32
-#include "MultiPlay.h"
+#include "Multiplay.h"
 #endif
 
 #ifdef WIN32
-//#include "intfac.h"		// Interface image id's.
+//#include "Intfac.h"		// Interface image id's.
 #else
 //#include "intpsx.h"
 #endif

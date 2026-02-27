@@ -3,9 +3,9 @@
 #include <limits.h>
 #include <memory.h>
 
-#include "frame.h"
+#include "Frame.h"
 
-#include "ptrlist.h"
+#include "Ptrlist.h"
 
 /***************************************************************************/
 

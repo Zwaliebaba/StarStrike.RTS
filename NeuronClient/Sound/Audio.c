@@ -2,12 +2,12 @@
 
 #include <stdio.h>
 
-#include "frame.h"
-#include "gtime.h"
-#include "tracklib.h"
-#include "priority.h"
-#include "aud.h"
-#include "trig.h"
+#include "Frame.h"
+#include "GTime.h"
+#include "Tracklib.h"
+#include "Priority.h"
+#include "Aud.h"
+#include "Trig.h"
 
 /***************************************************************************/
 /* defines */

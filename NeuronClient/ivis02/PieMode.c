@@ -7,20 +7,20 @@
  */
 /***************************************************************************/
 
-#include "frame.h"
-#include "piedef.h"
-#include "pieState.h"
-#include "pieMode.h"
-#include "pieMatrix.h"
-#include "pieFunc.h"
-#include "tex.h"
-#include "d3dmode.h"
-#include "v4101.h"
-#include "vSR.h"
-#include "3dfxFunc.h"
-#include "texd3d.h"
-#include "rendmode.h"
-#include "Pieclip.h"
+#include "Frame.h"
+#include "Piedef.h"
+#include "PieState.h"
+#include "PieMode.h"
+#include "PieMatrix.h"
+#include "Piefunc.h"
+#include "Tex.h"
+#include "D3dmode.h"
+#include "V4101.h"
+#include "Vsr.h"
+#include "3DfxFunc.h"
+#include "Texd3d.h"
+#include "Rendmode.h"
+#include "PieClip.h"
 
 /***************************************************************************/
 /*

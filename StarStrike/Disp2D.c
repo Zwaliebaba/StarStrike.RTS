@@ -36,9 +36,9 @@
 #include "Projectile.h"
 
 //#ifdef WIN32
-//#include "netplay.h"
-//#include "MultiPlay.h"
-//#include "MultiStat.h"
+//#include "Netplay.h"
+//#include "Multiplay.h"
+//#include "Multistat.h"
 //#endif
 
 // hack to display the collsion box

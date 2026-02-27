@@ -7,29 +7,29 @@
  */
 /***************************************************************************/
 
-#include "frame.h"
+#include "Frame.h"
 
-#include "ivisdef.h"
+#include "Ivisdef.h"
 
-#include "imd.h"
-#include "rendmode.h"
-//#include "d3dmode.h"
-#include "pieFunc.h"
-#include "pieMatrix.h"
-#include "tex.h"
+#include "Imd.h"
+#include "Rendmode.h"
+//#include "D3dmode.h"
+#include "Piefunc.h"
+#include "PieMatrix.h"
+#include "Tex.h"
 
-#include "piedef.h"
-#include "pieState.h"
-#include "pieTexture.h"
-#include "pieClip.h"
+#include "Piedef.h"
+#include "PieState.h"
+#include "PieTexture.h"
+#include "PieClip.h"
 
 #include "d3d.h"
-#include "d3drender.h"
+#include "D3drender.h"
 
 #ifdef INC_GLIDE
-	#include "dGlide.h"
-	#include "3dfxFunc.h"
-	#include "3dfxText.h"
+	#include "Dglide.h"
+	#include "3DfxFunc.h"
+	#include "3DfxText.h"
 #endif
 
 #ifndef PIEPSX		// was #ifdef WIN32
@@ -220,7 +220,7 @@ static void AddIMDPrimativesBSP2(iIMDShape *IMDdef,iIMDPoly *ScrVertices, UDWORD
 //#define _3DNOW
 
 //#ifdef _3DNOW
-#include "amd3d.h"
+#include "Amd3d.h"
 //#endif
 
 // ---

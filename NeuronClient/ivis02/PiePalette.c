@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <math.h>
-#include "ivi.h"
-#include "pieState.h"
-#include "piePalette.h"
-#include "rendmode.h"
-#include "bug.h"
-#include "fractions.h"
+#include "Ivi.h"
+#include "PieState.h"
+#include "PiePalette.h"
+#include "Rendmode.h"
+#include "Bug.h"
+#include "Fractions.h"
 #ifdef INC_GLIDE
-#include "dGlide.h"
+#include "Dglide.h"
 #endif
 
 #define RED_CHROMATICITY	1
