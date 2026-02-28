@@ -2,7 +2,7 @@
 # No upstream dependencies - this is the foundation layer.
 
 add_library (NeuronCore STATIC
-    "NeuronCore.c"
+    "NeuronCore.cpp"
     "NeuronCore.h"
 )
 

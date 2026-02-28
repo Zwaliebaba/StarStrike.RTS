@@ -5,53 +5,52 @@
 #   Framework/  - core OS/platform abstraction (memory, resources, input, ...)
 #   Gamelib/    - game-level utilities (animation, hash tables, parser, ...)
 #   Widget/     - UI widget system
-#   ivis02/     - rendering / image library (C sources only; .cpp excluded)
+#   ivis02/     - rendering / image library
 #
 # CONFIGURE_DEPENDS: CMake will re-glob and re-configure automatically
 # whenever files are added to or removed from these directories.
 
 file(GLOB FRAMEWORK_SRC CONFIGURE_DEPENDS
-    "Framework/*.c"
+    "Framework/*.cpp"
     "Framework/*.h"
 )
-# Resource.c is obsolete and replaced by FrameResource.c; it contains #error.
-list(FILTER FRAMEWORK_SRC EXCLUDE REGEX "Framework/Resource\\.c$")
+# Resource.cpp is obsolete and replaced by FrameResource.cpp; it contains #error.
+list(FILTER FRAMEWORK_SRC EXCLUDE REGEX "Framework/Resource\\.cpp$")
 
 file(GLOB GAMELIB_SRC CONFIGURE_DEPENDS
-    "Gamelib/*.c"
+    "Gamelib/*.cpp"
     "Gamelib/*.h"
 )
 
 file(GLOB WIDGET_SRC CONFIGURE_DEPENDS
-    "Widget/*.c"
+    "Widget/*.cpp"
     "Widget/*.h"
 )
 
 file(GLOB SOUND_SRC CONFIGURE_DEPENDS
-    "Sound/*.c"
+    "Sound/*.cpp"
     "Sound/*.h"
 )
 
 file(GLOB SCRIPT_SRC CONFIGURE_DEPENDS
-    "Script/*.c"
+    "Script/*.cpp"
     "Script/*.h"
 )
 
 file(GLOB NETPLAY_SRC CONFIGURE_DEPENDS
-    "Netplay/*.c"
+    "Netplay/*.cpp"
     "Netplay/*.h"
 )
 
 # Sequence sources removed — proprietary RPL video codec (STREAMER.h / WINSTR.LIB)
-# is not viable on modern toolchains. SeqDisp.c in StarStrike/ provides stubs.
+# is not viable on modern toolchains. SeqDisp.cpp in StarStrike/ provides stubs.
 # file(GLOB SEQUENCE_SRC CONFIGURE_DEPENDS
-#     "Sequence/*.c"
+#     "Sequence/*.cpp"
 #     "Sequence/*.h"
 # )
 
-# Only C sources
 file(GLOB IVIS02_SRC CONFIGURE_DEPENDS
-    "ivis02/*.c"
+    "ivis02/*.cpp"
     "ivis02/*.h"
 )
 
@@ -80,7 +79,7 @@ target_include_directories (NeuronClient
 )
 
 # Make lex-generated scanner symbols static to avoid duplicate-symbol link errors
-# when multiple *L.c files each define input() / unput().
+# when multiple *L.cpp files each define input() / unput().
 target_compile_definitions (NeuronClient
     PRIVATE
         YY_STATIC
