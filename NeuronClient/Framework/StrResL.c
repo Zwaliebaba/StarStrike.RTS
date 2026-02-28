@@ -188,7 +188,6 @@ static int strres__base[] = {
 };
 
 
-#line 1 "d:/usr/mks-ly/etc/yylex.c"
 /*
  * Copyright 1988, 1992 by Mortice Kern Systems Inc.  All rights reserved.
  * All rights reserved.
@@ -315,7 +314,6 @@ extern	void	strres_error	YY_ARGS((char *fmt, ...));
 extern	void	strres_comment	YY_ARGS((char *term));
 extern	int	strres_mapch	YY_ARGS((int delim, int escape));
 
-#line 1 "StrRes.l"
 
 /*
  * StrRes.l
@@ -360,7 +358,6 @@ static UBYTE *pEndBuffer = NULL;
 #undef strres_getc
 #define strres_getc() (pInputBuffer != pEndBuffer ? *(pInputBuffer++) : EOF)
 
-#line 127 "d:/usr/mks-ly/etc/yylex.c"
 
 
 #ifndef YYLMAX
@@ -588,7 +585,6 @@ YYDECL {
 	int strres_oldi, strres_oleng;	/* base i, strres_leng before look-ahead */
 	int strres_eof;		/* 1 if eof has already been read */
 
-#line 350 "d:/usr/mks-ly/etc/yylex.c"
 
 
 
@@ -712,7 +708,6 @@ YYDECL {
 	YY_USER;
 	switch (strres__la_act[strres_fmin] & 0777) {
 	case 0:
-#line 69 "StrRes.l"
 	{
 								strcpy(aText[currText], strres_text);
 								strres_lval.sval = aText[currText];
@@ -721,19 +716,15 @@ YYDECL {
 							}
 	break;
 	case 1:
-#line 77 "StrRes.l"
 	{ BEGIN QUOTE; }
 	break;
 	case 2:
-#line 78 "StrRes.l"
 	{ BEGIN 0; }
 	break;
 	case 3:
-#line 79 "StrRes.l"
 	{ strres_error("Unexpected end of line in string"); }
 	break;
 	case 4:
-#line 80 "StrRes.l"
 	{
 								strcpy(aText[currText], strres_text);
 								strres_lval.sval = aText[currText];
@@ -742,41 +733,32 @@ YYDECL {
 							}
 	break;
 	case 5:
-#line 88 "StrRes.l"
 	;
 	break;
 	case 6:
-#line 91 "StrRes.l"
 	{ inComment=TRUE; BEGIN COMMENT; }
 	break;
 	case 7:
 	case 8:
-#line 93 "StrRes.l"
 	{ inComment=FALSE; BEGIN 0; }
 	break;
 	case 9:
 	case 10:
-#line 95 "StrRes.l"
 	;
 	break;
 	case 11:
-#line 98 "StrRes.l"
 	{ BEGIN SLCOMMENT; }
 	break;
 	case 12:
-#line 99 "StrRes.l"
 	{ BEGIN 0; }
 	break;
 	case 13:
-#line 100 "StrRes.l"
 	;
 	break;
 	case 14:
-#line 103 "StrRes.l"
 	return strres_text[0];
 	break;
 
-#line 472 "d:/usr/mks-ly/etc/yylex.c"
 
 	}
 	YY_SCANNER;
@@ -925,7 +907,6 @@ unput(c)
 	return c;
 }
 
-#line 106 "StrRes.l"
 
 /* Set the current input buffer for the lexer */
 void strresSetInputBuffer(UBYTE *pBuffer, UDWORD size)

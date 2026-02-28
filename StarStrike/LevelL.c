@@ -159,7 +159,6 @@ static int lev__base[] = {
 };
 
 
-#line 1 "d:/usr/mks-ly/etc/yylex.c"
 /*
  * Copyright 1988, 1992 by Mortice Kern Systems Inc.  All rights reserved.
  * All rights reserved.
@@ -286,7 +285,6 @@ extern	void	lev_error	YY_ARGS((char *fmt, ...));
 extern	void	lev_comment	YY_ARGS((char *term));
 extern	int	lev_mapch	YY_ARGS((int delim, int escape));
 
-#line 1 "Level.l"
 
 /*
  * Level.l
@@ -321,7 +319,6 @@ static UBYTE *pEndBuffer = NULL;
 #undef lev_getc
 #define lev_getc() (pInputBuffer != pEndBuffer ? *(pInputBuffer++) : EOF)
 
-#line 127 "d:/usr/mks-ly/etc/yylex.c"
 
 
 #ifndef YYLMAX
@@ -549,7 +546,6 @@ YYDECL {
 	int lev_oldi, lev_oleng;	/* base i, lev_leng before look-ahead */
 	int lev_eof;		/* 1 if eof has already been read */
 
-#line 350 "d:/usr/mks-ly/etc/yylex.c"
 
 
 
@@ -673,67 +669,51 @@ YYDECL {
 	YY_USER;
 	switch (lev__la_act[lev_fmin] & 0777) {
 	case 0:
-#line 58 "Level.l"
 	return LTK_LEVEL;
 	break;
 	case 1:
-#line 59 "Level.l"
 	return LTK_PLAYERS;
 	break;
 	case 2:
-#line 60 "Level.l"
 	return LTK_TYPE;
 	break;
 	case 3:
-#line 61 "Level.l"
 	return LTK_DATA;
 	break;
 	case 4:
-#line 62 "Level.l"
 	return LTK_GAME;
 	break;
 	case 5:
-#line 63 "Level.l"
 	return LTK_CAMPAIGN;
 	break;
 	case 6:
-#line 64 "Level.l"
 	return LTK_CAMSTART;
 	break;
 	case 7:
-#line 65 "Level.l"
 	return LTK_CAMCHANGE;
 	break;
 	case 8:
-#line 66 "Level.l"
 	return LTK_DATASET;
 	break;
 	case 9:
-#line 67 "Level.l"
 	return LTK_EXPAND;
 	break;
 	case 10:
-#line 68 "Level.l"
 	return LTK_EXPAND_LIMBO;
 	break;
 	case 11:
-#line 69 "Level.l"
 	return LTK_BETWEEN;
 	break;
 	case 12:
-#line 70 "Level.l"
 	return LTK_MKEEP;
 	break;
 	case 13:
-#line 71 "Level.l"
 	return LTK_MKEEP_LIMBO;
 	break;
 	case 14:
-#line 72 "Level.l"
 	return LTK_MCLEAR;
 	break;
 	case 15:
-#line 75 "Level.l"
 	{
 								strcpy(aText, lev_text);
 								pLevToken = aText;
@@ -741,19 +721,15 @@ YYDECL {
 							}
 	break;
 	case 16:
-#line 82 "Level.l"
 	{ BEGIN QUOTE; }
 	break;
 	case 17:
-#line 83 "Level.l"
 	{ BEGIN 0; }
 	break;
 	case 18:
-#line 84 "Level.l"
 	{ levError("Unexpected end of line in string"); }
 	break;
 	case 19:
-#line 85 "Level.l"
 	{
 								strcpy(aText, lev_text);
 								pLevToken = aText;
@@ -761,45 +737,35 @@ YYDECL {
 							}
 	break;
 	case 20:
-#line 92 "Level.l"
 	{ levVal = atol(lev_text); return LTK_INTEGER; }
 	break;
 	case 21:
-#line 95 "Level.l"
 	;
 	break;
 	case 22:
-#line 98 "Level.l"
 	{ inComment=TRUE; BEGIN COMMENT; }
 	break;
 	case 23:
 	case 24:
-#line 100 "Level.l"
 	{ inComment=FALSE; BEGIN 0; }
 	break;
 	case 25:
 	case 26:
-#line 102 "Level.l"
 	;
 	break;
 	case 27:
-#line 105 "Level.l"
 	{ BEGIN SLCOMMENT; }
 	break;
 	case 28:
-#line 106 "Level.l"
 	{ BEGIN 0; }
 	break;
 	case 29:
-#line 107 "Level.l"
 	;
 	break;
 	case 30:
-#line 110 "Level.l"
 	return lev_text[0];
 	break;
 
-#line 472 "d:/usr/mks-ly/etc/yylex.c"
 
 	}
 	YY_SCANNER;
@@ -948,7 +914,6 @@ unput(c)
 	return c;
 }
 
-#line 113 "Level.l"
 
 /* Set the current input buffer for the lexer */
 void levSetInputBuffer(UBYTE *pBuffer, UDWORD size)

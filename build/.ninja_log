@@ -19,3 +19,12 @@
 60	1086	7939896413239363	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Cursor.c.obj	f1d6184066115b6f
 570	1428	7939896418338272	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/W95trace.c.obj	968830e4572d45fd
 25	50	7939896485520086	C:/Users/zwali/source/repos/StarStrike.RTS/build/CMakeFiles/cmake.verify_globs	6f24f594360d5fd5
+30	63	7939899924850675	C:/Users/zwali/source/repos/StarStrike.RTS/build/CMakeFiles/cmake.verify_globs	6f24f594360d5fd5
+120	513	7939899925753713	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Mem.c.obj	376760fa191b71ed
+72	532	7939899925270753	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Block.c.obj	fe73f4e8bfad619
+126	535	7939899925815766	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Mono.c.obj	74bd8b03f1cf280e
+106	593	7939899925611403	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Heap.c.obj	38ebd54c7ba1734c
+83	699	7939899925385550	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Dderror.c.obj	17ab1f5376e01c49
+514	732	7939899929701581	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Trig.c.obj	6a5876b0968c0d25
+110	742	7939899925654556	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Image.c.obj	8290827d05e1d3f4
+76	908	7939899925310768	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Cursor.c.obj	f1d6184066115b6f

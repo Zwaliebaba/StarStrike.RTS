@@ -48,7 +48,6 @@ typedef struct yyTypedRules_tag {	/* Typed rule table */
 
 #endif
 
-#line 1 "StrRes.y"
 
 /*
  * StrRes.y
@@ -173,7 +172,6 @@ typedef struct yyTraceItems_tag {
 } yyTraceItems;
 #endif
 
-#line 2 "d:/usr/mks-ly/etc/yyparse.c"
 
 /*
  * Copyright 1985, 1990 by Mortice Kern Systems Inc.  All rights reserved.
@@ -352,7 +350,6 @@ static char *	yygetState YY_ARGS((int));
 #define yyassert(condition, msg, arg)
 #endif
 
-#line 62 "StrRes.y"
 /*
  * A simple error reporting routine
  */
@@ -724,7 +721,6 @@ yyEncore:
 	switch (yyi) {		/* perform semantic action */
 		
 case YYr3: {	/* line :  TEXT QTEXT */
-#line 50 "StrRes.y"
 
 								
 								if (!strresStoreString(psCurrRes, yypvt[-1].sval, yypvt[0].sval))
@@ -733,7 +729,6 @@ case YYr3: {	/* line :  TEXT QTEXT */
 								}
 							
 } break;
-#line 314 "d:/usr/mks-ly/etc/yyparse.c"
 	case YYrACCEPT:
 		YYACCEPT;
 	case YYrERROR:

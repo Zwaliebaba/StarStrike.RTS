@@ -136,7 +136,6 @@ static int audp__base[] = {
 };
 
 
-#line 1 "d:\mks-ly/etc/yylex.c"
 /*
  * Copyright 1988, 1992 by Mortice Kern Systems Inc.  All rights reserved.
  * All rights reserved.
@@ -263,7 +262,6 @@ extern	void	audp_error	YY_ARGS((char *fmt, ...));
 extern	void	audp_comment	YY_ARGS((char *term));
 extern	int	audp_mapch	YY_ARGS((int delim, int escape));
 
-#line 1 ".\parser.l"
 
 
 #include <stdio.h>
@@ -298,7 +296,6 @@ static int	audp_GetChar( void );
 #undef audp_getc
 #define audp_getc() ( pInputBuffer != pEndBuffer ? *(pInputBuffer++) : EOF )
 
-#line 127 "d:\mks-ly/etc/yylex.c"
 
 
 #ifndef YYLMAX
@@ -526,7 +523,6 @@ YYDECL {
 	int audp_oldi, audp_oleng;	/* base i, audp_leng before look-ahead */
 	int audp_eof;		/* 1 if eof has already been read */
 
-#line 350 "d:\mks-ly/etc/yylex.c"
 
 
 
@@ -650,49 +646,38 @@ YYDECL {
 	YY_USER;
 	switch (audp__la_act[audp_fmin] & 0777) {
 	case 0:
-#line 60 ".\parser.l"
 	{	return ONESHOT;			}
 	break;
 	case 1:
-#line 61 ".\parser.l"
 	{	return LOOP;			}
 	break;
 	case 2:
-#line 62 ".\parser.l"
 	{	return AUDIO;			}
 	break;
 	case 3:
-#line 63 ".\parser.l"
 	{	return ANIM3DFILE;		}
 	break;
 	case 4:
-#line 64 ".\parser.l"
 	{	return AUDIO_MODULE;	}
 	break;
 	case 5:
-#line 65 ".\parser.l"
 	{	return ANIM_MODULE;		}
 	break;
 	case 6:
-#line 66 ".\parser.l"
 	{	return ANIM3DFRAMES;	}
 	break;
 	case 7:
-#line 67 ".\parser.l"
 	{	return ANIM3DTRANS;		}
 	break;
 	case 8:
-#line 68 ".\parser.l"
 	{	return ANIMOBJECT;		}
 	break;
 	case 9:
-#line 78 ".\parser.l"
 	{	audp_lval.ival = atoi(audp_text);
 									return INTEGER;
 								}
 	break;
 	case 10:
-#line 83 ".\parser.l"
 	{
 									/* skip opening quote */
 									strcpy( audp_lval.sval, audp_text+1 );
@@ -712,35 +697,28 @@ YYDECL {
 								}
 	break;
 	case 11:
-#line 102 ".\parser.l"
 	{	strcpy( audp_lval.sval, audp_text );
 									return TEXT;
 								}
 	break;
 	case 12:
-#line 107 ".\parser.l"
 	;
 	break;
 	case 13:
-#line 110 ".\parser.l"
 	{ BEGIN COMMENT; }
 	break;
 	case 14:
 	case 15:
-#line 112 ".\parser.l"
 	{ BEGIN 0; }
 	break;
 	case 16:
 	case 17:
-#line 114 ".\parser.l"
 	;
 	break;
 	case 18:
-#line 117 ".\parser.l"
 	return audp_text[0];
 	break;
 
-#line 472 "d:\mks-ly/etc/yylex.c"
 
 	}
 	YY_SCANNER;
@@ -889,7 +867,6 @@ unput(c)
 	return c;
 }
 
-#line 121 ".\parser.l"
 
 /***************************************************************************/
 

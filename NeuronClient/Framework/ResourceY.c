@@ -48,7 +48,6 @@ typedef struct yyTypedRules_tag {	/* Typed rule table */
 
 #endif
 
-#line 1 "Resource.y"
 
 /*
  * resource.y
@@ -184,7 +183,6 @@ typedef struct yyTraceItems_tag {
 } yyTraceItems;
 #endif
 
-#line 2 "d:/usr/mks-ly/etc/yyparse.c"
 
 /*
  * Copyright 1985, 1990 by Mortice Kern Systems Inc.  All rights reserved.
@@ -363,7 +361,6 @@ static char *	yygetState YY_ARGS((int));
 #define yyassert(condition, msg, arg)
 #endif
 
-#line 101 "Resource.y"
 /*
  * A simple error reporting routine
  */
@@ -735,7 +732,6 @@ yyEncore:
 	switch (yyi) {		/* perform semantic action */
 		
 case YYr5: {	/* dir_line :  DIRECTORY QTEXT */
-#line 58 "Resource.y"
 
 											UDWORD len;
 
@@ -765,7 +761,6 @@ case YYr5: {	/* dir_line :  DIRECTORY QTEXT */
 } break;
 
 case YYr6: {	/* file_line :  FILETOKEN TEXT QTEXT */
-#line 88 "Resource.y"
 
 											
 											DBP1(("file: %s %s\n", yypvt[-1].sval, yypvt[0].sval));
@@ -775,7 +770,6 @@ case YYr6: {	/* file_line :  FILETOKEN TEXT QTEXT */
 											}
 										
 } break;
-#line 314 "d:/usr/mks-ly/etc/yyparse.c"
 	case YYrACCEPT:
 		YYACCEPT;
 	case YYrERROR:
