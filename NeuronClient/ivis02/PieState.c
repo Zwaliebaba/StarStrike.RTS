@@ -704,18 +704,14 @@ void pie_SetGammaValue(float val)
 /***************************************************************************/
 void pie_DrawMouse(SDWORD x,SDWORD y)
 {
-#ifndef PIEPSX
 	iV_DrawMousePointer(x, y);
-#endif
 }
 
 /***************************************************************************/
 UWORD	presentMouseID;
 void pie_SetMouse(IMAGEFILE *psImageFile,UWORD ImageID)
 {
-#ifndef PIEPSX
 	iV_SetMousePointer(psImageFile,ImageID);
-#endif
 	presentMouseID = ImageID;
 }
 

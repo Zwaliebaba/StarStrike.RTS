@@ -14,7 +14,6 @@
 #include "Texd3d.h"
 #include "Dx6TexMan.h"
 
-#ifndef PIEPSX		// was #ifdef WIN32
 
 
 /***************************************************************************/
@@ -1979,6 +1978,5 @@ void D3DTestCooperativeLevel( BOOL bGotFocus )
 
 /***************************************************************************/
 
-#endif		// #ifndef PIEPSX - at the top of the file - FFS JS/TC - GJ
 
 /***************************************************************************/

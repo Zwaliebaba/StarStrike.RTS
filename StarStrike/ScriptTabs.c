@@ -31,13 +31,8 @@
 
 #include "Design.h"			// for the iddes_...
 #include "Display.h"		// for the MT_...  
-#ifdef WIN32
 #include "Multiplay.h"
 #include "Intfac.h"
-#else
-#include "intpsx.h"
-
-#endif
 
 /* The table of user defined types
  * The format is :
@@ -762,7 +757,6 @@ VAR_SYMBOL asExternTable[] =
 
 
 
-#ifdef WIN32	
 	{ "multiPlayerGameType",VAL_INT,	ST_EXTERN,	0,	EXTID_MULTIGAMETYPE,
 		scrGenExternGet,			NULL },
 
@@ -771,7 +765,6 @@ VAR_SYMBOL asExternTable[] =
 
 	{ "multiPlayerBaseType",VAL_INT,	ST_EXTERN,	0,EXTID_MULTIGAMEBASETYPE,
 		scrGenExternGet,			NULL },
-#endif
 
 		
 
@@ -1033,13 +1026,8 @@ CONST_SYMBOL asConstantTable[] =
 	{ "IMAGE_CURSOR_SELECT", VAL_INT,	0,		IMAGE_CURSOR_SELECT,	0 },
 	{ "IMAGE_CURSOR_ATTACK", VAL_INT,	0,  	IMAGE_CURSOR_ATTACK,	0 },
 	{ "IMAGE_CURSOR_MOVE",	 VAL_INT,	0,		IMAGE_CURSOR_MOVE,		0 },
-#ifdef WIN32
 	{ "IMAGE_CURSOR_ECM",	 VAL_INT,	0, 		IMAGE_CURSOR_ECM,		0 },
 	{ "IMAGE_CURSOR_REPAIR", VAL_INT,	0,		IMAGE_CURSOR_REPAIR, 0 },
-#else
-	{ "IMAGE_CURSOR_ECM",	 VAL_INT,	0, 		IMAGE_CURSOR_JAM,		0 },
-	{ "IMAGE_CURSOR_REPAIR", VAL_INT,	0,		IMAGE_CURSOR_SEEKREPAIR, 0 },
-#endif
 	{ "IMAGE_CURSOR_PICKUP",  VAL_INT,	0, 		IMAGE_CURSOR_PICKUP,	0 },
 	{ "IMAGE_CURSOR_DEFAULT", VAL_INT,	0, 		IMAGE_CURSOR_DEFAULT,	0 },
 
@@ -1053,13 +1041,9 @@ CONST_SYMBOL asConstantTable[] =
 
 	// game mode types  (possible values for intMode)
 	{ "INT_NORMAL",			VAL_INT,	0,		INT_NORMAL,	0 },		// Standard mode (just the reticule)
-#ifdef WIN32
 	{ "INT_OPTION",			VAL_INT,	0,		INT_OPTION,0 },	// Option screen
-#endif
 	{ "INT_EDITSTAT",		VAL_INT,	0,		INT_EDITSTAT,0 },	// Stat screen up for placing objects
-#ifdef WIN32
 	{ "INT_EDIT",			VAL_INT,	0,		INT_EDIT,0 },		// Edit mode
-#endif
 	{ "INT_OBJECT",			VAL_INT,	0,		INT_OBJECT,0 },	// Object screen
 	{ "INT_STAT",			VAL_INT,	0,		INT_STAT,0 },		// Object screen with stat screen
 	{ "INT_CMDORDER",		VAL_INT,	0,		INT_CMDORDER,0 },	// Object screen with command droids and orders screen
@@ -1138,7 +1122,6 @@ CONST_SYMBOL asConstantTable[] =
 	{ "DT_HOVER",		VAL_INT,	0,	SCR_DT_HOVER,		0 },
 
 	// multiplayer
-#ifdef WIN32		
 //	{ "DMATCH",				VAL_INT,	0,		DMATCH,					0 },
 	{ "CAMPAIGN",			VAL_INT,	0,		CAMPAIGN,				0 },
 	{ "TEAMPLAY",			VAL_INT,	0,		TEAMPLAY,				0 },
@@ -1147,7 +1130,6 @@ CONST_SYMBOL asConstantTable[] =
 	{ "CAMP_CLEAN",			VAL_INT,	0,		CAMP_CLEAN,				0 },
 	{ "CAMP_BASE",			VAL_INT,	0,		CAMP_BASE,				0 },
 	{ "CAMP_WALLS",			VAL_INT,	0,		CAMP_WALLS,				0 },
-#endif
 
 
 	/* This entry marks the end of the constant list */

@@ -26,35 +26,21 @@
 #define SQRT_ACCBITS	12
 
 /* The trig functions */
-#ifdef WIN32
 #define SINFUNC		(FRACT)sin
 #define COSFUNC		(FRACT)cos
 #define ASINFUNC	(FRACT)asin
 #define ACOSFUNC	(FRACT)acos
-#else
-// for PSX
-#define SINFUNC		_mathstub
-#define COSFUNC		_mathstub
-#define ASINFUNC	_mathstub
-#define ACOSFUNC	_mathstub
 
-FRACT ArcCos(FRACT Input);
-
-#endif
-
-#ifdef WIN32
 static FRACT	*aSin;
 static FRACT	*aCos;
 static FRACT	*aInvCos;
 /* Square root table - not needed on PSX cos there is a fast hardware sqrt */
 static FRACT	*aSqrt;
 static FRACT	*aInvSin;
-#endif
 
 /* Initialise the Trig tables */
 BOOL trigInitialise(void)
 {
-#ifdef WIN32
 	FRACT	val, inc;
 	UDWORD	count;
 
@@ -120,11 +106,6 @@ BOOL trigInitialise(void)
 //#endif
 
 
-#else
-
-
-
-#endif
 	return TRUE;
 }
 
@@ -132,13 +113,11 @@ BOOL trigInitialise(void)
 /* Shutdown the trig tables */
 void trigShutDown(void)
 {
-#ifdef WIN32
 	FREE(aSin);
 	FREE(aCos);
 	FREE(aInvSin);
 	FREE(aInvCos);
 	FREE(aSqrt);
-#endif
 }
 
 
@@ -194,16 +173,13 @@ FRACT trigInvCos(FRACT val)
 /* Fast lookup sqrt */
 FRACT trigIntSqrt(UDWORD val)
 {
-#ifdef WIN32
 	UDWORD	exp, mask;
-#endif
 
 	if (val == 0)
 	{
 		return FRACTCONST(0,1);
 	}
 
-#ifdef WIN32
 	// find the exponent of the number
 	mask = 0x80000000;		// set the msb in the mask
 	for(exp=32; exp!=0; exp--)
@@ -236,14 +212,6 @@ FRACT trigIntSqrt(UDWORD val)
 	ASSERT((val < SQRT_ACCURACY,
 		"trigIntSqrt: aargh - table index out of range"));
 	return aSqrt[val] * (FRACT)((UDWORD)1 << ((UDWORD)exp/2));
-#else
-
-// ffs - jeremy if you touch psx only code again, I will break your legs
-//	return(fSQRT(val));		// is this ok ? or does iSQRT really return a UDWORD ?
-
-	return(MAKEFRACT(iSQRT(val)));		// is this ok ? or does iSQRT really return a UDWORD ?
-
-#endif
 }
 
 

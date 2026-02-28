@@ -57,9 +57,7 @@
 #define MINPITCH (768)
 #define PITCHCHANGE (512)
 
-#ifdef WIN32
 #include "Multiplay.h"
-#endif
 
 
 #include "Target.h"
@@ -615,7 +613,6 @@ void driveUpdate(void)
 	if(DirectControl) {
 		if(psDrivenDroid != NULL) {
 
-	#ifdef WIN32
 			if(bMultiPlayer && (driveBumpTime < gameTime))	// send latest info about driven droid.
 			{
 				SendDroidInfo(psDrivenDroid,DORDER_MOVE,psDrivenDroid->x,psDrivenDroid->y, NULL);
@@ -624,7 +621,6 @@ void driveUpdate(void)
 	//TO BE DONE:
 		//clear the order on taking over the droid, to stop attacks..
 		//send some sort of message when droids stopo and get inrange.
-	#endif
 
 			// Check the driven droid is still selected
 			if(psDrivenDroid->selected == FALSE) {
@@ -789,46 +785,12 @@ BOOL driveInterfaceEnabled(void)
 //
 void driveProcessAquireButton(void)
 {
-#ifdef WIN32
 	if(mouseReleased(MOUSE_RMB) || keyPressed(KEY_S)) {
 		BASE_OBJECT	*psObj;
 //		psObj = targetAquireNext(TARGET_TYPE_ANY);
 //		psObj = targetAquireNearestObj(targetGetCrosshair(),TARGET_TYPE_ANY);
 		psObj = targetAquireNearestObjView((BASE_OBJECT*)psDrivenDroid,TARGET_TYPE_ANY);
 	}
-#else
-//	if(VPadPressed(VPAD_CLOSE)) {
-//		BASE_OBJECT	*psObj;
-//		psObj = targetAquireNext(TARGET_TYPE_ANY);
-//		psObj = targetAquireNearestObj(targetGetCrosshair(),TARGET_TYPE_ANY);
-//		psObj = targetAquireNearestObjView((BASE_OBJECT*)psDrivenDroid,TARGET_TYPE_ANY);
-//	}
-
-	UDWORD TargetType;
-
-//	if(VPadTriggered(VPAD_TARGETFEATURE)) {
-	if(VPadTriggered(VPAD_SELECT)) {
-		TargetFeatures = TargetFeatures ? FALSE : TRUE;
-		if(TargetFeatures) {
-			CONPRINTF(ConsoleString,(ConsoleString,strresGetString(psStringRes,STR_GAM_SELNEUTRAL)));
-		} else {
-			CONPRINTF(ConsoleString,(ConsoleString,strresGetString(psStringRes,STR_GAM_SELHOSTILE)));
-		}
-	} 
-
-	if(TargetFeatures) {
-		TargetType = TARGET_TYPE_FEATURE | TARGET_TYPE_RESOURCE |
-					 TARGET_TYPE_ARTIFACT | TARGET_TYPE_WALL | TARGET_TYPE_FRIEND;
-	} else {
-		TargetType = TARGET_TYPE_THREAT | 
-					TARGET_TYPE_STRUCTURE | TARGET_TYPE_DROID |
-					TARGET_TYPE_RESOURCE | TARGET_TYPE_ARTIFACT |
-					TARGET_TYPE_FRIEND;
-	}
-
-	targetAquireNearestObjView((BASE_OBJECT*)psDrivenDroid,TargetType);
-
-#endif
 }
 
 

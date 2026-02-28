@@ -3,9 +3,7 @@
 #define _rendmode_h_
 #include "Ivisdef.h"
 #include "Ivi.h"
-#ifdef WIN32
 #include "PieBlitFunc.h"
-#endif
 //#include "ivid3d.h"
 #include "BitImage.h"
 #include "TextDraw.h"
@@ -101,10 +99,8 @@ extern iSurface *iV_SurfaceCreate(uint32 flags, int width, int height, int xp, i
 
 extern int iV_GetDisplayWidth(void);
 extern int iV_GetDisplayHeight(void);
-#ifdef WIN32
 // Deprecated: always returns FALSE now that software renderer is removed
 #define weHave3DNow() (FALSE)
-#endif
 
 
 

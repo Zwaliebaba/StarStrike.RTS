@@ -22,13 +22,11 @@
 #include "PieClip.h"
 #include "Piefunc.h"
 #include "PieMatrix.h"
-#ifndef PIEPSX
 /***************************************************************************/
 /*
  *	Local Definitions
  */
 /***************************************************************************/
-#ifdef WIN32
 UWORD	backDropBmp[BACKDROP_WIDTH * BACKDROP_HEIGHT * 2];
 SDWORD gSurfaceOffsetX;
 SDWORD gSurfaceOffsetY;
@@ -36,7 +34,6 @@ UWORD* pgSrcData = NULL;
 SDWORD gSrcWidth;
 SDWORD gSrcHeight;
 SDWORD gSrcStride;
-#endif
 
 #define COLOURINTENSITY 0xffffffff
 /***************************************************************************/
@@ -772,4 +769,3 @@ void pie_D3DRenderForFlip(void)
 
 
 
-#endif

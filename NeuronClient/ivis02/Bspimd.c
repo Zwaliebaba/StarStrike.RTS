@@ -106,7 +106,6 @@ _inline int IsPointOnPlane( PSPLANE psPlane, iVector * vP )
 	This is the main BSP Traversal routine. It Zaps through the tree (recursively) - and draws all the polygons
 	for the IMD in the correct order ... pretty clever eh ..
 */
-#ifdef WIN32
 static void TraverseTreeAndRender( PSBSPTREENODE psNode)
 {
 	/* is viewer on same side? */
@@ -142,45 +141,6 @@ static void TraverseTreeAndRender( PSBSPTREENODE psNode)
 	}
 }
 
-#else // psx
-static void TraverseTreeAndRender( PSBSPTREENODE psNode)
-{
-	/* is viewer on same side? */
-// On the playstation we need the list in reverse order (front most polygon first)
-// so we just do the list the opposite way around - this affects the BACKFACE culling as well 
-	if ( IsPointOnPlane( &psNode->Plane, BSPScrPos ) == OPPOSITE_SIDE )
-	{
-		/* recurse on opposite side, render this node on same side, 
-		 * recurse on same side.
-		 */
-
-		if (psNode->link[LEFT]!=NULL) TraverseTreeAndRender( psNode->link[LEFT]);				 
-
-		if(NoCullBSP) {
-//#ifndef BSP_BACKFACECULL
-			if (psNode->TriSameDir!=BSPPOLYID_TERMINATE) DrawTriangleList(psNode->TriSameDir);
-		}
-//#endif
-		if (psNode->TriOppoDir!=BSPPOLYID_TERMINATE) DrawTriangleList(psNode->TriOppoDir);
-		if (psNode->link[RIGHT]!=NULL) TraverseTreeAndRender( psNode->link[RIGHT]);
-	}
-	else
-	/* viewer in plane or on opposite side */
-	{
-		/* recurse on same side, render this node on opposite side
-		 * recurse on opposite side.
-		 */
-		if (psNode->link[RIGHT]!=NULL) TraverseTreeAndRender( psNode->link[RIGHT]);
-//#ifndef BSP_BACKFACECULL
-		if(NoCullBSP) {
-			if (psNode->TriOppoDir!=BSPPOLYID_TERMINATE) DrawTriangleList(psNode->TriOppoDir);
-		}
-//#endif
-		if (psNode->TriSameDir!=BSPPOLYID_TERMINATE) DrawTriangleList(psNode->TriSameDir);
-		if (psNode->link[LEFT]!=NULL) 	TraverseTreeAndRender( psNode->link[LEFT]);
-	}
-}
-#endif
 
 
 

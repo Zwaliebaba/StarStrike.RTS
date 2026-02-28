@@ -85,12 +85,8 @@
 #include <stdarg.h>
 #include "Types.h"
 
-#ifdef WIN32
 /* Include the mono printing stuff */
 #include "Mono.h"
-#else
-#include "printf.h"
-#endif
 
 /****************************************************************************************
  *
@@ -157,20 +153,7 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
  * to be used :
  *		DBPRINTF(("Example output string with a variable: %d\n", Variable));
  */
-#ifdef WIN32
 #define DBPRINTF(x)				dbg_printf x
-#else
-/*#define DBPRINTF(x) \
-	printf("DBPRINTF @ %s,%d:\n",__FILE__,__LINE__);\
-	printf x;\
-	printf("\n") */
-
-//	#ifdef FINALBUILD
-//		#define DBPRINTF(x);
-//	#else
-		#define DBPRINTF(x) printf x;
-//	#endif
-#endif
 
 /*
  *
@@ -245,7 +228,7 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
  * Mono monitor output macros
  *
  */
-#if defined(WIN32) && defined(MONODEBUG)
+#ifdef MONODEBUG
 
 /*
  *
@@ -431,11 +414,7 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
 #else
 
 /* No Debugging output required */
-#ifdef WIN32
 #define DBPRINTF(x)
-#else	// currently we want DBPRINTF to work on the PSX even on release build
-#define DBPRINTF(x) printf x;
-#endif
 
 #define DBOUTPUTFILE(x)
 #define DBNOOUTPUTFILE()

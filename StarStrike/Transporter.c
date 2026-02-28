@@ -29,9 +29,7 @@
 #include "AudioId.h"
 #include "PieMatrix.h"
 #include "MapGrid.h"
-#ifdef WIN32
 #include "Multiplay.h"
-#endif
 #include "Csnap.h"
 
 extern CURSORSNAP InterfaceSnap;
@@ -109,11 +107,7 @@ extern CURSORSNAP InterfaceSnap;
 #define HEAVY_DROID					1//3
 
 //max that can be available from home
-#ifdef WIN32
 #define MAX_DROIDS					80
-#else
-#define MAX_DROIDS					40
-#endif
 
 /* the widget screen */
 extern W_SCREEN		*psWScreen;
@@ -231,13 +225,9 @@ static BOOL _intAddTransporter(DROID *psSelected, BOOL offWorld)
 		Animate = FALSE;
 	}
 
-#ifdef WIN32
 	if(intIsRefreshing()) {
 		Animate = FALSE;
 	}
-#else
-	Animate = FALSE;
-#endif
 
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));
 
@@ -270,7 +260,6 @@ static BOOL _intAddTransporter(DROID *psSelected, BOOL offWorld)
 ////	SetMouseFormPosition(&sFormInit);
 //#endif
 	
-#ifdef WIN32
 	/* Add the close button */
 	memset(&sButInit, 0, sizeof(W_BUTINIT));
 	sButInit.formID = IDTRANS_FORM;
@@ -288,7 +277,6 @@ static BOOL _intAddTransporter(DROID *psSelected, BOOL offWorld)
 	{
 		return FALSE;
 	}
-#endif
 
 	if (!intAddTransButtonForm())
 	{
@@ -330,13 +318,9 @@ BOOL intAddTransporterContents(void)
 		AlreadyUp = TRUE;
 	}
 
-#ifdef WIN32
 	if(intIsRefreshing()) {
 		Animate = FALSE;
 	}
-#else
-	Animate = FALSE;
-#endif
 
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));
 
@@ -369,7 +353,6 @@ BOOL intAddTransporterContents(void)
 ////	SetMouseFormPosition(&sFormInit);
 //#endif
 	
-#ifdef WIN32
 	/* Add the close button */
 	memset(&sButInit, 0, sizeof(W_BUTINIT));
 	sButInit.formID = IDTRANS_CONTENTFORM;
@@ -387,7 +370,6 @@ BOOL intAddTransporterContents(void)
 	{
 		return FALSE;
 	}
-#endif
 
 //	Now done further down.
 //	if (!intAddTransContentsForm())
@@ -421,33 +403,22 @@ BOOL intAddTransporterContents(void)
 	}*/
 
 	//add the Launch button - if on a mission, or all the time on the PSX
-#ifdef WIN32
 	if (onMission)
-#endif
 	{
 		memset(&sButFInit, 0, sizeof(W_FORMINIT));
 		sButFInit.formID = IDTRANS_CONTENTFORM;
 		sButFInit.id = IDTRANS_LAUNCH;
 //		sButFInit.style = WBUT_PLAIN;
 		sButFInit.style = WFORM_CLICKABLE | WFORM_NOCLICKMOVE;
-#ifdef WIN32
 		sButFInit.x = OBJ_STARTX;
 		sButFInit.y = (UWORD)(STAT_SLDY - 1);
-#else
-		sButFInit.x = OBJ_STARTX;
-		sButFInit.y = (UWORD)(STAT_SLDY - 4);
-#endif
 		sButFInit.width = iV_GetImageWidth(IntImages,IMAGE_LAUNCHUP);
 		sButFInit.height = iV_GetImageHeight(IntImages,IMAGE_LAUNCHUP);
 		sButFInit.pTip = strresGetString(psStringRes, STR_INT_TRANSLAUNCH);
 		//sButInit.pText = "Launch";
 //		sButFInit.FontID = WFont;
 		sButFInit.pDisplay = intDisplayImageHilight;
-#ifdef WIN32
 		sButFInit.pUserData = (void*)PACKDWORD_TRI(0,IMAGE_LAUNCHDOWN,IMAGE_LAUNCHUP);
-#else
-		sButFInit.pUserData = (void*)PACKDWORD_TRI(0,IMAGE_LAUNCHHI,IMAGE_LAUNCHUP);
-#endif
 		if (!widgAddForm(psWScreen, &sButFInit))
 		{
 			return FALSE;
@@ -469,7 +440,6 @@ BOOL intAddTransporterContents(void)
 /*This is used to display the transporter button and capacity when at the home base ONLY*/
 BOOL intAddTransporterLaunch(DROID *psDroid)
 {
-#ifdef WIN32
 	//W_BUTINIT		sButInit;
 	W_FORMINIT		sButInit;		//needs to be a clickable form now
 	W_LABINIT		sLabInit;
@@ -543,11 +513,6 @@ BOOL intAddTransporterLaunch(DROID *psDroid)
         }
     }
 
-#else
-	//set up the static transporter
-	psCurrTransporter = psDroid;
-
-#endif
 
 	return TRUE;
 }
@@ -846,13 +811,9 @@ BOOL intAddDroidsAvailForm(void)
 		Animate = FALSE;
 	}
 
-#ifdef WIN32
 	if(intIsRefreshing()) {
 		Animate = FALSE;
 	}
-#else
-	Animate = FALSE;
-#endif
 
 
 	/* Add the droids available form */
@@ -887,7 +848,6 @@ BOOL intAddDroidsAvailForm(void)
 ////	SetMouseFormPosition(&sFormInit);
 //#endif
 	
-#ifdef WIN32
 	/* Add the close button */
 	memset(&sButInit, 0, sizeof(W_BUTINIT));
 	sButInit.formID = IDTRANS_DROIDS;
@@ -905,7 +865,6 @@ BOOL intAddDroidsAvailForm(void)
 	{
 		return FALSE;
 	}
-#endif
 
 	//now add the tabbed droids available form
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));
@@ -919,11 +878,7 @@ BOOL intAddDroidsAvailForm(void)
 
 	sFormInit.majorPos = WFORM_TABTOP;
 	sFormInit.minorPos = WFORM_TABNONE;
-#ifdef WIN32
 	sFormInit.majorSize = (OBJ_TABWIDTH/2);
-#else
-	sFormInit.majorSize = OBJ_TABWIDTH;
-#endif
 	sFormInit.majorOffset = OBJ_TABOFFSET;
 	sFormInit.tabVertOffset = (OBJ_TABHEIGHT/2);
 	sFormInit.tabMajorThickness = OBJ_TABHEIGHT;
@@ -961,11 +916,7 @@ BOOL intAddDroidsAvailForm(void)
 	}
 
 	sFormInit.pFormDisplay = intDisplayObjectForm;
-#ifdef WIN32
 	sFormInit.pUserData = (void*)&SmallTab;
-#else
-	sFormInit.pUserData = (void*)&StandardTab;
-#endif
 	sFormInit.pTabDisplay = intDisplayTab;
 
 	if (!widgAddForm(psWScreen, &sFormInit))
@@ -1924,14 +1875,12 @@ void processLaunchTransporter(void)
             {
                 formSetClickState(psForm, WBUT_LOCK);
             }
-#ifdef WIN32
             //disable the form so can't add any more droids into the transporter
             psForm = (W_CLICKFORM*)widgGetFromID(psWScreen,IDTRANTIMER_BUTTON);
             if (psForm)
             {
                 formSetClickState(psForm, WBUT_LOCK);
             }
-#endif
 			launchTransporter(psCurrTransporter);
 			//set the data for the transporter timer
 			widgSetUserData(psWScreen, IDTRANTIMER_DISPLAY, 
@@ -1954,15 +1903,9 @@ UDWORD	angle;
 	// it will not 'bounce' off the top _and_ bottom of
 	// it's movemment arc.
 
-#ifdef WIN32
 	angle = gameTime%4320;
 	val = angle/12;
 	val = 10 * (SIN(DEG(val)));
-#else
-	angle = gameTime%4320;
-	val = angle/12;
-	val = 5 * (SIN(DEG(val)));
-#endif
 
 	return(val/4096);
 }
@@ -1970,7 +1913,6 @@ UDWORD	angle;
 /*causes one of the mission buttons (Launch Button or Mission Timer) to start flashing*/
 void flashMissionButton(UDWORD buttonID)
 {
-#ifdef WIN32
 	W_TABFORM	*psForm;
 
 	//get the button from the id
@@ -1991,13 +1933,11 @@ void flashMissionButton(UDWORD buttonID)
             break;
         }
 	}
-#endif
 }
 
 /*stops one of the mission buttons (Launch Button or Mission Timer) flashing*/
 void stopMissionButtonFlash(UDWORD buttonID)
 {
-#ifdef WIN32
 	W_TABFORM	*psForm;
 
 	//get the button from the id
@@ -2018,7 +1958,6 @@ void stopMissionButtonFlash(UDWORD buttonID)
             break;
         }
 	}
-#endif
 }
 
 /* set current transporter (for script callbacks) */

@@ -58,11 +58,7 @@ extern	void	setRadarJump(BOOL	val);
 extern void displayWorld(void);
 
 // Illumination value for standard light level "as the artist drew it" ... not darker, not lighter
-#ifdef WIN32
 #define ILLUMINATION_NONE (13)
-#else
-#define ILLUMINATION_NONE (128)
-#endif
 
 
 //#define MAX_SCROLL_SPEED	1600

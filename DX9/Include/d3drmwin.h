@@ -10,9 +10,6 @@
 #ifndef __D3DRMWIN_H__
 #define __D3DRMWIN_H__
 
-#ifndef WIN32
-#define WIN32
-#endif
 
 #include "d3drm.h"
 

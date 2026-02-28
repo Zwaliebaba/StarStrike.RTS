@@ -20,11 +20,9 @@
 /* Includes direct access to render library */
 #include "Ivisdef.h"
 #include "PieState.h"
-#ifdef WIN32
 #include "PieMode.h"			// ffs
 #include "PieClip.h"			// ffs 
 #include "PieBlitFunc.h"
-#endif
 #include "Vid.h"
 #include "Geo.h"
 
@@ -152,13 +150,11 @@ BASE_STATS *CurrentStatsTemplate = NULL;
  
 UDWORD ManuPower = 0;	// Power required to manufacture the current item.
 
-#ifdef WIN32
 // Display surfaces for rendered buttons.
 BUTTON_SURFACE TopicSurfaces[NUM_TOPICSURFACES];
 BUTTON_SURFACE ObjectSurfaces[NUM_OBJECTSURFACES];
 BUTTON_SURFACE StatSurfaces[NUM_STATSURFACES];
 BUTTON_SURFACE System0Surfaces[NUM_SYSTEM0SURFACES];
-#endif
 
 // Working buffers for rendered buttons.
 RENDERED_BUTTON System0Buffers[NUM_SYSTEM0BUFFERS];	// References ObjectSurfaces.
@@ -352,9 +348,7 @@ void intUpdateProgressBar(struct _widget *psWidget, struct _w_context *psContext
                             researchPoints * (gameTime - (Research->timeStarted + (
                             gameTime - Research->timeStartHold))) / GAME_TICKS_PER_SEC;
 
-#ifdef WIN32
 						BuildPoints+= pPlayerRes->currentPoints;
-#endif
 
 					}
 					else
@@ -363,9 +357,7 @@ void intUpdateProgressBar(struct _widget *psWidget, struct _w_context *psContext
 				    	BuildPoints = ((RESEARCH_FACILITY*)Structure->pFunctionality)->
                             researchPoints * (gameTime - Research->timeStarted) / 
                             GAME_TICKS_PER_SEC;
-#ifdef WIN32
 				    	BuildPoints+= pPlayerRes->currentPoints;
-#endif
 
 					}
 				}
@@ -784,11 +776,9 @@ void intDisplayPowerBar(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	y0 = yOffset + BarGraph->y;
 
 
-#ifdef WIN32
 //	pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_OFF);
 	pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_ON);
 	pie_SetFogStatus(FALSE);
-#endif
 
 	iV_DrawTransImage(IntImages,IMAGE_PBAR_TOP,x0,y0);
 
@@ -796,10 +786,8 @@ void intDisplayPowerBar(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	iX = x0 + 3;
 	iY = y0 + 9;
 #else
- #ifdef WIN32
  	iX = x0;
  	iY = y0;
- #endif
 #endif
 
 	x0 += iV_GetImageWidthNoCC(IntImages,IMAGE_PBAR_TOP);
@@ -902,16 +890,8 @@ void intDisplayStatusButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 
 	Down = Form->state & (WCLICK_DOWN | WCLICK_LOCKED | WCLICK_CLICKLOCK);
 
-#ifdef WIN32
 //	if( (pie_GetRenderEngine() == ENGINE_GLIDE) || (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State) ) {
 	if( pie_Hardware() || (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State) ) {
-#else
-#ifndef BUTTONS_ALWAYS
-	if( (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State)  ) {
-#else
-	if(1) {
-#endif
-#endif
 		Hilight = Form->state & WCLICK_HILITE;
 
 		if(Hilight) {
@@ -1139,16 +1119,8 @@ void intDisplayObjectButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 
 	Down = Form->state & (WCLICK_DOWN | WCLICK_LOCKED | WCLICK_CLICKLOCK);
 
-#ifdef WIN32
 //	if( (pie_GetRenderEngine() == ENGINE_GLIDE) || (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State)  ) {
 	if( pie_Hardware() || (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State)  ) {
-#else
-#ifndef BUTTONS_ALWAYS
-	if( (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State)  ) {
-#else
-	if(1) {
-#endif
-#endif
 		Hilight = Form->state & WCLICK_HILITE;
 
 		if(Hilight) {
@@ -1233,16 +1205,8 @@ void intDisplayStatsButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOff
 
 	Down = Form->state & (WCLICK_DOWN | WCLICK_LOCKED | WCLICK_CLICKLOCK);
 
-#ifdef WIN32
 //	if( (pie_GetRenderEngine() == ENGINE_GLIDE) || (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State) ) {
 	if( pie_Hardware() || (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State) ) {
-#else
-#ifndef BUTTONS_ALWAYS
-	if( (IsBufferInitialised(Buffer)==FALSEd) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State)  ) {
-#else
-	if(1) {
-#endif
-#endif
 
 		Hilight = Form->state & WCLICK_HILITE;
 
@@ -1391,7 +1355,6 @@ void intDisplayStatsButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOff
 }
 
 
-#ifdef WIN32
 
 void RenderToButton(IMAGEFILE *ImageFile,UWORD ImageID,void *Object,UDWORD Player,
 					RENDERED_BUTTON *Buffer,BOOL Down, UDWORD IMDType, UDWORD buttonType)
@@ -1409,76 +1372,6 @@ void RenderBlankToButton(RENDERED_BUTTON *Buffer,BOOL Down, UDWORD buttonType)
 	CreateBlankButton(Buffer,Down,buttonType);
 }
 
-#else
-
-void RenderToButton(IMAGEFILE *ImageFile,UWORD ImageID,void *Object,UDWORD Player,RENDERED_BUTTON *Buffer,BOOL Down,
-					 UDWORD IMDType, UDWORD buttonType)
-{
-	SWORD			OldBias;
-
-#ifndef BUTTONS_ALWAYS
-	StartButtonRendering();					// Call this at the start of all the button rendering
-	SetButtonToRender(Buffer);		// This sets which button to render to
-#else
-	SetIMDRenderingMode(USE_FIXEDZ,0);			// Render to a fixed OtZ.
-	setComponentButtonOTIndex(iV_GetOTIndex_PSX());	// Set OtZ to render to.
-	OldBias = psxiv_GetZBias();		// Store the current Z Bias.
-	psxiv_SetZBias(0);				// Don't want the renderer to add anything to the OtZ.
-	psxiv_EnableZCheck(FALSE);		// Rendering over the 2d so don't check for this in the renderer.
-#endif
-	CreateIMDButton(ImageFile,ImageID,Object,Player,Buffer,Down,IMDType,buttonType);
-
-//	DrawDefaultButtonBackground();
-
-#ifndef BUTTONS_ALWAYS
-	FinishButtonRendering();				// Call this when we have finished all button rendering
-#else
-	psxiv_SetZBias(OldBias);			// Restore the renderers z bias.
-	psxiv_EnableZCheck(TRUE);			// And re-enable OtZ range checks
-	SetIMDRenderingMode(USE_MAXZ,0); 	// Set OT position calculation back to using the max Z value
-	setComponentButtonOTIndex(ORDERING_BUTTONRENDERING);	// Restore draw depth for button rendering.
-#endif
-}
-
-
-void RenderImageToButton(IMAGEFILE *ImageFile,UWORD ImageID,RENDERED_BUTTON *Buffer,BOOL Down, UDWORD buttonType)
-{
-#ifndef BUTTONS_ALWAYS
-	StartButtonRendering();					// Call this at the start of all the button rendering
-	SetButtonToRender(Buffer);		// This sets which button to render to
-#else
-	SetIMDRenderingMode(USE_FIXEDZ,iV_GetOTIndex_PSX());		// When rendering buttons we need to write to a constant entry in the OT ... this is set by the second param
-#endif
-
-	CreateImageButton(ImageFile,ImageID,Buffer,Down,buttonType);
-
-#ifndef BUTTONS_ALWAYS
-	FinishButtonRendering();				// Call this when we have finished all button rendering
-#else
-	SetIMDRenderingMode(USE_MAXZ,0);		// Set OT position calculation back to using the maz Z value
-#endif
-}
-
-
-void RenderBlankToButton(RENDERED_BUTTON *Buffer,BOOL Down, UDWORD buttonType)
-{
-#ifndef BUTTONS_ALWAYS
-	StartButtonRendering();					// Call this at the start of all the button rendering
-	SetButtonToRender(Buffer);		// This sets which button to render to
-#else
-	SetIMDRenderingMode(USE_FIXEDZ,iV_GetOTIndex_PSX());		// When rendering buttons we need to write to a constant entry in the OT ... this is set by the second param
-#endif
-
-	CreateBlankButton(Buffer,Down,buttonType);
-
-#ifndef BUTTONS_ALWAYS
-	FinishButtonRendering();				// Call this when we have finished all button rendering
-#else
-	SetIMDRenderingMode(USE_MAXZ,0);		// Set OT position calculation back to using the maz Z value
-#endif
-}
-
-#endif
 
 
 void AdjustTabFormSize(W_TABFORM *Form,UDWORD *x0,UDWORD *y0,UDWORD *x1,UDWORD *y1)
@@ -1698,7 +1591,6 @@ void intDisplayImage(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, U
 	iV_DrawTransImage(IntImages,(UWORD)(UDWORD)psWidget->pUserData,x,y);
 }
 
-#ifdef WIN32
 //draws the mission clock - flashes when below a predefined time
 void intDisplayMissionClock(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
 {
@@ -1717,7 +1609,6 @@ void intDisplayMissionClock(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
     	iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_C((UDWORD)psWidget->pUserData),x,y);
 	}
 }
-#endif
 
 
 // Display one of two images depending on if the widget is hilighted by the mouse.
@@ -1763,7 +1654,6 @@ void intDisplayImageHilight(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 
 	ImageID = (UWORD)UNPACKDWORD_TRI_C((UDWORD)psWidget->pUserData);	
 
-#ifdef WIN32
 	//need to flash the button if Full Transporter
     flash = UNPACKDWORD_TRI_A((UDWORD)psWidget->pUserData);
 	if (flash AND psWidget->id == IDTRANS_LAUNCH)
@@ -1785,19 +1675,6 @@ void intDisplayImageHilight(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 	    	iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->pUserData),x,y);
 	    }
     }
-#else
-	if(Hilight) {
-		iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->pUserData),x,y);
-	}
-
-
-	iV_DrawTransImage(IntImages,ImageID,x,y);
-
-	AddCursorSnap(&InterfaceSnap,
-					x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-					y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-					psWidget->formID,psWidget->id,NULL);
-#endif
 }
 
 
@@ -1909,7 +1786,6 @@ void intDisplayButtonHilight(struct _widget *psWidget, UDWORD xOffset, UDWORD yO
 //			Hilight = FALSE;
 //	}
 
-#ifdef WIN32
 	if(Grey) {
 		ImageID = (UWORD)(UNPACKDWORD_TRI_A((UDWORD)psWidget->pUserData));
 		Hilight = FALSE;
@@ -1921,38 +1797,6 @@ void intDisplayButtonHilight(struct _widget *psWidget, UDWORD xOffset, UDWORD yO
 	if(Hilight) {
 		iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->pUserData),x,y);
 	}
-#else
-	if(Grey) {
-		ImageID = (UWORD)(UNPACKDWORD_TRI_A((UDWORD)psWidget->pUserData));
-		Hilight = FALSE;
-	} else {
-		ImageID = (UWORD)(UNPACKDWORD_TRI_C((UDWORD)psWidget->pUserData));
-	}
-
-	if(Hilight) {
-		iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->pUserData),x,y);
-	}
-
-	if(buttonIsFlashing(psWidget)) {
-		SetImagePalMode(PALMODE_NORMAL);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	} else if(Down) {
-		SetImagePalMode(PALMODE_NORMAL);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	} else {
-		SetImagePalMode(PALMODE_DARKER);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	}
-	SetImagePalMode(PALMODE_NORMAL);
-
-//	iV_DrawTransImage(IntImages,ImageID,x,y);
-//	SetImagePalMode(PALMODE_NORMAL);
-
-	AddCursorSnap(&InterfaceSnap,
-					x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-					y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-					psWidget->formID,psWidget->id,NULL);
-#endif
 }
 
 
@@ -1970,7 +1814,6 @@ void intDisplayAltButtonHilight(struct _widget *psWidget, UDWORD xOffset, UDWORD
 
 	GetButtonState(psWidget,&Hilight,&Down,&Grey);
 
-#ifdef WIN32
 	if(Grey) {
 		ImageID = (UWORD)(UNPACKDWORD_TRI_A((UDWORD)psWidget->pUserData));
 		Hilight = FALSE;
@@ -1982,41 +1825,6 @@ void intDisplayAltButtonHilight(struct _widget *psWidget, UDWORD xOffset, UDWORD
 	if(Hilight) {
 		iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->pUserData),x,y);
 	}
-#else
-	if(Grey) {
-		ImageID = (UWORD)(UNPACKDWORD_TRI_A((UDWORD)psWidget->pUserData));
-		Hilight = FALSE;
-	} else {
-		ImageID = (UWORD)(UNPACKDWORD_TRI_C((UDWORD)psWidget->pUserData));
-	}
-
-	if(Hilight) {
-		iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->pUserData),x,y);
-	}
-
-
-	if(buttonIsFlashing(psWidget)) {
-		SetImagePalMode(PALMODE_NORMAL);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	} else if(Down) {
-		SetImagePalMode(PALMODE_NORMAL);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	} else {
-		SetImagePalMode(PALMODE_DARKER);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	}
-	SetImagePalMode(PALMODE_NORMAL);
-
-//	iV_DrawTransImage(IntImages,ImageID,x,y);
-//	SetImagePalMode(PALMODE_NORMAL);
-
-	if(!Grey) {
-		AddCursorSnap(&InterfaceSnap,
-						x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-						y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-						psWidget->formID,psWidget->id,&ReticuleBias);
-	}
-#endif
 }
 
 
@@ -2044,7 +1852,6 @@ void intDisplayButtonFlash(struct _widget *psWidget, UDWORD xOffset, UDWORD yOff
 		Down = 1;
 	}
 
-#ifdef WIN32
 	if ( Down && ((gameTime2/250) % 2 == 0) )
 	{
 		ImageID = (UWORD)(UNPACKDWORD_TRI_B((UDWORD)psWidget->pUserData));
@@ -2055,29 +1862,7 @@ void intDisplayButtonFlash(struct _widget *psWidget, UDWORD xOffset, UDWORD yOff
 	}
 
 	iV_DrawTransImage(IntImages,ImageID,x,y);
-#else
-	if ( Down && ((gameTime2/250) % 2 == 0) )
-	{
-		ImageID = (UWORD)(UNPACKDWORD_TRI_C((UDWORD)psWidget->pUserData)+1);
-//		Hilight = FALSE;
-	}
-	else
-	{
-		ImageID = (UWORD)(UNPACKDWORD_TRI_C((UDWORD)psWidget->pUserData));
-	}
 
-	if(Hilight) {
-		iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->pUserData),x,y);
-	}
-	iV_DrawTransImage(IntImages,ImageID,x,y);
-#endif
-
-#ifndef WIN32
-	AddCursorSnap(&InterfaceSnap,
-					x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-					y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-					psWidget->formID,psWidget->id,NULL);
-#endif
 }
 
 void intDisplayReticuleButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
@@ -2144,7 +1929,6 @@ void intDisplayReticuleButton(struct _widget *psWidget, UDWORD xOffset, UDWORD y
 	}
 
 
-#ifdef WIN32
 	iV_DrawTransImage(IntImages,ImageID,x,y);
 
 	if(Hilight) 
@@ -2158,37 +1942,6 @@ void intDisplayReticuleButton(struct _widget *psWidget, UDWORD xOffset, UDWORD y
 			iV_DrawTransImage(IntImages,IMAGE_RETICULE_HILIGHT,x,y);
 		}
 	}
-#else
-	if(Hilight) 
-	{
-//		if (Index == IMAGE_CANCEL_UP)
-//		{
-//			iV_DrawTransImage(IntImages,IMAGE_CANCEL_HILIGHT,x,y);
-//		}
-//		else
-//		{
-			SetImagePalMode(PALMODE_NORMAL);
-			iV_DrawTransImage(IntImages,IMAGE_RETICULE_HILIGHT,x,y);
-//		}
-	}
-
-	if(buttonIsFlashing(psWidget)) {
-		SetImagePalMode(PALMODE_DARKER);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-		SetImagePalMode(PALMODE_NORMAL);
-	} else {
-		if(((W_BUTTON*)psWidget)->state & WBUTS_GREY) {
-			SetImagePalMode(PALMODE_GREY);
-		}
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	}
-
-	AddCursorSnap(&InterfaceSnap,
-					x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-					y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-					psWidget->formID,psWidget->id,&ReticuleBias);
-	SetImagePalMode(PALMODE_NORMAL);
-#endif
 
 	psWidget->pUserData = (void*)(PACKDWORD_QUAD(flashTime,flashing,DownTime,Index));
 }
@@ -2210,7 +1963,6 @@ void intDisplayTab(struct _widget *psWidget,UDWORD TabType, UDWORD Position,
 		Number = 3;
 	}*/
 
-#ifdef WIN32
 	if(TabType == TAB_MAJOR) {
 		//iV_DrawTransImage(IntImages,(UWORD)(Tab->MajorUp+Number),x,y);
         iV_DrawTransImage(IntImages,(UWORD)Tab->MajorUp,x,y);
@@ -2230,38 +1982,6 @@ void intDisplayTab(struct _widget *psWidget,UDWORD TabType, UDWORD Position,
 			iV_DrawTransImage(IntImages,Tab->MinorSelected,x,y);
 		}
 	}
-#else
-	if(TabType == TAB_MAJOR) {
-		if(Hilight) {
-			iV_DrawTransImage(IntImages,(UWORD)Tab->MajorHilight,x,y);
-		}
-		
-		if(Selected) {
-			iV_DrawTransImage(IntImages,(UWORD)Tab->MajorSelected,x,y);
-		} else {
-			iV_DrawTransImage(IntImages,(UWORD)Tab->MajorUp,x,y);
-		}
-
-		ImageID = (UWORD)(Tab->MajorUp);
-	} else {
-		if(Hilight) {
-			iV_DrawTransImage(IntImages,Tab->MinorHilight,x,y);
-		}
-		
-		if(Selected) {
-			iV_DrawTransImage(IntImages,Tab->MinorSelected,x,y);
-		} else {
-			iV_DrawTransImage(IntImages,Tab->MinorUp,x,y);
-		}
-
-		ImageID = (UWORD)(Tab->MinorUp);
-	}
-
-	AddCursorSnap(&InterfaceSnap,
-					x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-					y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-					psWidget->formID,psWidget->id,&TabBias);
-#endif
 }
 
 //void intDisplaySystemTab(struct _widget *psWidget,UDWORD TabType, UDWORD Position,
@@ -2382,34 +2102,12 @@ void intDisplayButtonPressed(struct _widget *psWidget, UDWORD xOffset,
 //	}
 
 
-#ifdef WIN32
 	iV_DrawTransImage(IntImages,ImageID,x,y);
 	if (Hilight) 
 	{
 		iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->
 			pUserData),x,y);
 	}
-#else
-	if (Hilight) 
-	{
-		iV_DrawTransImage(IntImages,(UWORD)UNPACKDWORD_TRI_B((UDWORD)psWidget->
-			pUserData),x,y);
-	}
-
-	if(buttonIsFlashing(psWidget)) {
-		SetImagePalMode(PALMODE_DARKER);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-		SetImagePalMode(PALMODE_NORMAL);
-	} else {
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	}
-//	iV_DrawTransImage(IntImages,ImageID,x,y);
-
-	AddCursorSnap(&InterfaceSnap,
-		x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-		y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-		psWidget->formID,psWidget->id,NULL);
-#endif
 
 }
 
@@ -2458,7 +2156,6 @@ void intDisplayDPButton(struct _widget *psWidget, UDWORD xOffset,
 			return;
 		}
 
-#ifdef WIN32
 		iV_DrawTransImage(IntImages,imageID,x,y);
 		if (hilight) 
 		{
@@ -2470,30 +2167,9 @@ void intDisplayDPButton(struct _widget *psWidget, UDWORD xOffset,
             imageID--;
 			iV_DrawTransImage(IntImages,(UWORD)imageID,x,y);
 		}
-#else
-		if (hilight) 
-		{
-			iV_DrawTransImage(IntImages,imageID+hilight,x,y);
-		}
-
-		if(buttonIsFlashing(psWidget)) {
-			SetImagePalMode(PALMODE_DARKER);
-			iV_DrawTransImage(IntImages,imageID,x,y);
-			SetImagePalMode(PALMODE_NORMAL);
-		} else {
-			iV_DrawTransImage(IntImages,imageID,x,y);
-		}
-//		iV_DrawTransImage(IntImages,imageID,x,y);
-
-		AddCursorSnap(&InterfaceSnap,
-			x+(iV_GetImageXOffset(IntImages,imageID))+iV_GetImageWidth(IntImages,imageID)/2,
-			y+(iV_GetImageYOffset(IntImages,imageID))+iV_GetImageHeight(IntImages,imageID)/2,
-			psWidget->formID,psWidget->id,NULL);
-#endif
 	}
 }
 
-#ifdef WIN32
 void intDisplaySlider(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
 {
 	W_SLIDER *Slider = (W_SLIDER*)psWidget;
@@ -2532,12 +2208,10 @@ void intDisplaySlider(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, 
 //#endif
 	//DisplayQuantity = Slider->pos + 1;
 }
-#endif
 
 /* display highlighted edit box from left, middle and end edit box graphics */
 void intDisplayEditBox(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
 {
-#ifdef WIN32
 	W_EDITBOX	*psEditBox = (W_EDITBOX *) psWidget;
 	UWORD		iImageIDLeft, iImageIDMid, iImageIDRight;
 	UDWORD		iX, iY, iDX, iXRight;
@@ -2576,12 +2250,10 @@ void intDisplayEditBox(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset,
 
 	/* draw right side of bar */
 	iV_DrawTransImage( IntImages, iImageIDRight, iXRight, iY );
-#endif
 }
 
 
 
-#ifdef WIN32
 void intDisplayNumber(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
 {
 	W_LABEL		*Label = (W_LABEL*)psWidget;
@@ -2622,18 +2294,12 @@ void intDisplayNumber(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, 
 			Label->aText[2] = 0;
 
 			while(Label->aText[i]) {
-#ifdef WIN32
 				iV_DrawTransImage(IntImages,(UWORD)(IMAGE_0 + (Label->aText[i]-'0')),x,y);
 				x += iV_GetImageWidth(IntImages,(UWORD)(IMAGE_0 + (Label->aText[i]-'0')))+1;
-#else
-				iV_DrawTransImage(IntImages,(UWORD)(IMAGE_0 + (Label->aText[i]-'0')),x,y);
-				x += iV_GetImageWidth(IntImages,(UWORD)(IMAGE_0 + (Label->aText[i]-'0')))+2;
-#endif
 				i++;
 		}
 	}
 }
-#endif
 
 // Initialise all the surfaces,graphics etc. used by the interface.
 //
@@ -2671,7 +2337,6 @@ static RENDERED_BUTTON *CurrentOpenButton=NULL;
 
 
 
-#ifdef WIN32
 
 // Initialise data for interface buttons.
 //
@@ -2734,70 +2399,6 @@ void InitialiseButtonData(void)
 	}
 }
 
-#else
-
-// Initialise data for interface buttons.
-//
-void InitialiseButtonData(void)
-{
-#ifndef BUTTONS_ALWAYS
-	// Allocate surfaces for rendered buttons.
-	UDWORD Width = WidthToPSX(iV_GetImageWidth(IntImages,IMAGE_BUT0_UP));
-	UDWORD Height = HeightToPSX(iV_GetImageHeight(IntImages,IMAGE_BUT0_UP));
-	UDWORD WidthTopic = WidthToPSX(iV_GetImageWidth(IntImages,IMAGE_BUTB0_UP));
-	UDWORD HeightTopic = HeightToPSX(iV_GetImageHeight(IntImages,IMAGE_BUTB0_UP));
-	UDWORD i;
-
-//	DBPRINTF(("Width %d Height %d\n",Width,Height);
-
-
-	for(i=0; i<NUM_OBJECTSURFACES; i++) {
-		ObjectSurfaces[i].Surface = iV_SurfaceCreate(REND_SURFACE_USR,Width,Height,0,0,NULL);
-		ASSERT((ObjectSurfaces[i].Surface!=NULL,"intInitialise : Failed to create Object surface"));
-	}
-
-	for(i=0; i<NUM_OBJECTBUFFERS; i++) {
-		RENDERBUTTON_NOTINUSE(&ObjectBuffers[i]);
-		ObjectBuffers[i].ButSurf = &ObjectSurfaces[i%NUM_OBJECTSURFACES];
-	}
-
-	for(i=0; i<NUM_SYSTEM0SURFACES; i++) {
-		RENDERBUTTON_NOTINUSE(&System0Buffers[i]);
-		System0Buffers[i].ButSurf = &System0Surfaces[i%NUM_SYSTEM0SURFACES];
-	}
-
-	/*for(i=0; i<NUM_SYSTEM1BUFFERS; i++) {
-		RENDERBUTTON_NOTINUSE(&System1Buffers[i]);
-		System1Buffers[i].ButSurf = &ObjectSurfaces[i%NUM_OBJECTSURFACES];
-	}
-
-	for(i=0; i<NUM_SYSTEM2BUFFERS; i++) {
-		RENDERBUTTON_NOTINUSE(&System2Buffers[i]);
-		System2Buffers[i].ButSurf = &ObjectSurfaces[i%NUM_OBJECTSURFACES];
-	}*/
-
-	for(i=0; i<NUM_TOPICSURFACES; i++) {
-		TopicSurfaces[i].Surface = iV_SurfaceCreate(REND_SURFACE_USR,WidthTopic,HeightTopic,0,0,NULL);
-		ASSERT((TopicSurfaces[i].Surface!=NULL,"intInitialise : Failed to create Topic surface"));
-	}
-
-	for(i=0; i<NUM_TOPICBUFFERS; i++) {
-		RENDERBUTTON_NOTINUSE(&TopicBuffers[i]);
-		TopicBuffers[i].ButSurf = &TopicSurfaces[i%NUM_TOPICSURFACES];
-	}
-
-	for(i=0; i<NUM_STATSURFACES; i++) {
-		StatSurfaces[i].Surface = iV_SurfaceCreate(REND_SURFACE_USR,Width,Height,0,0,NULL);
-		ASSERT((StatSurfaces[i].Surface!=NULL,"intInitialise : Failed to create Stat surface"));
-	}
-
-	for(i=0; i<NUM_STATBUFFERS; i++) {
-		RENDERBUTTON_NOTINUSE(&StatBuffers[i]);
-		StatBuffers[i].ButSurf = &StatSurfaces[i%NUM_STATSURFACES];
-	}
-#endif
-}
-#endif
 
 
 void RefreshObjectButtons(void)
@@ -2962,7 +2563,6 @@ SDWORD GetSystem0Buffer(void)
 	return -1;
 }
 
-#ifdef WIN32
 // Free up data for interface buttons.
 //
 void DeleteButtonData(void)
@@ -2988,25 +2588,6 @@ void DeleteButtonData(void)
 		iV_SurfaceDestroy(System0Surfaces[i].Surface);
 	}
 }
-#else
-// Free up data for interface buttons.
-//
-void DeleteButtonData(void)
-{
-//	UDWORD i;
-//	for(i=0; i<NUM_OBJECTSURFACES; i++) {
-//		iV_SurfaceDestroy(ObjectSurfaces[i].Surface);
-//	}
-//
-//	for(i=0; i<NUM_TOPICSURFACES; i++) {
-//		iV_SurfaceDestroy(TopicSurfaces[i].Surface);
-//	}
-//
-//	for(i=0; i<NUM_STATSURFACES; i++) {
-//		iV_SurfaceDestroy(StatSurfaces[i].Surface);
-//	}
-}
-#endif
 
 
 
@@ -3015,7 +2596,6 @@ UWORD ButYPos = 0;
 UWORD ButWidth,ButHeight;
 
 
-#ifdef WIN32
 void OpenButtonRender(UWORD XPos,UWORD YPos,UWORD Width,UWORD Height)
 {
 	if (pie_Hardware())
@@ -3033,47 +2613,19 @@ void OpenButtonRender(UWORD XPos,UWORD YPos,UWORD Width,UWORD Height)
 	}
 }
 
-#else
-
-void OpenButtonRender(UWORD XPos,UWORD YPos,UWORD Width,UWORD Height)
-{
-
-		ButXPos = XPos;
-		ButYPos = YPos;
-		ButWidth = Width;
-		ButHeight = Height;
-//		pie_Set2DClip(XPos,YPos,(UWORD)(XPos+Width),(UWORD)(YPos+Height));		// dont think this is needed
-
-// Set up the clip area stuff
-//  - this defines where the clip is used
-		SetButtonClipDetails(XPos,YPos,Width,Height);
-//		DBPRINTF(("openbuttonrender @ (%d,%d - %d,%d)  %d\n",XPos,YPos,Width,Height,psxiv_GetIMDZ()));
-}
-	
-
-#endif
 
 
 
 void CloseButtonRender(void)
 {
 
-#ifdef WIN32
 	if (pie_Hardware())
 	{
 		pie_Set2DClip(CLIP_BORDER,CLIP_BORDER,psRendSurface->width-CLIP_BORDER,psRendSurface->height-CLIP_BORDER);
 	}
-#else
-	ClearButtonClipDetails();
-
-
-
-//	DBPRINTF(("closebuttonrender @  %d\n",psxiv_GetIMDZ()));
-#endif
 	
 }
 
-#ifdef WIN32
 
 // Clear a button bitmap. ( copy the button background ).
 //
@@ -3337,11 +2889,7 @@ void CreateIMDButton(IMAGEFILE *ImageFile,UWORD ImageID,void *Object,UDWORD Play
 		}
 		else
 		{
-#ifdef WIN32
 			Radius = ((iIMDShape*)Object)->sradius;
-#else
-			Radius = ((iIMDShape*)Object)->radius;
-#endif
 			if(Radius <= 128) {
 				Size = 2;//small structure
 				scale = SMALL_STRUCT_SCALE;
@@ -3470,453 +3018,6 @@ void CreateBlankButton(RENDERED_BUTTON *Buffer,BOOL Down, UDWORD buttonType)
 }
 
 
-#else	// Start of playstation button rendering code.
-
-
-// Clear a button bitmap. ( copy the button background ).
-//
-void ClearButton(BOOL Down,UDWORD Size, UDWORD buttonType)
-{
-//	if(Down) {
-//		iV_DrawImage(IntImages,(UWORD)(IMAGE_BUT0_UP+(Size*2)+(buttonType*6)),ButXPos,ButYPos);
-//	} else {
-//		iV_DrawImage(IntImages,(UWORD)(IMAGE_BUT0_DOWN+(Size*2)+(buttonType*6)),ButXPos,ButYPos);
-//	}
-	if(Down) {
-		iV_DrawImage(IntImages,(UWORD)(IMAGE_BUT0_DOWN+buttonType),ButXPos,ButYPos);
-//		iV_DrawImage(IntImages,(UWORD)(IMAGE_BUT0_UP+buttonType*2),ButXPos,ButYPos);
-	} else {
-//		SetImagePalMode(PALMODE_DARKER);
-		iV_DrawImage(IntImages,(UWORD)(IMAGE_BUT0_DOWN+buttonType),ButXPos,ButYPos);
-//		SetImagePalMode(PALMODE_NORMAL);
-//		iV_DrawImage(IntImages,(UWORD)(IMAGE_BUT0_DOWN+buttonType*2),ButXPos,ButYPos);
-	}
-}
-
-
-// Create a button by rendering an IMD object into it.
-//
-void CreateIMDButton(IMAGEFILE *ImageFile,UWORD ImageID,void *Object,UDWORD Player,RENDERED_BUTTON *Buffer,BOOL Down,
-					 UDWORD IMDType,UDWORD buttonType)
-{
-	UDWORD Size;
-	iVector Rotation,Position, NullVector;
-	UDWORD ox,oy;
-//	BUTTON_SURFACE *ButSurf;
-	UDWORD Radius;
-	UDWORD basePlateSize;
-	SDWORD scale;
-	UDWORD rx,ry;
-
-#ifdef WIN32
-	ButSurf = Buffer->ButSurf;	 // is this used ?
-#endif
-	if(Down) {
-		ox = oy = 2;
-	} else {
-		ox = oy = 0;
-	}
-
-	// The case where we have to render a composite droid.
-	if((IMDType == IMDTYPE_DROID) || (IMDType == IMDTYPE_DROIDTEMPLATE)) {
-//		if (!pie_Hardware())
-//		{
-//			iV_RenderAssign(iV_MODE_SURFACE,ButSurf->Surface);
-//		}
-
-		if(Down) 
-		{
-			//the top button is smaller than the bottom button
-			if (buttonType == TOPBUTTON)
-			{
-					rx = ButXPos + (iV_GetImageWidth(IntImages,IMAGE_BUT0_DOWN)/2) + ButtonDrawXOffset + 1;
-					ry = ButYPos + (iV_GetImageHeight(IntImages,IMAGE_BUT0_DOWN)/2) + 1 + 4 + ButtonDrawYOffset;
-			}
-			else
-			{
-					rx = ButXPos + (iV_GetImageWidth(IntImages,IMAGE_BUTB0_DOWN)/2) + ButtonDrawXOffset + 1; 
-					ry = ButYPos + (iV_GetImageHeight(IntImages,IMAGE_BUTB0_DOWN)/2) + 1 + 6 + ButtonDrawYOffset;
-			}
-		} 
-		else 
-		{
-			//the top button is smaller than the bottom button
-			if (buttonType == TOPBUTTON)
-			{
-					rx = ButXPos + (iV_GetImageWidth(IntImages,IMAGE_BUT0_DOWN)/2) + ButtonDrawXOffset;
-					ry = ButYPos + (iV_GetImageHeight(IntImages,IMAGE_BUT0_DOWN)/2) + 4  + ButtonDrawYOffset;
-			}
-			else
-			{
-					rx = ButXPos + (iV_GetImageWidth(IntImages,IMAGE_BUT0_DOWN)/2) + ButtonDrawXOffset;
-					ry = ButYPos + (iV_GetImageHeight(IntImages,IMAGE_BUTB0_DOWN)/2) + 6  + ButtonDrawYOffset;
-			}
-		}
-
-		SetGeomOffset(XToPSX(rx),YToPSX(ry));
-
-		if(IMDType == IMDTYPE_DROID)
-		{
-			Radius = getComponentDroidRadius((DROID*)Object);
-		}
-		else
-		{
-			Radius = getComponentDroidTemplateRadius((DROID_TEMPLATE*)Object);
-		}
-
-		Size = 2;
-		scale = DROID_BUT_SCALE;
-		ASSERT((Radius <= 128,"create PIE button big component found"));
-
-//		ClearButton(Down, Size, buttonType);
-
-		Rotation.x = -30;
-		Rotation.y = (UDWORD)Buffer->ImdRotation;
-		Rotation.z = 0;
-
-		NullVector.x = 0;
-		NullVector.y = 0;
-		NullVector.z = 0;
-
-		if(IMDType == IMDTYPE_DROID)
-		{
-			if(((DROID*)Object)->droidType == DROID_TRANSPORTER) {
-				Position.x = 0;
-				Position.y = 0;//BUT_TRANSPORTER_ALT;
-				Position.z = BUTTON_DEPTH;
-				scale = DROID_BUT_SCALE/2;
-			}
-			else
-			{
-				Position.x = Position.y = 0;
-				Position.z = BUTTON_DEPTH;
-			}
-		}
-		else//(IMDType == IMDTYPE_DROIDTEMPLATE)
-		{
-			if(((DROID_TEMPLATE*)Object)->droidType == DROID_TRANSPORTER) {
-				Position.x = 0;
-				Position.y = 0;//BUT_TRANSPORTER_ALT;
-				Position.z = BUTTON_DEPTH;
-				scale = DROID_BUT_SCALE/2;
-			}
-			else
-			{
-				Position.x = Position.y = 0;
-				Position.z = BUTTON_DEPTH;
-			}
-		}
-		
-#ifdef BUTTONS_ALWAYS
-	 	UpdateTPageID(0,iV_GetOTIndex_PSX());
-#endif
-
-		//lefthand display droid buttons
-		if(IMDType == IMDTYPE_DROID)
-		{
-			if ((Buffer->State& WCLICK_HILITE )!=0)		// Is the hilite bit set ?
-			{
-				getDroidName( (DROID*)Object );
-			}
-			displayComponentButtonObject((DROID*)Object,&Rotation,&Position,TRUE, scale);
-		}
-		else
-		{
-// Generate the droids name based on its components
-// This is generated here because we only have one buffer for the names (can only display one at once)
-
-// Is the state active (highlighted)								
-//	DBPRINTF(("indisplay temp=%p bufferstate=%d\n",Object,Buffer->State);
-			if ((Buffer->State& WCLICK_HILITE )!=0)		// Is the hilite bit set ?
-			{
-				getTemplateName( (DROID_TEMPLATE*)Object );
-			}
-			displayComponentButtonTemplate((DROID_TEMPLATE*)Object,&Rotation,&Position,TRUE, scale);
-		}
-
-#ifndef BUTTONS_ALWAYS
-		iV_EnableTPageUpdates_PSX(FALSE);
-		TmpOT = iV_GetOTIndex_PSX();
-		iV_SetOTIndex_PSX(ORDERING_BUTTONRENDERING);
-#endif
-		ClearButton(Down, Size, buttonType);
-
-#ifndef BUTTONS_ALWAYS
-		iV_SetOTIndex_PSX(TmpOT);
-		iV_EnableTPageUpdates_PSX(TRUE);
-#endif
-
-//		if(!pie_Hardware())
-//		{
-//			iV_RenderAssign(iV_MODE_4101,&rendSurface);
-//		}
-	}
-	else
-	{	// Just drawing a single IMD.
-//		if(!pie_Hardware())
-//		{
-//			iV_RenderAssign(iV_MODE_SURFACE,ButSurf->Surface);
-//		}
-
-	 
-		
-		if(Down) 
-		{
-			if (buttonType == TOPBUTTON)
-			{
-					rx = ButXPos + (iV_GetImageWidth(IntImages,IMAGE_BUT0_DOWN)/2) + ButtonDrawXOffset + 1;
-					ry = ButYPos + (iV_GetImageHeight(IntImages,IMAGE_BUT0_DOWN)/2) + 1 + 4 + ButtonDrawYOffset;
-			}
-			else
-			{
-					rx = ButXPos + (iV_GetImageWidth(IntImages,IMAGE_BUTB0_DOWN)/2) + ButtonDrawXOffset + 1;
-					ry = ButYPos + (iV_GetImageHeight(IntImages,IMAGE_BUTB0_DOWN)/2) + 1 + 6 + ButtonDrawYOffset;
-			}
-		} 
-		else 
-		{
-			if (buttonType == TOPBUTTON)
-			{
-					rx = ButXPos + (iV_GetImageWidth(IntImages,IMAGE_BUT0_DOWN)/2) + ButtonDrawXOffset;
-					ry = ButYPos + (iV_GetImageHeight(IntImages,IMAGE_BUT0_DOWN)/2) + 4  + ButtonDrawYOffset;
-			}
-			else
-			{
-					rx = ButXPos + (iV_GetImageWidth(IntImages,IMAGE_BUTB0_DOWN)/2) + ButtonDrawXOffset;
-					ry = ButYPos + (iV_GetImageHeight(IntImages,IMAGE_BUTB0_DOWN)/2) + 6  + ButtonDrawYOffset;
-			}
-		}
-
-		SetGeomOffset(XToPSX(rx),YToPSX(ry));
-
-	// Decide which button grid size to use.
-		if(IMDType == IMDTYPE_COMPONENT)
-		{
-			Radius = getComponentRadius((BASE_STATS*)Object);
-			Size = 2;//small structure
-			scale = rescaleButtonObject(Radius, COMP_BUT_SCALE, COMPONENT_RADIUS);
-			//scale = COMP_BUT_SCALE;
-			//ASSERT((Radius <= OBJECT_RADIUS,"Object too big for button - %s", 
-			//		((BASE_STATS*)Object)->pName));
-		}
-		else if(IMDType == IMDTYPE_RESEARCH)
-		{
-			Radius = getResearchRadius((BASE_STATS*)Object);
-			if(Radius <= 100)
-			{
-				Size = 2;//small structure
-				scale = rescaleButtonObject(Radius, COMP_BUT_SCALE, COMPONENT_RADIUS);
-				//scale = COMP_BUT_SCALE;
-			}
-			else if(Radius <= 128)
-			{
-				Size = 2;//small structure
-				scale = SMALL_STRUCT_SCALE;
-			}
-			else if(Radius <= 256)
-			{
-				Size = 1;//med structure
-				scale = MED_STRUCT_SCALE;
-			}
-			else
-			{
-				Size = 0;
-				scale = LARGE_STRUCT_SCALE;
-			}
-		}
-		else if(IMDType == IMDTYPE_STRUCTURE)
-		{
-			basePlateSize = getStructureSize((STRUCTURE*)Object);
-			if(basePlateSize == 1)
-			{
-				Size = 2;//small structure
-				scale = SMALL_STRUCT_SCALE;
-			}
-			else if(basePlateSize == 2)
-			{
-				Size = 1;//med structure
-				scale = MED_STRUCT_SCALE;
-			}
-			else
-			{
-				Size = 0;
-				scale = LARGE_STRUCT_SCALE;
-			}
-		}
-		else if(IMDType == IMDTYPE_STRUCTURESTAT)
-		{
-			basePlateSize= getStructureStatSize((STRUCTURE_STATS*)Object);
-			if(basePlateSize == 1)
-			{
-				Size = 2;//small structure
-				scale = SMALL_STRUCT_SCALE;
-			}
-			else if(basePlateSize == 2)
-			{
-				Size = 1;//med structure
-				scale = MED_STRUCT_SCALE;
-			}
-			else
-			{
-				Size = 0;
-				scale = LARGE_STRUCT_SCALE;
-			}
-		}
-		else
-		{
-#ifdef WIN32
-			Radius = ((iIMDShape*)Object)->sradius;
-#else
-			Radius = ((iIMDShape*)Object)->radius;
-#endif
-			if(Radius <= 128) {
-				Size = 2;//small structure
-				scale = SMALL_STRUCT_SCALE;
-			} else if(Radius <= 256) {
-				Size = 1;//med structure
-				scale = MED_STRUCT_SCALE;
-			} else {
-				Size = 0;
-				scale = LARGE_STRUCT_SCALE;
-			}
-		}
-
-
-
-//		ClearButton(Down,Size, buttonType);
-
-		Rotation.x = -30;
-		Rotation.y =(UDWORD) Buffer->ImdRotation;
-		Rotation.z = 0;
-
-		NullVector.x = 0;
-		NullVector.y = 0;
-		NullVector.z = 0;
-
-		Position.x = 0;
-		Position.y = 0;
-		Position.z = BUTTON_DEPTH; //was 		Position.z = Radius*30;
-
-  //		pie_SetDepthBufferStatus(DEPTH_CMP_LEQ_WRT_ON);
-
-		if(ImageFile) {
-			SetImagePalMode(PALMODE_NORMAL);
-			iV_DrawTransImage(ImageFile,ImageID,ButXPos+ox+2,ButYPos+oy+2);
-			if(!Down) {
-				SetImagePalMode(PALMODE_DARKER);
-			}
-		}
-
-#ifdef BUTTONS_ALWAYS
-	 	UpdateTPageID(0,iV_GetOTIndex_PSX());
-#endif
-
-		/* all non droid buttons */
-		if(IMDType == IMDTYPE_COMPONENT) {
-			displayComponentButton((BASE_STATS*)Object,&Rotation,&Position,TRUE, scale);
-		} else if(IMDType == IMDTYPE_RESEARCH) {
-			displayResearchButton((BASE_STATS*)Object,&Rotation,&Position,TRUE, scale);
-		} else if(IMDType == IMDTYPE_STRUCTURE) {
-			displayStructureButton((STRUCTURE*)Object,&Rotation,&Position,TRUE, scale);
-		} else if(IMDType == IMDTYPE_STRUCTURESTAT) {
-			displayStructureStatButton((STRUCTURE_STATS*)Object,Player,&Rotation,&Position,TRUE, scale);
-		} else {
-			displayIMDButton((iIMDShape*)Object,&Rotation,&Position,TRUE, scale);
-		}
-
-#ifndef BUTTONS_ALWAYS
-		iV_EnableTPageUpdates_PSX(FALSE);
-		TmpOT = iV_GetOTIndex_PSX();
-		iV_SetOTIndex_PSX(ORDERING_BUTTONRENDERING);
-#endif
-
-		ClearButton(Down,Size, buttonType);
-
-
-#ifndef BUTTONS_ALWAYS
-		iV_SetOTIndex_PSX(TmpOT);
-		iV_EnableTPageUpdates_PSX(TRUE);
-#endif
-
-//		pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_ON);
-//
-//		/* Reassign the render buffer to be back to normal */
-//		if(!pie_Hardware())
-//		{
-//			iV_RenderAssign(iV_MODE_4101,&rendSurface);
-//		}
-	}
-#ifdef BUTTONS_ALWAYS
-	SetGeomOffset(GetDisplayWidth()/2,GetDisplayHeight()/2);
-#endif
-}
-
-
-// Create a button by rendering an image into it.
-//
-void CreateImageButton(IMAGEFILE *ImageFile,UWORD ImageID,RENDERED_BUTTON *Buffer,BOOL Down, UDWORD buttonType)
-{
-	UDWORD ox,oy;
-	UWORD TmpOT;
-
-	ox = oy = 0;
-	/*if(Down) 
-	{
-		ox = oy = 2;
-	} */
-
-#ifndef BUTTONS_ALWAYS
-	iV_EnableTPageUpdates_PSX(FALSE);
-	TmpOT = iV_GetOTIndex_PSX();
-	iV_SetOTIndex_PSX(ORDERING_BUTTONRENDERING);
-#endif
-	iV_DrawImage(ImageFile,ImageID,ButXPos+ox,ButYPos+oy);
-
-	ClearButton(Down,0, buttonType);
-
-#ifndef BUTTONS_ALWAYS
-	if(TmpOT > 128) {
-		DBPRINTF(("CreateImageButton %d\n",TmpOT);
-	}
-	iV_SetOTIndex_PSX(TmpOT);
-#endif
-	iV_EnableTPageUpdates_PSX(TRUE);
-}
-
-
-// Create a blank button.
-//
-void CreateBlankButton(RENDERED_BUTTON *Buffer,BOOL Down, UDWORD buttonType)
-{
-	UWORD TmpOT;
-	UDWORD ox,oy;
-
-	if(Down) {
-		ox = oy = 1;
-	} else {
-		ox = oy = 0;
-	}
-
-	iV_EnableTPageUpdates_PSX(FALSE);
-#ifndef BUTTONS_ALWAYS
-	TmpOT = iV_GetOTIndex_PSX();
-	iV_SetOTIndex_PSX(ORDERING_BUTTONRENDERING);
-#endif
-
-// Draw a question mark, bit of quick hack this.
-	iV_DrawTransImage(IntImages,IMAGE_QUESTION_MARK,ButXPos+ox+4,ButYPos+oy+3);
-
-	ClearButton(Down,0, buttonType);
-
-#ifndef BUTTONS_ALWAYS
-	if(TmpOT > 128) {
-		DBPRINTF(("CreateBlankButton %d\n",TmpOT);
-	}
-	iV_SetOTIndex_PSX(TmpOT);
-#endif
-	iV_EnableTPageUpdates_PSX(TRUE);
-}
-#endif
 
 
 
@@ -3924,7 +3025,6 @@ void CreateBlankButton(RENDERED_BUTTON *Buffer,BOOL Down, UDWORD buttonType)
 //
 void RenderButton(struct _widget *psWidget,RENDERED_BUTTON *Buffer,UDWORD x,UDWORD y, UDWORD buttonType,BOOL Down)
 {
-#ifdef WIN32
 
 	BUTTON_SURFACE *ButSurf = Buffer->ButSurf;
 	UWORD ImageID;
@@ -3956,22 +3056,6 @@ void RenderButton(struct _widget *psWidget,RENDERED_BUTTON *Buffer,UDWORD x,UDWO
 		DrawEnd();
 	}
 
-#else
-
-#ifndef BUTTONS_ALWAYS
-	x = XToPSX(x);	///2;
-	y = YToPSX(y);	///2;
-
-	AddSprt32k(x,y,
-		Buffer->ButSurf->Surface->VRAMLocation.w, Buffer->ButSurf->Surface->VRAMLocation.h,
-		Buffer->ButSurf->Surface->VRAMLocation.x, Buffer->ButSurf->Surface->VRAMLocation.y,
-		iV_GetOTIndex_PSX());
-#endif
-
-//	AddCursorSnap(&InterfaceSnap,
-//					x+Buffer->ButSurf->Surface->VRAMLocation.w,
-//					y+Buffer->ButSurf->Surface->VRAMLocation.h,psWidget->formID,psWidget->id,NULL);
-#endif
 }
 
 
@@ -4474,7 +3558,6 @@ void StatGetResearchImage(BASE_STATS *psStat, SDWORD *Image, iIMDShape **Shape,
 #define	DRAW_BAR_TEXT	1
 
 
-#ifdef WIN32
 
 /* Draws a stats bar for the design screen */
 void intDisplayStatsBar(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
@@ -4524,44 +3607,8 @@ void intDisplayStatsBar(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	}
 }
 
-#else	// Start of PSX version.
-
-/* Draws a stats bar for the design screen */
-void intDisplayStatsBar(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
-{
-	W_BARGRAPH *BarGraph = (W_BARGRAPH*)psWidget;
-	SDWORD x0, y0;
-	SDWORD MinorWidth,MajorWidth;
-	UNUSEDPARAMETER(pColours);
-
-	x0 = xOffset + BarGraph->x + 3;
-	y0 = yOffset + BarGraph->y + 3;
-//	y0 = y0&0xfffe;
-
-	x0 = XToPSX(x0);
-	y0 = YToPSX(y0);
-	MajorWidth = WidthToPSX(BarGraph->majorSize);
-	MinorWidth = WidthToPSX(BarGraph->minorSize);
-
-	iV_SetScaleFlags_PSX(IV_SCALE_NONE);	//IV_SCALE_POSITION | IV_SCALE_WIDTH);
-
-	//draw current value section
-	iV_DrawImageRect( IntImages, IMAGE_DES_STATSCURR, x0, y0, 0, 0,
-			MajorWidth, iV_GetImageHeightNoCC(IntImages,IMAGE_DES_STATSCURR));
-
-	//draw the comparison value - only if not zero
-	if (BarGraph->minorSize != 0)
-	{
-		iV_DrawTransImage(IntImages,IMAGE_DES_STATSCOMP,x0+MinorWidth ,y0-1);
-	}
-
-	iV_SetScaleFlags_PSX(IV_SCALE_POSITION | IV_SCALE_SIZE);
-}
-
-#endif	// intDisplayStatsBar() : end of PSX version.
 
 
-#ifdef WIN32
 
 /* Draws a Template Power Bar for the Design Screen */
 void intDisplayDesignPowerBar(struct _widget *psWidget, UDWORD xOffset, 
@@ -4648,61 +3695,6 @@ void intDisplayDesignPowerBar(struct _widget *psWidget, UDWORD xOffset,
 	DrawEnd();
 }
 
-#else // PSX Version
-
-/* Draws a Template Power Bar for the Design Screen */
-void intDisplayDesignPowerBar(struct _widget *psWidget, UDWORD xOffset, 
-							  UDWORD yOffset, UDWORD *pColours)
-{
-	W_BARGRAPH *BarGraph = (W_BARGRAPH*)psWidget;
-	SDWORD		x0,y0;
-	SDWORD MinorWidth,MajorWidth;
-	UNUSEDPARAMETER(pColours);
-
-	// If power required is greater than Design Power bar then set to max
-	if (BarGraph->majorSize > BarGraph->width)
-	{
-		BarGraph->majorSize = BarGraph->width;
-	}
-
-	x0 = xOffset + BarGraph->x+3;
-	y0 = yOffset + BarGraph->y+3;
-	y0 = y0&0xfffe;
-
-	x0 = XToPSX(x0);
-	y0 = YToPSX(y0);
-	MajorWidth = WidthToPSX(BarGraph->majorSize);
-	MinorWidth = WidthToPSX(BarGraph->minorSize);
-
-	iV_SetScaleFlags_PSX(IV_SCALE_NONE);	//IV_SCALE_POSITION | IV_SCALE_SIZE);	//WIDTH);
-
-	//draw current value section
-	iV_DrawImageRect(IntImages,IMAGE_DES_STATSCURR,	x0, y0, 0, 0,
-						MajorWidth, iV_GetImageHeightNoCC(IntImages,IMAGE_DES_STATSCURR));
-
-	//draw the comparison value - only if not zero
-	if (BarGraph->minorSize != 0)
-	{
-		iV_DrawTransImage(IntImages,IMAGE_DES_STATSCOMP,x0+MinorWidth ,y0-1);
-	}
-
-	x0 -= 3;
-	//draw the background image
-	iV_DrawImage(IntImages,IMAGE_DES_POWERBARLEFT,x0,y0);
-
-	iV_DrawImage(IntImages,IMAGE_DES_POWERBARRIGHT,
-		x0+WidthToPSX(psWidget->width)-iV_GetImageWidthNoCC(IntImages, IMAGE_DES_POWERBARRIGHT)-12,y0);
-
-	iV_DrawImageRect(IntImages,IMAGE_DES_POWERBACK,
-						x0+iV_GetImageWidthNoCC(IntImages, IMAGE_DES_POWERBARLEFT), y0,
-						0, 0,
-						WidthToPSX(psWidget->width)-iV_GetImageWidthNoCC(IntImages, IMAGE_DES_POWERBARRIGHT)-12,
-						iV_GetImageHeightNoCC(IntImages,IMAGE_DES_POWERBACK));
-
-	iV_SetScaleFlags_PSX(IV_SCALE_POSITION | IV_SCALE_SIZE);
-}
-
-#endif	// intDisplayDesignPowerBar() : End of PSX version.
 
 
 // Widget callback function to play an audio track.
@@ -4753,19 +3745,11 @@ void intDisplayTransportButton(struct _widget *psWidget, UDWORD xOffset,
 	ASSERT((PTRVALID(psDroid, sizeof(DROID)),
 		"intDisplayTransportButton: invalid droid pointer"));
 
-#ifdef WIN32
 /*	if( (pie_GetRenderEngine() == ENGINE_GLIDE) || (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || 
 	(Form->state!=Buffer->State) ) 
 */
 	if( pie_Hardware() || (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || 
 		(Form->state!=Buffer->State) ) 
-#else
-#ifndef BUTTONS_ALWAYS
-	if( (IsBufferInitialised(Buffer)==FALSE) || (Form->state & WCLICK_HILITE) || (Form->state!=Buffer->State)  )
-#else
-	if(1)
-#endif
-#endif
 
 	{
 		Hilight = Form->state & WCLICK_HILITE;
@@ -4835,7 +3819,6 @@ void drawRadarBlips()
 	PROX_TYPE			proxType;
 	BOOL				bGlide;
 
-#ifdef WIN32
 	if ( pie_GetRenderEngine() == ENGINE_GLIDE )
 	{
 		bGlide = TRUE;
@@ -4845,7 +3828,6 @@ void drawRadarBlips()
 		bGlide = FALSE;
 	}
 
-#endif
 /*#ifdef WIN32
 	SDWORD				radarX,radarY;		// for multiplayer blips
 	//FEATURE				*psFeature;			// ditto. Needed always now!
@@ -4886,13 +3868,9 @@ void drawRadarBlips()
 			//if the message is read - don't animate
 			if (psProxDisp->psMessage->read)
 			{
-#ifdef WIN32
 				//imageID = (UWORD)(IMAGE_RAD_ENM3 + (pViewProximity->
 				//	proxType * (NUM_PULSES + 1)));
 				imageID = (UWORD)(IMAGE_RAD_ENM3 + (proxType * (NUM_PULSES + 1)));
-#else
-				imageID = (UWORD)(IMAGE_RAD_ENM3);
-#endif
 			}
 			else
 			{
@@ -4906,17 +3884,12 @@ void drawRadarBlips()
 					}
 					psProxDisp->timeLastDrawn = gameTime2;
 				}
-#ifdef WIN32
 				//imageID = (UWORD)(IMAGE_RAD_ENM1 + psProxDisp->strobe + (
 				//	pViewProximity->proxType * (NUM_PULSES + 1)));
 				imageID = (UWORD)(IMAGE_RAD_ENM1 + psProxDisp->strobe + (
 					proxType * (NUM_PULSES + 1)));
-#else
-				imageID = (UWORD)(IMAGE_RAD_ENM1 + psProxDisp->strobe);
-#endif
 			}
 			//draw the 'blip'
-#ifdef WIN32
 			if ( bGlide == TRUE )
 			{
 				pie_SetAdditiveSprites(TRUE);
@@ -4930,18 +3903,6 @@ void drawRadarBlips()
 			{
 				pie_SetAdditiveSprites(FALSE);
 			}
-#else
-			{
-				PIE PieParams;
-
-				PieParams.Flags = PIE_COLOURED;
-				//SetColourByProxType(pViewProximity->proxType,&PieParams);
-				SetColourByProxType(proxType,&PieParams);
-				DrawImageParam_PSX(IntImages,imageID, psProxDisp->radarX*2 + RADTLX, 
-					psProxDisp->radarY*2 + RADTLY,&PieParams);
-
-			}
-#endif
 		}
 	}
 
@@ -5133,7 +4094,6 @@ void intDisplayProximityBlips(struct _widget *psWidget, UDWORD xOffset,
 }
 
 
-#ifdef WIN32
 
 static UDWORD sliderMousePos(	W_SLIDER *Slider )
 {
@@ -5198,185 +4158,6 @@ void intUpdateOptionText(struct _widget *psWidget, struct _w_context *psContext)
 	UNUSEDPARAMETER( psContext );
 }
 
-#else
-
-void intUpdateQuantitySlider(struct _widget *psWidget, struct _w_context *psContext)
-{
-	W_SLIDER *Slider = (W_SLIDER*)psWidget;
-
-	if(InterfaceSnapEnabled()) {
-		if(Slider->state & SLD_HILITE) {
-			if(VPadPressed(VPAD_DRAGLEFT)) {
-				if(Slider->pos > 0) {
-					Slider->pos--;
-				}
-			} else if(VPadPressed(VPAD_DRAGRIGHT)) {
-				if(Slider->pos < Slider->numStops) {
-					Slider->pos++;
-				}
-			} else if(VPadPressed(VPAD_DRAGUP)) {
-				Slider->pos = Slider->numStops;
-			} else if(VPadPressed(VPAD_DRAGDOWN)) {
-				Slider->pos = 0;
-			}
-		}
-	}
-}
-
-void intUpdateOptionSlider(struct _widget *psWidget, struct _w_context *psContext)
-{
-	W_SLIDER *Slider = (W_SLIDER*)psWidget;
-	W_BUTTON *Button = (W_BUTTON*)widgGetFromID(psWScreen,Slider->UserData);
-	static BOOL Down = FALSE;
-
-	if(Button->state & WBUTS_HILITE) {
-		if(Slider->numStops > 16) {
-			// Continuous movement if pad down.
-			if(VPadDown(VPAD_MOUSELEFT)) {
-				if(Slider->pos > 0) {
-					Slider->pos--;
-					Down = TRUE;
-				}
-			} else if(VPadDown(VPAD_MOUSERIGHT)) {
-				if(Slider->pos < Slider->numStops) {
-					Slider->pos++;
-					Down = TRUE;
-				}
-			} else if(Down) {
-				Down = FALSE;
-				widgSetReturn(psWidget);
-			}
-		} else {
-			// One step per pad press.
-			if(VPadPressed(VPAD_MOUSELEFT)) {
-				if(Slider->pos > 0) {
-					Slider->pos--;
-					widgSetReturn(psWidget);
-				}
-			} else if(VPadPressed(VPAD_MOUSERIGHT)) {
-				if(Slider->pos < Slider->numStops) {
-					Slider->pos++;
-					widgSetReturn(psWidget);
-				}
-			}
-		}
-	}
-}
-
-
-static UDWORD VibroOnId;
-
-void intSetVibroOnID(UDWORD id)
-{
-	VibroOnId = id;
-}
-
-
-void intUpdateOptionText(struct _widget *psWidget, struct _w_context *psContext)
-{
-	W_LABEL *Label = (W_LABEL*)psWidget;
-//	W_BUTTON *Button = (W_BUTTON*)widgGetFromID(psWScreen,Label->UserData);
-	BOOL *State = (BOOL*)Label->pUserData;
-
-/*
-	if(Button->state & WBUTS_HILITE) {
-		if(VPadPressed(VPAD_MOUSELEFT)) {
-			strcpy(Label->aText,strresGetString(psStringRes, STR_FE_OFF));
-			if(*State == TRUE) {
-				*State = FALSE;
-			}
-		} else if(VPadPressed(VPAD_MOUSERIGHT)) {
-			strcpy(Label->aText,strresGetString(psStringRes, STR_FE_ON));
-			if(*State == FALSE) {
-				*State = TRUE;
-				if(Button->id == VibroOnId) {
-					SetVibro1(0,100,512);
-				}
-			}
-		}
-	}
-*/
-
-	if(*State) {
-		strcpy(Label->aText,strresGetString(psStringRes, STR_FE_ON));
-	} else {
-		strcpy(Label->aText,strresGetString(psStringRes, STR_FE_OFF));
-	}
-}
-
-
-//// Handle different pads being pressed while a widget is hilighted.
-////
-//void intUpdateReticuleButtonNoSB(struct _widget *psWidget, struct _w_context *psContext)
-//{
-//	W_BUTTON *Button = (W_BUTTON*)psWidget;
-//
-//	if(Button->state & WBUTS_HILITE) {
-//		if(MouseRightPressed()) {
-//			Button->UserData = VPAD_MOUSERB;
-//			buttonClicked(Button,WKEY_PRIMARY);
-//			widgSetReturn(psWidget);
-//		} else if(MouseLeftPressed()) {
-//			Button->UserData = VPAD_MOUSELB;
-//			buttonClicked(Button,WKEY_PRIMARY);
-//			widgSetReturn(psWidget);
-//		} else {
-//			buttonReleased(psWidget, WKEY_PRIMARY);
-//			Button->UserData = 0;
-//		}
-//	} else {
-//		Button->UserData = 0;
-//	}
-//}
-
-// Handle different pads being pressed while a widget is hilighted.
-//
-void intUpdateReticuleButton(struct _widget *psWidget, struct _w_context *psContext)
-{
-	W_BUTTON *Button = (W_BUTTON*)psWidget;
-
-	if(Button->state & WBUTS_HILITE) {
-		if(MouseRightPressed()) {
-			Button->UserData = VPAD_MOUSERB;
-			buttonClicked(Button,WKEY_PRIMARY);
-			widgSetReturn(psWidget);
-		} else if(MouseLeftPressed()) {
-			Button->UserData = VPAD_MOUSELB;
-			buttonClicked(Button,WKEY_PRIMARY);
-			widgSetReturn(psWidget);
-		} else {
-			buttonReleased(psWidget, WKEY_PRIMARY);
-			Button->UserData = 0;
-		}
-	} else {
-		Button->UserData = 0;
-	}
-
-/*
-	if(Button->state & WBUTS_HILITE) {
-		if(VPadPressed(VPAD_MOUSERB)) {
-			Button->UserData = VPAD_MOUSERB;
-			buttonClicked(Button,WKEY_PRIMARY);
-			widgSetReturn(psWidget);
-//		} else if(VPadPressed(VPAD_MOUSESB)) {
-//			Button->UserData = VPAD_MOUSESB;
-//			buttonClicked(Button,WKEY_PRIMARY);
-//			widgSetReturn(psWidget);
-		} else if(VPadPressed(VPAD_MOUSELB)) {
-			Button->UserData = VPAD_MOUSELB;
-			buttonClicked(Button,WKEY_PRIMARY);
-			widgSetReturn(psWidget);
-		} else {
-			buttonReleased(psWidget, WKEY_PRIMARY);
-			Button->UserData = 0;
-		}
-	} else {
-		Button->UserData = 0;
-	}
-*/
-}
-
-#endif
 
 void intDisplayResSubGroup(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
 {

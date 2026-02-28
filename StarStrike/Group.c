@@ -9,9 +9,7 @@
 #include "Objects.h"
 #include "Group.h"
 #include "Orderdef.h"
-#ifdef WIN32
 #include "Multiplay.h"
-#endif
 // sizes for the group heap
 #define GRP_HEAP_INIT	45
 #define GRP_HEAP_EXT	15

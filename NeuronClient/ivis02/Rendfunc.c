@@ -8,9 +8,7 @@
 #include "PiePalette.h"
 #include "Ivispatch.h"
 #include "Fractions.h"
-#ifdef WIN32
 #include "PieClip.h"
-#endif
 //#ifdef INC_GLIDE
 //#include "Glide.h"
 //#endif
@@ -21,11 +19,6 @@
 
 
 
-#ifndef WIN32
-
-#include "vpsx.h"
-#include "psxvram.h"
-#endif
 
 /***************************************************************************/
 /*
@@ -33,12 +26,10 @@
  */
 /***************************************************************************/
 
-#ifndef PIEPSX		// was #ifdef WIN32
 UBYTE		aTransTable[256];
 UBYTE		aTransTable2[256];		// 2 trans tabels so we can have 2 transparancy colours without slowdown.
 UBYTE		aTransTable3[256];		// 3 trans tabels so we can have 3 transparancy colours without slowdown.
 UBYTE		aTransTable4[256];		// 4 trans tabels so we can have 4 transparancy colours without slowdown.
-#endif
 /* Set default transparency filter to green pass */
 UDWORD		transFilter = TRANS_GREY;
 static int	g_mode = REND_UNDEFINED;
@@ -71,24 +62,8 @@ void (*iV_pBoxFill)(int x0, int y0, int x1, int y1, uint32 colour);
  */
 /***************************************************************************/
 
-#ifdef PIEPSX
-// This is here on the PSX as we don't want to include
-// all that uneaded stuff in pieClip.c
-
-void pie_Set2DClip(int x0, int y0, int x1, int y1)
-{
-	DBPRINTF(("pie_Set2DClip %p\n",psRendSurface));
-	assert(psRendSurface != NULL);
-
-	psRendSurface->clip.left = x0;
-	psRendSurface->clip.top = y0;
-	psRendSurface->clip.right = x1;
-	psRendSurface->clip.bottom = y1;
-}
-#endif
 
 
-#if(1) 	//#ifndef PIEPSX		// was #ifdef WIN32
 
 
 //*** line plot 2D line - clipped
@@ -237,10 +212,6 @@ UDWORD	fourPixels;
 UDWORD	output;
 UDWORD	width;
 UDWORD	i,j;
-#ifdef PIEPSX
-	DBPRINTF(("iVBlitTransRect called ... stub\n"));
-	return;
-#else
 
 	/* Note x1 must be greater than x0 */
 	width = x1-x0;
@@ -273,7 +244,6 @@ UDWORD	i,j;
 			}
 		}
 	}
-#endif
 }
 
 
@@ -606,44 +576,12 @@ UDWORD iV_GetMouseFrame(void)
 	return MouseImageID;
 }
 
-#ifdef WIN32
 
 void iV_DrawMousePointer(int x,int y)
 {
 	iV_DrawImage(MouseImageFile,MouseImageID,x,y);
 }
 
-#else
-
-static SWORD MousePulse = 0;
-
-void iV_SetMousePulseColour(SWORD Pulse)
-{
-	if(Pulse > 127) {
-		Pulse = 127;
-	}
-
-	MousePulse = Pulse;
-}
-
-
-void iV_DrawMousePointer(int x,int y)
-{
-	PIE PieParams;
-
-	PieParams.Flags = PIE_COLOURED;
-	PieParams.ColourRGB[0] = 128+MousePulse;
-	PieParams.ColourRGB[1] = 128+MousePulse;
-	PieParams.ColourRGB[2] = 128+MousePulse;
-
-	if(MousePulse > 0) {
-		MousePulse -= 16;
-	}
-
-	DrawImageParam_PSX(MouseImageFile,MouseImageID,x,y,&PieParams);
-}
-
-#endif
 
 
 // Software version does nothing.
@@ -658,7 +596,6 @@ void DownLoadRadar(unsigned char *buffer)
 //
 void UploadDisplayBuffer(UBYTE *DisplayBuffer)
 {
-#ifndef PIEPSX		// was #ifdef WIN32
 	UDWORD *Source = (UDWORD*) rendSurface.buffer;
 	UDWORD *Dest = (UDWORD*)DisplayBuffer;
 	UDWORD Size = rendSurface.size / 4;
@@ -669,7 +606,6 @@ void UploadDisplayBuffer(UBYTE *DisplayBuffer)
 		Source++;
 		Dest++;
 	}
-#endif
 }
 
 // Download buffer in system memory to the display back buffer.
@@ -693,7 +629,6 @@ void DownloadDisplayBuffer(UBYTE *DisplayBuffer)
  */
 
 
-#ifdef WIN32
 
 
 void	DownloadDisplayBuffer(UBYTE *DisplayBuffer)
@@ -743,7 +678,6 @@ void ScaleBitmapRGB(UBYTE *DisplayBuffer,int Width,int Height,int ScaleR,int Sca
 		Ptr++;
 	}
 }
-#endif
 
 
 //
@@ -753,7 +687,6 @@ void ScaleBitmapRGB(UBYTE *DisplayBuffer,int Width,int Height,int ScaleR,int Sca
 
 void	iVBlitPixelTransRect(UDWORD x0, UDWORD y0, UDWORD x1, UDWORD y1)
 {
-#ifndef PIEPSX		// was #ifdef WIN32
 UBYTE	*screen;
 UBYTE	present;
 UDWORD	i,j;
@@ -771,16 +704,12 @@ UDWORD	i,j;
 			*screen++ = aTransTable[present];
 		}
 	}
-#endif
 }
 
 
 
 void	pie_BuildTransTable(UDWORD tableNo)
 {
-#ifdef PIEPSX
-	return;
-#else
 UDWORD	i;
 UBYTE	red,green,blue;
 iColour* psPalette = pie_GetGamePal();
@@ -866,7 +795,6 @@ iColour* psPalette = pie_GetGamePal();
 			aTransTable4[i] = pal_GetNearestColour(red,green,blue);
 		}
 	}
-#endif
 }
 
 
@@ -888,6 +816,5 @@ iColour* psPalette = pie_GetGamePal();
 
 
 
-#endif
 
 #endif

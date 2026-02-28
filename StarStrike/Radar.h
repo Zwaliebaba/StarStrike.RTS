@@ -1,19 +1,11 @@
 #ifndef _radar_h
 #define _radar_h
 
-#ifdef WIN32
 extern void	calcRadarColour(iBitmap *tileBitmap, UDWORD tileNumber);
-#else
-extern void	calcRadarColour(iBitmap *tileBitmap,UWORD *tileClut, UDWORD tileNumber);
-#endif
 
 
 #define RGB_ENTRIES	3
-#ifdef WIN32
 #define MAX_RADARZOOM 2
-#else
-#define MAX_RADARZOOM 1
-#endif
 
 //#define RADAR_POSITION_AT_ZOOM
 

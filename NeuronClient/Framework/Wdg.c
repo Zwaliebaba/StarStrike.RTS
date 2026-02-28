@@ -542,7 +542,7 @@ BOOL FILE_ShutdownCache(void)
 		}
 		Cache.IsCacheDataMalloced=FALSE;
 	}
-#if defined(WIN32) && defined(PRIMCATALOG)
+#ifdef PRIMCATALOG
 
 	if (PrimBufferCatalog)
 	{

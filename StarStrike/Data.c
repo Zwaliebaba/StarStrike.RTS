@@ -16,10 +16,8 @@
 #include "Pcx.h"
 #include "BitImage.h"
 
-#ifdef WIN32
 #include "Texture.h"
 #include "WarzoneConfig.h"
-#endif
 #include "Tex.h"
 #include "TextDraw.h"
 
@@ -63,16 +61,13 @@ BOOL	bTilesPCXLoaded = FALSE;
 BOOL	saveFlag = FALSE;
 extern STRING	aCurrResDir[255];		// Arse
 
-#ifdef WIN32
 UDWORD	cheatHash[CHEAT_MAXCHEAT];
-#endif
 
 /**********************************************************
  *
  * Source
  *
  *********************************************************/
-#ifdef WIN32
 
 void calcCheatHash(UBYTE *pBuffer, UDWORD size, UDWORD cheat)
 {
@@ -94,7 +89,6 @@ void resetCheatHash()
 		cheatHash[i] =0;
 	}
 }
-#endif
 
 /**********************************************************/
 
@@ -112,9 +106,7 @@ void dataClearSaveFlag(void)
 /* Load the body stats */
 BOOL bufferSBODYLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SBODY);
-#endif
 	if (!loadBodyStats((SBYTE*)pBuffer, size))
 	{
 		return FALSE;
@@ -142,9 +134,7 @@ void dataReleaseStats(void *pData)
 /* Load the weapon stats */
 BOOL bufferSWEAPONLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size, CHEAT_SWEAPON);
-#endif
 	if (!loadWeaponStats((SBYTE*)pBuffer, size))
 	{
 		return FALSE;
@@ -163,9 +153,7 @@ BOOL bufferSWEAPONLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the constructor stats */
 BOOL bufferSCONSTRLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SCONSTR);
-#endif
 	if (!loadConstructStats((SBYTE*)pBuffer, size))
 	{
 		return FALSE;
@@ -184,9 +172,7 @@ BOOL bufferSCONSTRLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the ECM stats */
 BOOL bufferSECMLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SECM);
-#endif
 
 	if (!loadECMStats((SBYTE*)pBuffer, size))
 	{
@@ -206,9 +192,7 @@ BOOL bufferSECMLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Propulsion stats */
 BOOL bufferSPROPLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SPROP);
-#endif
 
 	if (!loadPropulsionStats((SBYTE*)pBuffer, size))
 	{
@@ -228,9 +212,7 @@ BOOL bufferSPROPLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Sensor stats */
 BOOL bufferSSENSORLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SSENSOR);
-#endif
 
 	if (!loadSensorStats((SBYTE*)pBuffer, size))
 	{
@@ -250,9 +232,7 @@ BOOL bufferSSENSORLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Repair stats */
 BOOL bufferSREPAIRLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SREPAIR);
-#endif
 
 	if (!loadRepairStats((SBYTE*)pBuffer, size))
 	{
@@ -272,9 +252,7 @@ BOOL bufferSREPAIRLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Brain stats */
 BOOL bufferSBRAINLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SBRAIN);
-#endif
 
 	if (!loadBrainStats((SBYTE*)pBuffer, size))
 	{
@@ -312,9 +290,7 @@ BOOL bufferSBRAINLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the PropulsionType stats */
 BOOL bufferSPROPTYPESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SPROPTY);
-#endif
 
 	if (!loadPropulsionTypes((SBYTE*)pBuffer, size))
 	{
@@ -357,9 +333,7 @@ BOOL bufferSSPECABILLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the STERRTABLE stats */
 BOOL bufferSTERRTABLELoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_STERRT);
-#endif
 
 	if (!loadTerrainTable((SBYTE*)pBuffer, size))
 	{
@@ -403,9 +377,7 @@ BOOL bufferSWEAPSNDLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Weapon Effect modifier stats */
 BOOL bufferSWEAPMODLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SWEAPMOD);
-#endif
 
 	if (!loadWeaponModifiers((SBYTE*)pBuffer, size))
 	{
@@ -422,9 +394,7 @@ BOOL bufferSWEAPMODLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Template stats */
 BOOL bufferSTEMPLLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_STEMP);
-#endif
 
 	if (!loadDroidTemplates((SBYTE*)pBuffer, size))
 	{
@@ -449,9 +419,7 @@ void dataSTEMPLRelease(void *pData)
 /* Load the Template weapons stats */
 BOOL bufferSTEMPWEAPLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_STEMPWEAP);
-#endif
 
 	if (!loadDroidWeapons((SBYTE*)pBuffer, size))
 	{
@@ -481,9 +449,7 @@ BOOL bufferSTEMPWEAPLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Structure stats */
 BOOL bufferSSTRUCTLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SSTRUCT);
-#endif
 
 	if (!loadStructureStats((SBYTE*)pBuffer, size))
 	{
@@ -512,9 +478,7 @@ void dataSSTRUCTRelease(void *pData)
 /* Load the Structure Weapons stats */
 BOOL bufferSSTRWEAPLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SSTRWEAP);
-#endif
 
 	if (!loadStructureWeapons((SBYTE*)pBuffer, size))
 	{
@@ -530,9 +494,7 @@ BOOL bufferSSTRWEAPLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Structure Functions stats */
 BOOL bufferSSTRFUNCLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_STRFUNC);
-#endif
 
 	if (!loadStructureFunctions((SBYTE*)pBuffer, size))
 	{
@@ -548,9 +510,7 @@ BOOL bufferSSTRFUNCLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the Structure strength modifier stats */
 BOOL bufferSSTRMODLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SSTRMOD);
-#endif
 
 	if (!loadStructureStrengthModifiers((SBYTE*)pBuffer, size))
 	{
@@ -566,9 +526,7 @@ BOOL bufferSSTRMODLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 BOOL bufferSFEATLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
 
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SFEAT);
-#endif
 
 	if (!loadFeatureStats((SBYTE*)pBuffer, size))
 	{
@@ -592,9 +550,7 @@ void dataSFEATRelease(void *pData)
 /* Load the Functions stats */
 BOOL bufferSFUNCLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SFUNC);
-#endif
 
 	if (!loadFunctionStats((SBYTE*)pBuffer, size))
 	{
@@ -629,9 +585,7 @@ void dataRESCHRelease(void *pData)
 /* Load the Research stats */
 BOOL bufferRESCHLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_RESCH);
-#endif
 
     //check to see if already loaded
     if (numResearch > 0)
@@ -657,9 +611,7 @@ BOOL bufferRESCHLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the research pre-requisites */
 BOOL bufferRPREREQLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_RPREREQ);
-#endif
 
 	if (!loadResearchPR((SBYTE*)pBuffer, size))
 	{
@@ -689,9 +641,7 @@ BOOL bufferRPREREQLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Load the research components made redundant */
 BOOL bufferRCOMPREDLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_RCOMPRED);
-#endif
 
 	if (!loadResearchArtefacts((SBYTE*)pBuffer, size, RED_LIST))
 	{
@@ -708,9 +658,7 @@ BOOL bufferRCOMPREDLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 BOOL bufferRCOMPRESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
 	
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_RCOMPRES);
-#endif
 
 	if (!loadResearchArtefacts((SBYTE*)pBuffer, size, RES_LIST))
 	{
@@ -727,9 +675,7 @@ BOOL bufferRCOMPRESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 BOOL bufferRSTRREQLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
 		
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_RSTRREQ);
-#endif
 
 	if (!loadResearchStructures((SBYTE*)pBuffer, size, REQ_LIST))
 	{
@@ -746,9 +692,7 @@ BOOL bufferRSTRREQLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 BOOL bufferRSTRREDLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
 		
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_RSTRRED);
-#endif
 
 	if (!loadResearchStructures((SBYTE*)pBuffer, size, RED_LIST))
 	{
@@ -764,9 +708,7 @@ BOOL bufferRSTRREDLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 BOOL bufferRSTRRESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
 	
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_RSTRRES);
-#endif
 
 	if (!loadResearchStructures((SBYTE*)pBuffer, size, RES_LIST))
 	{
@@ -783,9 +725,7 @@ BOOL bufferRSTRRESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 BOOL bufferRFUNCLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
 		
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_RFUNC);
-#endif
 
 	if (!loadResearchFunctions((SBYTE*)pBuffer, size))
 	{
@@ -914,7 +854,6 @@ BOOL dataIMDBufferLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 
 
 
-#ifdef WIN32	// PC Specific IMGPAGE loader.
 
 BOOL dataIMGPAGELoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
@@ -1134,217 +1073,6 @@ void dataHWTERTILESRelease(void *pData)
 }
 
 
-#else	// PSX Specific IMGPAGE loader.
-
-BOOL dataIMGPAGELoad(UBYTE *pBuffer,UDWORD Size, void **ppData)
-{
-	UWORD TPageID;
-
-	int Mode;
-	RECT VramArea;
-
-	iV_LoadTexturePage_PSX(pBuffer,&VramArea,&Mode,NULL);
- 	TPageID = GetTPage(Mode,0,VramArea.x,VramArea.y);
-
-	*ppData = (void*)TPageID;
-
-	return TRUE;
-}
-
-
-void dataIMGPAGERelease(void *pData)
-{
-	return;
-}
-
-
-BOOL dataIMGCLUTLoad(UBYTE *pBuffer, UDWORD Size, void **ppData)
-{
-	CLUTLIST *ClutList;
-
-	iV_LoadClut_PSX(pBuffer,&ClutList,FALSE);
-	*ppData = (void*)ClutList;
-
-	return TRUE;
-}
-
-
-void dataIMGCLUTRelease(void *pData)
-{
-	iV_FreeClut_PSX((CLUTLIST*)pData);
-}
-
-
-BOOL dataIMGCLUTHBLoad(UBYTE *pBuffer, UDWORD Size, void **ppData)
-{
-	CLUTLIST *ClutList;
-
-	iV_LoadClut_PSX(pBuffer,&ClutList,TRUE);	
-	*ppData = (void*)ClutList;
-
-	return TRUE;
-}
-
-
-void dataIMGCLUTHBRelease(void *pData)
-{
-	iV_FreeClut_PSX((CLUTLIST*)pData);
-}
-
-
-
-
-
-
-BOOL dataPSXPALLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-
-	pal_SetgamePalette(pBuffer);		// in display.c ... sets gamePalette global
-	
-	*ppData=0;
-	return(TRUE);
-}
-
-
-
-BOOL dataPSXTILLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-
-	DumpVRAM();
-	InstallTerrainGraphics(pBuffer,NULL);
-	DumpVRAM();
-	*ppData = 1;		// This must be a non-null value so that it will free up the tiles
-
-	return(TRUE);
-
-}
-
-
-// format in the file MUST be "vabname"   - with double quotes ... and with the first quote must be the first entry
-BOOL dataPSXVAGLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-
-// This is now hard coded in stageTwoInitialise(); this routine shouldn't be called
-
-	assert(2+2==5);	 // not used anymore
-#if(0)
-#define MAXNAME (32)
-
-	UBYTE Filename[MAXNAME];
-	UDWORD i;		 
-
-	if (pBuffer[0]!=0x22)
-	{
-		DBPRINTF(("Bad format in PSXVAG load entry!\n"));
-		return(FALSE);
-		
-	}
-
-	for (i=0;i<MAXNAME;i++)
-	{
-		char Letter;
-
-		Letter=pBuffer[i+1];
-
-		if (Letter==0x22)
-		{
-			break;
-		}
-		Filename[i]=Letter;		
-	}
-	if (i>=MAXNAME)
-	{
-		DBPRINTF(("Bad format in PSXVAG load entry-1!\n"));
-		return(FALSE);
-	}
-	Filename[i]=0;
-
-	audio_UploadNewVab(Filename);		// load vab from special WDG
-
-	*ppData = NULL;
-	return(TRUE);
-#endif
-}
-
-
-BOOL dataXATracksLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	if ((GetCurrentLanguage()==LANGUAGE_GERMAN) || (GetCurrentLanguage()==LANGUAGE_FRENCH))
-	{
-		*ppData=NULL;
-
-	}
-	else
-	{
-		InstallXATracks(pBuffer);
-		*ppData=1;
-	}
-	return (TRUE);
-}
-
-BOOL dataXATracksLoad_ger(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	if (GetCurrentLanguage()==LANGUAGE_GERMAN)
-	{
-		InstallXATracks(pBuffer);
-		*ppData=1;
-	}
-	else
-	{
-		*ppData=NULL;
-	}
-	return (TRUE);
-}
-
-BOOL dataXATracksLoad_fre(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	if (GetCurrentLanguage()==LANGUAGE_FRENCH)
-	{
-		InstallXATracks(pBuffer);
-		*ppData=1;
-	}
-	else
-	{
-		*ppData=NULL;
-	}
-	return (TRUE);
-}
-
-
-
-BOOL dataXATracksRelease(void *pData)
-{
-	ResetXATracks();
-}
-/*
-BOOL dataPSXVAGLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-
-	InitialiseVab(pBuffer);
-
-	*ppData = NULL;
-
-	return(TRUE);
-
-}
-*/
-
-
-
-BOOL dataPSXDUMMYLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-
-// This file is just a dummy file that is just included in the .WRF file so that it is included in the .WDG file
-// ... no processing is done to it
-	
-	*ppData = NULL;
-
-	return(TRUE);
-}
-
-
-
-#endif
 
 
 BOOL dataIMGLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
@@ -1546,7 +1274,6 @@ void dataISpriteRelease(void *pData)
 /* Release a texPage */
 void dataTexPageRelease(void *pData)
 {
-#ifdef WIN32
 	TEXTUREPAGE *Tpage;
 
 	Tpage=(TEXTUREPAGE *)pData;
@@ -1563,11 +1290,9 @@ void dataTexPageRelease(void *pData)
 	if (Tpage->Palette != NULL) FREE(Tpage->Palette);
 
 	FREE(pData);
-#endif
 }
 
 
-#ifdef WIN32
 
 
 
@@ -1626,9 +1351,7 @@ BOOL dataAudioCfgLoad( UBYTE *pBuffer, UDWORD size, void **ppData )
 		return TRUE;
 	}
 }
-#endif
 
-#ifdef WIN32
 /* Load an anim file */
 BOOL dataAnimLoad( UBYTE *pBuffer, UDWORD size, void **ppData )
 {
@@ -1665,7 +1388,6 @@ BOOL dataAnimCfgLoad( UBYTE *pBuffer, UDWORD size, void **ppData )
 	return TRUE;
 }
 
-#endif
 void dataAnimRelease( void *pData )
 {
 	anim_ReleaseAnim(pData);
@@ -1714,9 +1436,7 @@ BOOL dataScriptLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 	BLOCK_HEAP		*psHeap;
 	BOOL			printHack = FALSE;
 	
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SCRIPT);
-#endif
 
 #ifdef LOADCOMPILEDSCRIPTS
 	// Check for binary version of script
@@ -1852,9 +1572,7 @@ BOOL dataScriptLoadVals(UBYTE *pBuffer, UDWORD size, void **ppData)
 {
 	*ppData = NULL;
 	
-#ifdef WIN32
 	calcCheatHash(pBuffer,size,CHEAT_SCRIPTVAL);
-#endif
 
 	// don't load anything if a saved game is being loaded
 	if (saveFlag)
@@ -1980,7 +1698,6 @@ static RES_TYPE_MIN ResourceTypes[]=
 /* Pass all the data loading functions to the framework library */
 BOOL dataInitLoadFuncs(void)
 {
-#ifdef WIN32
 
 	RES_TYPE_MIN *CurrentType;
 //	UDWORD	i;
@@ -2008,12 +1725,6 @@ BOOL dataInitLoadFuncs(void)
 		return FALSE;
 	}
 
-#else
-// On the playstation we just process the whole list ... we don't allocate them individually
-
-	resDefineLoadFuncTable(ResourceTypes);
-
-#endif
 
 	return TRUE;
 }

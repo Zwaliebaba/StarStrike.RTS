@@ -23,11 +23,9 @@
 #include "KeyBind.h"
 
 #include "Audio.h"					// for sound.
-#ifdef WIN32
 #include "Cdaudio.h"
 #include "Mixer.h"
 #include "Multiplay.h"
-#endif
 
 #include "Csnap.h"
 #include "InGameOp.h"
@@ -77,12 +75,8 @@ static BOOL addQuitOptions(VOID)
 	sFormInit.x			= (SWORD)INTINGAMEOP3_X;
 	sFormInit.y			= (SWORD)INTINGAMEOP3_Y;
 	sFormInit.height	= INTINGAMEOP3_H;
-#ifdef WIN32
 	sFormInit.pDisplay	= intOpenPlainForm;
 	sFormInit.disableChildren= TRUE;
-#else
-	sFormInit.pDisplay	= intDisplayPlainForm;
-#endif
 	widgAddForm(psWScreen, &sFormInit);
 
 	//resume
@@ -120,16 +114,11 @@ static BOOL _addSlideOptions()
 	sFormInit.y			= (SWORD)INTINGAMEOP2_Y;
 	sFormInit.width		= INTINGAMEOP2_W;
 	sFormInit.height	= INTINGAMEOP2_H;
-#ifdef WIN32
 	sFormInit.pDisplay	= intOpenPlainForm;
 	sFormInit.disableChildren= TRUE;
-#else
-	sFormInit.pDisplay	= intDisplayPlainForm;
-#endif
 	widgAddForm(psWScreen, &sFormInit);
 
 
-#ifdef WIN32
 	addIGTextButton(INTINGAMEOP_RESUME,INTINGAMEOP_3_Y,STR_GAME_RESUME,WBUT_PLAIN);
 
 	// fx vol
@@ -141,7 +130,6 @@ static BOOL _addSlideOptions()
 	addIGTextButton(INTINGAMEOP_CDVOL,INTINGAMEOP_2_Y,STR_FE_MUSIC,WBUT_PLAIN);
 	addFESlider(INTINGAMEOP_CDVOL_S,INTINGAMEOP , INTINGAMEOP_MID,INTINGAMEOP_2_Y-5,
 				AUDIO_VOL_MAX,mixer_GetCDVolume(),INTINGAMEOP_CDVOL);
-#endif
 
 	SetCurrentSnapID(&InterfaceSnap,INTINGAMEOP_RESUME);
 
@@ -199,12 +187,10 @@ static BOOL _intAddInGameOptions(void)
 	UWORD WindowWidth;
 	W_FORMINIT		sFormInit;			
 
-#ifdef WIN32
 	audio_StopAll();
 
     //clear out any mission widgets - timers etc that may be on the screen
     clearMissionWidgets();
-#endif
 	
 	setWidgetsStatus(TRUE);
 	DisableCursorSnapsExcept(INTINGAMEOP);
@@ -236,7 +222,6 @@ static BOOL _intAddInGameOptions(void)
 	sFormInit.y			= (SWORD)INTINGAMEOP_Y;
 	sFormInit.height	= INTINGAMEOP_H;
 
-#ifdef WIN32
     if ( (!bMultiPlayer || (NetPlay.bComms==0) )  && !bInTutorial)
 	{
 	}
@@ -244,18 +229,12 @@ static BOOL _intAddInGameOptions(void)
 	{
 		sFormInit.height	= INTINGAMEOP_HS;
 	}
-#endif
 
-#ifdef WIN32	
 	sFormInit.pDisplay	= intOpenPlainForm;
 	sFormInit.disableChildren= TRUE;
-#else
-	sFormInit.pDisplay	= intDisplayPlainForm;
-#endif
 	widgAddForm(psWScreen, &sFormInit);
 
 	// add 'quit' text
-#ifdef WIN32
 // #ifdef COVERMOUNT
  #if 0
 	addIGTextButton(INTINGAMEOP_QUIT,INTINGAMEOP_3_Y,STR_GAME_QUIT,OPALIGN);
@@ -271,9 +250,6 @@ static BOOL _intAddInGameOptions(void)
 	}
 
  #endif
-#else
-	addIGTextButton(INTINGAMEOP_QUIT,INTINGAMEOP_3_Y,STR_GAME_QUIT,OPALIGN);
-#endif
 
 	// add 'resume'
 	addIGTextButton(INTINGAMEOP_RESUME,INTINGAMEOP_1_Y,STR_GAME_RESUME,OPALIGN);
@@ -283,14 +259,12 @@ static BOOL _intAddInGameOptions(void)
 	// add 'options'
 	addIGTextButton(INTINGAMEOP_OPTIONS,INTINGAMEOP_2_Y,STR_FE_OPTIONS,OPALIGN);
 
-#ifdef WIN32		
 	if ( (!bMultiPlayer || (NetPlay.bComms==0) )  && !bInTutorial)
 	{		// add 'load'
 		addIGTextButton(INTINGAMEOP_LOAD,INTINGAMEOP_3_Y,STR_MISC_LOADGAME,OPALIGN);
 		// add 'save'
 		addIGTextButton(INTINGAMEOP_SAVE,INTINGAMEOP_4_Y,STR_MISC_SAVEGAME,OPALIGN);
 	}
-#endif
 
 	intMode		= INT_INGAMEOP;			// change interface mode.
 	InGameOpUp	= TRUE;					// inform interface.
@@ -385,9 +359,7 @@ BOOL intCloseInGameOptions(BOOL bPutUpLoadSave, BOOL bResetMissionWidgets)
 // In Game Options house keeping stuff.
 BOOL intRunInGameOptions(void)
 {
-#ifdef WIN32
 	processFrontendSnap(FALSE);
-#endif
 	return TRUE;
 }
 
@@ -415,7 +387,6 @@ void intProcessInGameOptions(UDWORD id)
 		intCloseInGameOptions(FALSE, TRUE);
 		break;
 
-#ifdef WIN32
 //	case INTINGAMEOP_REPLAY:
 //		intCloseInGameOptions(TRUE, FALSE);
 //		if(0!=strcmp(getLevelName(),"CAM_1A"))
@@ -433,7 +404,6 @@ void intProcessInGameOptions(UDWORD id)
 		intCloseInGameOptions(TRUE, FALSE);
 		addLoadSave(SAVE_INGAME,"savegame\\","gam", strresGetString(psStringRes,STR_MR_SAVE_GAME) );
 		break;
-#endif
 
 	// GAME OPTIONS KEYS 
 	case INTINGAMEOP_FXVOL:	
@@ -442,7 +412,6 @@ void intProcessInGameOptions(UDWORD id)
 		SetMousePos(0,INTINGAMEOP2_X+INTINGAMEOP_MID+5 ,mouseY());	// move mouse
 		break;
 
-#ifdef WIN32
 	case INTINGAMEOP_FXVOL_S:	
 		mixer_SetWavVolume(widgGetSliderPos(psWScreen,INTINGAMEOP_FXVOL_S));
 		break;
@@ -455,7 +424,6 @@ void intProcessInGameOptions(UDWORD id)
 //		if(gamma<0.5)  gamma = (float).5;
 //		pie_SetGammaValue(gamma);
 //		break;
-#endif
 	
 	default:
 		break;

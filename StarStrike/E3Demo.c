@@ -11,7 +11,6 @@
 
 // -------------------------------------------------------------------------
 
-#if defined(WIN32) || defined(E3DEMO)
 
 #include "GTime.h"
 #include "Objects.h"
@@ -465,22 +464,3 @@ BOOL	tooNearEdge( UDWORD x, UDWORD y )
 
 
 
-#else
-/* empty demo functions */
-BOOL demoGetStatus ( void )
-{
-	return(FALSE);
-}
-
-void initDemoCamera( void )
-{
-}
-
-void processDemoCam( void )
-{
-}
-
-void toggleDemoStatus( void )
-{
-}
-#endif

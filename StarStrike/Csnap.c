@@ -11,10 +11,8 @@
 #include "Deliverance.h"
 #include "Fractions.h"
 
-#ifdef WIN32
 #include "PieState.h"
 #include "PieClip.h"
-#endif
 
 
 #include "Csnap.h"
@@ -84,7 +82,6 @@ void snapInitVars(void)
 }
 
 
-#ifdef WIN32
 void SetMousePos(UDWORD nowt,UDWORD x,UDWORD y)
 {
 	POINT	point;
@@ -115,7 +112,6 @@ void SetMousePos(UDWORD nowt,UDWORD x,UDWORD y)
 
 
 }
-#endif
 
 
 

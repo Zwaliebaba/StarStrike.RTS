@@ -26,9 +26,7 @@
 #include "IntDisplay.h"
 #include "IntOrder.h"
 #include "Text.h"
-#ifdef WIN32
 #include "ScriptExtern.h"
-#endif
 
 
 #define ORDER_X			23
@@ -40,11 +38,7 @@
 #define ORDER_BUTGAP	4
 #define ORDER_BOTTOMY	318	+ E_H
 
-#ifdef WIN32
 #define MAX_SELECTED_DROIDS	100	// Max size of selected droids list.
-#else
-#define MAX_SELECTED_DROIDS	16	// Max size of selected droids list.
-#endif
 #define MAX_AVAILABLE_ORDERS 16	// Max available orders list.
 #define MAX_DISPLAYABLE_ORDERS 11	// Max number of displayable orders.
 #define MAX_ORDER_BUTS 5		// Max number of buttons for a given order.
@@ -188,7 +182,6 @@ ORDERBUTTONS OrderButtons[NUM_ORDERS]=
 		{STR_DORD_FIREDES,	0,	0},
 		{DSS_FIREDES_SET,	0,	0}
 	},
-#ifdef WIN32	// No patrol button on PSX.
 	{
 		ORDBUTCLASS_NORMAL,
 		DSO_PATROL,
@@ -203,7 +196,6 @@ ORDERBUTTONS OrderButtons[NUM_ORDERS]=
 		{STR_DORD_PATROL,	0,	0},
 		{DSS_PATROL_SET,	0,	0}
 	},
-#endif
 	{
 		ORDBUTCLASS_NORMAL,
 		DSO_HALTTYPE,
@@ -226,13 +218,8 @@ ORDERBUTTONS OrderButtons[NUM_ORDERS]=
 		ORD_JUSTIFY_CENTER | ORD_JUSTIFY_NEWLINE,
 		IDORDER_RETURN,
 		3,0,
-#ifdef WIN32
 		{IMAGE_ORD_RTRUP,	IMAGE_ORD_GOTOHQUP,	IMAGE_ORD_EMBARKUP},
 		{IMAGE_ORD_RTRUP,	IMAGE_ORD_GOTOHQUP,	IMAGE_ORD_EMBARKUP},
-#else
-		{IMAGE_ORD_GOTOREPAIR,	IMAGE_ORD_GOTOHQUP,	IMAGE_ORD_EMBARK},
-		{IMAGE_ORD_GOTOREPAIR,	IMAGE_ORD_GOTOHQUP,	IMAGE_ORD_EMBARK},
-#endif
 		{IMAGE_DES_HILIGHT,		IMAGE_DES_HILIGHT,	IMAGE_DES_HILIGHT},
 		{STR_DORD_RETREPAIR,	STR_DORD_RETBASE,	STR_DORD_EMBARK},
 		{DSS_RTL_REPAIR,	DSS_RTL_BASE,	DSS_RTL_TRANSPORT},
@@ -459,13 +446,11 @@ BOOL _intAddOrder(BASE_OBJECT *psObj)
     DROID       *Droid;
     STRUCTURE   *psStructure;
 
-#ifdef WIN32
 	if(bInTutorial)
 	{
 		// No RMB orders in tutorial!!
 		return(FALSE);
 	}
-#endif
 	// Is the form already up?
 	if(widgGetFromID(psWScreen,IDORDER_FORM) != NULL) {
 		intRemoveOrderNoAnim();
@@ -569,7 +554,6 @@ BOOL _intAddOrder(BASE_OBJECT *psObj)
 		return FALSE;
 	}
 
-#ifdef WIN32
 	// Add the close button.
 	memset(&sButInit, 0, sizeof(W_BUTINIT));
 	sButInit.formID = IDORDER_FORM;
@@ -587,7 +571,6 @@ BOOL _intAddOrder(BASE_OBJECT *psObj)
 	{
 		return FALSE;
 	}
-#endif
 
 	memset(&sButInit, 0, sizeof(W_BUTINIT));
 	sButInit.formID = IDORDER_FORM;

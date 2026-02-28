@@ -7,9 +7,7 @@
 //#include "Ivi.h"
 //#include "v3d.h"
 #include "Rendmode.h"
-#ifdef WIN32
 #include "PieMode.h"
-#endif
 //#include "Geo.h"
 #include "Bug.h"
 //#include "pio.h"
@@ -24,9 +22,7 @@
 
 
 
-#ifdef WIN32
 iError	_iVERROR;
-#endif
 
 
 
@@ -51,14 +47,10 @@ void iV_ShutDown(void)
 #endif
 
 	iV_DEBUG0("4\n");
-#ifdef WIN32
 	pie_ShutDown();
-#endif
 	iV_DEBUG0("5\n");
 
-	#ifdef WIN32
 	iV_VideoMemoryUnlock();
-	#endif
 
 	iV_DEBUG0("6\n");
 
@@ -106,19 +98,12 @@ void iV_Abort(char *string, ...)
 #ifndef FINALBUILD
 void iV_Error(long errorn, char *msge, ...)
 {
-#ifndef PIEPSX
 	va_list argptr;
 
 	va_start(argptr,msge);
 	vsprintf(&_iVERROR.msge[0],msge,argptr);
 	va_end(argptr);
 	_iVERROR.n = errorn;
-#else
-
-	
-	// ON playstation the output the messages as a printf
-	DBPRINTF(("iV_ERROR:%s\n",msge));
-#endif
 
 }
 #endif

@@ -87,7 +87,6 @@ void clustInitialise(void)
 
 
 // check the cluster usage
-#ifdef WIN32
 void clustValidateUsage()
 {
 	SDWORD		cluster, player, droidUsage, structUsage;
@@ -136,7 +135,6 @@ void clustValidateUsage()
 		}
 	}
 }
-#endif
 
 
 // update routine for the cluster system
@@ -406,7 +404,6 @@ SDWORD clustFindUnused(void)
 // display the current clusters
 void clustDisplay(void)
 {
-#ifdef WIN32
 	SDWORD	cluster, map, player;
 	DROID		*psDroid;
 	STRUCTURE	*psStruct;
@@ -486,7 +483,6 @@ void clustDisplay(void)
 			}
 		}
 	}
-#endif
 }
 
 // update the cluster information for an object

@@ -15,9 +15,7 @@
 #include "Droid.h"
 #include "Group.h"
 
-#ifdef WIN32
 #include "Multiplay.h"
-#endif
 
 //holder for all functions
 FUNCTION	**asFunctions;
@@ -414,11 +412,7 @@ BOOL loadProduction(SBYTE *pData)
 
 	if (!getBodySize(bodySize, (UBYTE*)&psFunction->capacity))
 	{
-#ifdef WIN32
 		ASSERT((FALSE, "loadProduction: unknown body size for %s",psFunction->pName));
-#else
-		ASSERT((FALSE, "loadProduction: unknown body size for %x",psFunction->NameHash));
-#endif
 		return FALSE;
 	}
 
@@ -429,11 +423,7 @@ BOOL loadProduction(SBYTE *pData)
 	}
 	else
 	{
-#ifdef WIN32
 		ASSERT((FALSE, "loadProduction: production Output too big for %s",psFunction->pName));
-#else
-		ASSERT((FALSE, "loadProduction: production Output too big for %x",psFunction->NameHash));
-#endif
 		psFunction->productionOutput = 0;
 	}
 
@@ -1074,12 +1064,10 @@ BOOL loadPowerGenFunction(SBYTE *pData)
 		&psFunction->criticalMassChance, &psFunction->criticalMassRadius,
 		&psFunction->criticalMassDamage, &psFunction->radiationDecayTime);
 
-#ifdef WIN32
 	if(bMultiPlayer)
 	{
 		modifyResources(psFunction);
 	}
-#endif
 
 	//allocate storage for the name
 	storeName((FUNCTION *)psFunction, functionName);

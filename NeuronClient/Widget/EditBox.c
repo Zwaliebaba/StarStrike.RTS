@@ -325,7 +325,6 @@ static void fitStringEnd(STRING *pBuffer, UDWORD boxWidth,
 /* Run an edit box widget */
 void editBoxRun(W_EDITBOX *psWidget, W_CONTEXT *psContext)
 {
-#ifdef WIN32
 	UDWORD	key, len, editState;
 	UDWORD	pos;
 	STRING	*pBuffer;
@@ -534,7 +533,6 @@ void editBoxRun(W_EDITBOX *psWidget, W_CONTEXT *psContext)
 	psWidget->printStart = printStart;
 	psWidget->printWidth = printWidth;
 	psWidget->printChars = printChars;
-#endif
 }
 
 
@@ -580,10 +578,8 @@ void editBoxClicked(W_EDITBOX *psWidget, W_CONTEXT *psContext)
 			fitStringEnd(psWidget->aText, psWidget->width,
 				&psWidget->printStart, &psWidget->printChars, &psWidget->printWidth);
 
-#ifdef WIN32
 			/* Clear the input buffer */
 			inputClearBuffer();
-#endif
 			/* Tell the form that the edit box has focus */
 			screenSetFocus(psContext->psScreen, (WIDGET *)psWidget);
 
@@ -603,9 +599,7 @@ void editBoxFocusLost(W_EDITBOX *psWidget)
 	psWidget->printStart = 0;
 	fitStringStart(psWidget->aText,psWidget->width,
 				   &psWidget->printChars, &psWidget->printWidth);
-#ifdef WIN32
 	widgSetReturn((WIDGET *)psWidget);
-#endif
 }
 
 
@@ -699,7 +693,6 @@ void editBoxDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pC
 //	}
 	*pInsPoint = ch;
 
-#ifdef WIN32
 	/* Display the cursor if editing */
 #if CURSOR_BLINK
 	blink = (GetTickCount()/WEDB_BLINKRATE) % 2;
@@ -731,7 +724,6 @@ void editBoxDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pC
 //		cy = fy + psCurrFont->height - (psCurrFont->baseLine >> 1);
 		iV_Line(cx,cy, cx + WEDB_CURSORSIZE,cy,*(pColours + WCOL_CURSOR));
 	}
-#endif
 
 	if(psEdBox->pBoxDisplay == NULL) {
 		if (psEdBox->state & WEDBS_HILITE)

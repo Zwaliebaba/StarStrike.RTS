@@ -24,12 +24,10 @@
 typedef struct
 {
 	iTexture	tex;
-#ifdef WIN32
 	uint8		type;
 	char		name[80];
 	int			textPage3dfx;	// what page number is it on 3dfx - not the same thing
 	int			bResource;		// Was page provided by resource handler?
-#endif
 }
 iTexPage;
 
