@@ -8,9 +8,6 @@
 #endif
 //#include "ivid3d.h"
 #include "BitImage.h"
-#ifdef PSX
-#include "vpsx.h"
-#endif
 #include "TextDraw.h"
 
 
@@ -35,29 +32,6 @@
 #define iV_DownloadDisplayBuffer	pie_DownloadDisplayBuffer
 #define iV_ScaleBitmapRGB			pie_ScaleBitmapRGB
 
-#ifdef PSX
-#define pie_SetMouse			iV_SetMousePointer
-#define pie_DrawMouse			iV_DrawMousePointer
-#define pie_LocalRenderBegin	_bank_off_psx
-#define pie_LocalRenderEnd		_bank_on_psx
-#define	pie_Line				_line_psx	
-#define	pie_Box					_box_psx
-#define	pie_BoxFillIndex		_boxf_psx
-#define	pie_TransBoxFill		TransBoxFill_psx
-#define	pie_UniTransBoxFill		FORCED_ERROR
-#define	pie_ImageFileID			DrawImage_PSX
-#define	pie_ImageFileIDTile		DrawImageRect_PSX
-#define	pie_ImageFileID			DrawTransImage_PSX
-#define	pie_ImageFileIDTile		DrawTransImageRect_PSX
-#define	pie_ImageFileIDStretch	DrawStretchImage_PSX
-//#define	pie_ImageFileIDColour	DrawTransColourImage_PSX
-#define	pie_ImageDef			DrawImageDef_PSX
-#define	pie_ImageDefTrans		DrawSemiTransImageDef_PSX
-#define	pie_DownLoadRadar		DownLoadRadar
-#define pie_UploadDisplayBuffer		UploadDisplayBuffer_PSX
-#define pie_ScaleBitmapRGB		ScaleBitmapRGB_PSX
-
-#endif
 
 
 #define REND_D3D_RGB		0x133			// Direct3D 640x480x16bit RGB renderer (mmx)
@@ -94,9 +68,6 @@
 #define REND_SURFACE_SCREEN		1
 #define REND_SURFACE_USR		2
 
-#ifdef PSX
-#define pie_GetVideoBufferWidth()	(640)
-#endif
 
 #define REND_MAX_X			pie_GetVideoBufferWidth()
 #define iV_SCREEN_Y_MAX		pie_GetVideoBufferHeight()
@@ -112,10 +83,6 @@ extern iSurface	*psRendSurface;
 
 
 
-#ifdef PSX
-extern void	_iv_vid_setup(void);
-extern iBool iV_VideoOpen(int n);
-#endif
 
 
 
@@ -218,10 +185,6 @@ extern void	iVFBlitTransRect(UDWORD x0, UDWORD y0, UDWORD x1, UDWORD y1);
 #define TRANS_BRITE	3
 #define TINT_DEEPBLUE	4
 
-#ifdef PSX
-BOOL SetRGBLookup(UBYTE *Pal,PALETTEENTRY *DestPal,iColour *DestPal2);
-iColour *GetRGBLookup(void);
-#endif
 
 //extern void (*iV_BeginTextRender)(SWORD ColourIndex);
 //extern void (*iV_TextRender)(IMAGEFILE *ImageFile,UWORD ID,int x,int y);

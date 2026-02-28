@@ -14,9 +14,6 @@
 
 #include <stdio.h>
 
-#ifdef PSX
-#define PIEPSX	// define all the time for the psx ... only for the binary util on the pc
-#endif
 
 #include "Frame.h"
 #include "PieMatrix.h" //for surface normals
@@ -27,10 +24,6 @@
 #include "Bug.h"
 #include "Tex.h"		// texture page loading
 
-#ifdef PSX
-#include "file_psx.h"
-#include "drawimd_psx.h"	// for the scrvertex structure
-#endif
 
 #include "Bspfunc.h"	// for imd functions
 
@@ -60,20 +53,6 @@ static char *_imd_get_path(char *filename, char *path);
 iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,iBool palkeep);
 BOOL CheckColourKey( iIMDShape *psShape );
 
-#ifdef PSX
-// convert a string to lower case... by Tim ... dedicated to JS ... with love
-void strlwr(char *String)
-{
-	while (*String != 0)		// loop around till we reach the end of the zero terminated string
-	{
-		if ((*String>='A')&&(*String<='Z'))	// if the current letter is in upper case
-		{
-			*String+=('a'-'A');				// convert it to lower case
-		}
-		String++;							// move to the next letter
-	}
-}
-#endif
 
 
 #ifdef WIN32
@@ -194,15 +173,8 @@ BOOL AtEndOfFile(char *CurPos, char *EndOfFile)
 
 BOOL TESTDEBUG=FALSE;
 
-#ifdef PSX
-#define PRE_LEVEL_TEXTURELOAD				// 	 load the texture then load the polygon level   ... needed for the playstation
-#else
 #define POST_LEVEL_TEXTURELOAD			// load the polygon level ... then load the texture     .... Gareths code
-#endif
 
-#ifdef PSX
-#define ALLOW_NONTEXTURED		// if we can't load the texture ... draw it flat shaded
-#endif
 
 iIMDShape *iV_IMDLoad(char *filename, iBool palkeep)
 {
@@ -524,23 +496,6 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 	// get texture page if specified
 	if (_IMD_FLAGS & iV_IMD_XTEX)
 	{
-#ifdef PSX		// psx fscanf support %t which loads crappy filenames with spaces
-		if (_IMD_VER == 1 || _IMD_VER==2)
-		{
-			if (sscanf1(ppFileData,"%s %d %t %d %d",buffer,&ptype,&texfile,&pwidth,&pheight) != 5) 
-			{
-				iV_Error(0xff,"(IMDLoad) file corrupt -C");
-				return NULL;
-			}
-			if (strcmp(buffer,"TEXTURE") != 0) 
-			{
-				iV_Error(0xff,"(IMDLoad) expecting 'TEXTURE' directive");
-				return NULL;
-			}
-			bTextured = TRUE;
-
-		}
-#else	// we definately don't want any of this bollocks on the Playstation thank you very much
 		if (_IMD_VER == 1)
 		{
 			if (sscanf1(ppFileData,"%s %d %s %d %d",buffer,&ptype,&texfile,&pwidth,&pheight) != 5) 
@@ -611,7 +566,6 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 				return NULL;
 			}
 		}
-#endif	// psx/pc TEXTURE command
 
 #ifdef WIN32
 #ifndef PIETOOL		// The BSP tool should not reduce the texture page name down (please)
@@ -2034,25 +1988,11 @@ static int32 _imd_find_scale(int32 value, int32 limit)
 
 iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,iBool palkeep)
 {
-#ifdef PSX
-#ifdef DEBUG
-	DBPRINTF(("Text PIE files are not supported in the version!\n"));
-#else
-	DBPRINTF(("NO TEXT PIES! %s\n",GetLastResourceFilename()));
-#endif
-#endif
 	return(NULL);
 }	
 
 iIMDShape *iV_IMDLoad(char *filename, iBool palkeep)
 {
-#ifdef PSX
-#ifdef DEBUG
-	DBPRINTF(("Text PIE files are not supported in the version!\n"));
-#else
-	DBPRINTF(("NO TEXT PIES! %s\n",filename));
-#endif
-#endif
 	return(NULL);
 }	
 

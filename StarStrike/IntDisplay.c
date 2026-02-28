@@ -55,17 +55,8 @@
 #include "Transporter.h"
 #include "Mission.h"
 
-#ifdef PSX
-#include "primatives.h"
-#include "drawIMD_psx.h"
-#include "vpad.h"
-extern CURSORSNAP InterfaceSnap;
-
-#define BUTTONS_ALWAYS	// if defined then buttons are continuasly updated and don't use any VRAM.
-#else
 
 #include "Multiplay.h"
-#endif
 
 
 // Is a clickable form widget hilited, either because the cursor is over it or it is flashing.
@@ -104,18 +95,6 @@ BASE_STATS *CurrentStatsTemplate = NULL;
 #define BUT_TRANSPORTER_SCALE (20)
 #define BUT_TRANSPORTER_ALT (-50)
 
-#ifdef PSX
-
-SDWORD ButDistances[] = {
-	-1,		//IMDTYPE_NONE,
-	2000,	//IMDTYPE_DROID,
-	2000,	//IMDTYPE_DROIDTEMPLATE,
-	-1,		//IMDTYPE_COMPONENT,
-	-1,		//IMDTYPE_STRUCTURE,
-	-1,		//IMDTYPE_RESEARCH,
-	-1,		//IMDTYPE_STRUCTURESTAT,
-};
-#endif
 
 // Token look up table for matching IMD's to droid components.
 //
@@ -190,11 +169,6 @@ RENDERED_BUTTON TopicBuffers[NUM_TOPICBUFFERS];		// References TopicSurfaces.
 RENDERED_BUTTON StatBuffers[NUM_STATBUFFERS];		// References StatSurfaces.
 
 
-#ifdef PSX
-void StartButtonRendering(void);
-void FinishButtonRendering(void);
-void SetButtonToRender(RENDERED_BUTTON *Button);
-#endif
 
 // Get the first factory assigned to a command droid
 STRUCTURE *droidGetCommandFactory(DROID *psDroid);
@@ -756,23 +730,12 @@ void intDisplayPowerBar(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	ManPow = ManuPower / POWERBAR_SCALE;
 	Avail = asPower[selectedPlayer]->currentPower / POWERBAR_SCALE;
 	realPower = asPower[selectedPlayer]->currentPower - ManuPower;
-#ifdef PSX
- #if DRAW_POWER_BAR_TEXT
-	BarWidth = WidthToPSX(BarGraph->width - BARXOFFSET);
- #else
-	BarWidth = WidthToPSX(BarGraph->width);
- #endif
-	Avail = WidthToPSX(Avail) & 0xfffe;
-	//Used =WidthToPSX(Used) & 0xfffe;
-	ManPow = WidthToPSX(ManPow) & 0xfffe;
-#else
 	BarWidth = BarGraph->width;
 #if	DRAW_POWER_BAR_TEXT && !defined(PSX)
     iV_SetFont(WFont);
 	itoa( realPower, szVal, 10 );
 	textWidth = iV_GetTextWidth( szVal );
 	BarWidth -= textWidth;
-#endif
 #endif
 
 
@@ -820,24 +783,6 @@ void intDisplayPowerBar(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	x0 = xOffset + BarGraph->x;
 	y0 = yOffset + BarGraph->y;
 
-#ifdef PSX
-	iX = x0;
-	iY = y0;
- #if DRAW_POWER_BAR_TEXT
-	x0 +=  BARXOFFSET;
- #endif
-
-// We only wan't to scale the position and width here as the height's being pulled straight from
-// the image definition which is already PSX correct.
-	iV_SetScaleFlags_PSX(IV_SCALE_NONE);
-	x0 = XToPSX(x0);
-	y0 = YToPSX(y0);
-
-//	Avail = WidthToPSX(Avail) & 0xfffe;
-//	//Used =WidthToPSX(Used) & 0xfffe;
-//	ManPow = WidthToPSX(ManPow) & 0xfffe;
-//	Empty = WidthToPSX(Empty) & 0xfffe;
-#endif
 
 #ifdef WIN32
 //	pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_OFF);
@@ -924,31 +869,7 @@ void intDisplayPowerBar(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	iV_DrawTransImage(IntImages,IMAGE_PBAR_BOTTOM,x0,y0);
 	/* draw text value */
 
-#ifdef PSX
-// Reset the scale flags to scale x,y,width and height.
-	iV_SetScaleFlags_PSX(IV_SCALE_POSITION | IV_SCALE_SIZE);
-#endif
 
-#ifdef PSX
- #if DRAW_POWER_BAR_TEXT
-	{
-		UBYTE Num[8];
-		UBYTE *Ptr = Num;
-
-		iY += 9;
-
-		iV_SetOTIndex_PSX(iV_GetOTIndex_PSX()-1);
-
-		sprintf(Num,"%d",realPower);
-		while(*Ptr) {
-			iX = intDisplaySmallChar(iX,iY,*Ptr);
-			Ptr++;
-		}
-
-		iV_SetOTIndex_PSX(iV_GetOTIndex_PSX()+1);
-	}
- #endif
-#endif
 
 #if	DRAW_POWER_BAR_TEXT && !defined(PSX)
 	iV_SetTextColour(-1);
@@ -1153,15 +1074,6 @@ void intDisplayStatusButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 
 		ButtonDrawXOffset = ButtonDrawYOffset = 0;
 
-#ifdef PSX
-		if(formIsFlashing(psWidget)) {
-			SetImagePalMode(PALMODE_NORMAL);
-		} else if(Down) {
-			SetImagePalMode(PALMODE_NORMAL);
-		} else {
-			SetImagePalMode(PALMODE_DARKER);
-		}
-#endif
 		// Render the object into the button.
 		if(Object) {
 			if(Image >= 0) {
@@ -1175,9 +1087,6 @@ void intDisplayStatusButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 			RenderBlankToButton(Buffer,Down,TOPBUTTON);
 		}
 
-#ifdef PSX
-		SetImagePalMode(PALMODE_NORMAL);
-#endif
 
 //						RENDERBUTTON_INITIALISED(Buffer);
 	}
@@ -1187,12 +1096,6 @@ void intDisplayStatusButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 	// Draw the button.
 	RenderButton(psWidget,Buffer, xOffset+Form->x, yOffset+Form->y, TOPBUTTON,Down);
 
-#ifdef PSX
-	AddCursorSnap(&InterfaceSnap,
-					xOffset+Form->x+Form->width/2,
-					yOffset+Form->y+Form->height/2,
-					psWidget->formID,psWidget->id,NULL);
-#endif
 
 	CloseButtonRender();
 
@@ -1212,9 +1115,6 @@ void intDisplayStatusButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 	{
 		if (Hilight)
 		{
-#ifdef PSX
-			iV_SetOTIndex_PSX(iV_GetOTIndex_PSX()-1);
-#endif
 			iV_DrawTransImage(IntImages,IMAGE_BUT_HILITE,xOffset+Form->x,yOffset+Form->y);
 		}
 	}
@@ -1291,44 +1191,23 @@ void intDisplayObjectButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 
 		ButtonDrawXOffset = ButtonDrawYOffset = 0;
 
-#ifdef PSX
-		if(formIsFlashing(psWidget)) {
-			SetImagePalMode(PALMODE_NORMAL);
-		} else if(Down) {
-			SetImagePalMode(PALMODE_NORMAL);
-		} else {
-			SetImagePalMode(PALMODE_DARKER);
-		}
-#endif
 		if(Object) {
 			RenderToButton(NULL,0,Object,selectedPlayer,Buffer,Down,IMDType,BTMBUTTON);	// ajl, changed from 0 to selectedPlayer
 		} else {
 			RenderBlankToButton(Buffer,Down,BTMBUTTON);
 		}
 
-#ifdef PSX
-		SetImagePalMode(PALMODE_NORMAL);
-#endif
 		RENDERBUTTON_INITIALISED(Buffer);
 	}
 
 	RenderButton(psWidget,Buffer, xOffset+Form->x, yOffset+Form->y, BTMBUTTON,Down);
 
 
-#ifdef PSX
-	AddCursorSnap(&InterfaceSnap,
-					xOffset+Form->x+Form->width/2,
-					yOffset+Form->y+Form->height/2,
-					psWidget->formID,psWidget->id,NULL);
-#endif
 
 	CloseButtonRender();
 
 	if (Hilight)
 	{
-#ifdef PSX
-		iV_SetOTIndex_PSX(iV_GetOTIndex_PSX()-1);
-#endif
 		iV_DrawTransImage(IntImages,IMAGE_BUTB_HILITE,xOffset+Form->x,yOffset+Form->y);
 	}
 }
@@ -1483,15 +1362,6 @@ void intDisplayStatsButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOff
 //			CurrentStatsIndex = -1;
 		}
 
-#ifdef PSX
-		if(formIsFlashing(psWidget)) {
-			SetImagePalMode(PALMODE_NORMAL);
-		} else if(Down) {
-			SetImagePalMode(PALMODE_NORMAL);
-		} else {
-			SetImagePalMode(PALMODE_DARKER);
-		}
-#endif
 		if(Object) {
 			if(Image >= 0) {
 				RenderToButton(IntImages,(UWORD)Image,Object,Player,Buffer,Down,IMDType,TOPBUTTON);
@@ -1504,9 +1374,6 @@ void intDisplayStatsButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOff
 			RenderBlankToButton(Buffer,Down,TOPBUTTON);
 		}
 
-#ifdef PSX
-		SetImagePalMode(PALMODE_NORMAL);
-#endif
 
 
 		RENDERBUTTON_INITIALISED(Buffer);
@@ -1514,20 +1381,11 @@ void intDisplayStatsButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOff
 
 	// Draw the button.
 	RenderButton(psWidget,Buffer, xOffset+Form->x, yOffset+Form->y, TOPBUTTON,Down);
-#ifdef PSX
-	AddCursorSnap(&InterfaceSnap,
-					xOffset+Form->x+Form->width/2,
-					yOffset+Form->y+Form->height/2,
-					psWidget->formID,psWidget->id,NULL);
-#endif
 
 	CloseButtonRender();
 
 	if (Hilight)
 	{
-#ifdef PSX
-		iV_SetOTIndex_PSX(iV_GetOTIndex_PSX()-1);
-#endif
 		iV_DrawTransImage(IntImages,IMAGE_BUT_HILITE,xOffset+Form->x,yOffset+Form->y);
 	}
 }
@@ -1933,17 +1791,7 @@ void intDisplayImageHilight(struct _widget *psWidget, UDWORD xOffset, UDWORD yOf
 	}
 
 
-#ifdef PSX
-	if(buttonIsFlashing(psWidget)) {
-		SetImagePalMode(PALMODE_DARKER);
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-		SetImagePalMode(PALMODE_NORMAL);
-	} else {
-		iV_DrawTransImage(IntImages,ImageID,x,y);
-	}
-#else
 	iV_DrawTransImage(IntImages,ImageID,x,y);
-#endif
 
 	AddCursorSnap(&InterfaceSnap,
 					x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
@@ -2247,27 +2095,11 @@ void intDisplayReticuleButton(struct _widget *psWidget, UDWORD xOffset, UDWORD y
 
 	ASSERT((psWidget->type == WIDG_BUTTON,"intDisplayReticuleButton : Not a button"));
 
-#ifdef PSX
-	if(((W_BUTTON*)psWidget)->state & WBUTS_GREY) {
-		SetImagePalMode(PALMODE_GREY);
-// Even if the buttons greyed out we still wan't to process it and add it as a cursor
-// snap so that the snapping still works predictably.
-//		iV_DrawTransImage(IntImages,Index,x,y);
-//		SetImagePalMode(PALMODE_NORMAL);
-
-//		AddCursorSnap(&InterfaceSnap,
-//					x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-//					y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-//					psWidget->formID,psWidget->id,&ReticuleBias);
-//		return;
-	}
-#else
 //	iV_DrawTransImage(IntImages,ImageID,x,y);
 	if(((W_BUTTON*)psWidget)->state & WBUTS_GREY) {
 		iV_DrawTransImage(IntImages,IMAGE_RETICULE_GREY,x,y);
 		return;
 	}
-#endif
 
 	Down = ((W_BUTTON*)psWidget)->state & (WBUTS_DOWN | WBUTS_CLICKLOCK);
 //	Hilight = ((W_BUTTON*)psWidget)->state & WBUTS_HILITE;
@@ -2366,9 +2198,6 @@ void intDisplayTab(struct _widget *psWidget,UDWORD TabType, UDWORD Position,
 				   UDWORD Number,BOOL Selected,BOOL Hilight,UDWORD x,UDWORD y,UDWORD Width,UDWORD Height)
 {
 	TABDEF *Tab = (TABDEF*)psWidget->pUserData;
-#ifdef PSX
-	UWORD ImageID;
-#endif
 
 	UNUSEDPARAMETER(Position);
 	UNUSEDPARAMETER(Width);
@@ -2751,81 +2580,6 @@ void intDisplayEditBox(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset,
 }
 
 
-#ifdef PSX
-
-
-UDWORD intDisplaySmallChar(UDWORD x,UDWORD y,UBYTE Char)
-{
-	if(Char == '/') {
-		iV_DrawTransImage(IntImages,(UWORD)(IMAGE_SMALLSLASH),x,y);
-		x += iV_GetImageWidth(IntImages,(UWORD)(IMAGE_SMALLSLASH))+2;
-	} else 	if(Char == ':') {
-		iV_DrawTransImage(IntImages,(UWORD)(IMAGE_SMALLCOLON),x,y);
-		x += iV_GetImageWidth(IntImages,(UWORD)(IMAGE_SMALLCOLON))+2;
-	} else if(Char == '-') {
-		iV_DrawTransImage(IntImages,(UWORD)(IMAGE_SMALLDASH),x,y);
-		x += iV_GetImageWidth(IntImages,(UWORD)(IMAGE_SMALLDASH))+2;
-	} else {
-		if( (Char >= '0') && (Char <= '9') ) {
-			iV_DrawTransImage(IntImages,(UWORD)(IMAGE_SMALL0 + (Char-'0')),x,y);
-			x += iV_GetImageWidth(IntImages,(UWORD)(IMAGE_SMALL0 + (Char-'0')))+2;
-		} else {
-			DBPRINTF(("intDrawSmallChar : Bad char (%c)\n",Char));
-		}
-	}
-
-	return x;
-}
-
-
-// Display a number in the form mm:ss
-//
-void intDisplayTime(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
-{
-	W_LABEL *Label = (W_LABEL*)psWidget;
-	UDWORD x = Label->x + xOffset;
-	UDWORD y;
-	UBYTE *Ptr;
-	UNUSEDPARAMETER(pColours);
-
-  	y = yOffset + Label->y + iV_GetImageHeight(IntImages,(UWORD)(IMAGE_SMALLCOLON))+4;
-
-	Ptr = Label->aText;
-	while(*Ptr) {
-		x = intDisplaySmallChar(x,y,*Ptr);
-		Ptr++;
-	}
-}
-
-
-// Display a number in the form mm:ss
-//
-void intDisplayNum(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
-{
-	W_LABEL *Label = (W_LABEL*)psWidget;
-	UDWORD x = Label->x + xOffset;
-	UDWORD y;
-	UBYTE *Ptr;
-	UNUSEDPARAMETER(pColours);
-
-  	y = yOffset + Label->y + iV_GetImageHeight(IntImages,(UWORD)(IMAGE_SMALL0));
-
-	Ptr = Label->aText;
-	while(*Ptr) {
-		x = intDisplaySmallChar(x,y,*Ptr);
-//		if(*Ptr == '/') {
-//			iV_DrawTransImage(IntImages,(UWORD)(IMAGE_SMALLSLASH),x,y);
-//			x += iV_GetImageWidth(IntImages,(UWORD)(IMAGE_SMALLSLASH))+2;
-//		} else if( (*Ptr >= '0') && (*Ptr <= '9') ) {
-//			iV_DrawTransImage(IntImages,(UWORD)(IMAGE_SMALL0 + (*Ptr-'0')),x,y);
-//			x += iV_GetImageWidth(IntImages,(UWORD)(IMAGE_SMALL0 + (*Ptr-'0')))+2;
-//		} else {
-//			DBPRINTF(("intDisplayNum : (%c)\n",*Ptr));
-//		}
-		Ptr++;
-	}
-}
-#endif
 
 #ifdef WIN32
 void intDisplayNumber(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
@@ -2915,55 +2669,6 @@ void intDeleteGraphics(void)
 
 static RENDERED_BUTTON *CurrentOpenButton=NULL;
 
-#ifdef PSX
-
-void StartButtonRendering(void)
-{
-#ifndef BUTTONS_ALWAYS
-	assert(CurrentOpenButton==NULL);
-	CurrentOpenButton=NULL;
-
-	SetIMDRenderingMode(USE_FIXEDZ,ORDERING_BUTTONRENDERING);		// When rendering buttons we need to write to a constant entry in the OT ... this is set by the second param
-
-	SetRenderingArea(NULL,ORDERING_BUTTONRENDERING);	// null indicates using the current display area
-#else
-	SetIMDRenderingMode(USE_FIXEDZ,iV_GetOTIndex_PSX());		// When rendering buttons we need to write to a constant entry in the OT ... this is set by the second param
-#endif
-}
-
-
-void FinishButtonRendering(void)
-{
-#ifndef BUTTONS_ALWAYS
-	if (CurrentOpenButton!=NULL)
-		SetRenderingArea(&CurrentOpenButton->ButSurf->Surface->VRAMLocation,ORDERING_BUTTONRENDERING);
-
-	SetRenderingDimensions(GetDisplayWidth()/2,GetDisplayHeight()/2);
-	SetIMDRenderingMode(USE_MAXZ,0);		// Set OT position calculation back to using the maz Z value
-	CurrentOpenButton=NULL;
-#else
-	SetRenderingDimensions(GetDisplayWidth()/2,GetDisplayHeight()/2);
-	SetIMDRenderingMode(USE_MAXZ,0);		// Set OT position calculation back to using the maz Z value
-	CurrentOpenButton=NULL;
-#endif
-}
-
-
-void SetButtonToRender(RENDERED_BUTTON *Button)
-{
-#ifndef BUTTONS_ALWAYS
-	if (CurrentOpenButton!=NULL)
-		SetRenderingArea(&CurrentOpenButton->ButSurf->Surface->VRAMLocation,ORDERING_BUTTONRENDERING);
-
-	CurrentOpenButton=Button;
-	SetRenderingDimensions( (Button->ButSurf->Surface->width)/2,
-							(Button->ButSurf->Surface->height)/2 );	// Tell the GTE about the button sizes (for the maths)
-#endif
-//	DBPRINTF(("Width %d Height %d\n",Button->ButSurf->Surface->width,Button->ButSurf->Surface->height);
-
-}
-
-#endif 
 
 
 #ifdef WIN32
@@ -5093,18 +4798,9 @@ void intDisplayTransportButton(struct _widget *psWidget, UDWORD xOffset,
 
 	// Draw the button.
 	RenderButton(psWidget, Buffer, xOffset+Form->x, yOffset+Form->y, TOPBUTTON, Down);
-#ifdef PSX
-	AddCursorSnap(&InterfaceSnap,
-					xOffset+Form->x+Form->width/2,
-					yOffset+Form->y+Form->height/2,
-					psWidget->formID,psWidget->id,NULL);
-#endif
 
 	CloseButtonRender();
 
-#ifdef PSX
-	iV_SetOTIndex_PSX(iV_GetOTIndex_PSX()-1);
-#endif
 
 	if (Hilight)
 	{
@@ -5118,24 +4814,13 @@ void intDisplayTransportButton(struct _widget *psWidget, UDWORD xOffset,
         gfxId = getDroidRankGraphic(psDroid);
 	    if(gfxId != UDWORD_MAX)
 	    {
-#ifdef PSX
-		    /* Render the rank graphic at the correct location */
-		    iV_DrawTransImage(IntImages,(UWORD)gfxId,xOffset+Form->x+46,yOffset+Form->y+36);
-#else
 		    /* Render the rank graphic at the correct location */
 		    iV_DrawTransImage(IntImages,(UWORD)gfxId,xOffset+Form->x+50,yOffset+Form->y+30);
-#endif
 	    }
     }
 
-#ifdef PSX
-	iV_SetOTIndex_PSX(iV_GetOTIndex_PSX()+1);
-#endif
 }
 
-#ifdef PSX
-extern void DrawImageParam_PSX(IMAGEFILE *ImageFile,UWORD ID,int x,int y,PIE *Params);
-#endif
 
 /*draws blips on radar to represent Proximity Display and damaged structures*/
 void drawRadarBlips()
@@ -5166,13 +4851,8 @@ void drawRadarBlips()
 	//FEATURE				*psFeature;			// ditto. Needed always now!
 #endif*/
 
-#ifdef PSX
-	VisWidth = RADWIDTH / 2;
-	VisHeight = RADHEIGHT / 2;
-#else
 	VisWidth = RADWIDTH;
 	VisHeight = RADHEIGHT;
-#endif
 
 	/* Go through all the proximity Displays*/
 	for (psProxDisp = apsProxDisp[selectedPlayer]; psProxDisp != NULL; 

@@ -74,10 +74,6 @@ BOOL	moveDoMessage;
 #include "Multigifts.h"
 #endif
 
-#ifdef PSX
-#include "VPad.h"
-#include "dcache.h"
-#endif
 
 
 //static BOOL DebugP=FALSE;
@@ -299,10 +295,6 @@ static BOOL	g_bFormationSpeedLimitingOn = TRUE;
 static BOOL	g_bFormationSpeedLimitingOn = FALSE;
 #endif
 
-#ifdef PSX
-UWORD	angle_World2PSX(SDWORD WorldAngle);	// defined in scroll_psx.c
-UWORD	angle_PSX2World(SDWORD PSXAngle);	// defined in scroll_psx.c
-#endif
 
 /* Initialise the movement system */
 BOOL moveInitialise(void)
@@ -547,29 +539,6 @@ BOOL _moveDroidToBase(DROID	*psDroid, UDWORD x, UDWORD y, BOOL bFormation)
 //
 BOOL moveDroidToBase(DROID	*psDroid, UDWORD x, UDWORD y, BOOL bFormation)
 {
-#ifdef PSX
-	// If the stacks in the dcache then..
-	if(SpInDCache()) {
-		// I will find a better way of doing this !
-		static BOOL	ret;
-		static DROID	*_psDroid;
-		static UDWORD	_x;
-		static UDWORD	_y;
-		static BOOL _bFormation;
-
-		_psDroid = psDroid;
-		_x = x;
-		_y = y;
-		_bFormation = bFormation;	// bah !
-
-		// Set the stack pointer to point to the alternative stack which is'nt limited to 1k.
-		SetSpAlt();
-		ret = _moveDroidToBase(_psDroid,_x,_y,_bFormation);
-		SetSpAltNormal();
-
-		return ret;
-	}
-#endif
 	return _moveDroidToBase(psDroid,x,y,bFormation);
 }
 
@@ -856,86 +825,6 @@ void moveReallyStopDroid(DROID *psDroid)
     psDroid->sMove.speed = MKF(0);
 }
 
-#ifdef PSX
-
-/* Get pitch and roll from direction and tile data - NOT VERY PSX FRIENDLY */
-void updateDroidOrientation(DROID *psDroid)
-{
-	// Only do if on screen.
-	if(DrawnInLastFrame(psDroid->sDisplay.frameNumber)) {
-		if((psDroid->sDisplay.screenX < 640) && (psDroid->sDisplay.screenY < 480)) {
-			SDWORD hx0, hx1, hy0, hy1, w;
-			SWORD newPitch, dPitch, pitchLimit;
-			FRACT dx, dy;
-			SWORD direction, pitch, roll;
-			SWORD delta;
-
-			ASSERT((psDroid->x < (mapWidth << TILE_SHIFT),
-				"mapHeight: x coordinate bigger than map width"));
-			ASSERT((psDroid->y < (mapHeight<< TILE_SHIFT),
-				"mapHeight: y coordinate bigger than map height"));
-
-			w = psDroid->sDisplay.screenR;	// droid size.
-
-			if(w == 0) {
-	//#ifdef DEBUG
-				DBPRINTF(("updateUnitOrientation : Zero unit radius (%d,%d,%d)\n",
-							psDroid->sDisplay.screenX,
-							psDroid->sDisplay.screenY,
-							psDroid->sDisplay.screenR));
-	//#endif
-				return;
-			}
-
-			hx0 = map_Height(psDroid->x + w, psDroid->y) / 4;
-			hx1 = map_Height(psDroid->x - w, psDroid->y) / 4;
-			hy0 = map_Height(psDroid->x, psDroid->y + w) / 4;
-			hy1 = map_Height(psDroid->x, psDroid->y - w) / 4;
-
-			//update height in case were in the bottom of a trough
-			if (((hx0 +hx1)/2) > (SDWORD)psDroid->z)
-			{
-				psDroid->z = (UWORD)((hx0 +hx1)/2);
-			}
-			if (((hy0 +hy1)/2) > (SDWORD)psDroid->z)
-			{
-				psDroid->z = (UWORD)((hy0 +hy1)/2);
-			}
-
-			dx = MAKEFRACT(hx0 - hx1) / w*2;
-			dy = MAKEFRACT(hy0 - hy1) / w*2;
-
-			//dx is atan of angle of elevation along x axis
-			//dy is atan of angle of elevation along y axis
-			//body
-			direction = angle_World2PSX(psDroid->direction);
-
-			pitch = FRACTmul(rsin(direction),dx) + FRACTmul(rcos(direction),dy);
-			pitch = angle_PSX2World(catan(pitch));
-
-			//set droid pitch with damping.
-			delta = (pitch - (SWORD)psDroid->pitch)/4;
-			if(delta == 0) {
-				psDroid->pitch = pitch;
-			} else {
-				psDroid->pitch += delta;
-			}
-
-			roll = FRACTmul(rcos(direction),dx) - FRACTmul(rsin(direction),dy);
-			roll = angle_PSX2World(catan(roll));
-
-			//set droid roll with damping.
-			delta = (roll - (SWORD)psDroid->roll)/2;
-			if(delta == 0) {
-				psDroid->roll = roll;
-			} else {
-				psDroid->roll += delta;
-			}
-		}
-	}
-}
-
-#else
 
 #define PITCH_LIMIT 150
 
@@ -1015,7 +904,6 @@ void updateDroidOrientation(DROID *psDroid)
 	return;
 }
 
-#endif
 
 
 /* Calculate the normalised vector between a droid and a point */
@@ -2419,13 +2307,6 @@ void moveGetObstVector2(DROID *psDroid, FRACT *pX, FRACT *pY)
 		DivTop=MAKEFRACT((AVOID_DIST*AVOID_DIST)-(mag*mag));
 		DivBot=MAKEFRACT(AVOID_DIST*AVOID_DIST);
 
-#ifdef PSX
-		if (abs(DivTop) > FRACTDIVMAX)		// check for overflow
-		{
-		  	DivTop= DivTop/=DIVACC;
-			DivBot= DivBot/=DIVACC;
-		}
-#endif
 		ratio=FRACTdiv(DivTop,DivBot);
 
 
@@ -2466,13 +2347,6 @@ void moveGetObstVector2(DROID *psDroid, FRACT *pX, FRACT *pY)
 				DivTop=MAKEFRACT((AVOID_DIST*AVOID_DIST)-(mag*mag));
 				DivBot=MAKEFRACT(AVOID_DIST*AVOID_DIST);
 
-#ifdef PSX
-				if (abs(DivTop) > FRACTDIVMAX)		// check for overflow
-				  {
-				  	DivTop= DivTop/=DIVACC;
-					DivBot= DivBot/=DIVACC;
-				  }
-#endif
 
 				ratio=FRACTdiv(DivTop,DivBot);
 
@@ -2495,9 +2369,6 @@ void moveGetObstVector2(DROID *psDroid, FRACT *pX, FRACT *pY)
 		resMag = fSQRT(FRACTmul(normX,normX) + FRACTmul(normY,normY));
 
 
-#ifdef PSX
-		if (resMag!=0)				// avoid nasty divide by zero crash on psx
-#endif
 		{
 
 
@@ -2519,20 +2390,6 @@ void moveGetObstVector2(DROID *psDroid, FRACT *pX, FRACT *pY)
 				avoidY = -normX;
 			}
 
-	#ifdef PSX
-
-			{
-					FRACT Ratio1,Ratio2;
-
-					Ratio1= (MAKEFRACT(mag)  / AVOID_DIST);
-					Ratio2= (MAKEFRACT(AVOID_DIST-mag)  / AVOID_DIST);
-
-					*pX = FRACTmul(*pX , Ratio1) + FRACTmul(avoidX , Ratio2);
-					*pY = FRACTmul(*pY , Ratio1) + FRACTmul(avoidY , Ratio2);
-			  
-			}
-
-	#else
 
 			*pX = *pX * (float)mag / AVOID_DIST + 
 				  avoidX * (AVOID_DIST - (float)mag)/AVOID_DIST;
@@ -2540,7 +2397,6 @@ void moveGetObstVector2(DROID *psDroid, FRACT *pX, FRACT *pY)
 			*pY = *pY * (float)mag / AVOID_DIST + 
 				  avoidY * (AVOID_DIST - (float)mag)/AVOID_DIST;
 
-	#endif
 
 			resMag = FRACTmul(*pX, *pX) + FRACTmul(*pY,*pY);
 			resMag = fSQRT(resMag);
@@ -3343,9 +3199,6 @@ SDWORD moveCalcDroidSpeed(DROID *psDroid)
 	speed = (SDWORD) calcDroidSpeed(psDroid->baseSpeed, TERRAIN_TYPE(mapTile(mapX,mapY)),
 							  psDroid->asBits[COMP_PROPULSION].nStat);
 
-#ifdef PSX	// Make droids move faster on PSX.
-	speed = speed + ((speed*PSX_SPEED_ADJUST)/100);	// PSX_SPEED_ADJUST% faster.
-#endif
 
 /*	if ( vtolDroid(psDroid) &&
 		 ((asBodyStats + psDroid->asBits[COMP_BODY].nStat)->size == SIZE_HEAVY) )
@@ -3406,9 +3259,6 @@ SDWORD moveCalcDroidSpeed(DROID *psDroid)
 		moveFormationSpeedLimitingOn() && psDroid->sMove.psFormation)
 	{
 		SDWORD FrmSpeed = (SDWORD)psDroid->sMove.psFormation->iSpeed;
-#ifdef PSX
-		FrmSpeed = FrmSpeed + ((FrmSpeed*PSX_SPEED_ADJUST)/100);	// PSX_SPEED_ADJUST% faster.
-#endif
 
 		if ( speed > FrmSpeed )
 		{
@@ -3496,80 +3346,6 @@ void moveUpdateDroidDirection( DROID *psDroid, SDWORD *pSpeed, SDWORD direction,
 
 
 
-#ifdef PSX
-// Calculate current speed perpendicular to droids direction
-FRACT moveCalcPerpSpeed( DROID *psDroid, SDWORD iDroidDir, SDWORD iSkidDecel )
-{
-	SDWORD		adiff;
-	FRACT		perpSpeed;
-
-	adiff = labs(iDroidDir - psDroid->sMove.dir);
-
-
-
-
-	perpSpeed = Fmul(psDroid->sMove.speed,trigSin(adiff));
-
-//my_error("",0,"","$%x $%x $%x ($%x,$%x)\n",adiff,perpSpeed,baseSpeed,psDroid->sMove.speed,trigSin(adiff));
-
-	// decelerate the perpendicular speed
-//	perpSpeed -= (iSkidDecel * baseSpeed);
-
-
-
-	if (perpSpeed < MKF(0))
-	{
-		perpSpeed = MKF(0);
-	}
-
-
-	perpSpeed=MKF(0);		// no skidding for the mo.
-
-	return perpSpeed;
-}
-
-
-void moveCombineNormalAndPerpSpeeds( DROID *psDroid, FRACT fNormalSpeed,
-										FRACT fPerpSpeed, SDWORD iDroidDir )
-{
-	SWORD theta;
-	SDWORD change,dcos;
-	FRACT newspeed;
-
-	/* set current direction */
-	psDroid->direction = (UWORD)iDroidDir;
-
-	/* set normal speed and direction if perpendicular speed is zero */
-	psDroid->sMove.speed = fNormalSpeed;
-	if (fPerpSpeed == MKF(0))
-	{
-		psDroid->sMove.dir   = iDroidDir;
-		return;
-	}
-
-//	finalSpeed = fSQRT(Fmul(fNormalSpeed,fNormalSpeed) + Fmul(fPerpSpeed,fPerpSpeed));
-
-	theta=ratan2(fPerpSpeed,fNormalSpeed);		// i.e. if perpspeed = 0 then theta=0
-
-	change=((theta*360)/4096);
-
-	psDroid->sMove.dir = iDroidDir+change;
-
-	dcos= rcos(theta);
-
-	if (dcos==0) return;
-	newspeed = Fdiv(fNormalSpeed,dcos);
-
-	psDroid->sMove.speed = newspeed;
-
-
-//	DBPRINTF(("change=%d %x %x %x\n",change,theta,dcos,newspeed);
-	return;
-
-
-}
-
-#else
 
 
 // Calculate current speed perpendicular to droids direction
@@ -3651,7 +3427,6 @@ void moveCombineNormalAndPerpSpeeds( DROID *psDroid, FRACT fNormalSpeed,
 	psDroid->sMove.speed = finalSpeed;
 }
 
-#endif
 
 
 // Calculate the current speed in the droids normal direction
@@ -3691,13 +3466,7 @@ void moveGetDroidPosDiffs( DROID *psDroid, FRACT *pDX, FRACT *pDY )
 {
 	FRACT	move;
 
-#ifdef PSX
-//	if (baseSpeed < 0x400);	// small value check !
-	move = Fmul(psDroid->sMove.speed, (baseSpeed*16)  );
-	move = (move/16);
-#else
 	move = Fmul(psDroid->sMove.speed, baseSpeed);
-#endif
 
 	*pDX = Fmul(move,trigSin(psDroid->sMove.dir));
 	*pDY = Fmul(move,trigCos(psDroid->sMove.dir));
@@ -3714,12 +3483,6 @@ void moveCheckFinalWaypoint( DROID *psDroid, SDWORD *pSpeed )
 		minEndSpeed = MIN_END_SPEED;
 	}
 
-#ifdef PSX
-	// Don't do this if the unit is under direct control.
-	if(psDroid == driveGetDriven()) {
-		return;
-	}
-#endif
 
 	// don't do this for VTOLs doing attack runs
 	if (vtolDroid(psDroid) && (psDroid->action == DACTION_VTOLATTACK))
@@ -5244,11 +5007,7 @@ void moveUpdateDroid(DROID *psDroid)
 		oldy >> TILE_SHIFT != psDroid->y >> TILE_SHIFT) || visTilesPending((BASE_OBJECT*)psDroid) )
 #endif
 	{
-#ifdef PSX
-		visTilesUpdate((BASE_OBJECT *)psDroid,TRUE);
-#else
 		visTilesUpdate((BASE_OBJECT *)psDroid,FALSE);
-#endif
 		gridMoveObject((BASE_OBJECT *)psDroid, (SDWORD)oldx,(SDWORD)oldy);
 
 		// object moved from one tile to next, check to see if droid is near stuff.(oil)

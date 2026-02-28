@@ -22,11 +22,6 @@
 #include "PieMatrix.h"//matrix code
 #include "PieState.h"
 
-#ifdef PSX
-#include "Primatives.h"
-#include "DrawIMD_psx.h"
-#include "InitPSX.h"	// for DISPLAYMODE_PAL & DISPLAYMODE_NTSC.
-#endif
 
 #include "Display3D.h"
 #include "Edit3D.h"
@@ -65,15 +60,6 @@
 #include "Console.h"
 #include "CmdDroid.h"
 #include "ScriptExtern.h"
-#ifdef PSX
-#include "StringEntry.h"
-#include "Csnap.h"
-#include "dcache.h"
-#include "VPad.h"
-#include "CtrlPSX.h"
-#include "Mission.h"
-extern CURSORSNAP InterfaceSnap;
-#endif
 
 #ifdef WIN32
 
@@ -470,9 +456,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 	W_BUTINIT		sButInit;
 	W_BARINIT		sBarInit;
 
-#ifdef PSX
-	HideMissionTimer();
-#endif
 
 	desSetupDesignTemplates();
 
@@ -509,9 +492,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 	memset(&sBarInit, 0, sizeof(W_BARINIT));
 
 	/* Add the main design form */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARFARBACK);
-#endif
 	sFormInit.formID = 0;
 	sFormInit.id = IDDES_FORM;
 	sFormInit.style = WFORM_PLAIN;
@@ -531,9 +511,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 //				255,255,0);
 
 	/* add the edit name box */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 #ifdef WIN32
 	sEdInit.formID = IDDES_FORM;
 	sEdInit.id = IDDES_NAMEBOX;
@@ -579,9 +556,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return FALSE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 	/* Add the 3D View form */
 	sFormInit.formID = IDDES_FORM;
 	sFormInit.id = IDDES_3DVIEW;
@@ -611,9 +585,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return FALSE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FORE);
-#endif
 
 	// add the body part button
 	sButInit.formID = IDDES_PARTFORM;
@@ -714,9 +685,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return FALSE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARFARBACK);
-#endif
 	/* add central stats form */
 	sFormInit.formID = 0;
 	sFormInit.id = IDDES_STATSFORM;
@@ -732,9 +700,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 	}
 
 	/* Add the body form */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARBACK);
-#endif
 	sFormInit.formID = IDDES_STATSFORM;
 	sFormInit.id = IDDES_BODYFORM;
 	sFormInit.style = WFORM_CLICKABLE | WFORM_NOCLICKMOVE;
@@ -749,9 +714,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 	}
 
 	/* Add the graphs for the Body */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 	sBarInit.formID = IDDES_BODYFORM;
 	sBarInit.id = IDDES_BODYARMOUR_K;
 	sBarInit.style = WBAR_PLAIN;
@@ -868,9 +830,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return TRUE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FORE);
-#endif
 
 	/* add power/points bar subform */
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));
@@ -887,9 +846,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return FALSE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARFARFORE);
-#endif
 	/* Set the text colour for the form */
 	widgSetColour(psWScreen, IDDES_POWERFORM, WCOL_TEXT, 0, 164, 0);
 
@@ -906,9 +862,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return TRUE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARFORE);
-#endif
 	memset(&sBarInit, 0, sizeof(W_BARINIT));
 	sBarInit.formID = IDDES_POWERFORM;
 	sBarInit.id = IDDES_POWERBAR;
@@ -928,9 +881,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return FALSE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARFARFORE);
-#endif
 	/* Add the design template body points bar and label*/
 	sLabInit.formID	= IDDES_POWERFORM;
 	sLabInit.id = IDDES_TEMPBODYLAB;
@@ -945,9 +895,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return TRUE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARFORE);
-#endif
 	memset(&sBarInit, 0, sizeof(W_BARINIT));
 	sBarInit.formID = IDDES_POWERFORM;
 	sBarInit.id = IDDES_BODYPOINTS;
@@ -985,11 +932,6 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 	widgHide( psWScreen, IDDES_STATSFORM );
 	widgHide( psWScreen, IDDES_RIGHTBASE );
 
-#ifdef PSX
-	if(GetControllerType(0) == CON_MOUSE) {
-		intRemoveMouseInterface();
-	}
-#endif
 
 	return TRUE;
 }
@@ -1052,9 +994,6 @@ static BOOL _intAddTemplateForm(DROID_TEMPLATE *psSelected)
 						(DES_TABBUTHEIGHT + DES_TABBUTGAP));
 
 	/* add a form to place the tabbed form on */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARBACK);
-#endif
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));
 	sFormInit.formID = 0;
 	sFormInit.id = IDDES_TEMPLBASE;
@@ -1187,9 +1126,6 @@ BOOL intAddTemplateButtons(UDWORD formID, UDWORD formWidth, UDWORD formHeight,
 			sButInit.pUserData = (void*)&StatBuffers[BufferID];
 			sButInit.pDisplay = intDisplayTemplateButton;
 
-#ifdef PSX
-			WidgSetOTIndex(OT2D_BACK);
-#endif
 			if (!widgAddForm(psWScreen, &sButInit))
 			{
 				return FALSE;
@@ -1208,9 +1144,6 @@ BOOL intAddTemplateButtons(UDWORD formID, UDWORD formWidth, UDWORD formHeight,
 #endif
 
 			sBarInit.formID = sButInit.id;
-#ifdef PSX
-			WidgSetOTIndex(OT2D_FORE);
-#endif
 			if (!widgAddBarGraph(psWScreen, &sBarInit))
 			{
 				return FALSE;
@@ -1224,12 +1157,6 @@ BOOL intAddTemplateButtons(UDWORD formID, UDWORD formWidth, UDWORD formHeight,
 				widgSetTabs(psWScreen, IDDES_TEMPLFORM, sButInit.majorID, 0);
 			}
 
-#ifdef PSX
-			// Snap to the new droid template.
-			if(i == 0) {
-				SetCurrentSnapID(&InterfaceSnap,sButInit.id);
-			}
-#endif
 
 			/* Update the init struct for the next button */
 			sBarInit.id += 1;
@@ -1557,39 +1484,6 @@ STRING *GetDefaultTemplateName(DROID_TEMPLATE *psTemplate)
 	{
 		return strresGetString(NULL,HashString("Transporter"));
 	}
-#ifdef PSX
-
-
-	if( psTemplate->droidType == DROID_CYBORG OR
-		psTemplate->droidType == DROID_CYBORG_SUPER OR
-        psTemplate->droidType == DROID_CYBORG_CONSTRUCT OR
-        psTemplate->droidType == DROID_CYBORG_REPAIR) 
-	{
-		DROID_TEMPLATE *pStatTemplate;
-
-		// If the namehash is null, then we've probably just made up this template
-		if (psTemplate->NameHash!=NULL)
-		{
-			pStatTemplate=psTemplate;			
-		}
-		else
-		{
-			// Match this template with one from the stats
-			pStatTemplate=MatchTemplate(psTemplate,0);		
-		}
-
-		if (pStatTemplate==NULL)
-		{
-			return ("Cyborg");
-		}		
-		else
-		{
-			return strresGetString(NULL,pStatTemplate->NameHash);
-		}
-
-
-	}
-#endif
 	/*
 		Now get the normal default droid name based on its components
 
@@ -1754,9 +1648,6 @@ static BOOL _intSetSystemForm(COMP_BASE_STATS *psStats)
 	desSysMode = newSysMode;
 
 	/* Add the system form */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARBACK);
-#endif
 	sFormInit.formID = IDDES_STATSFORM;
 	sFormInit.id = IDDES_SYSTEMFORM;
 	sFormInit.style = (WFORM_CLICKABLE | WFORM_NOCLICKMOVE);
@@ -1773,9 +1664,6 @@ static BOOL _intSetSystemForm(COMP_BASE_STATS *psStats)
 	}
 
 	/* Initialise the bargraph struct */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 	sBarInit.formID = IDDES_SYSTEMFORM;
 	sBarInit.style = WBAR_PLAIN;//WBAR_DOUBLE;
 	sBarInit.orientation = WBAR_LEFT;
@@ -2190,9 +2078,6 @@ static BOOL intSetPropulsionForm(PROPULSION_STATS *psStats)
 	desPropMode = newPropMode;
 
 	/* Add the propulsion form */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARBACK);
-#endif
 	sFormInit.formID = IDDES_STATSFORM;
 	sFormInit.id = IDDES_PROPFORM;
 	sFormInit.style = WFORM_CLICKABLE | WFORM_NOCLICKMOVE;
@@ -2208,9 +2093,6 @@ static BOOL intSetPropulsionForm(PROPULSION_STATS *psStats)
 	}
 
 	/* Initialise the bargraph struct */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 	sBarInit.formID = IDDES_PROPFORM;
 	sBarInit.style = WBAR_PLAIN;//WBAR_DOUBLE;
 	sBarInit.orientation = WBAR_LEFT;
@@ -2441,9 +2323,6 @@ static BOOL intAddComponentForm(UDWORD numButtons)
 	butPerForm = DES_BUTSPERFORM;
 
 	/* add a form to place the tabbed form on */
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FARBACK);
-#endif
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));
 	sFormInit.formID = 0;
 	sFormInit.id = IDDES_RIGHTBASE;
@@ -2459,9 +2338,6 @@ static BOOL intAddComponentForm(UDWORD numButtons)
 	}
 
 	//now a single form
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));
 	sFormInit.formID = IDDES_RIGHTBASE;
 	sFormInit.id = IDDES_COMPFORM;
@@ -2733,9 +2609,6 @@ static BOOL intAddComponentButtons(COMP_BASE_STATS *psStats, UDWORD size,
 
 	ClearObjectBuffers();
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 
 	memset(aButText, 0, DES_COMPBUTMAXCHAR + 1);
 	memset(&sButInit, 0, sizeof(W_BUTINIT));
@@ -2966,9 +2839,6 @@ static BOOL intAddExtraSystemButtons(UDWORD sensorIndex, UDWORD ecmIndex,
 	STRING			aButText[DES_COMPBUTMAXCHAR + 1];
 	SDWORD			BufferID;
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 	memset(aButText, 0, DES_COMPBUTMAXCHAR + 1);
 	memset(&sButInit, 0, sizeof(W_BUTINIT));
 
@@ -4188,12 +4058,6 @@ void intRemoveDesign(void)
 
 	resetDesignPauseState();
 
-#ifdef PSX
-	if(GetControllerType(0) == CON_MOUSE) {
-		intAddMouseInterface();
-	}
-	RevealMissionTimer();
-#endif
 }
 
 /* set flashing flag for button */
@@ -4355,9 +4219,6 @@ void intProcessDesign(UDWORD id)
 		/* reveal and flash body component button */
 		widgReveal( psWScreen, IDDES_BODYBUTTON );
 
-#ifdef PSX
-		SetCurrentSnapID(&InterfaceSnap,IDDES_BODYBUTTON);
-#endif
 
 #ifdef FLASH_BUTTONS
 		widgSetButtonState(psWScreen, IDDES_BODYBUTTON, WBUT_CLICKLOCK);
@@ -4869,9 +4730,6 @@ void intProcessDesign(UDWORD id)
 			}
 #endif
 
-#ifdef PSX
-			SetCurrentSnapID(&InterfaceSnap,IDDES_COMPSTART);
-#endif
 
 			break;
 		case IDDES_BODYBUTTON:
@@ -4894,9 +4752,6 @@ void intProcessDesign(UDWORD id)
 			}
 #endif
 
-#ifdef PSX
-			SetCurrentSnapID(&InterfaceSnap,IDDES_COMPSTART);
-#endif
 
 			break;
 		case IDDES_PROPBUTTON:
@@ -4918,9 +4773,6 @@ void intProcessDesign(UDWORD id)
 			}
 #endif
 
-#ifdef PSX
-			SetCurrentSnapID(&InterfaceSnap,IDDES_COMPSTART);
-#endif
 
 			break;
 		}
@@ -4949,18 +4801,12 @@ void intProcessDesign(UDWORD id)
 				widgReveal( psWScreen, IDDES_BODYFORM );
 				widgHide(   psWScreen, IDDES_PROPFORM );
 				widgHide(   psWScreen, IDDES_SYSTEMFORM );
-#ifdef PSX
-				SetCurrentSnapID(&InterfaceSnap,IDDES_PROPBUTTON);
-#endif
 				break;
 
 			case IDES_PROPULSION:
 				widgHide(   psWScreen, IDDES_BODYFORM );
 				widgReveal( psWScreen, IDDES_PROPFORM );
 				widgHide(   psWScreen, IDDES_SYSTEMFORM );
-#ifdef PSX
-				SetCurrentSnapID(&InterfaceSnap,IDDES_SYSTEMBUTTON);
-#endif
 				break;
 
 			case IDES_BRAIN:
@@ -4969,9 +4815,6 @@ void intProcessDesign(UDWORD id)
 				widgHide(   psWScreen, IDDES_BODYFORM );
 				widgHide(   psWScreen, IDDES_PROPFORM );
 				widgReveal( psWScreen, IDDES_SYSTEMFORM );
-#ifdef PSX
-//				SetCurrentSnapID(&InterfaceSnap,IDDES_BODYBUTTON);
-#endif
 				break;
 		}
 
@@ -5021,9 +4864,6 @@ void intRunDesign(void)
 	COMP_BASE_STATS		*psStats;
 	BOOL				templateButton;
 
-#ifdef PSX
-	intProcessTabs();
-#endif
 
 	/* Find out which button was hilited */
 	templateButton = FALSE;
@@ -5156,9 +4996,6 @@ void intDisplayStatForm(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	BASE_STATS		*psStats;
 	iVector			Rotation,Position;
 	SWORD			templateRadius;
-#ifdef PSX
-	SWORD			OldBias;
-#endif
 	SDWORD			falseScale;
 
 	UNUSEDPARAMETER(pColours);
@@ -5306,9 +5143,6 @@ void intDisplayViewForm(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	static UDWORD	iRY = 45;
 	iVector			Rotation,Position;
 	SWORD			templateRadius;
-#ifdef PSX
-	SWORD			OldBias;
-#endif
 	SDWORD			falseScale;
 
 	UNUSEDPARAMETER(pColours);
@@ -5566,14 +5400,6 @@ BOOL saveTemplate(void)
 }
 
 
-#ifdef PSX
-void SetDesignWidgetName(char *Name)
-{
-
-//	widgSetString(psWScreen, IDDES_NAMEBOX, Name);
-//	strncpy(sCurrDesign.pName, Name, WIDG_MAXSTR-1);
-}
-#endif
 
 /*Function to set the shadow bars for all the stats when the mouse is over 
 the Template buttons*/
@@ -5699,22 +5525,6 @@ static BOOL intCheckValidWeaponForProp(void)
 
 BOOL intAddDesign( BOOL bShowCentreScreen )
 {
-#ifdef PSX
-	// If the stacks in the dcache then..
-	if(SpInDCache()) {
-		static BOOL ret;
-		static BOOL _bShowCentreScreen;
-
-		_bShowCentreScreen = bShowCentreScreen;
-
-		// Set the stack pointer to point to the alternative stack which is'nt limited to 1k.
-		SetSpAlt();
-		ret = _intAddDesign(_bShowCentreScreen);
-		SetSpAltNormal();
-
-		return ret;
-	}
-#endif
 	return _intAddDesign(bShowCentreScreen);
 }
 
@@ -5722,44 +5532,12 @@ BOOL intAddDesign( BOOL bShowCentreScreen )
 /* Set up the system clickable form of the design screen given a set of stats */
 static BOOL intSetSystemForm(COMP_BASE_STATS *psStats)
 {
-#ifdef PSX
-	// If the stacks in the dcache then..
-	if(SpInDCache()) {
-		static BOOL ret;
-		static COMP_BASE_STATS *_psStats;
-
-		_psStats = psStats;
-
-		// Set the stack pointer to point to the alternative stack which is'nt limited to 1k.
-		SetSpAlt();
-		ret = _intSetSystemForm(_psStats);
-		SetSpAltNormal();
-
-		return ret;
-	}
-#endif
 	return _intSetSystemForm(psStats);
 }
 
 
 static BOOL intAddTemplateForm(DROID_TEMPLATE *psSelected)
 {
-#ifdef PSX
-	// If the stacks in the dcache then..
-	if(SpInDCache()) {
-		static BOOL ret;
-		static DROID_TEMPLATE *_psSelected;
-
-		_psSelected = psSelected;
-
-		// Set the stack pointer to point to the alternative stack which is'nt limited to 1k.
-		SetSpAlt();
-		ret = _intAddTemplateForm(_psSelected);
-		SetSpAltNormal();
-
-		return ret;
-	}
-#endif
 	return _intAddTemplateForm(psSelected);
 }
 

@@ -66,16 +66,6 @@
 #ifdef WIN32
 #include "Texture.h"
 #endif
-#ifdef PSX
-#include "Rendmode.h"
-#include "Csnap.h"
-#include "initpsx.h"
-#include "Primatives.h"
-#include "DCache.h"
-#include "VPad.h"
-#include "CtrlPSX.h"
-//extern CURSORSNAP InterfaceSnap;
-#endif
 extern CURSORSNAP InterfaceSnap;
 //DEFINES**************
 //#define		IDTIMER_FORM			11000		// has to be in the header..boohoo
@@ -198,11 +188,6 @@ only be selectedPlayer's droids but have possibility for MAX_PLAYERS -
 also saves writing out list functions to cater for just one player*/
 DROID       *apsLimboDroids[MAX_PLAYERS];
 
-#ifdef PSX
-UDWORD getLevelLoadFlags(void);
-BOOL	bDisplayScores;
-static BOOL BackdropActive = FALSE;
-#endif
 
 /**********TEST************/
 static  UDWORD      addCount = 0;
@@ -289,24 +274,6 @@ static	UDWORD	camNumber = 1;
 
 //static iSprite *pMissionBackDrop; //pointer to backdrop piccy
 
-#ifdef PSX
-
-void HideMissionTimer(void)
-{
-	if(widgGetFromID(psWScreen,IDTIMER_FORM)) {
-		widgHide(psWScreen,IDTIMER_FORM);
-	}
-}
-
-
-void RevealMissionTimer(void)
-{
-	if(widgGetFromID(psWScreen,IDTIMER_FORM)) {
-		widgReveal(psWScreen,IDTIMER_FORM);
-	}
-}
-
-#endif
 
 
 
@@ -1145,13 +1112,6 @@ void saveMissionData(void)
 
 	resetRadarRedraw();
 
-#ifdef PSX
-	intInitObjectCycle();
-
-	// Ensure drive GUI disabled and control enabled.
-	driveEnableControl();
-	driveDisableInterface();
-#endif
 }
 
 /*
@@ -1219,16 +1179,7 @@ void restoreMissionData(void)
 	}
 	//swap mission data over
 
-#ifdef PSX
-	// if we are at the end of a campaign we don't want to restore anything !
-	if((getLevelLoadFlags() & LDF_CAMEND) == 0)
-	{ 
-
-		psMapTiles = mission.psMapTiles;
-	}
-#else
 	psMapTiles = mission.psMapTiles;
-#endif
 	aMapLinePoints = mission.aMapLinePoints;
 	mapWidth = mission.mapWidth;
 	mapHeight = mission.mapHeight;
@@ -1363,13 +1314,6 @@ void saveMissionLimboData(void)
         }
     }
 
-#ifdef PSX
-	intInitObjectCycle();
-
-	// Ensure drive GUI disabled and control enabled.
-	driveEnableControl();
-	driveDisableInterface();
-#endif
 }
 
 //this is called via a script function to place the Limbo droids once the mission has started
@@ -2002,9 +1946,6 @@ void endMission(void)
 			/*
 				This is called at the end of every campaign mission
 			*/
-#ifdef PSX
-			SetScrollLimitsTilesVisible();
-#endif
 			break;
         }
 		case LDS_MKEEP:
@@ -2022,9 +1963,6 @@ void endMission(void)
 			/*
 				This is called at the end of every campaign mission
 			*/
-#ifdef PSX
-			SetScrollLimitsTilesVisible();
-#endif
 			break;
 		}
 #ifndef COVERMOUNT
@@ -2963,42 +2901,21 @@ BOOL intAddMissionTimer(void)
 
 	// Add the background
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-#endif
 	sFormInit.formID = 0;
 	sFormInit.id = IDTIMER_FORM;
 	sFormInit.style = WFORM_PLAIN;
-#ifdef PSX
-	sFormInit.width = iV_GetImageWidth(IntImages,IMAGE_MISSIONINFO);
-	sFormInit.height = iV_GetImageHeight(IntImages,IMAGE_MISSIONINFO);
-//	sFormInit.x = 320-(WidthToPSX(sFormInit.width/2));
-	sFormInit.x = 320-155/2;	//iV_GetImageWidth(IntImages,IMAGE_MISSIONINFO)/2;
-//	sFormInit.pUserData = (void*)PACKDWORD_TRI(0,IMAGE_MISSION_CLOCK,IMAGE_MISSION_CLOCK_UP);;
-	sFormInit.pUserData = (void*)IMAGE_MISSIONINFO;
-	sFormInit.pDisplay = intDisplayImage;
-	if(GetControllerType(0) == CON_MOUSE) {
-		sFormInit.y = TIMER_Y+32;
-	} else {
-		sFormInit.y = TIMER_Y;
-	}
-#else
 	sFormInit.width = iV_GetImageWidth(IntImages,IMAGE_MISSION_CLOCK);//TIMER_WIDTH;
 	sFormInit.height = iV_GetImageHeight(IntImages,IMAGE_MISSION_CLOCK);//TIMER_HEIGHT;
 	sFormInit.x = (SWORD)(RADTLX + RADWIDTH - sFormInit.width);
 	sFormInit.y = (SWORD)TIMER_Y;
 	sFormInit.pUserData = (void*)PACKDWORD_TRI(0,IMAGE_MISSION_CLOCK,IMAGE_MISSION_CLOCK_UP);;
 	sFormInit.pDisplay = intDisplayMissionClock;
-#endif
 
 	if (!widgAddForm(psWScreen, &sFormInit))
 	{
 		return FALSE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FORE);
-#endif
 	//add labels for the time display
 	memset(&sLabInit,0,sizeof(W_LABINIT));
 	sLabInit.formID = IDTIMER_FORM;
@@ -3011,33 +2928,11 @@ BOOL intAddMissionTimer(void)
 	sLabInit.pText = "00:00:00";
 	sLabInit.FontID = WFont;
 	sLabInit.pCallback = intUpdateMissionTimer;
-#ifdef PSX
-	sLabInit.pDisplay = intDisplayTime;
-#endif
 	if (!widgAddLabel(psWScreen, &sLabInit))
 	{
 		return FALSE;
 	}
 
-#ifdef PSX
-	//add labels for the time display
-	memset(&sLabInit,0,sizeof(W_LABINIT));
-	sLabInit.formID = IDTIMER_FORM;
-	sLabInit.id = IDTRANTIMER_DISPLAY;
-	sLabInit.style = WLAB_PLAIN | WIDG_HIDDEN;
-	sLabInit.x = TIMER_LABELX+44+32+22;
-	sLabInit.y = TIMER_LABELY;
-	sLabInit.width = TRAN_TIMER_WIDTH;
-	sLabInit.height = sFormInit.height;//TRAN_TIMER_HEIGHT;
-	sLabInit.pText = "00:00:00";
-	sLabInit.FontID = WFont;
-	sLabInit.pCallback = intUpdateTransporterTimer;
-	sLabInit.pDisplay = intDisplayTime;
-	if (!widgAddLabel(psWScreen, &sLabInit))
-	{
-		return FALSE;
-	}
-#endif
 
 	return TRUE;
 }
@@ -3236,20 +3131,6 @@ void fillTimeDisplay(STRING *psText, UDWORD time, BOOL bHours)
     }
     else
     {
-#ifdef PSX
-		if(bHours && (time == 0) ) {
-	        psText[inc++] = (UBYTE)('-');
-	        psText[inc++] = (UBYTE)('-');
-		    psText[inc++] = (UBYTE)(':');
-	        psText[inc++] = (UBYTE)('-');
-	        psText[inc++] = (UBYTE)('-');
-		    psText[inc++] = (UBYTE)(':');
-	        psText[inc++] = (UBYTE)('-');
-	        psText[inc++] = (UBYTE)('-');
-		    //terminate the timer text
-		    psText[inc] = '\0';
-		} else {
-#endif
 	        if (bHours)
 	        {
 	            //hours
@@ -3273,9 +3154,6 @@ void fillTimeDisplay(STRING *psText, UDWORD time, BOOL bHours)
 		    psText[inc++] = (UBYTE)('0'+ calcTime % 10);
 		    //terminate the timer text
 		    psText[inc] = '\0';
-#ifdef PSX
-		}
-#endif
     }
 }
 
@@ -3776,16 +3654,6 @@ void missionResetInGameState( void )
 	intRemoveReticule();
 	intRemoveMissionTimer();
 
-#ifdef PSX
-	if(GetControllerType(0) == CON_MOUSE) {
-		// If were using a mouse then set the cursor to arrow
-		pie_SetMouse(IntImages,IMAGE_CURSOR_DEFAULT);
-	} else {
-		// Otherwise, ensure the cursor is hidden and mouse movement is disabled.
-		EnableMouseDraw(FALSE);
-		MouseMovement(FALSE);
-	}
-#endif
 }
 
 static BOOL _intAddMissionResult(BOOL result, BOOL bPlaySuccess)
@@ -3833,17 +3701,10 @@ static BOOL _intAddMissionResult(BOOL result, BOOL bPlaySuccess)
 	{
 		return FALSE;
 	}
-#ifdef PSX
-	bDisplayScores = TRUE;
-#endif
 //#endif
 
 	// TITLE
 	sFormInit.formID		= IDMISSIONRES_BACKFORM;
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-//	sFormInit.formID		= 0;
-#endif
 	sFormInit.id			= IDMISSIONRES_TITLE;
 	sFormInit.style			= WFORM_PLAIN;
 	sFormInit.x				= MISSIONRES_TITLE_X;
@@ -3862,10 +3723,6 @@ static BOOL _intAddMissionResult(BOOL result, BOOL bPlaySuccess)
 
 	// add form 
 	sFormInit.formID		= IDMISSIONRES_BACKFORM;
-#ifdef PSX
-	WidgSetOTIndex(OT2D_BACK);
-//	sFormInit.formID		= 0;
-#endif
 	sFormInit.id			= IDMISSIONRES_FORM;
 	sFormInit.style			= WFORM_PLAIN;
 	sFormInit.x				= MISSIONRES_X;
@@ -3879,9 +3736,6 @@ static BOOL _intAddMissionResult(BOOL result, BOOL bPlaySuccess)
 		return FALSE;
 	}
 
-#ifdef PSX
-	WidgSetOTIndex(OT2D_FORE);
-#endif
 	// description of success/fail
 	memset(&sLabInit,0,sizeof(W_LABINIT));
 	sLabInit.formID = IDMISSIONRES_TITLE;
@@ -4031,19 +3885,6 @@ BOOL intAddMissionResult(BOOL result, BOOL bPlaySuccess)
 	/* save result */
 	g_bMissionResult = result;
 
-#ifdef PSX
-	// If the stacks in the dcache then..
-	if(SpInDCache()) {
-		static BOOL ret;
-		// Set the stack pointer to point to the alternative stack which is'nt limited to 1k.
-		SetSpAlt();
-		// Only one parameter so it will be in a register not on the stack so
-		// we don't need to copy into a static.
-		ret = _intAddMissionResult(result, bPlaySuccess);
-		SetSpAltNormal();
-		return ret;
-	}
-#endif
 	return _intAddMissionResult(result, bPlaySuccess);
 }
 
@@ -4071,15 +3912,8 @@ void intRemoveMissionResultNoAnim(void)
 	//reset the pauses
 	resetMissionPauseState();
 
-#ifdef PSX
-	CancelInterfaceSnap();
-	if(GetControllerType(0) == CON_MOUSE) {
-		intAddReticule();
-	}
-#else
 	// add back the reticule and power bar.
 	intAddReticule();
-#endif
 	intShowPowerBar();
 
 //	EnableMouseDraw(TRUE);
@@ -4089,13 +3923,9 @@ void intRemoveMissionResultNoAnim(void)
 
 void intRunMissionResult()
 {						
-#ifdef PSX						//cursor snap stuff.
-	ProcessCursorSnap();
-#else
 	processFrontendSnap(FALSE);
 	pie_SetMouse(IntImages,IMAGE_CURSOR_DEFAULT);
 	frameSetCursorFromRes(IDC_DEFAULT);
-#endif
 
 #ifdef WIN32
 	if(bLoadSaveUp)
@@ -4167,23 +3997,6 @@ void missionContineButtonPressed( void )
     }
 #endif
 
-#ifdef PSX
-	widgDelete(psWScreen, IDMISSIONRES_TITLE);
-	widgDelete(psWScreen, IDMISSIONRES_BACKFORM);
-	// We must release the backdrop here on the PSX as it uses the
-	// primitave buffer which is neaded for WDG loading.
-	StopBackdropDisplay();
-	UnloadBackdrop();
-	DBPRINTF(("Backdrop released2\n"));
-	// Clear the screen.
-//	ClearDisplayBuffers();
-//	initLoadingScreen(FALSE,FALSE);
- #ifdef LOADINGBACKDROPS
-	AddLoadingBackdrop(TRUE);
- #else
-	initLoadingScreen(FALSE,FALSE);
- #endif
-#endif
 }
 
 void intProcessMissionResult(UDWORD id)
@@ -4253,9 +4066,6 @@ void intProcessMissionResult(UDWORD id)
 #endif
 
 	case IDMISSIONRES_QUIT:
-#ifdef PSX
-	bDisplayScores = FALSE;
-#endif
 		// catered for by hci.c.
 		break;
 
@@ -4283,9 +4093,6 @@ void intProcessMissionResult(UDWORD id)
 				missionContineButtonPressed, missionCDCancelPressed );
 		}
 #endif	
-#ifdef PSX
-		bDisplayScores = FALSE;
-#endif
 		break;
 
 	default:
@@ -4386,11 +4193,6 @@ BOOL setUpMission(UDWORD type)
 	//if (type == MISSION_OFFCLEAR OR type == MISSION_OFFKEEP)
 	if ( type == LDS_CAMSTART )
 	{
-#ifdef PSX
-//		intCDOK();
-		intAddMissionResult(TRUE, TRUE);	// Assume you've succeded if you get here.
-		loopMissionState = LMS_SAVECONTINUE;
-#else
         //this cannot be called here since we need to be able to save the game at the end of cam1 and cam2
 		/*CDrequired = getCDForCampaign( getCampaignNumber() );
 		if ( cdspan_CheckCDPresent(CDrequired) )*/
@@ -4422,7 +4224,6 @@ BOOL setUpMission(UDWORD type)
 			addCDChangeInterface( CDrequired, intCDOK, intCDCancel );
 			loopMissionState = LMS_SAVECONTINUE;
 		}*/
-#endif
 	}
 	else if (type == LDS_MKEEP  
 #ifndef COVERMOUNT
@@ -4431,15 +4232,6 @@ BOOL setUpMission(UDWORD type)
 #endif
 		)
 	{
- #ifdef PSX
-	// Clear the screen.
-  #ifdef LOADINGBACKDROPS
-	AddLoadingBackdrop(TRUE);
-  #else
-	initLoadingScreen(FALSE,FALSE);
-  #endif
-//		ClearDisplayBuffers();
- #endif
 		launchMission();
 
 	}

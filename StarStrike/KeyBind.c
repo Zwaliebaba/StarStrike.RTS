@@ -1155,9 +1155,6 @@ void	kf_SelectGrouping( void )
 
 // --------------------------------------------------------------------------
 
-#ifdef PSX
-extern BOOL IgnoreNextMouseClick;
-#endif
 
 
 void	kf_AssignGrouping( void )

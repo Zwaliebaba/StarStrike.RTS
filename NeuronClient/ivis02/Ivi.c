@@ -30,21 +30,6 @@ iError	_iVERROR;
 
 
 
-#ifdef PSX
-void iV_Initialise(void)
-{
-#ifdef iV_DEBUG
-
-	iV_DEBUG_CREATE_LOG;
-
-#endif
-	_iv_vid_setup();
-	_TEX_INDEX = 0;
-//	_iv_heap_setup();
-
-	iV_DEBUG0("iVi[Initialise] = successful\n");
-}
-#endif
 
 
 // pass in true to reset the palette too.

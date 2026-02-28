@@ -14,9 +14,6 @@
 #include "PieTypes.h"
 
 // on the psx we need piepsx defined ... on the pc we need it when creating binary pie's
-#ifdef PSX
-#define PIEPSX
-#endif
 
 /***************************************************************************/
 /***************************************************************************/

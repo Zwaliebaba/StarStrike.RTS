@@ -130,9 +130,6 @@ int iV_CreateFontIndirect(IMAGEFILE *ImageFile,UWORD *AsciiTable,int SpaceSize)
 		Index = (UWORD)AsciiTable[c];
 		Above = iV_GetImageYOffset(Font->FontFile,Index);
 		Below = Above + iV_GetImageHeight(Font->FontFile,Index);
-#ifdef PSX
-		Above += 2;
-#endif
 		Height = abs(Above) + abs(Below);
 
 		if(Above  < Font->FontAbove) {
@@ -473,33 +470,6 @@ UDWORD pie_GetFormattedTextFlags(void)
 	return FFlags;
 }
 
-#ifdef PSX
-void pie_StartTextExtents(void)
-{
-	RecordExtents = EXTENTS_START;
-}
-
-
-void pie_FillTextExtents(int BorderThickness,UBYTE r,UBYTE g,UBYTE b,BOOL Alpha)
-{
-
-//DBPRINTF(("fillextents sx=%d ex=%d\n",ExtentsStartX,ExtentsEndX));
-
-	if(Alpha) {
-		TransBoxFillRGB_psx(ExtentsStartX-BorderThickness,ExtentsStartY-BorderThickness,
-							ExtentsEndX+BorderThickness,ExtentsEndY+BorderThickness,
-							r,g,b);
-	} else {
-		DBPRINTF(("pie_FillTextExtents : NON ALPHA NOT IMPLEMENTED\n"));
-//		BoxFillRGB_psx(ExtentsStartX-BorderThickness,ExtentsStartY-BorderThickness,
-//						ExtentsEndX+BorderThickness,ExtentsEndY+BorderThickness,
-//						r,g,b);
-	}
-
-	RecordExtents = EXTENTS_NONE;
-}
-
-#endif
 
 
 
@@ -620,13 +590,6 @@ UDWORD pie_DrawFormattedText(UBYTE *String,UDWORD x,UDWORD y,UDWORD Width,UDWORD
 
 			while( (String[si] != 0) && (String[si] != ' ') && (WWidth <= Width)) {
 				// Check for new line character.
-#ifdef PSX
-				if(String[si] == ASCII_NEWLINE) {
-					NewLine = TRUE;
-					si++;
-					break;
-				}
-#endif
 				if(String[si] == ASCII_COLOURMODE) {	// If it's a colour mode toggle char then just add it to the word.
 					FWord[i] = String[si];
    					i++;
@@ -1007,23 +970,6 @@ void pie_DrawText(unsigned char *String,int XPos,int YPos)
 }
 */
 
-#ifdef PSX
-void pie_RenderBlueTintedBitmap(iBitmap *bmp, int x, int y, int w, int h, int ow)
-{
-	assert(2+2==5);
-	// ffs
-	DBPRINTF(("RenderBlueTintedBitmap called\n"));
-}
-
-void pie_RenderDeepBlueTintedBitmap(iBitmap *bmp, int x, int y, int w, int h, int ow)
-{
-	// ffs
-	assert(2+2==5);
-	DBPRINTF(("RenderDeepBlueTintedBitmap called\n"));
-}
-
-
-#endif
 
 
 #ifdef WIN32

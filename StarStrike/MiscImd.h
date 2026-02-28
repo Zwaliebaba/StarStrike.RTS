@@ -103,9 +103,6 @@ MI_DEBRIS4,
 #ifdef WIN32
 MI_FIREWORK,
 #endif
-#ifdef PSX
-MI_MODULE,  
-#endif
 MI_TOO_MANY  
 };
 

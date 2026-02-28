@@ -37,12 +37,8 @@
 
 #define LAND_XGRD	(VISIBLE_XTILES + 1)
 #define LAND_YGRD	(VISIBLE_YTILES + 1)
-#ifdef PSX
-#define DISTANCE	1716
-#else
 #define DISTANCE	(2600)
 #define START_DISTANCE	(2000)
-#endif
 
 #define MINDISTANCE	(DISTANCE - DISTANCE/3)
 

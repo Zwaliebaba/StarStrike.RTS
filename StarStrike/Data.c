@@ -48,13 +48,8 @@
 #include "Display3Ddef.h"
 #include "Init.h"
 
-#ifdef PSX
-#include "Display3D_psx.h"	
-#include "locale.h"
-#else
 #include "Multiplay.h"
 #include "Netplay.h"
-#endif
 
 /**********************************************************
  *
@@ -870,14 +865,6 @@ BOOL dataIMDBufferLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 
 	if (BinaryPIE==FALSE)
 	{
-#ifdef PSX
-//#define WARN_TEXT
-//#ifdef WARN_TEXT
-#ifdef DEBUG
-		DBPRINTF(("Processing text PIE [%s]\n", GetLastResourceFilename() ));
-#endif
-//#endif
-#endif
 		psIMD = iV_ProcessIMD(&pBufferPosition,pBuffer+size,(UBYTE *)"", (UBYTE *)"",FALSE);
 #ifndef FINALBUILD
 		tpAddPIE(GetLastResourceFilename(),psIMD);
@@ -1408,58 +1395,6 @@ void dataIMGRelease(void *pData)
 #define TEXTUREWIDTH (256)
 #define TEXTUREHEIGHT (256)
 
-#ifdef PSX
-
-
-//
-// Works on .TIM format files only !!!!!!! Uploads them using loadtexturepage in bitmap.c
-//
-//
-//
-BOOL bufferTexPageLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	UWORD Tpage;
-	UDWORD TextNum;
-	int TPageEntry;
-	iTexPage *TexPage;
-	int Mode;
-	RECT VramArea;
-
-	BOOL TextureLoaded;
-
-
-	TextNum=GetTextureNumber(GetLastResourceFilename());		// which texture number does this page use
-
-	TextureLoaded=FindTextureNumber(TextNum,&TPageEntry);
-
-	// If the texture is already loaded into vram ... then replace it at its current position
-	if (TextureLoaded==TRUE)
-	{
-		TexPage=&_TEX_PAGE[TPageEntry];
-		iV_ReLoadTexturePage_PSX(pBuffer,&TexPage->tex.VRAMpos,NULL);	// loads into a pre-defined location
-
-	}
-	else
-	{
-		iV_LoadTexturePage_PSX(pBuffer,&VramArea,&Mode,NULL);	// allocates and loads
-		GenerateTEXPAGE(GetLastResourceFilename(),&VramArea,Mode,0);	// in IVIS tex.c
-
-//		GenerateTEXPAGE(GetLastResourceFilename(),Tpage,0);	// in IVIS tex.c
-		// we need to update the texpage entry
-	}
-
-
-
-	DumpVRAM();
-
-	*ppData = NULL;	// No data needed to return
-	return(TRUE);
-
-}
-
-
-
-#else
 /* Load a texturepage into memory */
 // PC ONLY VERSION
 
@@ -1597,7 +1532,6 @@ BOOL bufferTexPageLoadHardOnly(UBYTE *pBuffer, UDWORD size, void **ppData)
 	return TRUE;
 }
 
-#endif
 
 /* Release an iSprite */
 void dataISpriteRelease(void *pData)
@@ -1770,145 +1704,6 @@ void dataStrResRelease(void *pData)
 }
 
 
-#ifdef PSX
-
-/* Load an anim file - uses sscanf's rather than parsing */
-BOOL dataAnimLoad2( UBYTE *pBuffer, UDWORD size, void **ppData )
-{
-	BASEANIM	*psAnim;
-
-	size;
-
-	if ( (psAnim = anim_LoadFromBuffer2( pBuffer, size )) == NULL ) 
-	{
-		return FALSE;
-	}
-
-	/* copy anim for return */
-	DBPRINTF(("dataAnimLoad2 - %p\n",psAnim));
-	*ppData = psAnim;
-
-
-
-	return TRUE;
-}
-
-
-
-/* Load an audio config file */
-BOOL dataAnimCfg2Load( UBYTE *pBuffer, UDWORD size, void **ppData )
-{
-	*ppData = NULL;
-
-	if ( anim_LoadCfg2( pBuffer, size ) == FALSE )
-	{
-		return FALSE;
-	}
-
-
-
-	return TRUE;
-}
-
-
-/* Load a binary string resource file (*.txr)  */
-// Use StrParse tool to create these files
-BOOL dataTxrResEngLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	SBYTE TextResourceID;	
-	if (GetCurrentLanguage()==LANGUAGE_ENGLISH)
-	{
-		DBPRINTF(("English text\n"));
-		TextResourceID= txrAdd( pBuffer, size);
-		*ppData = TextResourceID;
-	}
-	else
-	{
-		*ppData=NULL;
-	}
-	return TRUE;
-}
-void dataTxrResRelease(void *pData)
-{
-	txrRemove(pData);
-}
-
-
-/* Load a binary string resource file (*.txr)  */
-// Use StrParse tool to create these files
-BOOL dataTxrResFreLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	SBYTE TextResourceID;	
-	if (GetCurrentLanguage()==LANGUAGE_FRENCH)
-	{
-		TextResourceID= txrAdd( pBuffer, size);
-		*ppData = TextResourceID;
-	}
-	else
-	{
-		*ppData=NULL;
-	}
-	return TRUE;
-}
-
-
-/* Load a binary string resource file (*.txr)  */
-// Use StrParse tool to create these files
-BOOL dataTxrResSpaLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	SBYTE TextResourceID;	
-	if (GetCurrentLanguage()==LANGUAGE_SPANISH)
-	{
-		DBPRINTF(("Spanish text\n"));			
-			TextResourceID= txrAdd( pBuffer, size);
-		*ppData = TextResourceID;
-	}
-	else
-	{
-		*ppData=NULL;
-	}
-	return TRUE;
-}
-
-
-/* Load a binary string resource file (*.txr)  */
-// Use StrParse tool to create these files
-BOOL dataTxrResGerLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	SBYTE TextResourceID;
-	if (GetCurrentLanguage()==LANGUAGE_GERMAN)
-	{
-		TextResourceID= txrAdd( pBuffer, size);
-		*ppData = TextResourceID;
-	}
-	else
-	{
-		*ppData=NULL;
-	}
-	return TRUE;
-
-}
-
-
-/* Load a binary string resource file (*.txr)  */
-// Use StrParse tool to create these files
-BOOL dataTxrResItaLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
-{
-	SBYTE TextResourceID;
-	if (GetCurrentLanguage()==LANGUAGE_ITALIAN)
-	{
-		TextResourceID= txrAdd( pBuffer, size);
-		*ppData = TextResourceID;
-	}
-	else
-	{
-		*ppData=NULL;
-	}
-	return TRUE;
-}
-
-
-#endif
 
 
 /* Load a script file */
@@ -2167,39 +1962,12 @@ static RES_TYPE_MIN ResourceTypes[]=
 	{"SCRIPTVAL", dataScriptLoadVals, NULL},
 	{"STR_RES", dataStrResLoad, dataStrResRelease},
 	{"IMGPAGE",dataIMGPAGELoad, dataIMGPAGERelease},
-#ifdef PSX
-	{"IMGCLUT",dataIMGCLUTLoad, dataIMGCLUTRelease},
-	{"IMGCLUTHB",dataIMGCLUTHBLoad, dataIMGCLUTHBRelease},
-	{"PSXPAL",dataPSXPALLoad, NULL},
-	{"PSXTIL",dataPSXTILLoad, RemoveTerrainGraphics},
-	{"PSXDUMMY",dataPSXDUMMYLoad, NULL},
-	{"PSXVAG",dataPSXVAGLoad, NULL},
-//	{"TXR_RES", dataTxrResLoad, dataTxrResRelease},		 // now language dependent
-
-	{"TXR_RES_ENG", dataTxrResEngLoad, dataTxrResRelease},
-	{"TXR_RES_FRE", dataTxrResFreLoad, dataTxrResRelease},
-	{"TXR_RES_SPA", dataTxrResSpaLoad, dataTxrResRelease},
-	{"TXR_RES_GER", dataTxrResGerLoad, dataTxrResRelease},
-	{"TXR_RES_ITA", dataTxrResItaLoad, dataTxrResRelease},
-
-
-
-
-	{"AN2", dataAnimLoad2, dataAnimRelease},
-	{"ANIMCFG2", dataAnimCfg2Load, NULL},
-	{"XATRACKS",dataXATracksLoad,dataXATracksRelease},
-
-	{"XATRACKS_GER",dataXATracksLoad_ger,dataXATracksRelease},
-	{"XATRACKS_FRE",dataXATracksLoad_fre,dataXATracksRelease},
-
-#else
 	{"TERTILES",dataTERTILESLoad, dataTERTILESRelease},	// freed by 3d shutdow},// Tertiles Files. This version used when running with software renderer.
 	{"HWTERTILES",dataHWTERTILESLoad, dataHWTERTILESRelease},	// freed by 3d shutdow},// Tertiles Files. This version used when running with hardware renderer.
 	{"AUDIOCFG", dataAudioCfgLoad, NULL},
 	{"WAV", dataAudioLoad, dataAudioRelease},
 	{"ANI", dataAnimLoad, dataAnimRelease},
 	{"ANIMCFG", dataAnimCfgLoad, NULL},
-#endif
 	{"IMG",dataIMGLoad, dataIMGRelease},
 	{"TEXPAGE", bufferTexPageLoad, dataTexPageRelease},
 	{"IMD", dataIMDBufferLoad, (RES_FREE)iV_IMDRelease},

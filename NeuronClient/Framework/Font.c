@@ -10,9 +10,6 @@
 #include "Frame.h"
 #include "FrameInt.h"
 
-#ifdef PSX
-#include "utils.h"	// prototypes for GetWord()
-#endif
 
 #ifdef WIN32
 

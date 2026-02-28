@@ -346,9 +346,6 @@ audio_QueueSample( SDWORD iTrack )
 	}
 
 	printf("audio_queuetrack called1\n");
-#ifdef PSX
-	KeyOnSFX(iTrack,0);	// play sfx to try it out
-#else
 	HEAP_ALLOC( g_psSampleHeap, &psSample );
 
 	if ( psSample != NULL )
@@ -363,7 +360,6 @@ audio_QueueSample( SDWORD iTrack )
 		/* add to queue */
 		audio_AddSampleToTail( &g_psSampleQueue, psSample );
 	}
-#endif
 
 	return psSample;
 }
@@ -1014,9 +1010,6 @@ void audio_PlayTrack( int iTrack )
 		return;
 	}
 
-#ifdef PSX
-	KeyOnSFX(iTrack,0);	// play sfx to try it out
-#else
 
 	HEAP_ALLOC( g_psSampleHeap, &psSample );
 	if ( psSample != NULL )
@@ -1037,7 +1030,6 @@ void audio_PlayTrack( int iTrack )
 			HEAP_FREE( g_psSampleHeap, psSample );
 		}
 	}
-#endif
 }
 
 /***************************************************************************/

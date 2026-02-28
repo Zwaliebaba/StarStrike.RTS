@@ -41,9 +41,6 @@
 #include "FPath.h"
 #include "Script.h"
 #include "ScriptTabs.h"
-#ifdef PSX
-#include "dcache.h"
-#endif
 
 
 /* attack run distance */

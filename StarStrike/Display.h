@@ -13,21 +13,10 @@
 #include "Base.h"
 #include "Structure.h"
 
-#ifdef PSX
-void tboxInitialise(void);
-void tboxGrow(void);
-BOOL tboxValid(void);
-void tboxSelect(void);
-void tboxDraw(void);
-#endif
 
 /* Initialise the display system */
 extern BOOL dispInitialise(void);
 
-#ifdef PSX
-/* Shutdown the display system */
-extern BOOL dispShutdown(void);
-#endif
 
 extern void shakeStart(void);
 

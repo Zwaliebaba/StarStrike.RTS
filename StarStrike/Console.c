@@ -9,10 +9,6 @@
 #include "ScriptExtern.h"
 #include "AudioId.h"
 #include "Audio.h"
-#ifdef PSX
-#include "Primatives.h"
-#include "DCache.h"
-#endif
 
 /* Alex McLean, Pumpkin Studios, EIDOS Interactive */
 
@@ -293,17 +289,6 @@ CONSOLE_MESSAGE	*psMessage;
 
 BOOL addConsoleMessage(STRING *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
 {
-#ifdef PSX
-	// If the stacks in the dcache then..
-	if(SpInDCache()) {
-		static BOOL ret;
-		// Set the stack pointer to point to the alternative stack which is'nt limited to 1k.
-		SetSpAlt();
-		ret = _addConsoleMessage(messageText,jusType);
-		SetSpAltNormal();
-		return ret;
-	}
-#endif
 	return _addConsoleMessage(messageText,jusType);
 }
 
@@ -747,9 +732,6 @@ void	setDefaultConsoleJust(CONSOLE_TEXT_JUSTIFICATION defJ)
 /* Allows positioning of the console on screen */
 void	setConsoleSizePos(UDWORD x, UDWORD y, UDWORD width)
 {
-#ifdef PSX
-	y += 32;
-#endif
 
 	mainConsole.topX = x;
 	mainConsole.topY = y;

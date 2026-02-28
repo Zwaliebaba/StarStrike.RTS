@@ -40,11 +40,6 @@
 #endif
 
 
-#ifdef PSX
-#include "Component.h"
-#include "primatives.h"
-#include "DrawIMD_psx.h"
-#endif
 
 #ifdef WIN32		// whole file is going on PSX !!!!!!!
 
@@ -129,9 +124,6 @@ iSurface*	setUpMapSurface(UDWORD width, UDWORD height)
 void		*bufSpace;
 iSurface	*pMapSurface;
 
-#ifdef PSX
-	return NULL;
-#endif
 	/*	Release the old buffer if necessary - we may use many different intel maps
 		before resetting the game back to init/close */
 	//releaseIntelMap();
@@ -447,9 +439,6 @@ void	drawMapTile(SDWORD i, SDWORD j)
 /*fills the map buffer with a bitmap*/
 void	fillMapBufferWithBitmap(iSurface *surface)
 {
-#ifdef PSX
-	DBPRINTF(("fillMapBufferWithBitmap not defined on psx\n");
-#else
 	UBYTE		*toFill;
 	UDWORD		x, y, extraWidth, surfaceWidth, surfaceHeight, 
 				bitmapWidth, bitmapHeight, xSource, ySource,
@@ -487,7 +476,6 @@ void	fillMapBufferWithBitmap(iSurface *surface)
 		}
 		toFill += extraWidth;
 	}
-#endif
 }
 
 //clear text message background with gray fill
@@ -517,9 +505,6 @@ void	fillMapBufferWithBitmap(iSurface *surface)
 /* This draws the tile regardless of whether the tile should be VISIBLE */
 void	drawMapTile2(SDWORD i, SDWORD j)
 {
-#ifdef PSX
-	DBPRINTF(("drawmaptile2 not defined on psx\n");
-#else
 UDWORD	renderFlag;
 UDWORD	realX, realY;
 UDWORD	tileNumber;
@@ -640,7 +625,6 @@ iPoint	offset;
 
 		}
 		pie_DrawTriangle(p, &texturePage, renderFlag, &offset);	
-#endif
 }
 
 

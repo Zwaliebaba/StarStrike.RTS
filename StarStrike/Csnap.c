@@ -16,9 +16,6 @@
 #include "PieClip.h"
 #endif
 
-#ifdef PSX
-#include "CtrlPSX.h"
-#endif
 
 #include "Csnap.h"
 #include "AudioId.h"
@@ -257,9 +254,6 @@ BOOL widgGetScreenExtents(UDWORD ID,int *sx,int *sy,int *sw,int *sh)
 //
 void SetCurrentSnapFormID(CURSORSNAP *SnapBuffer,UDWORD FormID)
 {
-#ifdef PSX
-	if(GetControllerType(0) != CON_MOUSE)
-#endif
 	{
 		int x,y,w,h;
 		SnapBuffer->NewCurrentFormID = FormID;
@@ -279,9 +273,6 @@ void SetCurrentSnapFormID(CURSORSNAP *SnapBuffer,UDWORD FormID)
 //
 void SetCurrentSnapID(CURSORSNAP *SnapBuffer,UDWORD ID)
 {
-#ifdef PSX
-	if(GetControllerType(0) != CON_MOUSE)
-#endif
 	{
 		int x,y,w,h;
 

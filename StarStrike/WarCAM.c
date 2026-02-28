@@ -34,11 +34,6 @@
 #ifndef PAUL
 #include "Selection.h"
 #endif
-#ifdef PSX
-#include "drawIMD_psx.h"
-#include "VPad.h"
-#include "ctrlpsx.h"
-#endif
 
 #ifdef WIN32
 #define MODFRACT(value,mod) \
@@ -343,11 +338,7 @@ BASE_OBJECT	*camFindDroidTarget(void)
 
 	for(psDroid = apsDroidLists[selectedPlayer]; psDroid; psDroid = psDroid->psNext)
 	{
-#ifdef PSX
-		if( (psDroid->selected) || (bTrackingTransporter && (psDroid->droidType == DROID_TRANSPORTER) ) )
-#else
 		if(psDroid->selected)
-#endif
 		{
 			/* Return the first one found */
 			return( (BASE_OBJECT*)psDroid);
@@ -426,9 +417,6 @@ void	camAllignWithTarget(BASE_OBJECT *psTarget)
 	/* Store away when we started */
 	trackingCamera.lastUpdate = gameTime2;
 
-#ifdef PSX
-	trackingCamera.status = CAM_TRACKING;
-#endif
 	OldViewValid = TRUE;
 }
 
@@ -2179,14 +2167,6 @@ void camSetOldView(int x,int y,int z,int rx,int ry,int dist)
 void	camSwitchOff( void )
 {
  	/* Restore the angles */
-#ifdef PSX
-	if(OldViewValid) {
-		player.r.x = trackingCamera.oldView.r.x;
-		player.r.y = trackingCamera.oldView.r.y;
-		player.r.z = trackingCamera.oldView.r.z;
-		setViewDistance(trackingCamera.oldDistance);
-	}
-#else
 //	player.r.x = trackingCamera.oldView.r.x;
 	player.r.z = trackingCamera.oldView.r.z;
 
@@ -2196,7 +2176,6 @@ void	camSwitchOff( void )
 
 	/* Restore distance */
 	setViewDistance(trackingCamera.oldDistance);
-#endif
 }
 
 //-----------------------------------------------------------------------------------
@@ -2221,13 +2200,6 @@ BOOL	getWarCamStatus( void )
 /* Flips the status of tracking to the opposite of what it presently is */
 void	camToggleStatus( void )
 {
-#ifdef PSX
-	if(trackingCamera.status != CAM_INACTIVE) {
-		if(bTrackingTransporter) {
-			return;
-		}
-	}
-#endif
 
  	/* If it's off */
 	if(trackingCamera.status == CAM_INACTIVE)

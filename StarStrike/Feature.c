@@ -35,9 +35,6 @@
 #include "Display3D.h"
 #include "Gateway.h"
 
-#ifdef PSX
-extern  BOOL EnableVibration;
-#endif
 
 /* The statistics for the features */
 FEATURE_STATS	*asFeatureStats;
@@ -1159,11 +1156,6 @@ void destroyFeature(FEATURE *psDel)
 		{
 			audio_PlayStaticTrack( psDel->x, psDel->y, ID_SOUND_EXPLOSION );
 		}
-#if defined(PSX) && defined(LIBPAD)
-		if(EnableVibration) {
-			SetVibro1(0,120,512);
-		}
-#endif
 	}
 //---------------------------------------------------------------------------------------
 

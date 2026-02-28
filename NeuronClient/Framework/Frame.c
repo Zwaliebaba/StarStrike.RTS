@@ -31,9 +31,6 @@
 
 #include "Fractions.h"
 
-#ifdef	 PSX
-#include  "CtrlPSX.h"
-#endif
 
 
 #include <assert.h>
@@ -1077,9 +1074,6 @@ BOOL loadFile2(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL Al
 	// directly from CD, i.e. from the WDG's normal fopen/fread calls will never work!
 #ifdef DEBUG
 	DBPRINTF(("FOPEN ! %s\n",pFileName));
- #ifdef PSX_USECD
-	assert(2+2==5);		// no fopens when using CD code !!!
- #endif
 
 #endif
 

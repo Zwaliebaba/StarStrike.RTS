@@ -44,29 +44,6 @@
 #include "E3Demo.h"
 #include "Transporter.h"
 #include "Projectile.h"
-#ifdef PSX
-#include "drawimd_psx.h"
-#include "primatives.h"
-#include <inline_c.h>
-#include <gtemac.h>
-
-extern void psxPushMatrix(void);
-extern void psxPopMatrix(void);
-extern void psxSaveMatrix(void);
-extern void psxRestoreMatrix(void);
-extern void psxiV_MatrixBegin(void);
-extern void psxiV_ITRANSLATE(SDWORD x, SDWORD y, SDWORD z);
-extern void psxiV_MatrixRotateZ(SWORD IVISangle );
-extern void psxiV_MatrixRotateX(SWORD angle );
-extern void psxiV_MatrixRotateY(SWORD angle );
-extern void psxiV_RotateZMatrix(SWORD angle );
-extern void psxiV_RotateXMatrix(SWORD angle );
-extern void psxiV_RotateYMatrix(SWORD angle );
-extern void psxiV_TRANSLATE(SDWORD x, SDWORD y, SDWORD z);
-
-UWORD SelectedThisFrame;
-
-#endif
 
 void unsetMatrix(void);
 void setMatrix(iVector *Position,iVector *Rotation,iVector *CameraPos,BOOL RotXYZ);
@@ -80,17 +57,6 @@ void setMatrix(iVector *Position,iVector *Rotation,iVector *CameraPos,BOOL RotXY
 
 #define	DROID_EMP_SPREAD	(20 - rand()%40)
 
-#ifdef PSX
-#define NO_VTOL_TURRETS 	// don't draw turret if it's not a VTOL because they look crap.
-
-static PIE PieParams;
-static SDWORD ShadowSizeX=0;
-static SDWORD ShadowSizeZ=0;
-static BOOL bDrawShadow=TRUE;
-static BOOL bInButton;
-static BOOL ComponentTransparent;
-static UWORD ComponentTransMode;
-#endif
 
 UDWORD	droidScale = 100;
 void displayComponentTemplate(DROID_TEMPLATE *psTemplate);
@@ -429,13 +395,6 @@ void displayIMDButton(iIMDShape *IMDShape,
 
 	setMatrix(Position,Rotation,&TmpCamPos,RotXYZ);
 	scaleMatrix(scale);
-#ifdef PSX
-	
-	psxUseMatrix();
-
-
-
-#endif
 
 #ifdef WIN32
 	pie_SetFogStatus(FALSE);
@@ -476,9 +435,6 @@ void displayStructureButton(STRUCTURE *psStructure,
 #endif
 	setMatrix(Position,Rotation,&TmpCamPos,RotXYZ);
 	scaleMatrix(scale);
-#ifdef PSX
-	psxUseMatrix();
-#endif
 
 
 	/* Draw the building's base first */
@@ -703,9 +659,6 @@ void displayComponentButton(BASE_STATS *Stat, iVector *Rotation,iVector *Positio
 
 	setMatrix(Position,Rotation,&TmpCamPos,RotXYZ);
 	scaleMatrix(scale);
-#ifdef PSX
-	psxUseMatrix();
-#endif
 
 	compID = StatIsComponent(Stat);
 	if (compID > 0)	{
@@ -779,15 +732,6 @@ void displayResearchButton(BASE_STATS *Stat,
 	{
 		setMatrix(Position,Rotation,&TmpCamPos,RotXYZ);
 		scaleMatrix(scale);
-#ifdef PSX
-		psxUseMatrix();
-
-		PieParams.Flags = 0;
-		if(ComponentTransparent) {
-			PieParams.Flags |= PIE_TRANSPARENT;
-			PieParams.TransMode = ComponentTransMode;
-		}
-#endif
 
 		if(MountIMD) {
 #ifdef WIN32
@@ -825,9 +769,6 @@ void displayComponentButtonTemplate(DROID_TEMPLATE *psTemplate,
 
 	setMatrix(Position,Rotation,&TmpCamPos,RotXYZ);
 	scaleMatrix(scale);
-#ifdef PSX
-	psxUseMatrix();
-#endif
 
 // Decide how to sort it.
 
@@ -865,9 +806,6 @@ void displayComponentButtonObject(DROID *psDroid,
 	
 	setMatrix(Position,Rotation,&TmpCamPos,RotXYZ);
 	scaleMatrix(scale);
-#ifdef PSX
-	psxUseMatrix();
-#endif
 
 // Decide how to sort it.
 	difference = Rotation->y%360;

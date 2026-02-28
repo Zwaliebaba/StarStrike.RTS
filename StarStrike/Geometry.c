@@ -20,10 +20,6 @@
 #include "HCI.h"
 #include "Display.h"
 
-#ifdef PSX
-#include <inline_c.h>
-#include <gtemac.h>
-#endif
 
 
 void testAngles(void);
@@ -157,10 +153,6 @@ SDWORD	calcDirection(UDWORD x0, UDWORD y0, UDWORD x1, UDWORD y1)
 
 #endif
 
-#ifdef PSX
-#define max(a,b) (((a)>(b))?(a):(b))
-#define min(a,b) (((a)<(b))?(a):(b))
-#endif
 // -------------------------------------------------------------------------------------------
 /*	A useful function and one that should have been written long ago, assuming of course
 	that is hasn't been!!!! Alex M, 24th Sept, 1998. Returns the nearest unit
@@ -639,12 +631,6 @@ SDWORD	dX,dY;
 	return(FALSE);
 }
 
-#ifdef PSX
-void	processImpact(UDWORD worldX, UDWORD worldY, UBYTE severity, UDWORD tilesAcross)
-{
-	DBPRINTF(("processImpact not on PSX!\n"));
-}
-#else
 void	processImpact(UDWORD worldX, UDWORD worldY, UBYTE severity, UDWORD tilesAcross)
 {
 //MAPTILE	*psTile;
@@ -705,4 +691,3 @@ UDWORD	maxDistance;
 		}
 	}
 }
-#endif

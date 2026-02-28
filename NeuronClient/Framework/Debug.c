@@ -8,9 +8,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#ifdef PSX
-#include <libsn.h>
-#endif
 
 
 #pragma warning (disable : 4201 4214 4115 4514)
@@ -22,9 +19,6 @@
 #include "Frame.h"
 #include "FrameInt.h"
 
-#ifdef PSX
-char DBGstring[256];
-#endif
 
 
 

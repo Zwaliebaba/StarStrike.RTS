@@ -50,27 +50,6 @@
 #include "Multilimit.h"
 #endif
 
-#ifdef PSX
-#include "Map.h"
-#include "display3d_psx.h"
-#include "libsn.h"
-#include "Vid.h"
-#include "Primatives.h"
-#include "VPad.h"
-#include "CtrlPSX.h"
-#include "InitPSX.h"
-
-/* callback type for res pre-load callback*/
-typedef void (*SPECIALVBLCALLBACK)(void);
-
-void SetSpecialVblCallback( SPECIALVBLCALLBACK routine);
-
-
-extern BOOL fastExit;
-extern BOOL IsMouseDrawEnabled(void);
-
-
-#endif
 
 #ifdef WIN32   
 
@@ -171,13 +150,6 @@ BOOL playIntroOnInstall( VOID )
 TITLECODE titleLoop(void)
 {
 	TITLECODE RetCode = TITLECODE_CONTINUE;
-#ifdef PSX
-	StartScene();	// Setup all the primative handling for this frame
-#ifdef DEBUG
-	pollhost();
-#endif
-	iV_SetScaleFlags_PSX(IV_SCALE_POSITION | IV_SCALE_SIZE);
-#endif
 
 
 #ifdef WIN32
@@ -348,14 +320,9 @@ TITLECODE titleLoop(void)
 			break;
 
 		case SHOWINTRO:
-#ifdef PSX		// ffs js
-			screenFlip(TRUE);//flip to clear screen but not here//reshow intro video.
-	  		screenFlip(TRUE);//flip to clear screen but not here
-#else
 			pie_SetFogStatus(FALSE);
 			pie_ScreenFlip(CLEAR_BLACK);//flip to clear screen but not here//reshow intro video.
 	  		pie_ScreenFlip(CLEAR_BLACK);//flip to clear screen but not here
-#endif
 			changeTitleMode(TITLE);
 			RetCode = TITLECODE_SHOWINTRO;
 			break;
@@ -806,16 +773,6 @@ BOOL displayGameOver(BOOL bDidit)
 	else
 #endif
 	{
-#ifdef PSX
-		if(bDidit)
-		{
-			setPlayerHasWon(TRUE);	// quit to frontend..
-		}
-		else
-		{
-			setPlayerHasLost(TRUE);
-		}
-#endif
         //clear out any mission widgets - timers etc that may be on the screen
         clearMissionWidgets();
 		intAddMissionResult(bDidit, TRUE);

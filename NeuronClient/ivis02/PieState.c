@@ -707,9 +707,6 @@ void pie_DrawMouse(SDWORD x,SDWORD y)
 #ifndef PIEPSX
 	iV_DrawMousePointer(x, y);
 #endif
-#ifdef PSX
-	iV_DrawMousePointer(x, y);
-#endif
 }
 
 /***************************************************************************/
@@ -718,9 +715,6 @@ void pie_SetMouse(IMAGEFILE *psImageFile,UWORD ImageID)
 {
 #ifndef PIEPSX
 	iV_SetMousePointer(psImageFile,ImageID);
-#endif
-#ifdef PSX
-	iV_SetMousePointer(psImageFile,ImageID);		// Let's not forget the Playstation eh.
 #endif
 	presentMouseID = ImageID;
 }

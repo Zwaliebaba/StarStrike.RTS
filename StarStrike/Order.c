@@ -84,13 +84,6 @@ void orderDroidStatsTwoLocAdd(DROID *psDroid, DROID_ORDER order,
 
 //////////////////////////////////////////////////////////////////
 // added by ajl. tidied up code by adding this dummy psx func. 
-#ifdef PSX
-BOOL turnOffMultiMsg(BOOL bDummy)
-{
-	bDummy;
-	return TRUE;
-}
-#endif
 //////////////////////////////////////////////////////////////////
 
 //call this *AFTER* every mission so it gets reset

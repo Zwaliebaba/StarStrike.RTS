@@ -164,29 +164,11 @@ uint8* iV_VideoMemoryAlloc(int mode)
 //*
 //*
 //******
-#ifdef PSX
-void _iv_vid_setup(void)
-{
-    int i;
-#ifdef WIN32
-pie_SetRenderEngine(ENGINE_UNDEFINED);
-#endif
-rendSurface.usr = REND_UNDEFINED;
-rendSurface.flags = REND_SURFACE_UNDEFINED;
-#ifndef PIEPSX		// was #ifdef WIN32
-rendSurface.buffer = NULL;
-#endif
-rendSurface.size = 0;
-}
-#endif
 
 iSurface* iV_SurfaceCreate(uint32 flags, int width, int height, int xp, int yp, uint8* buffer)
 {
     iSurface* s;
     int i;
-#ifdef PSX
-    AREA* SurfaceVram;
-#endif
 
 #ifndef PIEPSX		// was #ifdef WIN32
     assert(buffer!=NULL); // on playstation this MUST be null
@@ -197,17 +179,6 @@ iSurface* iV_SurfaceCreate(uint32 flags, int width, int height, int xp, int yp, 
     if ((s = (iSurface*)iV_HeapAlloc(sizeof(iSurface))) == NULL)
         return NULL;
 
-#ifdef PSX
-    SurfaceVram = AllocTexture(width, height, 2, 0); // allocate some 32k colour texture ram
-    if (SurfaceVram == NULL) return NULL;
-
-    s->VRAMLocation.x = SurfaceVram->area_x0;
-    s->VRAMLocation.y = SurfaceVram->area_y0;
-    s->VRAMLocation.w = width;
-    s->VRAMLocation.h = height;
-
-    ClearImage(&s->VRAMLocation, 0, 0, 0); // clear the area to black.
-#endif
     s->flags = flags;
     s->xcentre = width >> 1;
     s->ycentre = height >> 1;
@@ -268,30 +239,6 @@ void rend_AssignScreen(void)
 }
 
 
-#ifdef PSX
-iBool iV_VideoOpen(int mode)
-{
-    iBool r;
-
-    switch (mode)
-    {
-    case REND_PSX:
-        r = _mode_psx();
-        break;
-    default:
-        r = FALSE;
-    }
-
-
-    if (r)
-    {
-        iV_RenderAssign(mode, &rendSurface);
-        pal_Init();
-    }
-
-    return r;
-}
-#endif
 
 
 int iV_GetDisplayWidth(void)
@@ -390,15 +337,6 @@ void iV_RenderAssign(int mode, iSurface* s)
     /* Need to look into this - won't the unwanted called still set render surface? */
     psRendSurface = s;
 
-#ifdef PSX
-    // If psx version then always force mode to iV_MODE_PSX.
-    mode = REND_PSX;
-
-    rendSurface.width = 640;
-    rendSurface.height = 480;
-    pie_Set2DClip(0, 0, rendSurface.width, rendSurface.height);
-
-#endif
 
     g_mode = mode;
 

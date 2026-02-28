@@ -74,9 +74,6 @@ static UDWORD	*pStartBuffer, *pEndBuffer;
 
 void keyScanToString(KEY_CODE code, STRING *ascii, UDWORD maxStringSize)
 {
-#ifdef PSX
-	DBPRINTF(("keyscantostring ... not installed\n"));
-#else
 	if(code == KEY_MAXSCAN)
 	{
 		strcpy(ascii,"???");
@@ -84,7 +81,6 @@ void keyScanToString(KEY_CODE code, STRING *ascii, UDWORD maxStringSize)
 	}
 	ASSERT(((code >= 0) && (code <= KEY_MAXSCAN), "Invalid key code: %d", code));
 	GetKeyNameText((UDWORD)((UWORD)code<<16),ascii,maxStringSize);
-#endif
 }
 
 
@@ -234,9 +230,6 @@ void inputProcessMessages(UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		if (repeat > 0)
 		{
-#ifdef PSX
-			DBPRINTF(("WM_KEYDOWN %x %x\n",vk,repeat));
-#endif
 
 #ifdef WIN32
 			DBP1(("Code: %x\n", vk));
@@ -250,9 +243,6 @@ void inputProcessMessages(UINT message, WPARAM wParam, LPARAM lParam)
 		/*************************************************************/
 	case WM_SYSKEYDOWN:
 
-#ifdef PSX
-		DBPRINTF(("WM_KEYDOWN %d\n",code));
-#endif
 
 		if ((aKeyState[code] == KEY_UP) ||
 			(aKeyState[code] == KEY_RELEASED) ||
@@ -289,9 +279,6 @@ void inputProcessMessages(UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 
-#ifdef PSX
-		DBPRINTF(("WM_KEYUP %d\n",code));
-#endif
 
 		if (aKeyState[code] == KEY_PRESSED)
 		{
@@ -448,9 +435,6 @@ void inputProcessMessages(UINT message, WPARAM wParam, LPARAM lParam)
 		   while there is space in the buffer */
 #ifdef WIN32
 		inputAddBuffer(wParam, repeat);
-#endif
-#ifdef PSX
-		DBPRINTF(("WM_CHAR  %d %d\n",wParam,repeat));
 #endif
 		break;
 	default:

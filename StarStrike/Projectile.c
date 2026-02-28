@@ -1808,9 +1808,6 @@ SDWORD proj_GetLongRange(WEAPON_STATS *psStats, SDWORD dz)
 	return (SDWORD)psStats->longRange;
 }
 
-#ifdef PSX
-#define max(a,b) ((a)>(b)) ? (a) :(b)
-#endif
 
 /***************************************************************************/
 UDWORD	establishTargetRadius( BASE_OBJECT *psTarget )

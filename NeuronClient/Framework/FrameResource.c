@@ -129,22 +129,6 @@ BOOL resInitialise(void)
 	AddBinaryResourceType("SCRIPT");
 #endif
 
-#ifdef PSX
-	// we must now initialise the cache before checking the wdg
-	//
-	// This is because the cache setup code initialises the additional buffer for the wdg/wrf catalogs
-	// which are loaded in WDG_SetCurrentWDG
-
-		// if you allocate the cache to a size of zero then it will use the default area for the cache
-		// on the PC this will be the display buffer	(NOT YET IMPLEMENTED)
-		// on the PSX this will be the primative buffer
-
-	FILE_InitialiseCache(0);		// 
-	WDG_SetCurrentWDG("warzone.wdg");
-
-
-
-#else	// the pc can handle it the old way
 		FILE_InitialiseCache(2*1024*1024);		// set the cache to be 2meg for the time being ...!
 //		WDG_SetCurrentWDG("warzone.wdg");
 		if (!wdgMultiInit())
@@ -165,7 +149,6 @@ BOOL resInitialise(void)
 		FILE_InitialiseCache(2*1024*1024);		// set the cache to be 2meg for the time being ...!
 	}
 */
-#endif
 
 
 
@@ -826,9 +809,6 @@ void *resGetDataFromHash(STRING *pType, UDWORD HashedID)
 	}
 	if (psT == NULL)
 	{
-#ifdef PSX
-		DBPRINTF(("resGetData: Unknown type: %s\n", pType));
-#endif
 		ASSERT((FALSE, "resGetData: Unknown type: %s", pType));
 		return NULL;
 	}
@@ -849,9 +829,6 @@ void *resGetDataFromHash(STRING *pType, UDWORD HashedID)
 
 	if (psRes == NULL)
 	{
-#ifdef PSX
-		DBPRINTF(("resGetDataFromHash: Unknown ID:"));
-#endif
 		ASSERT((FALSE, "resGetDataFromHash: Unknown ID:"));
 		return NULL;
 	}
@@ -885,9 +862,6 @@ void *resGetData(STRING *pType, STRING *pID)
 	}
 	if (psT == NULL)
 	{
-#ifdef PSX
-		DBPRINTF(("resGetData: Unknown type: %s\n", pType));
-#endif
 		ASSERT((FALSE, "resGetData: Unknown type: %s", pType));
 		return NULL;
 	}
@@ -908,9 +882,6 @@ void *resGetData(STRING *pType, STRING *pID)
 
 	if (psRes == NULL)
 	{
-#ifdef PSX
-		DBPRINTF(("resGetData: Unknown ID: %s\n", pID));
-#endif
 		ASSERT((FALSE, "resGetData: Unknown ID: %s", pID));
 		return NULL;
 	}
@@ -989,9 +960,6 @@ BOOL resGetIDfromData(STRING *pType, void *pData, STRING **ppID)
 	}
 	if (psT == NULL)
 	{
-#ifdef PSX
-		DBPRINTF(("resGetData: Unknown type: %s\n", pType));
-#endif
 		ASSERT((FALSE, "resGetData: Unknown type: %s", pType));
 		return FALSE;
 	}
@@ -1009,9 +977,6 @@ BOOL resGetIDfromData(STRING *pType, void *pData, STRING **ppID)
 
 	if (psRes == NULL)
 	{
-#ifdef PSX
-		DBPRINTF(("resGetIDfromData: couldn't find data for type %s\n", pType));
-#endif
 		ASSERT((FALSE, "resGetIDfromData: couldn't find data for type %s\n", pType));
 		return FALSE;
 	}
@@ -1230,29 +1195,7 @@ void resReleaseAllData(void)
 BOOL LoadWRF(char *pResFile, UBYTE **pBuffer, UDWORD *size)
 {
 
-#ifdef PSX
-	UBYTE WRFname[256];
-
-/*
-
-	UBYTE *WRFAddress;
-
-	assert(GetPrimBufferAllocatedSize()==0);		// make sure that we arent using the prim buffer already
-
-	WRFAddress=AllocInPrimBuffers(MAXWRFSIZE);		// load the wrf into this address
-*/
-	strcpy(WRFname,"WRF\\");
-	strcat(WRFname,pResFile);
-/*
-	*pBuffer=WRFAddress;
-	*size=MAXWRFSIZE;
-
-	return (loadFile2(WRFname,pBuffer,size,FALSE));	  // we don't want loadfile to allocate any memory ... we are passing in the address to load the file
-*/
-	return (loadFile2(WRFname,pBuffer,size,TRUE));		// on the PC (and now the PSX) we just allocate the memory 
-#else
 	return (loadFile2(pResFile,pBuffer,size,TRUE));		// on the PC (and now the PSX) we just allocate the memory 
-#endif
 
 
 }

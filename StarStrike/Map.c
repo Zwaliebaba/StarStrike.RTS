@@ -30,11 +30,6 @@
 #include "Environ.h"
 #include "AdvVis.h"
 #endif
-#ifdef PSX
-#include "utils.h"	// getdword()
-#include "Levels.h"
-#include "Mission.h"
-#endif
 #include "Gateway.h"
 #include "Wrappers.h"
 
@@ -117,8 +112,6 @@ typedef struct _zonemap_save_header {
 //
 #ifdef WIN32
 typedef float AAFLOAT;
-#elif defined(PSX)
-typedef SDWORD AAFLOAT;
 #endif
 
 
@@ -142,24 +135,6 @@ typedef SDWORD AAFLOAT;
 
 /* Access the root table */
 #define AARTFUNC(x) (aAARootTbl[ (UDWORD)((x) * ROOT_TABLE_SIZE) ])
-
-#elif defined (PSX)
-/* Playstation fixed point version */
-#define AA_FRACBITS			12		// Number of fractional bits in the fixed point number
-#define AA_DIVACCBITS 		8		// pre-multiply for fixed point divide
-
-#define AA_ZERO				(0)
-#define AA_ONE				(1<<AA_FRACBITS)
-#define AA_NINES			((999<<AA_FRACBITS)/1000)
-
-#define AA_HALF     		((5<<AA_FRACBITS)/10)
-#define AA_PMAX				(1<<AA_FRACBITS)	// Maximum perpendicular distance from line center
-
-#define AADIV(a,b)  		( ((a<<AA_DIVACCBITS)/b) << (AA_FRACBITS-AA_DIVACCBITS)  )	// fixed point divide
-#define AAMUL(a,b)  		( (a*b) >> AA_FRACBITS )	// multiply two fixed point numbers
-
-/* Access the root table */
-#define AARTFUNC(x)			(aAARootTbl[ (x) >> aaRootShift])
 
 #endif
 
@@ -193,9 +168,6 @@ static UDWORD		maxLinePoints = 0;
 
 /* The sqrt(1/(1+x*x)) table for aaLine */
 AAFLOAT		*aAARootTbl;
-#ifdef PSX
-UDWORD		aaRootShift;			// Shift on input values to the root table
-#endif
 
 /* pixel increment values for aaLine                        */
 /*   -- assume PIXINC(dx,dy) is a macro such that:          */
@@ -285,9 +257,6 @@ BOOL mapNew(UDWORD width, UDWORD height)
 	}
 	*/
 
-#ifdef PSX
-	DBPRINTF(("mapNew: width=%d height=%d\n",width,height));
-#endif
 	psMapTiles = (MAPTILE *)MALLOC(sizeof(MAPTILE) * width*height);
 	if (psMapTiles == NULL)
 	{
@@ -713,31 +682,6 @@ BOOL mapLoad(UBYTE *pFileData, UDWORD fileSize)
 	/* Allocate the memory for the map */
 	if (mapAlloc)
 	{
-#ifdef PSX
-		DBPRINTF(("\nmapLoad: width=%d height=%d\n",width,height));
-		DBPRINTF(("psMapTiles == %p\n",psMapTiles));
-
-		// If it's an offworld mission and were not going back to the main campaign map
-		// ie SUB_1_D then don't allocate more memory for the mission map, just load it
-		// in over the existing one.
-		if(getLevelLoadFlags() & LDF_CAMEND) 
-		{
-			psMapTiles = mission.psMapTiles;
-			DBPRINTF(("Overwriting existing map @ %p\n",psMapTiles));
-			memset(psMapTiles, 0, sizeof(MAPTILE) * width*height);
-		} else {
-			DBPRINTF(("Allocating new map\n"));
-			psMapTiles = (MAPTILE *)MALLOC(sizeof(MAPTILE) * width*height);
-			if (psMapTiles == NULL)
-			{
-				DBERROR(("mapLoad: Out of memory"));
-				return FALSE;
-			}
-			memset(psMapTiles, 0, sizeof(MAPTILE) * width*height);
-		}
-
-		DBPRINTF(("psMapTiles == %p\n\n",psMapTiles));
-#else
 
 		psMapTiles = (MAPTILE *)MALLOC(sizeof(MAPTILE) * width*height);
 		if (psMapTiles == NULL)
@@ -746,7 +690,6 @@ BOOL mapLoad(UBYTE *pFileData, UDWORD fileSize)
 			return FALSE;
 		}
 		memset(psMapTiles, 0, sizeof(MAPTILE) * width*height);
-#endif
 	 
 
 		mapWidth = width;
@@ -1232,9 +1175,6 @@ void mapRootTblInit(void)
 
 	tablecells = (1 << tablebits) + 1;
 	
-#ifdef PSX
-	aaRootShift = AA_FRACBITS - tablebits;
-#endif
 
 	/* Allocate the table */
 	aAARootTbl = MALLOC( tablecells * sizeof(AAFLOAT) );

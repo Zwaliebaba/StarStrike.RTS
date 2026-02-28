@@ -24,9 +24,6 @@
 #include "Research.h"
 #include "Gateway.h"
 #include "Multiplay.h"
-#ifdef PSX
-#include "Text.h"
-#endif
 
 // Add a droid to a group
 BOOL scrGroupAddDroid(void)

@@ -22,12 +22,6 @@ extern UDWORD getStructureStatSize(STRUCTURE_STATS *Stats);
 extern UDWORD getStructureRadius(STRUCTURE *psStructure);
 extern UDWORD getStructureStatRadius(STRUCTURE_STATS *Stats,UDWORD Player);
 #endif
-#ifdef PSX
-extern void setComponentButtonOTIndex(UWORD OTIndex);
-#endif
-#ifdef PSX
-#define PSX_BUTTON_SCALE	 (100)
-#endif
 
 //#ifdef WIN32
 #define OBJECT_RADIUS				(128)

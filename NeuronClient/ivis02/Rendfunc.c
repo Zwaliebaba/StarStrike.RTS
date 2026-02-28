@@ -19,9 +19,6 @@
 #ifndef PIETOOL
 
 
-#ifdef PSX
-#define PIEPSX
-#endif
 
 
 #ifndef WIN32

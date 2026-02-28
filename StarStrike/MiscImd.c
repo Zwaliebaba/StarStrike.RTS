@@ -64,9 +64,6 @@ MISC_IMD	miscImds[] =
 #ifdef WIN32
 	{NULL,"fxflecht"},	// met hit - for repair centre MI_FIREWORK
 #endif
-#ifdef PSX
-	{NULL,"fxmodule"},	// 						MI_MODULE  
-#endif
 
 	{NULL,"END_OF_IMD_LIST"}
 };

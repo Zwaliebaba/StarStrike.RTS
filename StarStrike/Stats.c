@@ -18,9 +18,6 @@
 #define WEAPON_TIME		100
 
 
-#ifdef PSX
-int sscanf(char *,char*, ...);
-#endif
 
 /* The stores for the different stats */
 BODY_STATS			*asBodyStats;
@@ -3165,18 +3162,6 @@ UDWORD getSpeedFactor(UDWORD type, UDWORD propulsionType)
 	
 	pTerrainTable += (type * NUM_PROP_TYPES + propulsionType);
 
-#ifdef PSX
-	{
-		// Limit min speed factor on PSX.
-		UWORD Factor = pTerrainTable->speedFactor;
-
-		if(Factor < 100) {
-			Factor = 100;
-		}
-
-		return Factor;
-	}
-#endif
 
 	return pTerrainTable->speedFactor;
 }
@@ -3454,13 +3439,6 @@ void getStatsDetails(UDWORD compType, BASE_STATS **ppsStats, UDWORD *pnumStats, 
 
 
 
-#ifdef PSX
-SDWORD	getCompFromName(UDWORD compType, STRING *pName)
-{
-//	DBPRINTF(("getcompfromname [%s]\n",pName));
-	return(getCompFromHash(compType,HashString(pName)));
-}
-#else
 
 
 
@@ -3494,7 +3472,6 @@ SDWORD	getCompFromName(UDWORD compType, STRING *pName)
 }
 
 
-#endif
 
 
 #ifdef HASH_NAMES
