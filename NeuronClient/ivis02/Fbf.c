@@ -278,7 +278,7 @@ int32 iV_FileSize(char *filename)
 //* returns		TRUE if saved ok else FALSE
 //******
 
-iBool iV_FileSave(char *filename, uint8 *data, int32 size)
+BOOL iV_FileSave(char *filename, uint8 *data, int32 size)
 
 
 {
@@ -304,7 +304,7 @@ iBool iV_FileSave(char *filename, uint8 *data, int32 size)
 //* returns		TRUE if loaded ok else FALSE
 //******
 
-iBool iV_FileLoad(char *filename, uint8 *data)
+BOOL iV_FileLoad(char *filename, uint8 *data)
 
 {
 	FILE *fp;

@@ -41,7 +41,7 @@ typedef struct {
 
 static int 	_PCX_FI;
 static int8	*_PCX_MI;
-static iBool _PCX_MEM;
+static BOOL _PCX_MEM;
 
 
 
@@ -212,7 +212,7 @@ BOOL pie_PCXLoadToBuffer(char *file, iSprite *s, iColour* pal)
 	return TRUE;
 }
 
-iBool iV_PCXLoad(char *file, iSprite *s, iColour *pal)
+BOOL iV_PCXLoad(char *file, iSprite *s, iColour *pal)
 
 {
 	iPCX_header header;
@@ -278,7 +278,7 @@ iBool iV_PCXLoad(char *file, iSprite *s, iColour *pal)
 }
 
 
-iBool iV_PCXLoadMem(int8 *pcximge, iSprite *s, iColour *pal)
+BOOL iV_PCXLoadMem(int8 *pcximge, iSprite *s, iColour *pal)
 
 {
 	iPCX_header header;

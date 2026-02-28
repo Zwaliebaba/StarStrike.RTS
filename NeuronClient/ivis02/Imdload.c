@@ -48,8 +48,8 @@ static char		imagePath[MAX_FILE_PATH] = {""};
 
 static iIMDShape *_imd_load_level(UBYTE **FileData,UBYTE *FileDataEnd, int nlevels, int texpage);
 static char *_imd_get_path(char *filename, char *path);
-//iIMDShape *iV_ProcessIMD(UBYTE **FileData, UBYTE *FileDataEnd, UBYTE *IMDpath,iBool palkeep);
-iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,iBool palkeep);
+//iIMDShape *iV_ProcessIMD(UBYTE **FileData, UBYTE *FileDataEnd, UBYTE *IMDpath,BOOL palkeep);
+iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,BOOL palkeep);
 BOOL CheckColourKey( iIMDShape *psShape );
 
 
@@ -283,7 +283,7 @@ BOOL TESTDEBUG=FALSE;
 #define POST_LEVEL_TEXTURELOAD			// load the polygon level ... then load the texture     .... Gareths code
 
 
-iIMDShape *iV_IMDLoad(char *filename, iBool palkeep)
+iIMDShape *iV_IMDLoad(char *filename, BOOL palkeep)
 {
 	iIMDShape *pIMD;
 	UBYTE *pFileData,*pFileDataStart;
@@ -383,7 +383,7 @@ char *GetLastLoadedTexturePage(void)
 
 
 // ppFileData is incremented to the end of the file on exit!
-iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,iBool palkeep)
+iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,BOOL palkeep)
 {
 	char		buffer[MAX_FILE_PATH],  texType[MAX_FILE_PATH], ch; //, *str;
 	int			i, nlevels, ptype, pwidth, pheight, texpage;
@@ -637,7 +637,7 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 //*
 //******
 
-static iBool _imd_load_polys(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s)
+static BOOL _imd_load_polys(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s)
 {
 	int i, j; //, anim;
 	iVector p0, p1, p2, *points;
@@ -815,7 +815,7 @@ static iBool _imd_load_polys(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *
 
 #define GETBSPTRIANGLE(polyid) (&(s->polys[(polyid)]))
 
-static iBool _imd_load_bsp(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s, UWORD BSPNodeCount)
+static BOOL _imd_load_bsp(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s, UWORD BSPNodeCount)
 {
 	UWORD Node;
 	PSBSPTREENODE NodeList;	// An pointer to an array of  nodes
@@ -1063,7 +1063,7 @@ BOOL ReadPoints(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s)
 
 
 // I'll put in an alternative version for the PSX - this whole routine probably won't be needed anyway
-static iBool _imd_load_points(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s)
+static BOOL _imd_load_points(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s)
 
 {
 	int i ;
@@ -1287,7 +1287,7 @@ static iBool _imd_load_points(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape 
 }
 
 
-static iBool _imd_load_connectors(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s)
+static BOOL _imd_load_connectors(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s)
 {
 	int i;
 	iVector *p;
@@ -1598,12 +1598,12 @@ static int32 _imd_find_scale(int32 value, int32 limit)
 
 */
 
-iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,iBool palkeep)
+iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,BOOL palkeep)
 {
 	return(NULL);
 }	
 
-iIMDShape *iV_IMDLoad(char *filename, iBool palkeep)
+iIMDShape *iV_IMDLoad(char *filename, BOOL palkeep)
 {
 	return(NULL);
 }	

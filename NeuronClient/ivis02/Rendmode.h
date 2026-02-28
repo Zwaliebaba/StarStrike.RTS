@@ -85,7 +85,7 @@ extern iSurface	*psRendSurface;
 
 
 extern int32 iV_VideoMemorySize(int mode);
-extern iBool iV_VideoMemoryLock(int mode);
+extern BOOL iV_VideoMemoryLock(int mode);
 extern void iV_VideoMemoryFree(void);
 extern void iV_VideoMemoryUnlock(void);
 extern uint8 *iV_VideoMemoryAlloc(int mode);

@@ -56,7 +56,7 @@ static int _tex_get_top_bit(uint32 n)
 	there yet, so it'll default through to the old version 
 */
 
-int pie_AddBMPtoTexPages(iSprite* s, char* filename, int type, iBool bColourKeyed, iBool bResource)
+int pie_AddBMPtoTexPages(iSprite* s, char* filename, int type, BOOL bColourKeyed, BOOL bResource)
 {
     int i;
     /* Get next available texture page */
@@ -105,7 +105,7 @@ int pie_AddBMPtoTexPages(iSprite* s, char* filename, int type, iBool bColourKeye
 
 
 int iV_TexLoadNew(char* path, char* filename, int type,
-                  iBool palkeep, iBool bColourKeyed)
+                  BOOL palkeep, BOOL bColourKeyed)
 {
     char fname[MAX_FILE_PATH];
     int i;
@@ -207,7 +207,7 @@ int pie_ReloadTexPage(char* filename, UBYTE* pBuffer)
 }
 
 int iV_TexLoad(char* path, char* filename, int type,
-               iBool palkeep, iBool bColourKeyed)
+               BOOL palkeep, BOOL bColourKeyed)
 {
     int i;
     char buffer[MAX_FILE_PATH], fname[MAX_FILE_PATH];

@@ -74,11 +74,11 @@
 
 
 extern BOOL iV_setImagePath(char *path);
-extern iIMDShape *iV_IMDLoad(char *filename, iBool palkeep);
-extern iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,iBool palkeep);
+extern iIMDShape *iV_IMDLoad(char *filename, BOOL palkeep);
+extern iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath, UBYTE *PCXpath,BOOL palkeep);
 iIMDShape *iV_ProcessBPIE(iIMDShape *, UDWORD size);
 
-extern iBool iV_IMDSave(char *filename, iIMDShape *s, BOOL PieIMD);
+extern BOOL iV_IMDSave(char *filename, iIMDShape *s, BOOL PieIMD);
 extern void iV_IMDDebug(iIMDShape *s);
 
 extern void iV_IMDRelease(iIMDShape *s);
@@ -103,7 +103,7 @@ extern void iV_IMDDrawTexturedHeightScaled(iIMDShape *shape, float scale);
 extern void iV_IMDRotateProject(iIMDShape *shape, iPoint *points2d);
 extern void iV_IMDDraw2D(iIMDShape *shape, iPoint *points2d, uint32 col);
 extern int iV_IMDPointInShape2D(iIMDShape *shape, iPoint *points2d, iPoint *point);
-extern iBool iV_IMDPointInBoundXZ(iIMDShape *s, iPoint *point);
+extern BOOL iV_IMDPointInBoundXZ(iIMDShape *s, iPoint *point);
 extern void iV_IMDDrawTextureRaise(iIMDShape *shape, float scale);
 extern void iV_IMDDrawTexturedShade(iIMDShape *shape, int lightLevel);
 */

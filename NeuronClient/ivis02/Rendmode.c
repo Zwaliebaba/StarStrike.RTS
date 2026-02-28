@@ -16,7 +16,7 @@ static int g_mode = REND_UNDEFINED;
 
 static uint8* _VIDEO_MEM;
 static int32 _VIDEO_SIZE;
-static iBool _VIDEO_LOCK;
+static BOOL _VIDEO_LOCK;
 
 
 //temporary definition
@@ -57,7 +57,7 @@ int32 iV_VideoMemorySize(int mode)
 //*
 //******
 
-iBool iV_VideoMemoryLock(int mode)
+BOOL iV_VideoMemoryLock(int mode)
 
 {
     int32 size;
