@@ -48,9 +48,6 @@
 
 
 
-
-extern void frontEndCheckCD( tMode tModeNext, CD_INDEX cdIndex );
-
 typedef struct _star
 {
 	UWORD	xPos;
@@ -114,7 +111,7 @@ BOOL playIntroOnInstall( VOID )
 		setWarzoneKeyNumeric("nointro",1);
 		closeWarzoneKey();
 
-		frontEndCheckCD(SHOWINTRO, DISC_ONE);
+		changeTitleMode(SHOWINTRO);
 		return TRUE;
 	}
 	else

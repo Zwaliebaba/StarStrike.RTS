@@ -34,7 +34,6 @@
 #include "SeqDisp.h"
 
 #include "Multiplay.h"
-#include "Cdaudio.h"
 #include "ScriptExtern.h"
 
 
@@ -276,8 +275,6 @@ BOOL _intAddIntelMap(void)
 	{
 		audio_StopAll();
 	}
-
-	cdAudio_Pause();
 
 	//add message to indicate game is paused - single player mode
 	if(PAUSE_DISPLAY_CONDITION)
@@ -988,8 +985,6 @@ void intCleanUpIntelMap(void)
 	}
 	resetIntelligencePauseState();
 	immediateMessage = FALSE;
-
-	cdAudio_Resume();
 }
 
 

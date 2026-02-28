@@ -8,7 +8,6 @@
 #include "ObjMem.h"
 #include "Display.h"	// gamma
 #include "Track.h"		// audio
-#include "Cdaudio.h"	// audio
 #include "PieState.h"	// setgamma.
 #include "WarzoneConfig.h"	// renderMode
 #include "Component.h"

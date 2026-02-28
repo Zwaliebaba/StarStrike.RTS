@@ -30,7 +30,6 @@
 #include "IntDisplay.h"
 #include "Audio.h"					// for sound.
 #include "AudioId.h"				// for sound..
-#include "Cdaudio.h"
 #include "Mixer.h"
 #include "Config.h"
 
@@ -90,7 +89,6 @@ BOOL			bForceEditorLoaded = FALSE;
 BOOL			bUsingKeyboard = FALSE;		// to disable mouse pointer when using keys.
 BOOL			bUsingSlider   = FALSE;
 
-static tMode	g_tModeNext;
 static BOOL		bInFastPlay = FALSE;
 
 
@@ -365,53 +363,6 @@ BOOL startTitleMenu(VOID)
 	return TRUE;
 }
 
-static void frontEndCDOK( void )
-{
-	changeTitleMode( g_tModeNext );
-}
-
-static void frontEndCDCancel( void )
-{
-	changeTitleMode(TITLE);
-}
-
-void frontEndCheckCD( tMode tModeNext, CD_INDEX cdIndex )
-{
-	BOOL	bOK;
-
-	/* save next tmode */
-	g_tModeNext = tModeNext;
-
-	if ( !cdspan_DontTest() )
-	{
-		if ( cdIndex == DISC_EITHER )
-		{
-			bOK = cdspan_initialCDcheck();
-		}
-		else
-		{
-			if ( cdspan_CheckCDPresent( cdIndex ) )
-			{
-				bOK = TRUE;
-			}
-			else
-			{
-				bOK = FALSE;
-			}
-		}
-
-		if ( bOK == FALSE )
-		{
-			widgDelete( psWScreen,FRONTEND_BACKDROP );
-			showChangeCDBox( psWScreen, cdIndex,
-								frontEndCDOK, frontEndCDCancel );
-			return;
-		}
-	}
-
-	changeTitleMode( tModeNext );
-}
-
 
 BOOL runTitleMenu(VOID)
 {
@@ -421,31 +372,28 @@ BOOL runTitleMenu(VOID)
 
 	id = widgRunScreen(psWScreen);						// Run the current set of widgets 
 
-	if ( !cdspan_ProcessCDChange(id) )
+	switch(id)
 	{
-		switch(id)
-		{
-			case FRONTEND_QUIT:
-			changeTitleMode(CREDITS);
-			break;
-		case FRONTEND_MULTIPLAYER:
-			frontEndCheckCD(MULTI, DISC_EITHER);
-			break;
-		case FRONTEND_SINGLEPLAYER:
-			changeTitleMode(SINGLE);
-			break;
-		case FRONTEND_OPTIONS:
-			changeTitleMode(OPTIONS);
-			break;
-		case FRONTEND_PLAYINTRO:
-			frontEndCheckCD(SHOWINTRO, DISC_ONE);
-			break;
-		case FRONTEND_TUTORIAL:
-			frontEndCheckCD(TUTORIAL, DISC_ONE);
-			break;
-		default:
-			break;
-		}
+		case FRONTEND_QUIT:
+		changeTitleMode(CREDITS);
+		break;
+	case FRONTEND_MULTIPLAYER:
+		changeTitleMode(MULTI);
+		break;
+	case FRONTEND_SINGLEPLAYER:
+		changeTitleMode(SINGLE);
+		break;
+	case FRONTEND_OPTIONS:
+		changeTitleMode(OPTIONS);
+		break;
+	case FRONTEND_PLAYINTRO:
+		changeTitleMode(SHOWINTRO);
+		break;
+	case FRONTEND_TUTORIAL:
+		changeTitleMode(TUTORIAL);
+		break;
+	default:
+		break;
 	}
 
 	DrawBegin();
@@ -601,25 +549,12 @@ BOOL runSinglePlayerMenu(VOID)
 
 	id = widgRunScreen(psWScreen);						// Run the current set of widgets 
 
-
-	/* GJ to TC - this call processes the CD change widget box */
-	if ( !cdspan_ProcessCDChange(id) )
+	switch(id)
 	{
-		switch(id)
-		{
-			case FRONTEND_NEWGAME:
-				if ( cdspan_CheckCDPresent( getCDForCampaign(1) ) )
-				{
-					frontEndNewGame();
-				}
-				else
-				{
-					endSinglePlayerMenu();
-					showChangeCDBox( psWScreen, getCDForCampaign(1),
-										frontEndNewGame, startSinglePlayerMenu );
-				}
+		case FRONTEND_NEWGAME:
+			frontEndNewGame();
 
-				break;
+			break;
 
 
 //#ifdef WIN32		// ffs tc
@@ -633,12 +568,11 @@ BOOL runSinglePlayerMenu(VOID)
 				break;
 
 
-			default:
-				break;
-		}
-	}
+				default:
+					break;
+				}
 
-	if(CancelPressed()) 
+			if(CancelPressed())
 	{
 		changeTitleMode(TITLE);
 	}

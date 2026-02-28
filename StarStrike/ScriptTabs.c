@@ -329,21 +329,6 @@ FUNC_SYMBOL asFuncTable[] =
 	{ "gameOver",			scrGameOver,				VAL_VOID,
 		1, { VAL_BOOL } },
 
-	{ "playBackgroundAudio", scrPlayBackgroundAudio,	VAL_VOID,
-		2, { ST_TEXTSTRING, VAL_INT } },
-
-	{ "playCDAudio",		scrPlayCDAudio,				VAL_VOID,
-		1, { VAL_INT } },
-
-	{ "stopCDAudio",		scrStopCDAudio,				VAL_VOID,
-		0, { VAL_VOID } },
-
-	{ "pauseCDAudio",		scrPauseCDAudio,			VAL_VOID,
-		0, { VAL_VOID } },
-
-	{ "resumeCDAudio",		scrResumeCDAudio,			VAL_VOID,
-		0, { VAL_VOID } },
-
 	{ "setRetreatPoint",	scrSetRetreatPoint,			VAL_VOID,
 		3, { VAL_INT, VAL_INT, VAL_INT } },
 

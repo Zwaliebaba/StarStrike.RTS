@@ -48,7 +48,6 @@
 #include "IntImage.h"
 #include "Resource.h"
 #include "SeqDisp.h"
-#include "Cdaudio.h"
 #include "Mission.h"
 #include "WarCAM.h"
 #include "Lighting.h"
@@ -1124,7 +1123,6 @@ void loop_ClearVideoPlaybackMode(void)
 	{
 		screenToggleVideoPlaybackMode();
 	}
-	cdAudio_Resume();
 	ASSERT((videoMode == 0,"loop_ClearVideoPlaybackMode: out of sync."));
 }
 

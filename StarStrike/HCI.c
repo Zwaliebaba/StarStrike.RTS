@@ -75,7 +75,6 @@
 #include "Multiplay.h"
 #include "Multistat.h"
 #include "MultiMenu.h"
-#include "CDSpan.h"
 #include "Drive.h"
 #include "Levels.h"
 #include "FrontEnd.h"
@@ -1287,10 +1286,6 @@ void intResetScreen(BOOL NoAnim)
 			intRemoveTrans();
 		}
 		break;
-
-	case INT_CDCHANGE:
-		cdspan_RemoveChangeCDBox();
-		break;
 	}
 
 	intMode = INT_NORMAL;
@@ -1689,13 +1684,6 @@ DBPRINTF(("HCI Quit %d\n",retID));
 		quitting = TRUE;
 		break;
 
-	case ID_WIDG_CDSPAN_BUTTON_CANCEL:		// cd span box cancel
-		cdspan_ProcessCDChange(retID);
-		intResetScreen(FALSE);
-        //clearMissionWidgets();
-		quitting = TRUE;
-		break;
-		
 	// Process form tab clicks.
 	case IDOBJ_TABFORM:		// If tab clicked on in object screen then refresh all rendered buttons.
 		RefreshObjectButtons();
@@ -1768,9 +1756,6 @@ DBPRINTF(("HCI Quit %d\n",retID));
 			break;*/
 		case INT_TRANSPORTER:
 			intProcessTransporter(retID);
-			break;
-		case INT_CDCHANGE:
-			cdspan_ProcessCDChange(retID);
 			break;
 		case INT_NORMAL:
 			break;
@@ -7201,16 +7186,6 @@ void addTransporterInterface(DROID *psSelected, BOOL onMission)
 	    intAddTransporter(psSelected, onMission);
 	    intMode = INT_TRANSPORTER;
     }
-}
-
-void addCDChangeInterface( CD_INDEX CDrequired,
-	CDSPAN_CALLBACK fpOKCallback, CDSPAN_CALLBACK fpCancelCallback )
-{
-	intResetScreen(FALSE);
-	showChangeCDBox( psWScreen, CDrequired, fpOKCallback,
-						fpCancelCallback );
-
-	intMode = INT_CDCHANGE;
 }
 
 /*sets which list of structures to use for the interface*/

@@ -312,9 +312,6 @@ event	setupEvent(CALL_GAMEINIT)
 	setStructureLimits(powerGen,1,0);
 	setStructureLimits(research,1,0);
 
-	// Fire off track one on the CD if it's there...
-	playCDAudio(1);
-
 	// Fire off next one
 	setEventTrigger(soundBug,tutorialTrigger);
 

@@ -8,7 +8,6 @@
 
 #include "Widget.h"
 #include "Message.h"
-#include "CDSpan.h"
 #include "PieClip.h"
 //#include "IntImage.h"
 
@@ -237,9 +236,8 @@ typedef enum {
 	INT_TRANSPORTER, //Loading/unloading a Transporter
 	INT_MISSIONRES,	// Results of a mission display.
 	INT_MULTIMENU,	// multiplayer only, player stats etc...
-	INT_CDCHANGE,		// CD Change message box 
 
-    INT_MAXMODE,   //leave as last so we can start the objMode at this value
+	INT_MAXMODE,   //leave as last so we can start the objMode at this value
 } INTMODE;
 
 //NOT ANYMORE! 10/08/98 AB
@@ -398,10 +396,6 @@ extern STRUCTURE* interfaceStructList(void);
 
 //sets up the Transporter Screen as far as the interface is concerned
 extern void addTransporterInterface(DROID *psSelected, BOOL onMission);
-
-/* CD change box */
-extern void addCDChangeInterface( CD_INDEX CDrequired,
-		CDSPAN_CALLBACK fpOKCallback, CDSPAN_CALLBACK fpCancelCallback );
 
 /*causes a reticule button to start flashing*/
 extern void flashReticuleButton(UDWORD buttonID);

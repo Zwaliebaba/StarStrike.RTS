@@ -23,7 +23,6 @@
 #include "KeyBind.h"
 
 #include "Audio.h"					// for sound.
-#include "Cdaudio.h"
 #include "Mixer.h"
 #include "Multiplay.h"
 

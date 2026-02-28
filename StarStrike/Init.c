@@ -76,7 +76,6 @@
 #include "Formation.h"
 
 //#include "Glide.h"
-#include "Cdaudio.h"
 #include "Mixer.h"
 #include "AdvVis.h"
 
@@ -842,7 +841,6 @@ BOOL systemInitialise(void)
 	}
 
 #ifndef I_LIKE_LISTENING_TO_CDS
-	cdAudio_Open();
 	mixer_Open();
 #endif
 
@@ -937,8 +935,6 @@ BOOL systemShutdown(void)
 	}
 
 #ifndef I_LIKE_LISTENING_TO_CDS
-	cdAudio_Stop();
-	cdAudio_Close();
 	mixer_Close();
 #endif
 
@@ -1089,10 +1085,7 @@ BOOL frontendInitialise(char *ResourceFile)
 	
 	initMiscVars();
 
-    gameTimeInit();
-
-	// hit me with some funky beats....
-	cdAudio_PlayTrack(2);	// track 2 = f.e. music,
+	gameTimeInit();
 
 	return TRUE;
 }
@@ -1510,10 +1503,6 @@ BOOL stageTwoShutDown(void)
 	DBPRINTF(("stageTwoShutDown\n"));
 
 
-#ifndef I_LIKE_LISTENING_TO_CDS
-	cdAudio_Stop();
-#endif
-
 	/* in stageThreeSgutDown now
 	if (!missionShutDown())
 	{
@@ -1793,10 +1782,6 @@ BOOL saveGameReset(void)
 {
 //#ifdef MISSION_S
 	DBPRINTF(("saveGameReset\n"));
-
-#ifndef I_LIKE_LISTENING_TO_CDS
-	cdAudio_Stop();
-#endif
 
 	/* in stageThreeSgutDown now
 	if (!missionShutDown())
