@@ -1,17 +1,10 @@
+#pragma once
+
 /*
  * Surface.h
  *
  * Surface utility function prototypes.
  */
-#ifndef _surface_h
-#define _surface_h
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
 
 /* Create a DD surface.
  *
@@ -56,6 +49,4 @@ extern BOOL surfCreateFromBMP(
 
 /* set surface colour key */
 extern HRESULT DDSetColorKey(IDirectDrawSurface4 *pdds, COLORREF rgb);
-
-#endif
 

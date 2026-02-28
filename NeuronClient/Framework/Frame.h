@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Frame.h
  *
  * The framework library initialisation && shutdown routines.
  *
  */
-#ifndef _frame_h
-#define _frame_h
 
 #pragma warning (disable : 4201 4214 4115 4514)
 #include <windows.h>
@@ -140,6 +140,4 @@ extern BOOL	bRunningUnderGlide;
 UINT HashString( char *String );
 UINT HashStringIgnoreCase( char *String );
 
-
-#endif
 

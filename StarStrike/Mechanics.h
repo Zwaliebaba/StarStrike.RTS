@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Mechanics.h
  *
  * Game world mechanics.
  *
  */
-#ifndef _mechanics_h
-#define _mechanics_h
 
 #include "Frame.h"
 #include "Combat.h"
@@ -40,5 +40,4 @@ extern void freeStructureLists(void);
 //TEST FUNCTION - MAKE EVERYTHING AVAILABLE
 extern void makeAllAvailable(void);
 
-#endif
 

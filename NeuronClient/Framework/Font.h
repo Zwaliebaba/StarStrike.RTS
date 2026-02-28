@@ -1,17 +1,10 @@
+#pragma once
+
 /*
  * Font.h
  *
  * Definitions for the font system.
  */
-#ifndef _font_h
-#define _font_h
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
 
 /*************************************************************************************
  *
@@ -109,5 +102,3 @@ extern BOOL fontLoad(UBYTE *pFileData, UDWORD fileSize, PROP_FONT **ppsFont);
 
 /* Release all the memory used by a font */
 extern void fontFree(PROP_FONT *psFont);
-
-#endif

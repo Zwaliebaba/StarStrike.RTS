@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * HCI.h
  *
  * Function definitions for the in game interface code.
  */
-#ifndef _hci_h
-#define _hci_h
 
 #include "Widget.h"
 #include "Message.h"
@@ -450,5 +450,4 @@ BOOL intGetReopenBuild(void);
 
 extern void intDemolishCancel(void);
 
-#endif
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * StructureDef.h
  *
  * Structure definitions for structures
  *
  */
-#ifndef _structuredef_h
-#define _structuredef_h
 
 #define NUM_FACTORY_MODULES	2
 #define NUM_RESEARCH_MODULES 4
@@ -400,4 +400,3 @@ typedef UPGRADE		REPAIR_FACILITY_UPGRADE;
 typedef UPGRADE		POWER_UPGRADE;
 typedef UPGRADE		REARM_UPGRADE;
 
-#endif

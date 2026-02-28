@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Block.h
  *
@@ -5,8 +7,6 @@
  * Any memory allocated is only available to be reallocated after
  * the whole block has been reset.
  */
-#ifndef _block_h
-#define _block_h
 
 #include "Mem.h"
 #include "MemInt.h"
@@ -142,6 +142,4 @@ void blockUnsuspendUsage(void);
 
 #endif
 
-
-#endif
 

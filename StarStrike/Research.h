@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Research.h
  *
  * structures required for research stats
  *
  */
-#ifndef _research_h
-#define _research_h
 
 #include "ObjectDef.h"
 
@@ -126,4 +126,3 @@ extern BOOL wallDefenceStruct(STRUCTURE_STATS *psStats);
 
 extern void enableSelfRepair(UBYTE player);
 
-#endif //research.h

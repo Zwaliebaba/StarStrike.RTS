@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Structure.h
  *
  * Definitions for the structures.
  *
  */
-#ifndef _structure_h
-#define _structure_h
 
 #include "ObjectDef.h"
 #include "StructureDef.h"
@@ -371,5 +371,4 @@ extern BOOL	ptInStructure(STRUCTURE *psStruct, UDWORD x, UDWORD y);
 selected - returns TRUE if valid*/
 extern BOOL lasSatStructSelected(STRUCTURE *psStruct);
 
-#endif
 

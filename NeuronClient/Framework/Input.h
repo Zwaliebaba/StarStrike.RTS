@@ -1,17 +1,10 @@
+#pragma once
+
 /*
  * Input.h
  *
  * Prototypes for the keyboard && mouse input funcitons.
  */
-#ifndef _input_h
-#define _input_h
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
 
 #include "Types.h"
 
@@ -204,5 +197,3 @@ extern UDWORD inputGetKey(void);
 
 /* Clear the input buffer */
 extern void inputClearBuffer(void);
-
-#endif

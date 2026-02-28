@@ -1,5 +1,5 @@
-#ifndef _miscimd_h
-#define _miscimd_h
+#pragma once
+
 
 extern BOOL initMiscImds( void );
 extern iIMDShape	*getImdFromIndex(UDWORD	index);
@@ -102,5 +102,4 @@ MI_FIREWORK,
 MI_TOO_MANY  
 };
 
- #endif
                

@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Button.h
  *
  * Definitions for edit box functions.
  */
-#ifndef _button_h
-#define _button_h
 
 /* The widget heap */
 extern OBJ_HEAP	*psButHeap;
@@ -72,6 +72,4 @@ extern void buttonClearFlash(W_BUTTON *psButton);
 
 /* The button display function */
 extern void buttonDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
-
-#endif
 

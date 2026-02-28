@@ -1,18 +1,11 @@
+#pragma once
+
 /*
  * Screen.h
  *
  * Interface to the Direct Draw double buffered display.
  *
  */
-#ifndef _screen_h
-#define _screen_h
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
 
 #pragma warning (disable : 4201 4214 4115 4514)
 #define INIT_GUID
@@ -168,6 +161,4 @@ extern void screenDrawEllipse(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1);
 extern BOOL screenInitialiseGlide(UDWORD	width, UDWORD height, HANDLE hWindow);
 
 extern BOOL screenReInit( void );
-
-#endif
 

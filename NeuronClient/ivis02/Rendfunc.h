@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * rendfunc.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _rendFunc_h
-#define _rendFunc_h
 
 
 /***************************************************************************/
@@ -66,5 +66,3 @@ extern void (*iV_pBox)(int x0, int y0, int x1, int y1, uint32 colour);
 extern void (*iV_pBoxFill)(int x0, int y0, int x1, int y1, uint32 colour);
 
 
-
-#endif // _rendFunc_h

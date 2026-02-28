@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Display.h
  *
@@ -7,8 +9,6 @@
 
 
 
-#ifndef _display_h
-#define _display_h
 
 #include "Base.h"
 #include "Structure.h"
@@ -225,5 +225,4 @@ void AddDerrickBurningMessage(void);
 // check whether the queue order keys are pressed
 extern BOOL ctrlShiftDown(void);
 
-#endif
 

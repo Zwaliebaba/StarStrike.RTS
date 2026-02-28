@@ -1,5 +1,5 @@
-#ifndef _visibility_h
-#define _visibility_h
+#pragma once
+
 
 /* Terrain types that could obscure LOS */
 #define LOS_MASK	0 /*TER_STONE*/
@@ -90,4 +90,3 @@ __inline BOOL visObjInRange(BASE_OBJECT *psObj1, BASE_OBJECT *psObj2, SDWORD ran
 	return TRUE;
 }
 
-#endif

@@ -1,5 +1,5 @@
-#ifndef _bug_
-#define _bug_
+#pragma once
+
 
 #include <assert.h>
 
@@ -57,5 +57,3 @@ extern void iV_DebugDisplayLog(void);
 
 
 extern void _debug_create_log(void);
-
-#endif

@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * ScriptVals.h
  *
  * Common functions for the scriptvals loader
  */
-#ifndef _scriptvals_h
-#define _scriptvals_h
 
 #include "Base.h"
 
@@ -101,5 +101,4 @@ extern BOOL scrvGetBaseObj(UDWORD id, BASE_OBJECT **ppsObj);
 
 // Find a string from it's (string)id
 extern BOOL scrvGetString(char *pStringID, char **ppString);
-#endif
 

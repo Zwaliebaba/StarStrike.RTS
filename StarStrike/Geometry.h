@@ -1,7 +1,7 @@
+#pragma once
+
 /* Geometry.h */
 
-#ifndef _geometry_h
-#define _geometry_h
 
 #define SIZE_SINE_TABLE		100
 #define AMPLITUDE_HEIGHT	100
@@ -59,4 +59,3 @@ extern BOOL	droidOnScreen ( DROID *psDroid, SDWORD tolerance );
 extern SDWORD directionDiff	( SDWORD a, SDWORD b );
 extern UDWORD	dirtySqrt	( SDWORD x1,SDWORD y1, SDWORD x2,SDWORD y2 );
 
-#endif

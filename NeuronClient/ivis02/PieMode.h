@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * pieMode.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _pieMode_h
-#define _pieMode_h
 
 /***************************************************************************/
 
@@ -56,5 +56,3 @@ extern UDWORD	pie_GetResScalingFactor( void );
 extern void	pie_SetDitherStatus( BOOL val );
 extern BOOL	pie_GetDitherStatus( void );
 
-
-#endif // 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * GTime.h
  *
  * Interface to the game clock.
  *
  */
-#ifndef _gtime_h
-#define _gtime_h
 
 /* The number of ticks per second for the game clock */
 #define GAME_TICKS_PER_SEC		1000
@@ -67,6 +67,4 @@ extern UDWORD	getTimeValueRange(UDWORD tickFrequency, UDWORD requiredRange);
 extern	UDWORD	getStaticTimeValueRange(UDWORD tickFrequency, UDWORD requiredRange);
 
 extern void	getTimeComponents(UDWORD time, UDWORD *hours, UDWORD *minutes, UDWORD *seconds);
-
-#endif
 

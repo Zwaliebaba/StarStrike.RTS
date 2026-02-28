@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Gateway.h
  *
  * Interface to routing gateway code.
  *
  */
-#ifndef _gateway_h
-#define _gateway_h
 
 #include "GatewayDef.h"
 
@@ -114,4 +114,3 @@ BOOL gwSetZoneEquiv(SDWORD zone, SDWORD numEquiv, UBYTE *pEquiv);
 // see if a zone is reachable
 BOOL gwZoneReachable(SDWORD zone);
 
-#endif

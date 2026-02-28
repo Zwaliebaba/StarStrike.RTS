@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Message.h
  *
  * Functions for the messages shown in the Intelligence Map View
  */
-#ifndef _message_h
-#define _message_h
 
 #include "Structure.h"
 #include "MessageDef.h"
@@ -63,4 +63,3 @@ extern void displayProximityMessage(PROXIMITY_DISPLAY *psProxDisp);
 //add proximity messages for all untapped VISIBLE oil resources
 extern void addOilResourceProximities(void);
 
-#endif // message_h

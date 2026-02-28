@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Power.h
  *
  * Definitions for the Power Functionality.
  *
  */
-#ifndef _power_h
-#define _power_h
 
 #define OILDRUM_POWER		100			// free power on collection of oildrum.
 
@@ -126,4 +126,3 @@ extern	BOOL			powerCalculated;
 /*update the generator capacity if necessary */
 //extern void capacityUpdate(STRUCTURE * psBuilding);
 
-#endif //power.h

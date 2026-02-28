@@ -1,5 +1,5 @@
-#ifndef __MPDPXTRA_H
-#define __MPDPXTRA_H
+#pragma once
+
 
 // stuff by alex l 1998 to get compiling withoug devkit
 #define	MPDPXTRAERR_OK						0
@@ -660,4 +660,3 @@ MPDPXTRAERR	mpcdecl MPDPXTRA_UnsubscribeServerGameData(UINT key,SERVER_GAME_DATA
 }
 #endif
 
-#endif

@@ -1,5 +1,5 @@
-#ifndef _fbf_
-#define _fbf_
+#pragma once
+
 
 #include <stdio.h>
 #include "Ivisdef.h"
@@ -28,5 +28,3 @@ extern int32 iV_FileSize(char *filename);
 extern int32 iV_FileSizeOpen(int fd);
 extern BOOL iV_FileLoad(char *filename, uint8 *data);
 extern BOOL iV_FileSave(char *filename, uint8 *data, int32 size);
-
-#endif

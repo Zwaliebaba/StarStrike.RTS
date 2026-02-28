@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * game.h	  
  *
@@ -7,8 +9,6 @@
  * Also the struct defintions throughout the game could be re-ordered to contain 
  * the variables required for saving so that don't need to create a load more here!
  */
-#ifndef _game_h
-#define _game_h							  
 
 /***************************************************************************/
 /*
@@ -136,5 +136,4 @@ extern UDWORD getSaveGameType(void);
 UDWORD RemapPlayerNumber(UDWORD OldNumber);
 
 
-#endif
 

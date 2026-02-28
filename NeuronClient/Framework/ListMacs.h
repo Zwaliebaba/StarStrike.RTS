@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * ListMacs.h
  *
@@ -10,8 +12,6 @@
  * TYPE			the type of the list structure (!a pointer to it)
  *
  */
-#ifndef _listmacs_h
-#define _listmacs_h
 
 // initialise a list
 #define LIST_INIT(psHead) psHead = NULL
@@ -67,5 +67,3 @@
 	} \
 }
 
-
-#endif

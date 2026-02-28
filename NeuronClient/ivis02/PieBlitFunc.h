@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * pieBlitFunc.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _pieBlitFunc_h
-#define _pieBlitFunc_h
 
 /***************************************************************************/
 
@@ -79,8 +79,6 @@ typedef enum _screenType
 
 extern void pie_LoadBackDrop(SCREENTYPE screenType, BOOL b3DFX);
 extern void pie_ResetBackDrop(void);
-#endif // 
-
 
 
 

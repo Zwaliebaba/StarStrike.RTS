@@ -1,19 +1,11 @@
+#pragma once
+
 /*
  * FrameInt.h
  *
  * Internal definitions for the framework library.
  *
  */
-#ifndef _frameint_h
-#define _frameint_h
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
-
 
 /* Define the style && extended style of the window.
  * Need these to calculate the size the window should be when returning to
@@ -132,6 +124,4 @@ extern CRITICAL_SECTION sScreenFlipCritical;
 
 // The semaphore for the screen flipping
 extern HANDLE	hScreenFlipSemaphore;
-
-#endif
 

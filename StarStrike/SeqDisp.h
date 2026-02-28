@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * SeqDisp.h
  *
  * Functions for the display of the Escape Sequences
  */
 
-#ifndef _SeqDisp_h
-#define _SeqDisp_h
 
 #include "PieMode.h"
 /***************************************************************************/
@@ -68,6 +68,5 @@ extern BOOL seq_GetSubtitles(void);
 extern void seq_StartNextFullScreenVideo(void);
 
  
-#endif	//SeqDisp.h
 
 

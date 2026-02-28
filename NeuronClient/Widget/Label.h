@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Label.h
  *
  * Definitions for the label widget.
  */
-#ifndef _label_h
-#define _label_h
 
 /* The widget heaps */
 extern OBJ_HEAP	*psLabHeap;
@@ -38,6 +38,4 @@ extern void labelHiLite(W_LABEL *psWidget, W_CONTEXT *psContext);
 
 /* Respond to the mouse moving off a label */
 extern void labelHiLiteLost(W_LABEL *psWidget);
-
-#endif
 

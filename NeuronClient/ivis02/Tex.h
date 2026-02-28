@@ -1,5 +1,5 @@
-#ifndef _tex_
-#define _tex_
+#pragma once
+
 
 #include "Ivi.h"
 
@@ -55,5 +55,3 @@ extern BOOL iV_IsPower2(UDWORD Value);
 
 BOOL GenerateTEXPAGE(char *Filename, RECT *VramArea, UDWORD Mode, UWORD Clut);
 BOOL FindTextureNumber(UDWORD TexNum,int* TexPage);
-
-#endif

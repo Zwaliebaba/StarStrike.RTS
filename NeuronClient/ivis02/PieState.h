@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * pieState.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _piestate_h
-#define _piestate_h
 
 
 /***************************************************************************/
@@ -156,5 +156,3 @@ extern void	pie_SetSwirlyBoxes( BOOL val );
 extern BOOL	pie_WaveBlit( void );
 extern void	pie_SetWaveBlit( BOOL val );
 void pie_ResetStates(void);//Sets all states
-
-#endif // _pieState_h

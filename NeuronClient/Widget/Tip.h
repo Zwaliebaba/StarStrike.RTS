@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Tip.h
  *
  * Interface to the tool tip display module
  *
  */
-#ifndef _tip_h
-#define _tip_h
 
 
 /* Initialise the tool tip module */
@@ -32,6 +32,4 @@ extern void tipStop(WIDGET *psSource);
 
 /* Update && possibly display the tip */
 extern void tipDisplay(void);
-
-#endif
 

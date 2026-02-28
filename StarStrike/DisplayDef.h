@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * DisplayDef.h
  *
  * Definitions of the display structures
  *
  */
-#ifndef _displaydef_h
-#define _displaydef_h
 
 #include "Imd.h"
 #include "PieClip.h"
@@ -36,5 +36,4 @@ typedef struct _screen_disp_data
 
 
 
-#endif
 

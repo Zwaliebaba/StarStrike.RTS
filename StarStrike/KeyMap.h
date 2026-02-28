@@ -1,5 +1,5 @@
-#ifndef _keymap_h
-#define _keymap_h
+#pragma once
+
 
 
 #define NO_META_KEY				9999
@@ -83,4 +83,3 @@ extern void	keyShowMappings				( void );
 
 
 
-#endif

@@ -1,5 +1,5 @@
-#ifndef i_BSPIMD
-#define i_BSPIMD
+#pragma once
+
 
 #ifdef PIETOOL				// only needed when generating the tree
 typedef double HDVAL;
@@ -139,5 +139,3 @@ BSPTREENODE, *PSBSPTREENODE;
 
 
 /***************************************************************************/
-#endif
-

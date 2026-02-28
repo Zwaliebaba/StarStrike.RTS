@@ -1,5 +1,5 @@
-#ifndef _radar_h
-#define _radar_h
+#pragma once
+
 
 extern void	calcRadarColour(iBitmap *tileBitmap, UDWORD tileNumber);
 
@@ -26,4 +26,3 @@ extern	void	downloadAtStartOfFrame( void );
 //#define RADAR_ROT	1
 
 
-#endif

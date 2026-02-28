@@ -1,5 +1,5 @@
-#ifndef _environ_h
-#define _environ_h
+#pragma once
+
 
 // -------------------------------------------------------------------------------
 extern BOOL	waterOnMap					( void );
@@ -13,4 +13,3 @@ extern void	environShutDown				( void );
 extern void environReset(void);
 
 // -------------------------------------------------------------------------------
-#endif

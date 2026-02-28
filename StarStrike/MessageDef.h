@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * messageDef.h
  *
  * Message structure definitions
  */
-#ifndef _messageDef_h
-#define _messageDef_h
 
 #include "Deliverance.h"
 #include "PieTypes.h"
@@ -139,4 +139,3 @@ typedef struct _viewData_list
 	struct _viewData_list	*psNext;		//next array of data
 } VIEWDATA_LIST;
 
-#endif	//messageDef.h

@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Parse.h
  *
  * Definitions for the script parser
  */
-#ifndef _parse_h
-#define _parse_h
 
 /* Maximum number of TEXT items in any one Yacc rule */
 #define TEXT_BUFFERS 10
@@ -300,6 +300,4 @@ extern BOOL scriptSetCode(CODE_BLOCK  *psBlock);	// The code block
 
 /* Look up a function symbol */
 extern BOOL scriptLookUpFunction(char *pIdent, FUNC_SYMBOL **ppsSym);
-
-#endif
 

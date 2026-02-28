@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Deliverance.h
  *
  * Global defines for the game
  *
  */
-#ifndef _deliverance_h
-#define _deliverance_h
 
 #define MAX_PLAYERS 8		/*Utterly arbitrary at the moment!! */
 
@@ -24,5 +24,4 @@
 //used to flag for some script code whilst work in progress
 #define SCRIPTS
 
-#endif
 

@@ -1,5 +1,5 @@
-#ifndef _INCLUDED_TEXTDRAW_
-#define _INCLUDED_TEXTDRAW_
+#pragma once
+
 
 #include "Ivisdef.h"
 #define iV_DrawText			pie_DrawText
@@ -72,5 +72,3 @@ void SetIndirectDrawTextCallback( RENDERTEXT_CALLBACK *routine);
 RENDERTEXT_CALLBACK *GetIndirectDrawTextCallback( void);
 
 
-
-#endif

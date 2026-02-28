@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * piefunc.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _piefunc_h
-#define _piefunc_h
 
 /***************************************************************************/
 
@@ -51,5 +51,3 @@ extern void	pie_TransColouredTriangle(PIEVERTEX *vrt, UDWORD rgb, UDWORD trans);
 extern void pie_RenderImageToSurface(SDWORD surfaceOffsetX, SDWORD surfaceOffsetY, UWORD* pSrcData, SDWORD srcWidth, SDWORD srcHeight, SDWORD srcStride);
 extern void	pie_DrawViewingWindow( iVector *v, UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2,UDWORD colour);
 
-
-#endif // _piedef_h

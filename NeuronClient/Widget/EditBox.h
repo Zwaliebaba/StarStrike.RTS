@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * EditBox.h
  *
  * Definitions for the edit box functions.
  */
-#ifndef _editbox_h
-#define _editbox_h
 
 /* The widget heap */
 extern OBJ_HEAP	*psEdbHeap;
@@ -72,5 +72,3 @@ extern void editBoxDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDW
 
 /* set state of edit box */
 extern void editBoxSetState(W_EDITBOX *psEditBox, UDWORD state);
-
-#endif

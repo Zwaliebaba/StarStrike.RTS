@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * GatewayDef.h
  *
  * Structure definitions for routing gateways.
  *
  */
-#ifndef _gatewaydef_h
-#define _gatewaydef_h
 
 typedef struct _gateway_link
 {
@@ -70,5 +70,4 @@ enum _gw_node_flags
 
 
 
-#endif
 

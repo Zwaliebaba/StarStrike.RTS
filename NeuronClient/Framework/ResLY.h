@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * ResLY.h
  *
  * Interface to the RES file lex && yacc functions.
  */
-#ifndef _resly_h
-#define _resly_h
 
 /* Maximum number of characters in a directory entry */
 #define FILE_MAXCHAR		255
@@ -24,6 +24,4 @@ extern void resGetErrorData(int *pLine, char **ppText);
 
 /* Call the yacc parser */
 extern int res_parse(void);
-
-#endif
 

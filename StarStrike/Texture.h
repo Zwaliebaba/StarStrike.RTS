@@ -1,5 +1,5 @@
-#ifndef _texture_h
-#define _texture_h
+#pragma once
+
 
 extern iSprite tilesPCX;
 
@@ -24,4 +24,3 @@ UDWORD	texPage;	// Which textpage is the tile in? TileNumber/16 basically;
 #define MAX_TILES 100
 extern TILE_TEX_INFO	tileTexInfo[MAX_TILES];
 
-#endif

@@ -1,5 +1,5 @@
-#ifndef _piePalette_
-#define _piePalette_
+#pragma once
+
 
 #include "Piedef.h"
 
@@ -46,5 +46,3 @@ extern void		pal_PaletteSet(void);
 extern BOOL		pal_Make16BitPalette(void);
 extern iColour*	pie_GetGamePal(void);
 extern void	pie_BuildSoftwareTransparency( void );
-
-#endif

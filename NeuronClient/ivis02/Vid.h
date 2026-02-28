@@ -1,6 +1,4 @@
-#ifndef _vid_
-#define _vid_
+#pragma once
+
 
 #include "Rendmode.h"
-
-#endif

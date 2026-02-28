@@ -1,7 +1,7 @@
+#pragma once
+
 /* WinMain.h */
 
-#ifndef _winmain_h
-#define _winmain_h
 
 #define GS_TITLE_SCREEN		1
 #define GS_MISSION_SCREEN	2
@@ -19,4 +19,3 @@ extern	BOOL	bDisableLobby;
 extern	UDWORD GetGameMode(void);
 extern	void SetGameMode(UDWORD status);
 
-#endif

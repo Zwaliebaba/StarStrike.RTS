@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * StrRes.h
  *
  * String resource interface functions
  *
  */
-#ifndef _strres_h
-#define _strres_h
 
 /* A string block */
 typedef struct _str_block
@@ -74,6 +74,4 @@ extern void stringCpy(char *pDest, char *pSrc);
 
 /* Get the ID number for a char */
 extern UDWORD strresGetIDfromString(STR_RES *psRes, char *pString);
-
-#endif
 

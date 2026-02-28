@@ -1,5 +1,5 @@
-#ifndef __INCLUDED_INTIMAGE__
-#define __INCLUDED_INTIMAGE__
+#pragma once
+
 
 #define FILLRED 16
 #define FILLGREEN 16
@@ -127,4 +127,3 @@ extern void RenderOpaqueWindow(IMAGEFRAME *Frame,UDWORD x,UDWORD y,UDWORD Width,
 // Called by RenderWindowFrame and RenderOpaqueWindow but you can call it yourself if you want.
 extern void RenderWindow(IMAGEFRAME *Frame,UDWORD x,UDWORD y,UDWORD Width,UDWORD Height,BOOL Opaque);
 
-#endif

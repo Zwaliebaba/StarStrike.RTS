@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * droid.h
  *
  * Definitions for the droid object.
  *
  */
-#ifndef _droid_h
-#define _droid_h
 
 #include "ObjectDef.h"
 
@@ -379,5 +379,4 @@ extern BOOL droidAudioTrackStopped( AUDIO_SAMPLE *psSample );
 /*returns TRUE if droid type is one of the Cyborg types*/
 extern BOOL cyborgDroid(DROID *psDroid);
 
-#endif
 

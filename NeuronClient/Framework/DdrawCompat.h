@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * DdrawCompat.h
  *
@@ -9,8 +11,6 @@
  * layer NULL-guards every vtable call, so no method is ever invoked.
  * The vtable stubs exist purely to satisfy the compiler.
  */
-#ifndef _ddrawcompat_h
-#define _ddrawcompat_h
 
 #include <windows.h>
 
@@ -357,4 +357,3 @@ typedef HRESULT (WINAPI *LPDIRECTDRAWENUMERATEEXA)(LPDDENUMCALLBACKEXA, LPVOID, 
 #endif
 
 #endif /* DIRECTDRAW_VERSION */
-#endif /* _ddrawcompat_h */

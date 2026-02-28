@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * pieTypes.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _pieTypes_h
-#define _pieTypes_h
 
 #include "Frame.h"
 
@@ -65,5 +65,3 @@ typedef struct {int32 x, y;} iPoint32;
 	typedef struct {int32 x, y, z, u, v; uint8 g;} iVertex; 
 typedef struct {FRACT x,y,z;} PIEVECTORF;
 typedef struct {iVector p, r;} iView;
-
-#endif // _pieTypes_h

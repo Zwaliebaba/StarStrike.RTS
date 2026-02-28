@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Script.h
  *
  * Interface to the script library
  */
-#ifndef _script_h
-#define _script_h
 
 #include "Interp.h"
 #include "Stack.h"
@@ -195,6 +195,4 @@ extern BOOL eventSetTrigger(void);
 //   2 - added and fired triggers
 //   3 - as 2 but show tested but not fired triggers as well
 extern BOOL eventSetTraceLevel(void);
-
-#endif
 

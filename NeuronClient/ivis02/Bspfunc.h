@@ -1,5 +1,5 @@
-#ifndef _bspfunc_h_
-#define _bspfunc_h_
+#pragma once
+
 
 #include "Ivisdef.h"
 #include "Bspimd.h"
@@ -16,6 +16,4 @@ extern PSBSPTREENODE InitNode(PSBSPTREENODE psBSPNode);
 
 extern void GetPlane( iIMDShape *s, UDWORD PolygonID, PSPLANE psPlane );
 
-
-#endif
 

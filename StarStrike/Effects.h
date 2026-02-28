@@ -1,5 +1,5 @@
-#ifndef _effects_h
-#define _effects_h
+#pragma once
+
 /*	
 	All singing, all dancing new effects code. Does all the stuff
 	that explosion.c && most of particle.c used to do as well as
@@ -234,4 +234,3 @@ extern void	effectSetLandLightSpec(LAND_LIGHT_SPEC spec);
 
 
 
-#endif

@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * WidgInt.h
  *
  * Internal widget library definitions
  */
-#ifndef _widgint_h
-#define _widgint_h
 
 /* Control whether to use malloc for widgets */
 #define W_USE_MALLOC	FALSE
@@ -60,6 +60,4 @@ extern void screenSetFocus(W_SCREEN *psScreen, WIDGET *psWidget);
 
 /* Clear the keyboard focus */
 extern void screenClearFocus(W_SCREEN *psScreen);
-
-#endif
 

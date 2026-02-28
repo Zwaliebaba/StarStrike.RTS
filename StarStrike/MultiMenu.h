@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * MultiMenu.h
  *
  * Definition for in game,multiplayer, interface.
  */
 // 
-#ifndef __INCLUDED_MULTIMENU__
-#define __INCLUDED_MULTIMENU__
 
 // requester
 extern VOID		addMultiRequest(char *ToFind, UDWORD id,UBYTE mapCam);
@@ -29,4 +29,3 @@ extern BOOL		ClosingMultiMenu;
 #define MULTIMENU			10600
 #define MULTIMENU_FORM		MULTIMENU
 
-#endif

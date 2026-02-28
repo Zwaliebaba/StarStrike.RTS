@@ -1,9 +1,8 @@
+#pragma once
+
 /*
 	WDG releated goodies
 */
-
-#ifndef _wdg_h
-#define _wdg_h
 
 // list of all wrfs in the wdg
 typedef struct
@@ -108,5 +107,3 @@ void WDG_GetCurrentWDGCatalog(char **ppFileName, UDWORD *pNumWRF, WDGINFO **ppsW
 
 // get the current WRF file catalog
 void WDG_GetCurrentWFRFileCatalog(UDWORD *pCatOffset, WRFINFO **ppsFileCatalog);
-
-#endif

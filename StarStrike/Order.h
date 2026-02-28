@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Order.h
  *
  * Function prototypes for giving droids orders
  *
  */
-#ifndef _order_h
-#define _order_h
 
 #include "Orderdef.h"
 
@@ -222,5 +222,4 @@ extern BOOL getFactoryState(STRUCTURE *psStruct, SECONDARY_ORDER sec, SECONDARY_
 //lasSat structure can select a target
 extern void orderStructureObj(UDWORD player, BASE_OBJECT *psObj);
 
-#endif
 

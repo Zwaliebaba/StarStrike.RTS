@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * Projectile types && function headers
@@ -6,8 +8,6 @@
  */
 /***************************************************************************/
 
-#ifndef _PROJECTILE_H_
-#define _PROJECTILE_H_
 
 /***************************************************************************/
 
@@ -95,6 +95,5 @@ extern BOOL	justBeenHitByEW		( BASE_OBJECT *psObj );
 extern void	objectShimmy	( BASE_OBJECT *psObj );
 
 
-#endif	/* _PROJECTILE_H_ */
 
 /***************************************************************************/

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Cluster.h
  *
  * Form droids && structures into clusters
  *
  */
-#ifndef _cluster_h
-#define _cluster_h
 
 // maximum number of clusters in a game
 #define CLUSTER_MAX		UBYTE_MAX
@@ -81,5 +81,4 @@ extern BASE_OBJECT *clustIterate(void);
 // reset the visibility for all clusters for a particular player
 extern void clustResetVisibility(SDWORD player);
 
-#endif
 

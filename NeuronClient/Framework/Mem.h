@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * mem.h
  *
  * Interface to the malloc/free replacements
  */
 
-#ifndef _mem_h
-#define _mem_h
 
 #include <stdlib.h>
 #include "Types.h"
@@ -90,5 +90,3 @@ extern void memDisplayTreap(char *pFileName);
 
 
 
-
-#endif

@@ -1,5 +1,5 @@
-#ifndef _intdisplay_h
-#define _intdisplay_h
+#pragma once
+
 
 #include "Widget.h"
 #include "WidgInt.h"
@@ -327,4 +327,3 @@ extern void intDisplayMissionClock(struct _widget *psWidget, UDWORD xOffset, UDW
 
 extern void intDisplayAllyIcon(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 
-#endif

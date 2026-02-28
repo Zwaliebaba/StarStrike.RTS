@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * MapGrid.h
  *
@@ -6,8 +8,6 @@
  * have some influence.
  *
  */
-#ifndef _mapgrid_h
-#define _mapgrid_h
 
 
 // Number of Objects in each chunk of the grid array
@@ -71,5 +71,4 @@ extern void gridStartIterate(SDWORD x, SDWORD y);
 // should only be called after gridStartIterate
 extern BASE_OBJECT *gridIterate(void);
 
-#endif
 

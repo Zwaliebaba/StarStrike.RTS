@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * StrResLY.h
  *
  * Interface to the string resource lex && yacc functions.
  */
-#ifndef _strresly_h
-#define _strresly_h
 
 /* Maximum number of characters in a directory entry */
 #define FILE_MAXCHAR		255
@@ -26,6 +26,4 @@ extern int strres_parse(void);
 
 /* Store a char */
 extern BOOL strresStoreString(STR_RES *psRes, char *pID, char *pString);
-
-#endif
 

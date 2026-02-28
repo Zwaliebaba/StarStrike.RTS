@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Interp.h
  *
  * Script interpreter definitions
  */
-#ifndef _interp_h
-#define _interp_h
 
 /* The possible value types for scripts */
 typedef enum _interp_type
@@ -234,6 +234,4 @@ extern BOOL interpInitialise(void);
 
 // TRUE if the interpreter is currently running
 extern BOOL interpProcessorActive(void);
-
-#endif
 

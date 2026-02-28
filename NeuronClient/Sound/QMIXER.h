@@ -1,3 +1,5 @@
+#pragma once
+
 //
 // QMixer for Windows and Macintosh.
 // Copyright (c) 1995-1998 QSound Labs, Inc.  All Rights Reserved.
@@ -8,8 +10,6 @@
 //
 
 
-#ifndef QMIXER_H
-#define QMIXER_H
 
 #if !defined(_QMIXIMP)
     #define _QMIXIMP __declspec(dllimport)
@@ -1423,7 +1423,5 @@ QSWaveMixPlay(
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif
 

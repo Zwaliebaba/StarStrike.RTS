@@ -1,9 +1,9 @@
+#pragma once
+
 // 
 // IntOrder.h 
 // definitions for order interface functions.
 // 
-#ifndef __INCLUDED_INTORDER__
-#define __INCLUDED_INTORDER__
 
 
 #define IDORDER_FORM	8000
@@ -25,4 +25,3 @@ BOOL intRefreshOrder(void);
 extern void intAddFactoryOrder(STRUCTURE *psStructure);
 
 
-#endif

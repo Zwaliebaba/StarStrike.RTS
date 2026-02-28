@@ -1,5 +1,5 @@
-#ifndef _imd_
-#define _imd_
+#pragma once
+
 
 
 #include "Ivisdef.h"
@@ -108,5 +108,3 @@ extern void iV_IMDDrawTextureRaise(iIMDShape *shape, float scale);
 extern void iV_IMDDrawTexturedShade(iIMDShape *shape, int lightLevel);
 */
 
-
-#endif

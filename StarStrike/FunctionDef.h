@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * FunctionDef.h
  *
  * Structure defs for functions.
  *
  */
-#ifndef _functiondef_h
-#define _functiondef_h
 
 #include "StatsDef.h"
 
@@ -346,5 +346,4 @@ typedef struct _function_upgrade
 //} DEFENSIVE_STRUCTURE_FUNCTION;
 
 
-#endif
 

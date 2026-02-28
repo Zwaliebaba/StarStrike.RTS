@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * StatsDef.h
  *
  * Structure definitions for the stats system
  *
  */
-#ifndef _statsdef_h
-#define _statsdef_h
 
 
 /* Elements common to all stats structures */
@@ -511,4 +511,3 @@ typedef struct _body_upgrade
 	UWORD           armourValue[NUM_WEAPON_CLASS];
 } BODY_UPGRADE;
 
-#endif

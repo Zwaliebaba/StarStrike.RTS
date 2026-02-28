@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Slider.h
  *
  * Slider bar interface definitions.
  */
-#ifndef _slider_h
-#define _slider_h
 
 /* The widget heaps */
 extern OBJ_HEAP	*psSldHeap;
@@ -54,6 +54,4 @@ extern void sliderHiLiteLost(W_SLIDER *psWidget);
 extern void sliderDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset,
 						  UDWORD *pColours);
 
-
-#endif
 

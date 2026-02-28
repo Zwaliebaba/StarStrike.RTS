@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Levels.h
  *
  * Control the data loading for game levels
  *
  */
-#ifndef _levels_h
-#define _levels_h
 
 
 // maximum number of WRF/WDG files
@@ -90,6 +90,5 @@ extern SDWORD getLevelLoadType(void);
 
 extern	UBYTE	*getLevelName( void );
 
-#endif
 
 

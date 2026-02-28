@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ResearchDef.h
  *
  * Structure definitions for research
  *
  */
-#ifndef _researchdef_h
-#define _researchdef_h
 
 /* Research struct type definitions */
 typedef enum
@@ -102,5 +102,4 @@ typedef struct _player_research
 
 // clear all bits in the status except for the possible bit
 #define ResetResearchStatus(x) ((x)->ResearchStatus&=(~RESBITS))
-#endif
 

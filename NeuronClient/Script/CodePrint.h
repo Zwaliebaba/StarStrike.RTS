@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * CodePrint.h
  *
  * Routines for displaying compiled scripts
  *
  */
-#ifndef _codeprint_h
-#define _codeprint_h
 
 /* Display a value type */
 extern void cpPrintType(INTERP_TYPE type);
@@ -24,6 +24,4 @@ extern void cpPrintVarFunc(SCRIPT_VARFUNC pFunc, UDWORD index);
 
 /* Display a maths operator */
 extern void cpPrintMathsOp(UDWORD opcode);
-
-#endif
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Loop.h
  *
  * Interface to the main game loop routine.
  *
  */
-#ifndef _loop_h
-#define _loop_h
 
 #include "Frame.h"
 
@@ -78,5 +78,4 @@ void incNumDroids(UDWORD player);
 void incNumCommandDroids(UDWORD player);
 void incNumConstructorDroids(UDWORD player);
 
-#endif
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Action.h
  *
  * Function prototypes for setting the action of a droid
  *
  */
-#ifndef _action_h
-#define _action_h
 
 // What a droid is currently doing
 // Not necessarily the same as it's order as the AI may get a droid to do
@@ -124,5 +124,4 @@ extern BOOL actionRouteBlockingPos(DROID *psDroid, SDWORD x, SDWORD y);
 // choose a landing position for a VTOL when it goes to rearm
 extern BOOL actionVTOLLandingPos(DROID *psDroid, UDWORD *px, UDWORD *py);
 
-#endif
 

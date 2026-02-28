@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Treap.h
  *
@@ -9,8 +11,6 @@
  *      12 bytes for the root
  *      20 bytes per node
  */
-#ifndef _treap_h
-#define _treap_h
 
 #include "Types.h"
 #include "Debug.h"
@@ -181,5 +181,3 @@ extern SDWORD treapStringCmp(UDWORD key1, UDWORD key2);
 
 #endif
 
-
-#endif

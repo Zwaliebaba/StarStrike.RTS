@@ -1,8 +1,8 @@
+#pragma once
+
 /* 
  * Frontend.h
  */
-#ifndef _frontend_h
-#define _frontend_h
 
 // determines which option screen to use. when in GS_TITLE_SCREEN mode.
 typedef enum _title_mode {
@@ -254,4 +254,3 @@ BOOL addIGTextButton(UDWORD id,UWORD y,UDWORD StringID,UDWORD Style);
 #define FRONTEND_SEQUENCE		20097
 #define FRONTEND_SEQUENCE_R		20098
 
-#endif

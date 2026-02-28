@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Widget.h
  *
  * Definitions for the Widget library
  */
-#ifndef _widget_h
-#define _widget_h
 
 #include "Frame.h"
 #include "WidgBase.h"
@@ -441,6 +441,4 @@ void sliderEnableDrag(BOOL Enable);
 
 void	setWidgetsStatus( BOOL var );
 BOOL	getWidgetsStatus( void );
-
-#endif
 

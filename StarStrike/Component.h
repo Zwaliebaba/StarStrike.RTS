@@ -1,5 +1,5 @@
-#ifndef _component_h
-#define _component_h
+#pragma once
+
 
 /*
 	Header file for component.c 
@@ -94,4 +94,3 @@ extern SDWORD	rescaleButtonObject(SDWORD radius, SDWORD baseScale,SDWORD baseRad
 
 extern void	destroyFXDroid(DROID	*psDroid);
 
-#endif

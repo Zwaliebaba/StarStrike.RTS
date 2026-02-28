@@ -1,6 +1,6 @@
+#pragma once
+
 // vid.c 0.1 10-01-96.22-11-96
-#ifndef _rendmode_h_
-#define _rendmode_h_
 #include "Ivisdef.h"
 #include "Ivi.h"
 #include "PieBlitFunc.h"
@@ -191,4 +191,3 @@ extern void iV_DrawMousePointer(int x,int y);
 extern void iV_SetMousePointer(IMAGEFILE *ImageFile,UWORD ImageID);
 
 extern void (*iV_ppBitmapColourTrans)(iBitmap *bmp, int x, int y, int w, int h, int ow,int ColourIndex);
-#endif

@@ -1,5 +1,5 @@
-#ifndef __INCLUDED_BITIMAGE__
-#define __INCLUDED_BITIMAGE__
+#pragma once
+
 
 
 typedef struct {
@@ -30,5 +30,3 @@ BOOL iV_ReLoadTexturePage_PSX(void *Data,RECT *StoredArea,CLUTCALLBACK ClutCallb
 BOOL iV_LoadClut_PSX(UBYTE *Data,CLUTLIST **ClutList,BOOL HalfBright);
 // Free up a clut list alloceted by iV_LoadClut_PSX.
 void iV_FreeClut_PSX(CLUTLIST *ClutList);
-
-#endif

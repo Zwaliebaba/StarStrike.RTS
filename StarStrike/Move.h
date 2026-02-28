@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Move.h
  *
  * Interface for the unit movement system
  *
  */
-#ifndef _move_h
-#define _move_h
 
 #include "ObjectDef.h"
 #include "Findpath.h"
@@ -77,5 +77,4 @@ void moveMakeVtolHover( DROID *psDroid );
 //extern void	setDrivingStatus( BOOL val );
 //extern BOOL	getDrivingStatus( void );
 
-#endif
 

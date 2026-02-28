@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Bar.h
  *
  * Definitions for Bar Graph functions.
  */
-#ifndef _bar_h
-#define _bar_h
 
 /* The widget heap */
 extern OBJ_HEAP	*psBarHeap;
@@ -51,6 +51,4 @@ extern void barGraphDisplayDouble(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffs
 /* The trough bar graph display function */
 extern void barGraphDisplayTrough(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset,
 							UDWORD *pColours);
-
-#endif
 

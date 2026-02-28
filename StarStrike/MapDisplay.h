@@ -1,5 +1,5 @@
-#ifndef _mapdisplay_h
-#define _mapdisplay_h
+#pragma once
+
 
 #include "PieTypes.h"
 
@@ -39,5 +39,4 @@ extern void renderResearchToBuffer(iSurface *pSurface, RESEARCH *psResearch,
 extern void	releaseMapSurface(struct iSurface *pSurface);
 
 
-#endif
 

@@ -1,5 +1,5 @@
-#ifndef _console_h
-#define _console_h
+#pragma once
+
 
 #define MAX_CONSOLE_MESSAGES			(64)
 #define MAX_CONSOLE_STRING_LENGTH		(255)
@@ -105,7 +105,6 @@ extern	void	toggleConsoleDrop( void );
 #define DBCONPRINTF(s,x)
 #endif
 								
-#endif
 
 
 

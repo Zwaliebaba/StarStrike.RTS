@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Stack.h
  *
  * Interface to the stack system
  */
-#ifndef _stack_h
-#define _stack_h
 
 /* Initialise the stack */
 extern BOOL stackInitialise(void);
@@ -45,5 +45,3 @@ extern BOOL stackUnaryOp(OPCODE opcode);
 
 /* Reset the stack to an empty state */
 extern void stackReset(void);
-
-#endif

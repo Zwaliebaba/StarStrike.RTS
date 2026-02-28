@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * FrameResources.h
  *
@@ -7,8 +9,6 @@
 // This file used to be called resource.h but that clashed with resource.h that was in the main source directory
 
 
-#ifndef _resource_h
-#define _resource_h
 
 /* Maximum number of characters in a resource type */
 #define RESTYPE_MAXCHAR		20
@@ -148,6 +148,4 @@ BOOL OpenWDG(char *WDGname);
 BOOL IsWDGopen(void);
 void CloseWDG(void);
 
-
-#endif
 

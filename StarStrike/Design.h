@@ -1,5 +1,5 @@
-#ifndef _design_h
-#define _design_h
+#pragma once
+
 
 /* Design screen ID's */
 #define IDDES_FORM			5000		// The base form for the design screen
@@ -128,4 +128,3 @@ extern void resetDesignPauseState(void);
 extern void reverseTemplateList(DROID_TEMPLATE **ppsList);
 
 
-#endif

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * FeatureDef.h
  *
  * Structure definitions for features
  *
  */
-#ifndef _featuredef_h
-#define _featuredef_h
 
 typedef enum _feature_type
 {
@@ -77,5 +77,4 @@ typedef struct _feature
 	BOOL			bTargetted;
 } FEATURE;
 
-#endif
 

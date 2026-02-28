@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * ObjectDef.h
  *
@@ -5,8 +7,6 @@
  *
  */
 
-#ifndef _objectdef_h
-#define _objectdef_h
 
 #include "Frame.h"
 #include "PieTypes.h"
@@ -24,5 +24,4 @@
 #include "BulletDef.h"
 #include "FeatureDef.h"
 
-#endif
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Netplay.h
  *
  * Alex Lee sep97.
  */ 
 
-#ifndef _netplay_h
-#define _netplay_h
 
 // ////////////////////////////////////////////////////////////////////////
 // Include this file in your game to add multiplayer facilities.
@@ -196,5 +196,3 @@ extern BOOL DirectPlaySystemMessageHandler(LPVOID);						// what to do with syst
 
 #define NetGetSt(m,pos,stri) \
 	strcpy(stri,&(m->body[pos]))
-
-#endif

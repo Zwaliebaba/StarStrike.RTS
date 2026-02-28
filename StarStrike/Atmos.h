@@ -1,5 +1,5 @@
-#ifndef _atmos_h
-#define _atmos_h
+#pragma once
+
 
 typedef struct _atmosParticle
 {
@@ -35,4 +35,3 @@ SBYTE	vec;
 
 extern MISTAREA *pMistValues;
 
-#endif

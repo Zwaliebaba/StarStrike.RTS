@@ -1,5 +1,5 @@
-#ifndef _edit3d_h
-#define _edit3d_h
+#pragma once
+
 
 #define TILE_RAISE	1
 #define TILE_LOWER	-1
@@ -52,4 +52,3 @@ extern UDWORD temp;
 /*returns true if the build state is !equal to BUILD3D_NONE*/
 extern BOOL   tryingToGetLocation();
 
-#endif

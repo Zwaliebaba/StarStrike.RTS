@@ -1,6 +1,6 @@
+#pragma once
 
-#ifndef _INCLUDED_CSNAP_
-#define _INCLUDED_CSNAP_
+
 
 //#define SNAP_ERASABLE
 
@@ -72,8 +72,6 @@ void SnapCursorTo(UWORD x,UWORD y);
 extern void SetMousePos(UDWORD nowt,UDWORD x,UDWORD y);
 
 extern void intSetCurrentCursorPosition(CURSORSNAP *Snap,UDWORD id);
-
-#endif
 
 UDWORD SnapGetFormID(CURSORSNAP *SnapBuffer);
 UDWORD SnapGetID(CURSORSNAP *SnapBuffer);

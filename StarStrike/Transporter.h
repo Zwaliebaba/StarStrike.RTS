@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Transporter.h
  *
  * Functions for the display/functionality of the Transporter
  */
 
-#ifndef _transporter_h
-#define _transporter_h
 
 #include "Widget.h"
 
@@ -85,4 +85,3 @@ extern BOOL transporterFlying(DROID *psTransporter);
 //initialise the flag to indicate the first transporter has arrived - set in startMission()
 extern void initFirstTransporterFlag(void);
 
-#endif

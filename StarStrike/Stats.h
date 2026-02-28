@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Stats.h
  *
  * Interface to the common stats module
  *
  */
-#ifndef _stats_h
-#define _stats_h
 
 #include "ObjectDef.h"
 /**************************************************************************************
@@ -334,5 +334,4 @@ extern UDWORD getMaxWeaponRange(void);
 extern UDWORD getMaxWeaponDamage(void);
 extern UDWORD getMaxPropulsionSpeed(void);
 
-#endif
 

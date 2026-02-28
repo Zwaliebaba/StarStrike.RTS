@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * IntelMap.h
  *
  * Functions for the display of the Intelligence Map
  */
 
-#ifndef _intelmap_h
-#define _intelmap_h
 
 /* Intelligence Map screen IDs */
 #define IDINTMAP_FORM			6000	//The intelligence map base form
@@ -67,6 +67,5 @@ extern BOOL messageIsImmediate(void);
 /*sets the flag*/
 extern void setMessageImmediate(BOOL state);
 
-#endif	//intelmap.h
 
 

@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * multiWDG.h
  *
@@ -5,8 +7,6 @@
  *
  */
 
-#ifndef _multiwdg_h
-#define _multiwdg_h
 
 #include "Wdg.h"
 
@@ -97,5 +97,3 @@ BOOL wdgFindNextWRFRev(WDG_FINDWRF *psFindData);
 BOOL wdgFindFirstFileRev(UDWORD WRFName, UDWORD type, UDWORD FileName, WDG_FINDFILE *psFindData);
 // Find the next instance of a file in a WRF
 BOOL wdgFindNextFileRev(WDG_FINDFILE *psFindData);
-
-#endif

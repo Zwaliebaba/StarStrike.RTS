@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Map.h
  *
  * Definitions for the map structure
  *
  */
-#ifndef _map_h
-#define _map_h
 
 #include <stdio.h>
 #include "Frame.h"
@@ -381,5 +381,4 @@ extern void	mapFreeTilesAndStrips( void );
 extern SDWORD		scrollMinX, scrollMaxX, scrollMinY, scrollMaxY;
 extern BOOL	bDoneWater;
 
-#endif
 

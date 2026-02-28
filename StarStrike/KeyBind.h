@@ -1,5 +1,5 @@
-#ifndef _keybind_h
-#define _keybind_h
+#pragma once
+
 
 // --------------- All those keyboard mappable functions */
 extern void	kf_HalveHeights( void );
@@ -184,4 +184,3 @@ void kf_NormalSpeed( void );
 
 extern int fogCol;
 
-#endif

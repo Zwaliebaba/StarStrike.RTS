@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Form.h
  *
  * Definitions for the form functions.
  *
  */
-#ifndef _form_h
-#define _form_h
 
 /* The widget heaps */
 extern OBJ_HEAP	*psFormHeap;
@@ -168,6 +168,4 @@ extern void formHiLiteLost(W_FORM *psWidget, W_CONTEXT *psContext);
 extern void formDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 extern void formDisplayClickable(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 extern void formDisplayTabbed(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
-
-#endif
 

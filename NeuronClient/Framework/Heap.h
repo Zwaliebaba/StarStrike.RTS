@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Heap.h
  *
@@ -8,8 +10,6 @@
  *           4 bytes for the extension blocks
  *
  */
-#ifndef _heap_h
-#define _heap_h
 
 #include "Types.h"
 #include "Debug.h"
@@ -129,6 +129,4 @@ void heapReport(void);
 
 #define HEAP_DESTROY(psHeap)  \
 	heapDestroy(psHeap)
-
-#endif
 

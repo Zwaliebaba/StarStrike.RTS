@@ -1,17 +1,10 @@
+#pragma once
+
 /*
  * Image.h
  *
  * Prototypes for the image file parsing routines
  */
-#ifndef _image_h
-#define _image_h
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
 
 /* Take a memory buffer that contains a PCX file && convert it
  * to an image buffer && a palette buffer.
@@ -50,6 +43,4 @@ extern BOOL imageCreateBMP(UBYTE			*pImageData,		// Original file
 
 
 
-
-#endif
 

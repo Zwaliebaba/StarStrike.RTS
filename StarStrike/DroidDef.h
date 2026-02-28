@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * DroidDef.h
  *
  * Droid structure definitions
  */
-#ifndef _droiddef_h
-#define _droiddef_h
 
 #include "Animobj.h"
 #include "Audio.h"
@@ -233,4 +233,3 @@ typedef struct _droid
 DROID;
 
 
-#endif

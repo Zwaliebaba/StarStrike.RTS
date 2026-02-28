@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Bullet.h
  *
@@ -6,8 +8,6 @@
  * a weapon.
  *
  */
-#ifndef _bullet_h
-#define _bullet_h
 
 #include "ObjectDef.h"
 
@@ -45,5 +45,4 @@ extern void updateBullet(PROJ_OBJECT *psBullet);
 extern void checkBurnDamage(BASE_OBJECT* apsList, PROJ_OBJECT* psBullet, FIRE_BOX* pFireBox);
 
 
-#endif
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * clParse.h
  *
  * All the command line values
  *
  */
-#ifndef _clparse_h
-#define _clparse_h
 
 // whether to start windowed
 extern BOOL	clStartWindowed;
@@ -15,6 +15,5 @@ extern BOOL	clIntroVideo;
 extern BOOL ParseCommandLine( LPSTR psCmdLineBOOL, BOOL bGlideDllPresent);
 
 
-#endif
 
 

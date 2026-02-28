@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************************
  *
  *	File : Debug.h
@@ -37,8 +39,6 @@
  *
  ***************************************************************************************
  */
-#ifndef _debug_h
-#define _debug_h
 
 //#define ALWAYS_ASSERT	// Define this to always process ASSERT even on release builds.
 
@@ -47,10 +47,6 @@
  */
 
 #include <stdio.h>
-
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
 
 /* Turn on basic debugging if a MSVC debug build && NODEBUG has !been defined */
 #ifdef _DEBUG
@@ -469,7 +465,5 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
 #define DBMONOCR7(x,y,w,h)
 #define DBMONOCR8(x,y,w,h)
 #define DBMONOCR9(x,y,w,h)
-
-#endif
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef _scores_h
-#define _scores_h
+#pragma once
+
 // --------------------------------------------------------------------
 typedef enum data_index
 {
@@ -79,5 +79,4 @@ extern void	getAsciiTime			( char *psText, UDWORD time );
 extern BOOL	readScoreData			( UBYTE *pFileData, UDWORD fileSize );
 extern BOOL	writeScoreData			( char *pFileName );
 
-#endif
 

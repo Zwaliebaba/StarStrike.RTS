@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ScriptFuncs.h
  *
  * All the C functions callable from the script code
  *
  */
-#ifndef _scriptfuncs_h
-#define _scriptfuncs_h
 
 // not used in scripts, but used in code.
 extern  BOOL objectInRange(BASE_OBJECT *psList, SDWORD x, SDWORD y, SDWORD range);
@@ -480,6 +480,5 @@ extern BOOL scrResetLimboMission(void);
 // skirmish lassat fire.
 extern BOOL scrSkFireLassat(void);
 
-#endif
 
 

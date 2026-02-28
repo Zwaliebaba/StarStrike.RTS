@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * pieState.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _pieTexture_h
-#define _pieTexture_h
 
 
 /***************************************************************************/
@@ -40,5 +40,3 @@ extern BOOL pie_Reload8bitTexturePage(void* bitmap,UWORD Width,UWORD Height, SDW
 extern UDWORD pie_GetLastPageDownloaded(void);
 extern int pie_AddBMPtoTexPages( 	iSprite* s, char* filename, int type,
 					BOOL bColourKeyed, BOOL bResource);
-
-#endif // _pieTexture_h

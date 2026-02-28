@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * MemInt.h
  *
  * Internal framework definitions for the memory system.
  *
  */
-#ifndef _memint_h
-#define _memint_h
 
 /* The size of saftey buffer to leave before && after any malloc'ed memory.
    Can use this to check writing over end of buffers */
@@ -30,6 +30,4 @@ extern SDWORD	memBlockCmp(UDWORD	key1, UDWORD key2);
 
 /* Recursive function to print out the list of memory blocks */
 extern SDWORD memRecReport(MEM_NODE *psRoot);
-
-#endif
 

@@ -1,0 +1,21 @@
+# ninja log v6
+23	46	7939896412865805	C:/Users/zwali/source/repos/StarStrike.RTS/build/CMakeFiles/cmake.verify_globs	6f24f594360d5fd5
+110	547	7939896413736644	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Mem.c.obj	376760fa191b71ed
+115	557	7939896413789669	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Mono.c.obj	74bd8b03f1cf280e
+126	568	7939896413886028	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/ResourceL.c.obj	6dee46fdb150b9cd
+133	576	7939896413967769	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/ResourceY.c.obj	561802e9e5afb7a4
+146	583	7939896414090502	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/StrRes.c.obj	5af73e6bc1fc9101
+155	590	7939896414187180	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/StrResY.c.obj	3a77c01f3cfd402a
+93	601	7939896413564338	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Heap.c.obj	38ebd54c7ba1734c
+57	608	7939896413199361	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Block.c.obj	fe73f4e8bfad619
+53	616	7939896413169387	NeuronCore/CMakeFiles/NeuronCore.dir/NeuronCore.c.obj	e83be448671ecdec
+151	633	7939896414137063	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/StrResL.c.obj	3bb14fe8ee74e3f6
+69	829	7939896413324767	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Dderror.c.obj	17ab1f5376e01c49
+558	842	7939896418207379	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Trig.c.obj	6a5876b0968c0d25
+549	844	7939896418119150	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Treap.c.obj	139308577d478069
+100	854	7939896413627598	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Image.c.obj	8290827d05e1d3f4
+617	861	7939896418797307	NeuronCore/NeuronCore.lib	b63a6f48cc70355a
+105	1062	7939896413676592	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Input.c.obj	17cda65fd485a5f1
+60	1086	7939896413239363	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/Cursor.c.obj	f1d6184066115b6f
+570	1428	7939896418338272	NeuronClient/CMakeFiles/NeuronClient.dir/Framework/W95trace.c.obj	968830e4572d45fd
+25	50	7939896485520086	C:/Users/zwali/source/repos/StarStrike.RTS/build/CMakeFiles/cmake.verify_globs	6f24f594360d5fd5

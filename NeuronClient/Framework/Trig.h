@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Trig.h
  *
  * Interface to trig lookup tables
  *
  */
-#ifndef _trig_h
-#define _trig_h
 
 /* The number of units around a full circle */
 #define TRIG_DEGREES	360
@@ -28,6 +28,4 @@ extern FRACT trigInvCos(FRACT val);
 
 /* Supposedly fast lookup sqrt - unfortunately it's probably slower than the FPU sqrt :-( */
 extern FRACT trigIntSqrt(UDWORD val);
-
-#endif
 

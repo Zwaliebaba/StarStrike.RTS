@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * CmdDroid.h
  *
  * Typedef's for command droids
  *
  */
-#ifndef _cmddroid_h
-#define _cmddroid_h
 
 #include "CmdDroidDef.h"
 
@@ -73,6 +73,5 @@ extern void	cmdSelectSubDroids(DROID *psDroid);
 extern void cmdDroidMultiExpBoost(BOOL bDoit);
 
 
-#endif
 
 

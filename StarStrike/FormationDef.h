@@ -1,9 +1,9 @@
+#pragma once
+
 /*
  * FormationDef.h
  *
  */
-#ifndef _formationdef_h
-#define _formationdef_h
 
 // maximum number of lines in a formation
 #define F_MAXLINES		4
@@ -56,6 +56,5 @@ typedef struct _formation
 } FORMATION;
 
 
-#endif
 
 

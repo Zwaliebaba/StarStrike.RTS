@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * MissionDef.h
  *
  * Structure definitions for Mission
  *
  */
-#ifndef _missiondef_h
-#define _missiondef_h
 
 //mission types
 
@@ -70,4 +70,3 @@ typedef struct _mission
 
 } MISSION;
 
-#endif

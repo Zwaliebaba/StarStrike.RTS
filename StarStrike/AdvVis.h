@@ -1,5 +1,5 @@
-#ifndef _advvis_h
-#define _advvis_h
+#pragma once
+
 extern void	avInformOfChange(SDWORD x, SDWORD y);
 extern void	avUpdateTiles( void );
 extern UDWORD avGetObjLightLevel( BASE_OBJECT *psObj, UDWORD origLevel);
@@ -9,4 +9,3 @@ extern BOOL	getRevealStatus( void );
 extern void	preProcessVisibility( void );
 extern void	avSetStatus(BOOL var);
 
-#endif

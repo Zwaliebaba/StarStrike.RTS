@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Mission.h
  *
  * Mission defines for the game
  *
  */
-#ifndef _mission_h
-#define _mission_h
 
 #include "Map.h"
 #include "Power.h"
@@ -187,5 +187,4 @@ extern void setMissionCheatTime(BOOL bCheating);
 #define		MISSIONRES_TITLE_W		600	
 #define		MISSIONRES_TITLE_H		40
 
-#endif
 

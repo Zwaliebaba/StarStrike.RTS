@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Feature.h
  *
  * Definitions for the feature structures.
  *
  */
-#ifndef _feature_h
-#define _feature_h
 
 #include "ObjectDef.h"
 #define ONEMIN			(1000 * 60)
@@ -54,5 +54,4 @@ extern FEATURE	* checkForWreckage(DROID *psDroid);
 extern BOOL featureDamage(FEATURE *psFeature, UDWORD damage, UDWORD weaponClass, 
                           UDWORD weaponSubClass);
 
-#endif
 

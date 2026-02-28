@@ -1,7 +1,7 @@
+#pragma once
+
 // EAX.H -- DirectSound Environmental Audio Extensions
 
-#ifndef EAX_H_INCLUDED
-#define EAX_H_INCLUDED
 
 #ifdef __cplusplus
 extern "C" {
@@ -126,5 +126,3 @@ typedef struct
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-
-#endif

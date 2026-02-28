@@ -1,9 +1,9 @@
+#pragma once
+
 /*
  * Internal definitions for the level system
  *
  */
-#ifndef _levelint_h
-#define _levelint_h
 
 // return values from the lexer
 enum _token_type
@@ -43,5 +43,4 @@ extern void levSetInputBuffer(UBYTE *pBuffer, UDWORD size);
 
 extern void levGetErrorData(int *pLine, char **ppText);
 
-#endif
 

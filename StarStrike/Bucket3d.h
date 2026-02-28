@@ -1,7 +1,7 @@
+#pragma once
+
 /* bucket3D.h */
 
-#ifndef _bucket3d_h
-#define _bucket3d_h
 
 #define		BUCKET
 
@@ -47,4 +47,3 @@ extern BOOL bucketRenderCurrentList(void);
 extern SDWORD	worldMax,worldMin;
 
 
-#endif
