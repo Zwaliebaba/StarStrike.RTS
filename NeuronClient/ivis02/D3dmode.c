@@ -1,6 +1,6 @@
 /***************************************************************************/
 
-#include "d3d.h"
+#include "Piedef.h"
 
 //#include "Ivi.h"
 #include "Rendmode.h"
@@ -20,8 +20,6 @@
 /***************************************************************************/
 
 static SCREEN_MODE	g_ScreenMode;
-static D3DINFO		g_sD3Dinfo;
-static D3DTLVERTEX	d3dVrts[pie_MAX_POLY_VERTS];
 
 /***************************************************************************/
 
@@ -29,9 +27,6 @@ iBool
 _mode_D3D( void )
 {
 	int		i;
-
-	g_sD3Dinfo.bZBufferOn = TRUE;
-	g_sD3Dinfo.bAlphaKey  = FALSE;
 
 	// set surface attributes
 
@@ -54,7 +49,7 @@ _mode_D3D( void )
 
 	g_ScreenMode = screenGetMode();
 
-	return InitD3D( &g_sD3Dinfo );
+	return InitD3D( screenGetHWnd(), (g_ScreenMode == SCREEN_FULLSCREEN) );
 }
 
 /***************************************************************************/
@@ -62,8 +57,6 @@ _mode_D3D( void )
 iBool
 _mode_D3D_RGB( void )
 {
-	g_sD3Dinfo.bHardware = FALSE;
-	g_sD3Dinfo.bReference = FALSE;
 	return _mode_D3D();
 }
 
@@ -72,8 +65,6 @@ _mode_D3D_RGB( void )
 iBool
 _mode_D3D_HAL( void )
 {
-	g_sD3Dinfo.bHardware = TRUE;
-	g_sD3Dinfo.bReference = FALSE;
 	return _mode_D3D();
 }
 
@@ -82,9 +73,6 @@ _mode_D3D_HAL( void )
 iBool
 _mode_D3D_REF( void )
 {
-	g_sD3Dinfo.bHardware = TRUE;
-	g_sD3Dinfo.bReference = TRUE;
-
 	return _mode_D3D();
 }
 

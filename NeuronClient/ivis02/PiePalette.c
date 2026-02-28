@@ -46,110 +46,12 @@ UWORD	palette16Bit[PALETTE_SIZE];	//16 bit version of the present palette
 
 BOOL	pal_Make16BitPalette(void)
 {
-DDPIXELFORMAT* DDPixelFormat;
 iColour* psPal;
 UDWORD	i;
 UWORD	alpha, red,green,blue;
-BYTE				ap = 0,	ac = 0, rp = 0,	rc = 0, gp = 0,	gc = 0, bp = 0, bc = 0;
-ULONG				mask;
 
-	/*
-	// Cannot convert iof not 16bit mode 
-	*/
-
-	DDPixelFormat =  screenGetFrontBufferPixelFormat();	
-
-	if (DDPixelFormat == NULL)
-	{
-		return FALSE;
-	}
-
-//	ASSERT((DDPixelFormat->dwRGBBitCount == 16, "make16BitPalette RGB bit count not 16"));
-
+	/* Use hardcoded R5G6B5 format to match D3D9 back buffer */
 	psPal =	pie_GetGamePal();
-
-	/*
-	// Cannot playback if not 16bit mode 
-	*/
-	if( DDPixelFormat->dwRGBBitCount == 16 )
-	{
-		/*
-		// Find out the RGB type of the surface and tell the codec...
-		*/
-		mask = DDPixelFormat->dwRGBAlphaBitMask;
-
-		if(mask!=0)
-		{
-			while(!(mask & 1))
-			{
-				mask>>=1;
-				ap++;
-			}
-		}
-
-		while((mask & 1))
-		{
-			mask>>=1;
-			ac++;
-		}
-
-		mask = DDPixelFormat->dwRBitMask;
-
-		if(mask!=0)
-		{
-			while(!(mask & 1))
-			{
-				mask>>=1;
-				rp++;
-			}
-		}
-
-		while((mask & 1))
-		{
-			mask>>=1;
-			rc++;
-		}
-
-		mask = DDPixelFormat->dwGBitMask;
-
-		if(mask!=0)
-		{
-			while(!(mask & 1))
-			{
-				mask>>=1;
-				gp++;
-			}
-		}
-
-		while((mask & 1))
-		{
-			mask>>=1;
-			gc++;
-		}
-
-		mask = DDPixelFormat->dwBBitMask;
-
-		if(mask!=0)
-		{
-			while(!(mask & 1))
-			{
-				mask>>=1;
-				bp++;
-			}
-		}
-
-		while((mask & 1))
-		{
-			mask>>=1;
-			bc++;
-		}
-	}
-	else
-	{
-		//if not 16 bit use blue 5 only so we know the problem
-		bc = 5;
-	}
-
 
 	alpha = 0;
 
@@ -160,18 +62,9 @@ ULONG				mask;
 		green = (UWORD) psPal[i].g;
 		blue = (UWORD) psPal[i].b;
 
-		alpha >>= (8-ac);  
-		red >>= (8-rc);  
-		blue >>= (8-bc);  
-		green >>= (8-gc);  
-
-		alpha <<= ap;  
-		red <<= rp;  
-		blue <<= bp;  
-		green <<= gp;
-		
-		palette16Bit[i] = alpha + red + green + blue;		
-		alpha = 0xff;//alpha = 0xff when i > 0
+		/* R5G6B5: RRRRRGGG GGGBBBBB */
+		palette16Bit[i] = (UWORD)(((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3));
+		if (i == 0) palette16Bit[i] = 0; /* colour key on index 0 */
 	}
 	return(TRUE);
 

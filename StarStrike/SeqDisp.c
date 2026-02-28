@@ -8,7 +8,6 @@
 #include "Widget.h"
 #include "Rendmode.h"
 #include "SeqDisp.h"
-#include "Sequence.h"
 #include "Loop.h"
 #include "Piedef.h"
 #include "Piefunc.h"
@@ -88,11 +87,7 @@ char aAudioName[MAX_STR_LENGTH];
 char aTextName[MAX_STR_LENGTH];
 char aSubtitleName[MAX_STR_LENGTH];
 char* pVideoBuffer = NULL;
-UWORD *p3DFXVideoBuffer = NULL; 
 char* pVideoPalette = NULL;
-VIDEO_MODE videoMode;
-PERF_MODE perfMode = VIDEO_PERF_FULLSCREEN;
-static SDWORD frameSkip = 1;
 SEQLIST aSeqList[MAX_SEQ_LIST];
 static SDWORD currentSeq = -1;
 static SDWORD currentPlaySeq = -1;
@@ -118,196 +113,30 @@ void	seq_SetVideoPath(void);
  */
 /***************************************************************************/
 
- /* Renders a video sequence specified by filename to a buffer*/
+ /* Renders a video sequence specified by filename to a buffer
+  * STUBBED: RPL video codec removed. Handles SEQUENCE_KILL for IntelMap close.
+  */
 BOOL	seq_RenderVideoToBuffer( iSurface *pSurface, char *sequenceName, int time, int seqCommand)
 {
-	SDWORD	frameLag;
-	int	videoTime;
-	BOOL state = TRUE;
-	FILE	*pFileHandle;
-	DDPIXELFORMAT *pDDPixelFormat;
 	UNUSEDPARAMETER(pSurface);
+	UNUSEDPARAMETER(sequenceName);
+	UNUSEDPARAMETER(time);
 
 	if (seqCommand == SEQUENCE_KILL)
 	{
-		//stop the movie
-		seq_ShutDown();
 		bSeqPlaying = FALSE;
-//		bSeqInit = FALSE;
-		//return seq_ReleaseVideoBuffers();
 		return TRUE;
 	}
 
-	if (!bSeqInit)
-	{
-		//this is done in HCI intInitialise() now
-		//if ((bSeqInit = seq_SetupVideoBuffers()) == FALSE)
-		//	return FALSE;
-	}
-
-	if (!bSeqPlaying)
-	{
-		//set a valid video path if there is one
-		if(!bCDPath && !bHardPath)
-		{
-			seq_SetVideoPath();
-		}
-
-		if (bHardPath)//use this first
-		{
-			ASSERT(((strlen(sequenceName) + strlen(aHardPath))<MAX_STR_LENGTH,"sequence path+name greater than max string"));
-			strcpy(aVideoName,aHardPath);
-			strcat(aVideoName,sequenceName);
-		
-			// check it exists. If not then try CD.
-			pFileHandle = fopen(aVideoName, "rb");
-			if (pFileHandle == NULL && bCDPath)
-			{
-				ASSERT(((strlen(sequenceName) + strlen(aCDPath))<MAX_STR_LENGTH,"sequence path+name greater than max string"));
-				strcpy(aVideoName,aCDPath);
-				strcat(aVideoName,sequenceName);
-			}
-			else
-			{
-				fclose(pFileHandle);
-			}
-		}
-		else if (bCDPath)
-		{
-			ASSERT(((strlen(sequenceName) + strlen(aCDPath))<MAX_STR_LENGTH,"sequence path+name greater than max string"));
-			strcpy(aVideoName,aCDPath);
-			strcat(aVideoName,sequenceName);
-		}
-		else
-		{
-			ASSERT((FALSE,"seq_StartFullScreenVideo: sequence path not found"));
-			return FALSE;
-		}
-	
-
-		iV_SetFont(WFont);
-		iV_SetTextColour(-1);
-
-
-		if (pie_GetRenderEngine() == ENGINE_4101)
-		{
-			videoMode = VIDEO_SOFT_WINDOW;
-			pDDPixelFormat = NULL;
-		}
-		else if (pie_GetRenderEngine() == ENGINE_GLIDE)
-		{
-			videoMode = VIDEO_3DFX_WINDOW;
-			pDDPixelFormat = NULL;
-		}
-		else
-		{
-			videoMode = VIDEO_D3D_WINDOW;
-			pDDPixelFormat = screenGetBackBufferPixelFormat();
-		}
-
-//for new timing
-		frame = 0;
-		videoFrameTime = GetTickCount();
-
-#ifdef INCLUDE_AUDIO
-		if ((bSeqPlaying = seq_SetSequenceForBuffer(aVideoName, videoMode, audio_GetDirectSoundObj(), videoFrameTime, pDDPixelFormat, perfMode)) == FALSE)
-#else
-		if ((bSeqPlaying = seq_SetSequenceForBuffer(aVideoName, videoMode, NULL, videoFrameTime, pDDPixelFormat, perfMode)) == FALSE)
-#endif
-		{
-#ifdef DUMMY_VIDEO
-			if ((bSeqPlaying = seq_SetSequenceForBuffer("noVideo.rpl", videoMode, NULL, time, pDDPixelFormat, perfMode)) == TRUE)
-			{
-				return TRUE;
-			}
-#endif
-			ASSERT((FALSE,"seq_RenderVideoToBuffer: unable to initialise sequence %s",aVideoName));
-			return FALSE;
-		}
-		bSeqPlaying = TRUE;
-		frameDuration =	seq_GetFrameTimeInClicks();
-//jps 18 feb 99		seq_RenderOneFrameToBuffer(pVideoBuffer, 1);//skip frame if behind
-	}
-
-	if (frame != VIDEO_FINISHED)
-	{
-		//new call with timing
-		//poll the sequence player while timing the video
-		videoTime = GetTickCount();
-		while (videoTime < (videoFrameTime + RPL_FRAME_TIME))
-		{
-			seq_RefreshVideoBuffers();
-			videoTime = GetTickCount();
-		}
-		frameLag = videoTime - videoFrameTime;
-		frameLag /= RPL_FRAME_TIME;// if were running slow frame lag will be greater than 1
-		videoFrameTime += frameLag * RPL_FRAME_TIME;//frame Lag should be 1 (most of the time)   
-		//call sequence player to decode a frame
-		frame = seq_RenderOneFrameToBuffer(pVideoBuffer, frameLag, 2, 0);//skip frame if behind
-//old call
-//		frame = seq_RenderOneFrameToBuffer(pVideoBuffer, 1);
-	}
-
-	if (frame == VIDEO_FINISHED)
-	{
-		if (seqCommand == SEQUENCE_LOOP)
-		{
-			bSeqPlaying = FALSE;
-			state = TRUE;
-		}
-		if (seqCommand == SEQUENCE_HOLD)
-		{
-			//wait for call to stop video
-			state = TRUE;
-		}
-		else
-		{
-			state = FALSE;
-			seq_ShutDown();
-			bSeqPlaying = FALSE;
-		}
-	}
-	else if (frame < 0) //an ERROR
-	{
-		DBPRINTF(("VIDEO FRAME ERROR %d\n",frame));
-		state = FALSE;
-		seq_ShutDown();
-		bSeqPlaying = FALSE;
-	}
-
-	return state;
+	return FALSE;
 }
 
 BOOL	seq_BlitBufferToScreen(char* screen, SDWORD screenStride, SDWORD xOffset, SDWORD yOffset)
 {
-	int i,j;
-	char c8, *d8;
-	UWORD c16, *p16;
-	SDWORD width, height;
-	seq_GetFrameSize(&width, &height);
-
-	if (videoMode == VIDEO_SOFT_WINDOW)
-	{
-		d8 = screen + xOffset + yOffset * screenStride;
-		p16 = (UWORD*)pVideoBuffer;
-
-		for (j = 0; j < height; j++)
-		{
-			for (i = 0; i < width; i++)
-			{
-				c16 = p16[i];
-				c16 &= RPL_MASK_555;
-				c8 = pVideoPalette[c16];
-				d8[i] = c8;
-			}
-			d8 += screenStride;
-			p16 += width;
-		}
-	}
-	else
-	{
-		pie_DownLoadBufferToScreen(pVideoBuffer, xOffset, yOffset,width,height,(2*width));
-	}
+	UNUSEDPARAMETER(screen);
+	UNUSEDPARAMETER(screenStride);
+	UNUSEDPARAMETER(xOffset);
+	UNUSEDPARAMETER(yOffset);
 	return TRUE;
 }
 
@@ -364,11 +193,6 @@ BOOL seq_SetupVideoBuffers(void)
 		}
 	}
 
-	if(pie_GetRenderEngine() == ENGINE_GLIDE)
-	{
-		p3DFXVideoBuffer = (UWORD*)pVideoBuffer;
-	}
-
 	return TRUE;
 }
 
@@ -404,457 +228,31 @@ BOOL SeqEndCallBack( AUDIO_SAMPLE *psSample )
 	return TRUE;
 }
 
-//full screenvideo functions
+//full screen video functions
+// STUBBED: RPL video codec removed. Returns FALSE so seqDispCDOK fires CALL_VIDEO_QUIT.
 BOOL seq_StartFullScreenVideo(char* videoName, char* audioName)
 {
-	SDWORD	i;
-	FILE	*pFileHandle;
-	bHoldSeqForAudio = FALSE;
-
-	frameSkip = 1;
-	switch(war_GetSeqMode())
-	{
-		case SEQ_SMALL:
-			perfMode = VIDEO_PERF_WINDOW;
-			break;
-		case SEQ_SKIP:
-			frameSkip = 2;
-			perfMode = VIDEO_PERF_SKIP_FRAMES;
-			break;
-		default:
-		case SEQ_FULL:
-			perfMode = VIDEO_PERF_FULLSCREEN;
-			break;
-	}
-
-
-
-	//set a valid video path if there is one
-	if(!bCDPath && !bHardPath)
-	{
-		seq_SetVideoPath();
-	}
-
-	if (bHardPath)//use this first
-	{
-		ASSERT(((strlen(videoName) + strlen(aHardPath))<MAX_STR_LENGTH,"sequence path+name greater than max string"));
-		strcpy(aVideoName,aHardPath);
-		strcat(aVideoName,videoName);
-
-		// check it exists. If not then try CD.
-		pFileHandle = fopen(aVideoName, "rb");
-		if (pFileHandle == NULL && bCDPath)
-		{
-			ASSERT(((strlen(videoName) + strlen(aCDPath))<MAX_STR_LENGTH,"sequence path+name greater than max string"));
-			strcpy(aVideoName,aCDPath);
-			strcat(aVideoName,videoName);
-		}
-		else
-		{
-			fclose(pFileHandle);
-		}
-	}
-	else if (bCDPath)
-	{
-		ASSERT(((strlen(videoName) + strlen(aCDPath))<MAX_STR_LENGTH,"sequence path+name greater than max string"));
-		strcpy(aVideoName,aCDPath);
-		strcat(aVideoName,videoName);
-	}
-	else
-	{
-		ASSERT((FALSE,"seq_StartFullScreenVideo: sequence path not found"));
-		return FALSE;
-	}
-
-	
-	//set audio path
-	if (audioName != NULL)
-	{
-		ASSERT((strlen(audioName)<244,"sequence path+name greater than max string"));
-		strcpy(aAudioName,"sequenceAudio\\");
-		strcat(aAudioName,audioName);
-	}
-
-	//start video mode
-	if (loop_GetVideoMode() == 0)
-	{
-		loop_SetVideoPlaybackMode();
-		iV_SetFont(WFont);
-		iV_SetTextColour(-1);
-	}
-
-	if (audioName != NULL)
-	{
-		ASSERT((strlen(audioName)<244,"sequence path+name greater than max string"));
-		strcpy(aAudioName,"sequenceAudio\\");
-		strcat(aAudioName,audioName);
-	}
-
-
-//for new timing
-	frame = 0;
-	videoFrameTime = GetTickCount();
-
-
-	if(pie_GetRenderEngine() == ENGINE_GLIDE)
-	{
-//		p3DFXVideoBuffer = MALLOC(VIDEO_PLAYBACK_WIDTH * VIDEO_PLAYBACK_HEIGHT * sizeof(UWORD));
-		if (p3DFXVideoBuffer != NULL)
-		{
-			for(i = 0; i < (VIDEO_PLAYBACK_WIDTH * VIDEO_PLAYBACK_HEIGHT); i++)
-			{
-				p3DFXVideoBuffer[i] = 0;
-			}
-		}
-#ifdef INCLUDE_AUDIO
-		if (!seq_SetSequenceForBuffer(aVideoName, VIDEO_3DFX_FULLSCREEN, audio_GetDirectSoundObj(), videoFrameTime + VIDEO_PLAYBACK_DELAY, NULL, perfMode))
-#else
-		if (!seq_SetSequenceForBuffer(aVideoName, VIDEO_3DFX_FULLSCREEN, NULL, videoFrameTime + VIDEO_PLAYBACK_DELAY, NULL, perfMode))
-#endif
-		{
-#ifdef DUMMY_VIDEO
-			if (seq_SetSequenceForBuffer("noVideo.rpl", VIDEO_3DFX_FULLSCREEN, NULL, videoFrameTime + VIDEO_PLAYBACK_DELAY, NULL, perfMode))
-			{
-				strcpy(aAudioName,"noVideo.wav");
-				return TRUE;
-			}
-#endif
-			seq_StopFullScreenVideo();
-			DBERROR((FALSE,"Failed to initialise Escape video sequence %s",aVideoName));
-			return FALSE;
-		}
-	}
-	else
-	{
-#ifdef INCLUDE_AUDIO
-		if (!seq_SetSequence(aVideoName,screenGetSurface(), audio_GetDirectSoundObj(), videoFrameTime + VIDEO_PLAYBACK_DELAY, pVideoBuffer, perfMode))
-#else
-		if (!seq_SetSequence(aVideoName,screenGetSurface(), NULL, videoFrameTime + VIDEO_PLAYBACK_DELAY, pVideoBuffer, perfMode))
-#endif
-		{
-#ifdef DUMMY_VIDEO
-			if (seq_SetSequence("noVideo.rpl",screenGetSurface(), NULL, videoFrameTime + VIDEO_PLAYBACK_DELAY, pVideoBuffer, perfMode))
-			{
-				strcpy(aAudioName,"noVideo.wav");
-				return TRUE;
-			}
-#endif
-			seq_StopFullScreenVideo();
-//			ASSERT((FALSE,"seq_StartFullScreenVideo: unable to initialise sequence %s",aVideoName));
-			return FALSE;
-		}
-	}
-	if (perfMode != VIDEO_PERF_SKIP_FRAMES)//JPS fix for video problems with some sound cards 9 may 99
-	{
-		frameDuration =	seq_GetFrameTimeInClicks();
-	}
-	else
-	{
-		frameDuration =	(seq_GetFrameTimeInClicks() * 112) / 100;//JPS fix for video problems with some sound cards 9 may 99
-	}
-
-	if (audioName == NULL)
-	{
-		bAudioPlaying = FALSE;
-	}
-	else
-	{
-		bAudioPlaying = audio_PlayStream( aAudioName, AUDIO_VOL_MAX, SeqEndCallBack );
-		ASSERT((bAudioPlaying == TRUE,"seq_StartFullScreenVideo: unable to initialise sound %s",aAudioName));
-	}
-
-	return TRUE;
+	UNUSEDPARAMETER(videoName);
+	UNUSEDPARAMETER(audioName);
+	return FALSE;
 }
 
+// STUBBED: RPL video codec removed. Returns FALSE to signal video finished.
 BOOL seq_UpdateFullScreenVideo(CLEAR_MODE *pbClear)
 {
-	SDWORD i, x, y, w, h;
-	SDWORD	frame, frameLag, realFrame;
-	SDWORD	subMin, subMax;
-	int	videoTime;
-	static int videoFrameTime = 0, textFrame = 0;
-	LPDIRECTDRAWSURFACE4	lpDDSF;
-	BOOL bMoreThanOneSequenceLine = FALSE;
-
-	if (seq_GetCurrentFrame() == 0)
-	{
-//for new timing
-		frame = 0;
-		videoFrameTime = GetTickCount();
-		textFrame = 0;
-	}
-
-	seq_GetFrameSize(&w,&h);
-
-	x = (DISP_WIDTH - w)/2;
-	y = (DISP_HEIGHT - h)/2;
-
-	subMin = SUBTITLE_BOX_MAX + D_H;
-	subMax = SUBTITLE_BOX_MIN + D_H;
-
-	//get any text lines over bottom of the video
-	realFrame = textFrame + 1; 
-	for(i=0;i<MAX_TEXT_OVERLAYS;i++)
-	{
-		if (aSeqList[currentPlaySeq].aText[i].pText[0] != 0)
-		{
-			if (aSeqList[currentPlaySeq].aText[i].bSubtitle == TRUE)
-			{
-				if ((realFrame >= aSeqList[currentPlaySeq].aText[i].startFrame) && (realFrame <= aSeqList[currentPlaySeq].aText[i].endFrame))
-				{
-					if (subMin > aSeqList[currentPlaySeq].aText[i].y)
-					{
-						if (aSeqList[currentPlaySeq].aText[i].y > SUBTITLE_BOX_MIN)
-						{
-							subMin = aSeqList[currentPlaySeq].aText[i].y;
-						}
-					}
-					if (subMax < aSeqList[currentPlaySeq].aText[i].y)
-					{
-						subMax = aSeqList[currentPlaySeq].aText[i].y;
-					}
-				}
-				else if (aSeqList[currentPlaySeq].bSeqLoop)//if its a looped video always draw the text
-				{
-					if (subMin >= aSeqList[currentPlaySeq].aText[i].y)
-					{
-						if (aSeqList[currentPlaySeq].aText[i].y > SUBTITLE_BOX_MIN)
-						{
-							subMin = aSeqList[currentPlaySeq].aText[i].y;
-						}
-					}
-					if (subMax < aSeqList[currentPlaySeq].aText[i].y)
-					{
-						subMax = aSeqList[currentPlaySeq].aText[i].y;
-					}
-				}
-			}
-			if ((realFrame >= aSeqList[currentPlaySeq].aText[i].endFrame) && (realFrame < (aSeqList[currentPlaySeq].aText[i].endFrame + frameSkip))) 
-			{
-				if (pbClear != NULL)
-				{
-					if (perfMode != VIDEO_PERF_FULLSCREEN)
-					{
-						*pbClear = CLEAR_BLACK;
-					}
-				}
-			}
-			if (pie_GetRenderEngine() == ENGINE_GLIDE)
-			{
-				if ((realFrame >= aSeqList[currentPlaySeq].aText[i].endFrame + frameSkip) && (realFrame < (aSeqList[currentPlaySeq].aText[i].endFrame + frameSkip + frameSkip))) 
-				{
-					if (pbClear != NULL)
-					{
-						if (perfMode != VIDEO_PERF_FULLSCREEN)
-						{
-							*pbClear = CLEAR_BLACK;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	subMin -= D_H;//adjust video window here because text is already ofset for big screens
-	subMax -= D_H;
-
-	if (subMin < SUBTITLE_BOX_MIN)
-	{
-		subMin = SUBTITLE_BOX_MIN;
-	}
-	if (subMax > SUBTITLE_BOX_MAX)
-	{
-		subMax = SUBTITLE_BOX_MAX;
-	}
-
-	if (subMax > subMin)
-	{
-		bMoreThanOneSequenceLine = TRUE;
-	}
-
-	if(pie_GetRenderEngine() == ENGINE_GLIDE)
-	{
-		if (bHoldSeqForAudio == FALSE)
-		{
-			//poll the sequence player while timing the video
-			videoTime = GetTickCount();
-			while (videoTime < (videoFrameTime + RPL_FRAME_TIME * frameSkip))
-			{
-				videoTime = GetTickCount();
-				seq_RefreshVideoBuffers();
-			}
-			frameLag = videoTime - videoFrameTime;
-			frameLag /= RPL_FRAME_TIME;// if were running slow frame lag will be greater than 1
-			videoFrameTime += frameLag * RPL_FRAME_TIME;//frame Lag should be 1 (most of the time)   
-			//call sequence player to decode a frame
-			lpDDSF = screenGetSurface();
-			frame = seq_RenderOneFrameToBuffer((char*)p3DFXVideoBuffer, frameLag, subMin, subMax);//skip frame if behind
-		}
-		else
-		{
-			frame = seq_RenderOneFrameToBuffer((char*)p3DFXVideoBuffer, 0, 2, 0);//poll the video player
-		}
-		//3dfx blit the buffer to video
-		pie_DownLoadBufferToScreen(p3DFXVideoBuffer,x,y,w,h,sizeof(UWORD)*w);
-		//print any text over the video
-		realFrame = textFrame + 1; 
-		for(i=0;i<MAX_TEXT_OVERLAYS;i++)
-		{
-			if (aSeqList[currentPlaySeq].aText[i].pText[0] != 0)
-			{
-				if ((realFrame >= aSeqList[currentPlaySeq].aText[i].startFrame) && (realFrame <= aSeqList[currentPlaySeq].aText[i].endFrame))
-				{
-					if (bMoreThanOneSequenceLine)
-					{
-						aSeqList[currentPlaySeq].aText[i].x = 20 + D_W;
-					}
-					iV_DrawText(&(aSeqList[currentPlaySeq].aText[i].pText[0]), 
-							aSeqList[currentPlaySeq].aText[i].x, aSeqList[currentPlaySeq].aText[i].y);
-				}
-				else if (aSeqList[currentPlaySeq].bSeqLoop)//if its a looped video always draw the text
-				{
-					if (bMoreThanOneSequenceLine)
-					{
-						aSeqList[currentPlaySeq].aText[i].x = 20 + D_W;
-					}
-					iV_DrawText(&(aSeqList[currentPlaySeq].aText[i].pText[0]), 
-							aSeqList[currentPlaySeq].aText[i].x, aSeqList[currentPlaySeq].aText[i].y);
-				}
-			}
-		}
-	}
-	else
-	{
-		if (bHoldSeqForAudio == FALSE)
-		{
-			if (perfMode != VIDEO_PERF_SKIP_FRAMES)
-			{
-				//version 1.00 release code
-				//poll the sequence player while timing the video
-				videoTime = GetTickCount();
-				while (videoTime < (videoFrameTime + (RPL_FRAME_TIME * frameSkip)))
-				{
-					videoTime = GetTickCount();
-					seq_RefreshVideoBuffers();
-				}
-				frameLag = videoTime - videoFrameTime;
-				frameLag /= RPL_FRAME_TIME;// if were running slow frame lag will be greater than 1
-				videoFrameTime += frameLag * RPL_FRAME_TIME;//frame Lag should be 1 (most of the time)   
-				//call sequence player to decode a frame
-				lpDDSF = screenGetSurface();
-				frame = seq_RenderOneFrame(lpDDSF, frameLag, subMin, subMax);
-			}
-			else
-			{
-				//new version with timeing removed
-				//poll the sequence player while timing the video
-				videoTime = GetTickCount();
-				while (videoTime < (videoFrameTime + (RPL_FRAME_TIME * frameSkip)))
-				{
-					videoTime = GetTickCount();
-					seq_RefreshVideoBuffers();
-				}
-				videoFrameTime += frameSkip * RPL_FRAME_TIME;//frame Lag should be 1 (most of the time)   
-				//call sequence player to decode a frame
-				lpDDSF = screenGetSurface();
-				frame = seq_RenderOneFrame(lpDDSF, frameSkip, subMin, subMax);
-
-			}
-		}
-		else
-		{
-			//call sequence player to download last frame
-			lpDDSF = screenGetSurface();
-			frame = seq_RenderOneFrame(lpDDSF, 0, 2, 0);
-		}
-		//print any text over the video
-		realFrame = textFrame + 1; 
-		for(i=0;i<MAX_TEXT_OVERLAYS;i++)
-		{
-			if (aSeqList[currentPlaySeq].aText[i].pText[0] != 0)
-			{
-				if ((realFrame >= aSeqList[currentPlaySeq].aText[i].startFrame) && (realFrame <= aSeqList[currentPlaySeq].aText[i].endFrame))
-				{
-					lpDDSF = screenGetSurface();
-					if (bMoreThanOneSequenceLine)
-					{
-						aSeqList[currentPlaySeq].aText[i].x = 20 + D_W;
-					}
-					pie_DrawTextToSurface(lpDDSF,&(aSeqList[currentPlaySeq].aText[i].pText[0]), 
-							aSeqList[currentPlaySeq].aText[i].x, aSeqList[currentPlaySeq].aText[i].y);
-				}
-				else if (aSeqList[currentPlaySeq].bSeqLoop)//if its a looped video always draw the text
-				{
-					lpDDSF = screenGetSurface();
-					if (bMoreThanOneSequenceLine)
-					{
-						aSeqList[currentPlaySeq].aText[i].x = 20 + D_W;
-					}
-					pie_DrawTextToSurface(lpDDSF,&(aSeqList[currentPlaySeq].aText[i].pText[0]), 
-							aSeqList[currentPlaySeq].aText[i].x, aSeqList[currentPlaySeq].aText[i].y);
-				}
-
-			}
-		}
-	}
-
-	textFrame = frame * RPL_FRAME_TIME/STD_FRAME_TIME; 
-
-	if ((frame == VIDEO_FINISHED) || (bHoldSeqForAudio))
-	{
-#ifndef SEQ_LOOP
-		if (bAudioPlaying)
-#endif
-		{
-			if (aSeqList[currentPlaySeq].bSeqLoop)
-			{
-				seq_ClearMovie();
-				if(pie_GetRenderEngine() == ENGINE_GLIDE)
-				{
-					if (!seq_SetSequenceForBuffer(aVideoName, VIDEO_3DFX_FULLSCREEN, NULL, GetTickCount() + VIDEO_PLAYBACK_DELAY, NULL, perfMode))
-					{
-						bHoldSeqForAudio = TRUE;
-					}
-				} 
-				else
-				{
-					if (!seq_SetSequence(aVideoName,screenGetSurface(), NULL, GetTickCount() + VIDEO_PLAYBACK_DELAY, pVideoBuffer, perfMode))
-					{
-						bHoldSeqForAudio = TRUE;
-					}
-				}
-				frameDuration =	seq_GetFrameTimeInClicks();
-			}
-			else
-			{
-				bHoldSeqForAudio = TRUE;
-			}
-			return TRUE;//should hold the video
-		}
-#ifndef SEQ_LOOP
-		else
-		{
-			return FALSE;//should terminate the video
-		}
-#endif
-	}
-	else if (frame < 0) //an ERROR
-	{
-		DBPRINTF(("VIDEO FRAME ERROR %d\n",frame));
-		return FALSE;
-	}
-	
-	return TRUE;
+	UNUSEDPARAMETER(pbClear);
+	return FALSE;
 }
 
 BOOL seq_StopFullScreenVideo(void)
 {
 	if (!seq_AnySeqLeft())
 	{
-		loop_ClearVideoPlaybackMode();
+		if (loop_GetVideoMode() > 0)
+		{
+			loop_ClearVideoPlaybackMode();
+		}
 	}
-
-	seq_ShutDown();
 
 	if (!seq_AnySeqLeft())
 	{
@@ -871,7 +269,9 @@ BOOL seq_StopFullScreenVideo(void)
 
 BOOL seq_GetVideoSize(SDWORD* pWidth, SDWORD* pHeight)
 {
-	return seq_GetFrameSize(pWidth, pHeight);
+	*pWidth = 0;
+	*pHeight = 0;
+	return FALSE;
 }
 
 #define BUFFER_WIDTH 600

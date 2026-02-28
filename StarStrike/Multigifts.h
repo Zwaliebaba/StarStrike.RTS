@@ -4,6 +4,8 @@
  * multiplayer game, gifts and deathmatch relevant funcs.
  */
 
+#include "Netplay.h"
+
 extern void requestAlliance		(UBYTE from ,UBYTE to,BOOL prop,BOOL allowAudio);						
 extern void breakAlliance		(UBYTE p1, UBYTE p2,BOOL prop,BOOL allowAudio);
 extern void formAlliance		(UBYTE p1, UBYTE p2,BOOL prop,BOOL allowAudio);

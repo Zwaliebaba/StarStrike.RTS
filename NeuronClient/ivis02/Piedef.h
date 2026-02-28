@@ -16,9 +16,23 @@
 #include "Ivisdef.h"
 #include "Ivispatch.h"
 
+#include <d3d9.h>
 
+/* Compatibility: D3DVAL was a D3D3 cast-to-float macro from d3dtypes.h */
+#ifndef D3DVAL
+#define D3DVAL(val) ((float)(val))
+#endif
 
-#include "d3d.h"
+/* D3D9 pre-transformed vertex: matches D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1 */
+#define PIE_FVF_D3D9  (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
+
+typedef struct PIE_D3D9_VERTEX {
+	float  sx, sy, sz;   /* Screen-space x, y; z for depth buffer (0.0-1.0) */
+	float  rhw;          /* Reciprocal homogeneous W (= 1.0 for screen-space) */
+	DWORD  color;        /* D3DCOLOR diffuse  (0xAARRGGBB) */
+	DWORD  specular;     /* D3DCOLOR specular (0xAARRGGBB) */
+	float  tu, tv;       /* Texture UV coordinates */
+} PIE_D3D9_VERTEX;
 
 
 
@@ -153,7 +167,7 @@ typedef struct
 	typedef struct {
 		UDWORD flags;
 		SDWORD nVrts;
-		D3DTLVERTEX *pVrts;
+		PIE_D3D9_VERTEX *pVrts;
 		iTexAnim *pTexAnim;
 	} PIED3DPOLY;
 	typedef struct {

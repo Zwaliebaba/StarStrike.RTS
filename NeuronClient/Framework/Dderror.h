@@ -16,9 +16,6 @@
 
 #pragma warning (disable : 4201 4214 4115 4514)
 #include <windows.h>
-#include <ddraw.h>
-#include <d3d.h>
-#include <d3drm.h>
 #pragma warning (default : 4201 4214 4115)
 
 #include "Types.h"

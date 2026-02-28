@@ -527,96 +527,19 @@ UBYTE	paletteIndex;
 UWORD	newColour;
 UWORD	gun;
 UDWORD	i;
-DDPIXELFORMAT	*DDPixelFormat;
-ULONG			mask;
 BYTE			ap = 0,	ac = 0, rp = 0,	rc = 0, gp = 0,	gc = 0, bp = 0, bc = 0;
 iColour*		psPalette;
 UDWORD			size;
 
-	if (b3DFX)
-	{
-		// 565 RGB
-		ap = 16;
-		ac = 0;
-		rp = 11;
-		rc = 5;
-		gp = 5;
-		gc = 6;
-		bp = 0;
-		bc = 5;
-	}
-	else
-	{
-		DDPixelFormat = screenGetBackBufferPixelFormat();
-		/*
-		// Cannot playback if not 16bit mode 
-		*/
-		if( DDPixelFormat->dwRGBBitCount == 16 )
-		{
-			/*
-			// Find out the RGB type of the surface and tell the codec...
-			*/
-			mask = DDPixelFormat->dwRGBAlphaBitMask;
-			if(mask!=0)
-			{
-				while(!(mask & 1))
-				{
-					mask>>=1;
-					ap++;
-				}
-			}
-			while((mask & 1))
-			{
-				mask>>=1;
-				ac++;
-			}
-
-			mask = DDPixelFormat->dwRBitMask;
-			if(mask!=0)
-			{
-				while(!(mask & 1))
-				{
-					mask>>=1;
-					rp++;
-				}
-			}
-			while((mask & 1))
-			{
-				mask>>=1;
-				rc++;
-			}
-
-			mask = DDPixelFormat->dwGBitMask;
-			if(mask!=0)
-			{
-				while(!(mask & 1))
-				{
-					mask>>=1;
-					gp++;
-				}
-			}
-			while((mask & 1))
-			{
-				mask>>=1;
-				gc++;
-			}
-
-			mask = DDPixelFormat->dwBBitMask;
-			if(mask!=0)
-			{
-				while(!(mask & 1))
-				{
-					mask>>=1;
-					bp++;
-				}
-			}
-			while((mask & 1))
-			{
-				mask>>=1;
-				bc++;
-			}
-		}
-	}
+	/* D3D9: always use R5G6B5 format for 16-bit conversion */
+	ap = 16;
+	ac = 0;
+	rp = 11;
+	rc = 5;
+	gp = 5;
+	gc = 6;
+	bp = 0;
+	bc = 5;
 
 	/*
 		640*480, 8 bit colour source image 
@@ -659,27 +582,12 @@ void pie_LoadBackDrop(SCREENTYPE screenType, BOOL b3DFX)
 {
 iSprite backDropSprite;
 iBitmap	tempBmp[BACKDROP_WIDTH*BACKDROP_HEIGHT];
-DDPIXELFORMAT	*pDDPixelFormat;
 UDWORD	chooser0,chooser1;
 CHAR	backd[128];
 SDWORD	bitDepth;
 
-	if (b3DFX)
-	{
-		bitDepth = 16;
-	}
-	else
-	{
-		pDDPixelFormat = screenGetBackBufferPixelFormat();
-		if( pDDPixelFormat->dwRGBBitCount == 16 )
-		{
-			bitDepth = 16;
-		}
-		else
-		{
-			bitDepth = 8;
-		}
-	}
+	/* D3D9: back buffer is always 16-bit R5G6B5 */
+	bitDepth = 16;
 
 	//randomly load in a backdrop piccy.
 	srand((unsigned)time( NULL ) );
@@ -762,7 +670,7 @@ void pie_D3DRenderForFlip(void)
 {
 	if (pgSrcData != NULL)
 	{
-		pie_RenderImageToSurface(screenGetSurface(), gSurfaceOffsetX, gSurfaceOffsetY, pgSrcData, gSrcWidth, gSrcHeight, gSrcStride);
+		pie_RenderImageToSurface(gSurfaceOffsetX, gSurfaceOffsetY, pgSrcData, gSrcWidth, gSrcHeight, gSrcStride);
 		pgSrcData = NULL;
 	}
 }

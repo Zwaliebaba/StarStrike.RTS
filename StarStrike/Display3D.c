@@ -6376,8 +6376,7 @@ iVector	null,vec;
 SDWORD	rx,rz;
 UDWORD	colour;
 UDWORD	specular;
-UDWORD	trans;
-//SDWORD	centreX,centreZ;
+UDWORD	trans = 0;
 
 	null.x = null.y = null.z = 0;
 	each.x = psDroid->x;

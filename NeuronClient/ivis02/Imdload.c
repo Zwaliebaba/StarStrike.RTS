@@ -59,8 +59,8 @@ BOOL CheckColourKey( iIMDShape *psShape );
 
 // Special re-mix of sscanf that moves the string pointer along.
 // Portable replacement for the old CRT-internal-based version.
-// Works by appending %n to the format string to measure consumed bytes,
-// then builds a suppressed-assignment copy to get the byte count separately.
+// Advances the string pointer past consumed input by manually walking
+// the format and input in lockstep after vsscanf succeeds.
 int __cdecl sscanf1 (
 		char **stringPos,
 		const char *format,
@@ -70,57 +70,167 @@ int __cdecl sscanf1 (
 		va_list arglist;
 		int retval;
 		char *string;
+		char localCopy[2048];
+		size_t len;
+
+		if (stringPos == NULL || *stringPos == NULL || format == NULL)
+		{
+			return 0;
+		}
 
 		string = *stringPos;
 
+		// Work on a local copy to prevent vsscanf from reading past
+		// the end of the source buffer when it is not null-terminated within
+		// a safe range.
+		len = strlen(string);
+		if (len >= sizeof(localCopy))
+		{
+			len = sizeof(localCopy) - 1;
+		}
+		memcpy(localCopy, string, len);
+		localCopy[len] = '\0';
+
 		va_start(arglist, format);
-		retval = vsscanf(string, format, arglist);
+		retval = vsscanf(localCopy, format, arglist);
 		va_end(arglist);
 
-		// Advance pointer: build a format with all assignments suppressed + %n
+		// Advance pointer by manually walking the format and input string
+		// to skip past all successfully consumed tokens.
 		if (retval > 0)
 		{
-			char supFmt[512];
-			const char *src = format;
-			char *dst = supFmt;
-			char *dstEnd = supFmt + sizeof(supFmt) - 3;
-			int consumed = 0;
+			char *p = string;
+			const char *f = format;
+			int conversions = 0;
+			char conv;
 
-			while (*src && dst < dstEnd)
+			while (*f)
 			{
-				if (*src == '%')
+				if (*f == '%')
 				{
-					if (*(src + 1) == '%')
+					f++;
+					if (*f == '%')
 					{
-						*dst++ = *src++;
-						*dst++ = *src++;
+						// Literal '%' in input
+						if (*p == '%') p++;
+						f++;
 					}
 					else
 					{
-						*dst++ = *src++; // copy '%'
-						*dst++ = '*';    // suppress assignment
-						while (*src && dst < dstEnd)
+						// This is a real conversion - stop if all conversions consumed
+						if (conversions >= retval)
+							break;
+
+						// Skip field width digits
+						while (*f >= '0' && *f <= '9') f++;
+						// Skip length modifiers (l, h, L)
+						while (*f == 'l' || *f == 'h' || *f == 'L') f++;
+
+						conv = *f ? *f++ : '\0';
+
+						// Most conversions skip leading whitespace
+						if (conv != 'c' && conv != '[' && conv != '\0')
 						{
-							int isConv = (*src >= 'a' && *src <= 'z') ||
-										 (*src >= 'A' && *src <= 'Z');
-							*dst++ = *src++;
-							if (isConv) break;
+							while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')
+								p++;
+						}
+
+						switch (conv)
+						{
+						case 's':
+							while (*p && *p != ' ' && *p != '\t' && *p != '\n' && *p != '\r')
+								p++;
+							conversions++;
+							break;
+						case 'd': case 'i': case 'u':
+							if (*p == '-' || *p == '+') p++;
+							while (*p >= '0' && *p <= '9')
+								p++;
+							conversions++;
+							break;
+						case 'x': case 'X':
+							if (*p == '-' || *p == '+') p++;
+							if (*p == '0' && (*(p+1) == 'x' || *(p+1) == 'X'))
+								p += 2;
+							while ((*p >= '0' && *p <= '9') ||
+								   (*p >= 'a' && *p <= 'f') ||
+								   (*p >= 'A' && *p <= 'F'))
+								p++;
+							conversions++;
+							break;
+						case 'o':
+							if (*p == '-' || *p == '+') p++;
+							while (*p >= '0' && *p <= '7')
+								p++;
+							conversions++;
+							break;
+						case '[':
+						{
+							// Scanset: %[set] or %[^set]
+							// Parse the character set from the format string
+							char charset[256];
+							int charsetLen = 0;
+							int negate = 0;
+							int inSet, k;
+
+							if (*f == '^') {
+								negate = 1;
+								f++;
+							}
+							// ']' as first char is part of set, not closing bracket
+							if (*f == ']') {
+								charset[charsetLen++] = ']';
+								f++;
+							}
+							while (*f && *f != ']' && charsetLen < 255) {
+								charset[charsetLen++] = *f++;
+							}
+							if (*f == ']') f++; // skip closing ']'
+
+							// Advance p while characters match the scanset
+							while (*p) {
+								inSet = 0;
+								for (k = 0; k < charsetLen; k++) {
+									if (*p == charset[k]) {
+										inSet = 1;
+										break;
+									}
+								}
+								// For normal set: continue if in set
+								// For negated set: continue if NOT in set
+								if (negate ? inSet : !inSet)
+									break;
+								p++;
+							}
+							conversions++;
+							break;
+						}
+						default:
+							// Unknown conversion; stop advancing
+							conversions = retval;
+							break;
 						}
 					}
 				}
+				else if (*f == ' ' || *f == '\t' || *f == '\n' || *f == '\r')
+				{
+					// Whitespace in format matches any amount of whitespace in input
+					while (*f == ' ' || *f == '\t' || *f == '\n' || *f == '\r')
+						f++;
+					while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')
+						p++;
+				}
 				else
 				{
-					*dst++ = *src++;
+					// Literal character match
+					if (*p == *f) p++;
+					f++;
 				}
 			}
-			*dst++ = '%';
-			*dst++ = 'n';
-			*dst = '\0';
 
-			sscanf(string, supFmt, &consumed);
-			if (consumed > 0)
+			if (p > string)
 			{
-				*stringPos = string + consumed;
+				*stringPos = p;
 			}
 		}
 

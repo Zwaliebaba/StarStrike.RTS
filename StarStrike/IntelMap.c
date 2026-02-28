@@ -1068,17 +1068,11 @@ void intRemoveIntelMapNoAnim(void)
 void intRemoveMessageView(BOOL animated)
 {
 	W_TABFORM		*Form;
-	VIEW_RESEARCH	*psViewResearch;
 
 	//remove 3dView if still there
 	Form = (W_TABFORM*)widgGetFromID(psWScreen,IDINTMAP_MSGVIEW);
 	if(Form) 
 	{
-		//stop the video
-		psViewResearch = (VIEW_RESEARCH *)Form->pUserData;
-		seq_RenderVideoToBuffer(NULL, psViewResearch->sequenceName, 
-			gameTime2, SEQUENCE_KILL);
-
 		if (animated)
 		{
 			widgDelete(psWScreen, IDINTMAP_CLOSE);
@@ -1298,18 +1292,17 @@ void intDisplayPIEView(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset,
 	}
 }
 
-/* displays the FLIC view for the current message */
+/* displays the FLIC view for the current message
+ * Originally rendered an RPL video sequence. Now renders the research IMD model
+ * as a fallback since the proprietary video codec has been removed.
+ */
 void intDisplayFLICView(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, 
 					  UDWORD *pColours)
 {
 	W_TABFORM		*Form = (W_TABFORM*)psWidget;
 	MESSAGE			*psMessage = (MESSAGE *)Form->pUserData;
 	UDWORD			x0,y0,x1,y1;
-	VIEW_RESEARCH	*psViewResearch;
-//#ifdef PSX
-//	RECT			DrawArea;
-//	UWORD			OTIndex;
-//#endif
+	RESEARCH		*psResearch;
 	UNUSEDPARAMETER(pColours);
 
 	//shouldn't have any proximity messages here...
@@ -1320,40 +1313,30 @@ void intDisplayFLICView(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 
 	if (psMessage AND psMessage->pViewData)
 	{
-		OpenButtonRender((UWORD)(xOffset+Form->x), (UWORD)(yOffset+Form->y),
-			Form->width, Form->height);
+		if (((VIEWDATA *)psMessage->pViewData)->type != VIEW_RES)
+		{
+			ASSERT((FALSE, "intDisplayFLICView: Invalid message type"));
+			return;
+		}
 
 		x0 = xOffset+Form->x;
 		y0 = yOffset+Form->y;
 		x1 = x0 + Form->width;
 		y1 = y0 + Form->height;
 
+		RenderWindowFrame(&FrameNormal,x0-1,y0-1,x1-x0+2,y1-y0+2);
 
-		if (((VIEWDATA *)psMessage->pViewData)->type != VIEW_RES)
+		OpenButtonRender((UWORD)(xOffset+Form->x), (UWORD)(yOffset+Form->y),
+			Form->width, Form->height);
+
+		//render the research IMD in place of the video sequence
+		psResearch = getResearchForMsg((VIEWDATA *)psCurrentMsg->pViewData);
+		if (psResearch)
 		{
-			ASSERT((FALSE, "intDisplayFLICView: Invalid message type"));
-			return;
+			renderResearchToBuffer(pIntelMapSurface, psResearch, x0+(x1-x0)/2, y0+(y1-y0)/2);
+			renderMapSurface(pIntelMapSurface, x0, y0, Form->width, Form->height);
 		}
-		//render a frame of the current movie
-		psViewResearch = (VIEW_RESEARCH *)((VIEWDATA *)psCurrentMsg->pViewData)->pData;
-//#ifdef WIN32
-		seq_RenderVideoToBuffer(NULL, psViewResearch->sequenceName, 
-			gameTime2, SEQUENCE_HOLD);
-		//download to screen now
-		seq_BlitBufferToScreen((SBYTE *)rendSurface.buffer, rendSurface.scantable[1], 
-			x0, y0);
-//#else
-//	// PSXSequencesCountdown is the time until the playstation research seq. starts
-//	// ... This gives the rest of the display a chance to have a head start.
-//	//  ... avoiding screen flickers 
-//		if (PSXSequencesCountdown>0) PSXSequencesCountdown--;
-//		if (PSXSequencesCountdown==1)
-//		{
-//			StartMessageSequences(psMessage,FALSE);	// PSX Version just starts the sequences
-//			loop_SetVideoPlaybackMode();		// set so that the main loop plays the video !
-//			
-//		}
-//#endif
+
 		CloseButtonRender();
 	}
 }

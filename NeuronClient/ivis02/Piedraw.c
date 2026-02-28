@@ -23,7 +23,6 @@
 #include "PieTexture.h"
 #include "PieClip.h"
 
-#include "d3d.h"
 #include "D3drender.h"
 
 #define MIST
@@ -43,7 +42,7 @@
 static PIEPIXEL		scrPoints[pie_MAX_POINTS];
 static PIEVERTEX	pieVrts[pie_MAX_POLY_VERTS];
 static PIEVERTEX	clippedVrts[pie_MAX_POLY_VERTS];
-static D3DTLVERTEX	d3dVrts[pie_MAX_POLY_VERTS];
+static PIE_D3D9_VERTEX	d3dVrts[pie_MAX_POLY_VERTS];
 static iVertex		imdVrts[pie_MAX_POLY_VERTS];
 static SDWORD		pieCount = 0;
 static SDWORD		tileCount = 0;
@@ -957,12 +956,12 @@ void pie_DrawLine(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1, UDWORD colour, BOO
 	d3dVrts[0].color = colour;
 	d3dVrts[0].specular = 0;
 
-	memcpy(&d3dVrts[1],&d3dVrts[0],sizeof(D3DTLVERTEX));
+	memcpy(&d3dVrts[1],&d3dVrts[0],sizeof(PIE_D3D9_VERTEX));
 	d3dVrts[1].sx = (float)x1;
 	d3dVrts[1].sy = (float)y1;
 
 #ifndef NO_RENDER
-	D3DDrawPoly(2,&d3dVrts[0]); 
+	D3DDrawPoly(2,&d3dVrts[0]);
 #endif
 }
 
@@ -1022,10 +1021,10 @@ void pie_DrawRect(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1, UDWORD colour, BOO
 	d3dVrts[0].color = colour;
 	d3dVrts[0].specular = 0;
 
-	memcpy(&d3dVrts[1],&d3dVrts[0],sizeof(D3DTLVERTEX));
-	memcpy(&d3dVrts[2],&d3dVrts[0],sizeof(D3DTLVERTEX));
-	memcpy(&d3dVrts[3],&d3dVrts[0],sizeof(D3DTLVERTEX));
-	memcpy(&d3dVrts[4],&d3dVrts[0],sizeof(D3DTLVERTEX));
+	memcpy(&d3dVrts[1],&d3dVrts[0],sizeof(PIE_D3D9_VERTEX));
+	memcpy(&d3dVrts[2],&d3dVrts[0],sizeof(PIE_D3D9_VERTEX));
+	memcpy(&d3dVrts[3],&d3dVrts[0],sizeof(PIE_D3D9_VERTEX));
+	memcpy(&d3dVrts[4],&d3dVrts[0],sizeof(PIE_D3D9_VERTEX));
 
 	d3dVrts[1].sx = (float)x1 + D3D_RECT_CORRECTION;
 	d3dVrts[1].sy = (float)y0;

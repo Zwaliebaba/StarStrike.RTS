@@ -5,6 +5,8 @@
 
 /***************************************************************************/
 
+#include <d3d9.h>
+
 typedef enum TEXCOLOURDEPTH
 {
 	TCD_4BIT,			// 16 colour palette
@@ -18,17 +20,11 @@ TEXCOLOURDEPTH;
 
 typedef struct TEXPAGE_D3D
 {
-	LPDIRECTDRAWSURFACE4	psSurface;		/* DD Surface			*/
-	LPDIRECTDRAWPALETTE		psPalette;		/* surface palette		*/ //always use system palette
-	LPDIRECT3DTEXTURE2		psTexture;		/* DD Texture			*/
-	D3DTEXTUREHANDLE		hTexture;		/* texture handle		*/
-	LPDIRECT3DMATERIAL3		psMaterial;		/* material pointer		*/
-	D3DMATERIALHANDLE		hMat;			/* material handle		*/
+	IDirect3DTexture9*		pTexture;		/* D3D9 managed texture		*/
 	UWORD					iWidth;
 	UWORD					iHeight;
 	SWORD					widthShift;
 	SWORD					heightShift;
-	BOOL					bInVideo;
 	BOOL					bColourKeyed;
 }
 TEXPAGE_D3D;
@@ -37,17 +33,8 @@ TEXPAGE_D3D;
 extern TEXPAGE_D3D			*psRadarTexpage;
 /***************************************************************************/
 
-BOOL	d3dLoadTextureSurf( char szFileName[], LPDIRECTDRAWSURFACE4 *ppsSurf,
-							LPDIRECT3DTEXTURE2 *ppsTexture,
-							PALETTEENTRY pal[],
-							BOOL bHardware, BOOL* bInVideo );
-
-BOOL	D3DTexCreateFromIvisTex( TEXPAGE_D3D			*psTexPage,
-								 iTexture				*psIvisTex,
-								 iPalette				psIvisPal,
-								 LPDDPIXELFORMAT		pDDSurfDescTexture,
-								 PALETTEENTRY			*psPal,
-								 BOOL					bHardware );
+UWORD	NearestPowerOf2( UDWORD i );
+UWORD	NearestPowerOf2withShift( UDWORD i, SWORD *shift );
 
 /***************************************************************************/
 

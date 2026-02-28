@@ -22,15 +22,14 @@ target_link_libraries (StarStrike
     PRIVATE
         NeuronClient
         # DirectX SDK libraries
+        ${CMAKE_SOURCE_DIR}/DX9/Lib/d3d9.lib
         ${CMAKE_SOURCE_DIR}/DX9/Lib/ddraw.lib
         ${CMAKE_SOURCE_DIR}/DX9/Lib/dplayx.lib
         ${CMAKE_SOURCE_DIR}/DX9/Lib/dxguid.lib
         ${CMAKE_SOURCE_DIR}/DX9/Lib/dsound.lib
         ${CMAKE_SOURCE_DIR}/DX9/Lib/dinput.lib
-        ${CMAKE_SOURCE_DIR}/DX9/Lib/d3dx.lib
         # Third-party libraries
         ${CMAKE_SOURCE_DIR}/NeuronClient/Sound/QMixer.lib
-        ${CMAKE_SOURCE_DIR}/NeuronClient/Sequence/WINSTR.LIB
         ${CMAKE_SOURCE_DIR}/NeuronClient/Netplay/Mplayer.lib
         # Windows system libraries
         winmm

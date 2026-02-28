@@ -42,10 +42,12 @@ file(GLOB NETPLAY_SRC CONFIGURE_DEPENDS
     "Netplay/*.h"
 )
 
-file(GLOB SEQUENCE_SRC CONFIGURE_DEPENDS
-    "Sequence/*.c"
-    "Sequence/*.h"
-)
+# Sequence sources removed — proprietary RPL video codec (STREAMER.h / WINSTR.LIB)
+# is not viable on modern toolchains. SeqDisp.c in StarStrike/ provides stubs.
+# file(GLOB SEQUENCE_SRC CONFIGURE_DEPENDS
+#     "Sequence/*.c"
+#     "Sequence/*.h"
+# )
 
 # Only C sources
 file(GLOB IVIS02_SRC CONFIGURE_DEPENDS
@@ -60,7 +62,6 @@ add_library (NeuronClient STATIC
     ${SOUND_SRC}
     ${SCRIPT_SRC}
     ${NETPLAY_SRC}
-    ${SEQUENCE_SRC}
     ${IVIS02_SRC}
 )
 
@@ -75,7 +76,6 @@ target_include_directories (NeuronClient
         ${CMAKE_CURRENT_SOURCE_DIR}/Sound
         ${CMAKE_CURRENT_SOURCE_DIR}/Script
         ${CMAKE_CURRENT_SOURCE_DIR}/Netplay
-        ${CMAKE_CURRENT_SOURCE_DIR}/Sequence
         ${CMAKE_SOURCE_DIR}/DX9/Include
 )
 

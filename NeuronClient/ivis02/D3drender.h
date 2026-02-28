@@ -5,7 +5,7 @@
 
 /***************************************************************************/
 
-#include "d3d.h"
+#include <d3d9.h>
 #include "Frame.h"
 #include "Texd3d.h"
 #include "PieState.h"
@@ -18,26 +18,28 @@
 #define D3D_TRI_NOCULL		0x0002
 #define D3D_TRI_ALPHABLEND	0x0004
 
-typedef struct D3DINFO
-{
-	BOOL	bZBufferOn;
-	BOOL	bHardware;
-	BOOL	bReference;
-	BOOL	bAlphaKey;
-}
-D3DINFO;
+typedef struct D3D9GLOBALS {
+	IDirect3D9*         pD3D9;           /* Created by Direct3DCreate9()       */
+	IDirect3DDevice9*   pDevice;         /* The rendering device               */
+	D3DPRESENT_PARAMETERS presentParams; /* Swap chain configuration           */
+	D3DDEVTYPE          devType;         /* D3DDEVTYPE_HAL or D3DDEVTYPE_REF   */
+	D3DCAPS9            caps;            /* Device capabilities                */
+	BOOL                bZBufferOn;
+	BOOL                bDeviceLost;     /* Device-lost state flag             */
+	BOOL                bWindowed;
+	D3DFORMAT           backBufferFmt;   /* D3DFMT_R5G6B5 or D3DFMT_X8R8G8B8  */
+} D3D9GLOBALS;
+
+extern D3D9GLOBALS g_D3D9;
 
 /***************************************************************************/
 
-extern BOOL	InitD3D( D3DINFO *psD3Dinfo );
+extern BOOL	InitD3D( HWND hWnd, BOOL bFullscreen );
 extern void	ShutDownD3D( void );
 extern void	BeginSceneD3D( void );
 extern void	EndSceneD3D( void );
 extern void D3D_PIEPolygon( SDWORD numVerts, PIEVERTEX* pVrts);
-extern void D3DDrawPoly( int nVerts, D3DTLVERTEX * psVert);
-//extern BOOL	D3DGetD3DTexturePage( iTexture *pIvisTex, iPalette pIvisPal );
-//extern void D3DFreeTexturePages( void );
-//extern void RestoreAllD3DTextures( void );
+extern void D3DDrawPoly( int nVerts, PIE_D3D9_VERTEX * psVert);
 extern void D3DSetAlphaBlending( BOOL bAlphaOn );
 extern void D3DSetTranslucencyMode( TRANSLUCENCY_MODE transMode );
 
@@ -56,14 +58,7 @@ extern void D3DTestCooperativeLevel( BOOL bGotFocus );
 
 extern void D3DSetClipWindow(SDWORD xMin, SDWORD yMin, SDWORD xMax, SDWORD yMax);
 
-extern BOOL d3d_bHardware(void);
-extern LPDDPIXELFORMAT d3d_GetCurTexSurfDesc(void);
-extern LPDIRECT3DDEVICE3 d3d_GetpsD3DDevice3(void) ;
-extern LPDIRECT3D3 d3d_GetpsD3D(void);
-extern LPDIRECTDRAW4 d3d_GetpsDD4(void);
-
-extern BOOL CreateMaterial( LPDIRECT3D3 lpD3D, D3DMATERIALHANDLE * hMat,
-				LPDIRECT3DMATERIAL3 *ppsMat, D3DTEXTUREHANDLE hTexture );
+extern void D3D9_SetDefaultRenderStates(void);
 
 /***************************************************************************/
 

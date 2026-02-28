@@ -478,24 +478,16 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 					hitGfx[MAX_NAME_SIZE], missGfx[MAX_NAME_SIZE], 
 					waterGfx[MAX_NAME_SIZE], muzzleGfx[MAX_NAME_SIZE],
 					trailGfx[MAX_NAME_SIZE], techLevel[MAX_NAME_SIZE];
-	STRING			fireOnMove[10], weaponClass[15], weaponSubClass[15],
-					weaponEffect[15], movement[15], facePlayer[5],
-					faceInFlight[5],lightWorld[5];
+	STRING			fireOnMove[MAX_NAME_SIZE], weaponClass[MAX_NAME_SIZE], weaponSubClass[MAX_NAME_SIZE],
+					weaponEffect[MAX_NAME_SIZE], movement[MAX_NAME_SIZE], facePlayer[MAX_NAME_SIZE],
+					faceInFlight[MAX_NAME_SIZE],lightWorld[MAX_NAME_SIZE];
 	UDWORD			longRange, effectSize, numAttackRuns, designable;
 	UDWORD			numRounds;
 
 	char			*StatsName;
 
-	//keep the start so we release it at the end
-	//pData = pWeaponData;
-	
 	psStats = &sStats;
-/*	psStats = (WEAPON_STATS *)MALLOC(sizeof(WEAPON_STATS));
-	if (psStats == NULL)
-	{
-		DBERROR(("Weapon Stats - Out of memory"));
-		return FALSE;
-	}*/
+
 	//reserve the start of the data
 	psStartStats = psStats;
 
@@ -891,99 +883,13 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		//increment the pointer to the start of the next record
 		pWeaponData = (SBYTE*)strchr(pWeaponData,'\n') + 1;
 	}
-//	FREE(pData);
-//	FREE(psStats);
 
 	return TRUE;
 }
-
-/*Load the Armour stats from the file exported from Access*/
-/*BOOL loadArmourStats(void)
-{
-	SBYTE *pArmourData, *pStartArmourData;
-	UDWORD fileSize;
-	ARMOUR_STATS	*psStats, *psStartStats;
-	UDWORD	NumArmour = 0,i;
-	STRING  ArmourName[50];
-	BOOL EndOfFile;
-
-
-	if (!loadFile("Armour.txt", (UBYTE**)&pArmourData, &fileSize))
-	{
-		return FALSE;
-	}
-	pStartArmourData = pArmourData;
-
-	psStats = (ARMOUR_STATS *)MALLOC(sizeof(ARMOUR_STATS));
-	if (psStats == NULL)
-	{
-		DBERROR(("Armour Stats - Out of memory"));
-		return FALSE;
-	}
-	//reserve the start of the data
-	psStartStats = psStats;
-
-	EndOfFile = FALSE;
-	//determine the number of records to add by counting the number of '\n'
-	while (!EndOfFile)
-	{
-		pArmourData = strchr(pArmourData,'\n');
-		if (pArmourData == NULL)
-		{
-			EndOfFile = TRUE;
-		}
-		else
-		{
-			pArmourData++;
-			NumArmour++;
-		}
-	}
-	//return to the start of the data
-	pArmourData = pStartArmourData;
-
-	if (!statsAllocArmour(NumArmour))
-	{
-		return FALSE;
-	}
-
-	for (i=0; i < NumArmour; i++)
-	{
-		memset(psStats, 0, sizeof(ARMOUR_STATS));
-
-		//read the data into the storage - the data is delimeted using comma's
-		sscanf(pArmourData,"%[^','],%d,%d,%d,%d,%d,%d",
-			&ArmourName, &psStats->buildPower,&psStats->buildPoints, 
-			&psStats->weight, &psStats->hitPoints, &psStats->systemPoints, 
-			&psStats->strength);
-
-		//allocate storage for the name
-		psStats->pName = (STRING *)MALLOC((strlen(ArmourName))+1);
-		if (psStats->pName == NULL)
-		{
-			DBERROR(("Armour Stats Name - Out of memory"));
-			return FALSE;
-		}	
-		strcpy(psStats->pName,ArmourName);
-		
-		psStats->ref = REF_ARMOUR_START + i;
-
-		//save the stats
-		statsSetArmour(psStats, i);
-		
-		psStats = psStartStats;
-		//increment the pointer to the start of the next record
-		pArmourData = strchr(pArmourData,'\n') + 1;
-	}
-	FREE(pStartArmourData);
-	FREE(psStats);
-	return TRUE;
-}
-*/
 
 /*Load the Body stats from the file exported from Access*/
 BOOL loadBodyStats(SBYTE *pBodyData, UDWORD bufferSize)
 {
-	//SBYTE			*pData;
 	BODY_STATS		sStats, *psStats, *psStartStats;
 	UDWORD			NumBody = 0,i,designable;
 	STRING			BodyName[MAX_NAME_SIZE], size[MAX_NAME_SIZE], 
@@ -991,17 +897,9 @@ BOOL loadBodyStats(SBYTE *pBodyData, UDWORD bufferSize)
                     flameIMD[MAX_NAME_SIZE];
 
 
-	//keep the start so we can release it at the end
-	//pData = pBodyData;
-	
 	psStats = &sStats;
-/*	psStats = (BODY_STATS *)MALLOC(sizeof(BODY_STATS));
-	if (psStats == NULL)
-	{
-		DBERROR(("Body Stats - Out of memory"));
-		return FALSE;
-	}*/
-	//reserve the start of the data
+
+  //reserve the start of the data
 	psStartStats = psStats;
 
 	NumBody = numCR((UBYTE *)pBodyData, bufferSize);
