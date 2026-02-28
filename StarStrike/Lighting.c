@@ -46,7 +46,7 @@ extern void	draw3dLine(iVector *src, iVector *dest, UBYTE col);
  */
 /*****************************************************************************/
 
-/*Rewrote the function so it takes parameters and also doesn't loop thru'
+/*Rewrote the function so it takes parameters && also doesn't loop thru'
 the map 4 times!*/
 /*void initLighting( void )
 {
@@ -88,7 +88,7 @@ MAPTILE	*psTile;
 	{
 		for(j=0; j<mapHeight; j++)
 		{
-			if(i==0 OR j==0 OR i>=mapWidth-1 OR j>=mapHeight-1)
+			if(i==0 || j==0 || i>=mapWidth-1 || j>=mapHeight-1)
 			{
 //				mapTile(i,j)->height = 0;
 				psTile = mapTile(i,j);
@@ -107,7 +107,7 @@ MAPTILE	*psTile;
 	{
 		for(j=0; j<mapHeight; j++)
 		{
-			if(i<(scrollMinX+4) OR i>(scrollMaxX-4) OR j<(scrollMinY+4) OR j>(scrollMaxY-4))
+			if(i<(scrollMinX+4) || i>(scrollMaxX-4) || j<(scrollMinY+4) || j>(scrollMaxY-4))
 			{
 				mapTile(i,j)->illumination/=3;
 			}
@@ -124,7 +124,7 @@ void initLighting(UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2)
     MAPTILE	    *psTile;
 
     //quick check not trying to go off the map - don't need to check for < 0 since UWORD's!!
-    if (x1 > mapWidth OR x2 > mapWidth OR y1 > mapHeight OR y2 > mapHeight)
+    if (x1 > mapWidth || x2 > mapWidth || y1 > mapHeight || y2 > mapHeight)
     {
         ASSERT((FALSE, "initLighting: coords off edge of map"));
         return;
@@ -136,7 +136,7 @@ void initLighting(UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2)
 		{
             psTile = mapTile(i, j);
             //always make the edge tiles dark
-            if (i==0 OR j==0 OR i >= mapWidth-1 OR j >= mapHeight-1)
+            if (i==0 || j==0 || i >= mapWidth-1 || j >= mapHeight-1)
             {
 			    if (pie_Hardware())
 			    {
@@ -160,8 +160,8 @@ void initLighting(UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2)
         	// Cheers to paul for this idea - works on PC too 
     	    //	Basically darkens down the tiles that are outside the scroll
 	        //	limits - thereby emphasising the cannot-go-there-ness of them 
-			if((SDWORD)i < (scrollMinX+4) OR (SDWORD)i > (scrollMaxX-4) OR 
-                (SDWORD)j < (scrollMinY+4) OR (SDWORD)j > (scrollMaxY-4))
+			if((SDWORD)i < (scrollMinX+4) || (SDWORD)i > (scrollMaxX-4) || 
+                (SDWORD)j < (scrollMinY+4) || (SDWORD)j > (scrollMaxY-4))
 			{
 				psTile->illumination/=3;
 			}
@@ -193,19 +193,19 @@ UDWORD	val;
 				  *
 	*/
 
-	/* Do quadrant 0 - tile that's above and left*/
+	/* Do quadrant 0 - tile that's above && left*/
 	normalsOnTile(tileX-1, tileY-1,0);
 	
-	/* Do quadrant 1 - tile that's above and right*/
+	/* Do quadrant 1 - tile that's above && right*/
 	normalsOnTile(tileX,tileY-1,1);
 	
-	/* Do quadrant 2 - tile that's down and right*/
+	/* Do quadrant 2 - tile that's down && right*/
 	normalsOnTile(tileX,tileY,2);
 	
-	/* Do quadrant 3 - tile that's down and left*/
+	/* Do quadrant 3 - tile that's down && left*/
 	normalsOnTile(tileX-1,tileY,3);
 
-	/* The number or normals that we got is in numNormals*/
+	/* The number || normals that we got is in numNormals*/
 	finalVector.x = finalVector.y = finalVector.z = 0;
 
 	for(i=0; i<numNormals; i++)
@@ -256,7 +256,7 @@ SDWORD	rMod,drMod,dMod,nMod;
 	/* Get a pointer to our tile */
 	psTile			= mapTile(tileX,tileY);
 
-	/* And to the ones to the east, south and southeast of it */
+	/* && to the ones to the east, south && southeast of it */
 	tileRight		= mapTile(tileX+1,tileY);
 	tileDownRight	= mapTile(tileX+1,tileY+1);
 	tileDown		= mapTile(tileX,tileY+1);
@@ -316,7 +316,7 @@ SDWORD	rMod,drMod,dMod,nMod;
 		}
 		else
 		{
-			/* Otherwise, it's not flipped and so two triangles*/
+			/* Otherwise, it's !flipped && so two triangles*/
 			corner1.x = tileX<<TILE_SHIFT;
 			corner1.y = tileY<<TILE_SHIFT;
 			corner1.z = psTile->height - nMod;
@@ -498,8 +498,8 @@ UDWORD	percent;
 					yIndex = j - playerZTile;
 					// Might go off the grid for light ranges > one tile
 //					if(i<visibleXTiles AND j<visibleYTiles AND i>=0 AND j>=0)
-					if(xIndex >= 0 AND yIndex >= 0 AND 
-                        xIndex < (SDWORD)visibleXTiles AND 
+					if(xIndex >= 0 && yIndex >= 0 && 
+                        xIndex < (SDWORD)visibleXTiles && 
                         yIndex < (SDWORD)visibleYTiles)
 					{
 						colourTile(xIndex,yIndex,psLight->colour, (UBYTE)(2*percent));
@@ -570,7 +570,7 @@ void	colourTile(SDWORD xIndex, SDWORD yIndex, LIGHT_COLOUR colour, UBYTE percent
 	switch(colour)
 	{
  		case LIGHT_RED:
-			/* And add that to the lighting value */
+			/* && add that to the lighting value */
  			if(tileScreenInfo[yIndex][xIndex].light.byte.r + percent <= 255)
  			{
  			   tileScreenInfo[yIndex][xIndex].light.byte.r += percent;
@@ -581,7 +581,7 @@ void	colourTile(SDWORD xIndex, SDWORD yIndex, LIGHT_COLOUR colour, UBYTE percent
  			}
 		break;
  		case LIGHT_GREEN:
-			/* And add that to the lighting value */
+			/* && add that to the lighting value */
  			if(tileScreenInfo[yIndex][xIndex].light.byte.g + percent <= 255)
  			{
  			   tileScreenInfo[yIndex][xIndex].light.byte.g += percent;
@@ -592,7 +592,7 @@ void	colourTile(SDWORD xIndex, SDWORD yIndex, LIGHT_COLOUR colour, UBYTE percent
  			}
 		break;
  		case LIGHT_BLUE:
-			/* And add that to the lighting value */
+			/* && add that to the lighting value */
  			if(tileScreenInfo[yIndex][xIndex].light.byte.b + percent <= 255)
  			{
  			   tileScreenInfo[yIndex][xIndex].light.byte.b += percent;
@@ -603,7 +603,7 @@ void	colourTile(SDWORD xIndex, SDWORD yIndex, LIGHT_COLOUR colour, UBYTE percent
  			}
 		break;
 		case LIGHT_YELLOW:
-			/* And add that to the lighting value */
+			/* && add that to the lighting value */
  			if(tileScreenInfo[yIndex][xIndex].light.byte.r + percent <= 255)
  			{
  			   tileScreenInfo[yIndex][xIndex].light.byte.r += percent;
@@ -616,7 +616,7 @@ void	colourTile(SDWORD xIndex, SDWORD yIndex, LIGHT_COLOUR colour, UBYTE percent
  			}
 		break;
 		case LIGHT_WHITE:
-			/* And add that to the lighting value */
+			/* && add that to the lighting value */
  			if(tileScreenInfo[yIndex][xIndex].light.byte.r + percent <= 255)
  			{
  			   tileScreenInfo[yIndex][xIndex].light.byte.r += percent;
@@ -664,7 +664,7 @@ float	fraction,adjust;
 	tileX = psDroid->x/TILE_UNITS;
 	tileY = psDroid->y/TILE_UNITS;
 	/* Are we at the edge */
-	if(tileX<=1 OR tileX>=mapWidth-2 OR tileY<=1 OR tileY>=mapHeight-2)
+	if(tileX<=1 || tileX>=mapWidth-2 || tileY<=1 || tileY>=mapHeight-2)
 	{
 		lightVal = mapTile(tileX,tileY)->illumination;
 		lightVal += MIN_DROID_LIGHT_LEVEL;

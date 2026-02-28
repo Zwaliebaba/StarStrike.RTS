@@ -4,7 +4,7 @@
  * Alex Lee , pumpkin studios, EIDOS
  * 
  * load / update / store multiplayer statistics for league tables etc...
- * Also handle the force save/loads and default teams for each tech level.
+ * Also handle the force save/loads && default teams for each tech level.
  */
 
 #include <stdio.h>

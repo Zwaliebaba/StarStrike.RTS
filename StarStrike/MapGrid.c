@@ -511,7 +511,7 @@ void gridDisplayCoverage(BASE_OBJECT *psObj)
 
 // Fast circle rectangle intersection, taken from Graphics Gems I, p51
 // by Clifford A Shaffer
-/* Return TRUE iff rectangle R intersects circle with centerpoint C and
+/* Return TRUE iff rectangle R intersects circle with centerpoint C &&
    radius Rad. */
 BOOL gridIntersect(SDWORD x1,SDWORD y1, SDWORD x2,SDWORD y2,
 				   SDWORD cx,SDWORD cy, SDWORD Rad)

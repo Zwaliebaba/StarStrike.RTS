@@ -38,7 +38,7 @@ the number of Proximity Messages for a mission*/
 //array of pointers for the view data
 VIEWDATA_LIST			*apsViewData;
 
-/* The memory heaps for the messages and viewData*/
+/* The memory heaps for the messages && viewData*/
 OBJ_HEAP		*psMsgHeap;
 OBJ_HEAP		*psViewDataHeap;
 
@@ -58,7 +58,7 @@ MESSAGE		*apsMessages[MAX_PLAYERS];
 PROXIMITY_DISPLAY *apsProxDisp[MAX_PLAYERS];
 
 /* The current tutorial message - there is only ever one at a time. They are displayed 
-when called by the script. They are not to be re-displayed*/
+when called by the script. They are !to be re-displayed*/
 //MESSAGE		tutorialMessage;
 
 /* The IMD to use for the proximity messages */
@@ -114,7 +114,7 @@ extern UDWORD selectedPlayer;
                 break; \
             case MSG_MISSION: \
                 /*add it before the first campaign message */ \
-    		    for(psCurr = list[player]; psCurr->psNext != NULL AND psCurr->type == MSG_CAMPAIGN; \
+    		    for(psCurr = list[player]; psCurr->psNext != NULL && psCurr->type == MSG_CAMPAIGN; \
 	    		    psCurr = psCurr->psNext) \
 		        { \
                     psPrev = psCurr; \
@@ -125,7 +125,7 @@ extern UDWORD selectedPlayer;
             case MSG_RESEARCH: \
             case MSG_PROXIMITY: \
                 /*add it before the first mission message */ \
-    		    for(psCurr = list[player]; psCurr->psNext != NULL AND psCurr->type == MSG_MISSION; \
+    		    for(psCurr = list[player]; psCurr->psNext != NULL && psCurr->type == MSG_MISSION; \
 	    		    psCurr = psCurr->psNext) \
 		        { \
                    psPrev = psCurr; \
@@ -156,8 +156,8 @@ void add_msg(MESSAGE *list[MAX_PLAYERS], MESSAGE *msg, UDWORD player)
                 /*add it before the first mission/research/prox message */ 
     		    for(psCurr = list[player]; psCurr != NULL; psCurr = psCurr->psNext) 
 		        { 
-                    if (psCurr->type == MSG_MISSION OR 
-                        psCurr->type == MSG_RESEARCH OR 
+                    if (psCurr->type == MSG_MISSION || 
+                        psCurr->type == MSG_RESEARCH || 
                         psCurr->type == MSG_PROXIMITY)
                     {
                         break;
@@ -181,7 +181,7 @@ void add_msg(MESSAGE *list[MAX_PLAYERS], MESSAGE *msg, UDWORD player)
                 /*add it before the first research/prox message */ 
     		    for(psCurr = list[player]; psCurr != NULL; psCurr = psCurr->psNext) 
 		        { 
-                    if (psCurr->type == MSG_RESEARCH OR 
+                    if (psCurr->type == MSG_RESEARCH || 
                         psCurr->type == MSG_PROXIMITY)
                     {
                         break;
@@ -238,7 +238,7 @@ void add_msg(MESSAGE *list[MAX_PLAYERS], MESSAGE *msg, UDWORD player)
 			psPrev = psCurr; \
 		} \
 		ASSERT((psCurr != NULL, \
-			"removeMessage: message not found")); \
+			"removeMessage: message !found")); \
 		if (psCurr != NULL) \
 		{ \
 			psPrev->psNext = psCurr->psNext; \
@@ -988,14 +988,14 @@ void viewDataShutDown(VIEWDATA *psViewData)
 }
 
 /* Looks through the players list of messages to find one with the same viewData 
-pointer and which is the same type of message - used in scriptFuncs */
+pointer && which is the same type of message - used in scriptFuncs */
 MESSAGE * findMessage(MSG_VIEWDATA *pViewData, MESSAGE_TYPE type, UDWORD player)
 {
 	MESSAGE					*psCurr;
 
 	for (psCurr = apsMessages[player]; psCurr != NULL; psCurr = psCurr->psNext)
 	{
-		if (psCurr->type == type AND psCurr->pViewData == pViewData)
+		if (psCurr->type == type && psCurr->pViewData == pViewData)
 		{
 			return psCurr;
 		}

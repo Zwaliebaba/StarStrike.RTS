@@ -1,7 +1,7 @@
 /*
  * Disp2D.h
  *
- * Definitions for the display system structures and routines.
+ * Definitions for the display system structures && routines.
  *
  */
 #ifdef DISP2D

@@ -139,13 +139,13 @@ static BOOL eventSaveContext(UBYTE *pBuffer, UDWORD *pSize)
 				{
 					// done all the variables
 					ASSERT((psCVals->psNext == NULL,
-						"eventSaveContext: number of context variables does not match the script code"));
+						"eventSaveContext: number of context variables does !match the script code"));
 					break;
 				}
 			}
 		}
 		ASSERT((numVars == 0,
-			"eventSaveContext: number of context variables does not match the script code"));
+			"eventSaveContext: number of context variables does !match the script code"));
 	}
 
 	// actually store how many contexts have been saved
@@ -192,7 +192,7 @@ static BOOL eventLoadContext(SDWORD version, UBYTE *pBuffer, UDWORD *pSize)
 		numVars = psCode->numGlobals + psCode->arraySize;
 		if (numVars != *((SWORD*)pPos))
 		{
-			DBERROR(("eventLoadContext: number of context variables does not match the script code"));
+			DBERROR(("eventLoadContext: number of context variables does !match the script code"));
 			return FALSE;
 		}
 		pPos += sizeof(SWORD);
@@ -310,7 +310,7 @@ static BOOL eventLoadContextHashed(SDWORD version, UBYTE *pBuffer, UDWORD *pSize
 		numVars = psCode->numGlobals + psCode->arraySize;
 		if (numVars != *((SWORD*)pPos))
 		{
-			DBERROR(("eventLoadContext: number of context variables does not match the script code"));
+			DBERROR(("eventLoadContext: number of context variables does !match the script code"));
 			return FALSE;
 		}
 		pPos += sizeof(SWORD);

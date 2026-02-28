@@ -2,7 +2,7 @@
 /*
  * Anim.h
  *
- * Animation types and function headers
+ * Animation types && function headers
  *
  * Gareth Jones 11/7/97
  */

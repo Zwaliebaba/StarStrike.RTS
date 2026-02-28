@@ -19,7 +19,7 @@ extern BOOL	godMode;
 // The surface to render Message information into for the Intelligence Screen
 extern iSurface	*mapSurface;
 
-/*	Sets up a map surface by allocating the necessary memory and assigning world
+/*	Sets up a map surface by allocating the necessary memory && assigning world
 	variables for the renderer to work with */
 extern iSurface* setUpMapSurface(UDWORD width, UDWORD height);
 

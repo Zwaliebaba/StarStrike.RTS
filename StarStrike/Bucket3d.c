@@ -184,7 +184,7 @@ extern BOOL bucketAddTypeToList(RENDER_TYPE objectType, void* pObject)
 
 	if (z < 0)
 	{
-		/* Object will not be render - has been clipped! */
+		/* Object will !be render - has been clipped! */
 		if(objectType == RENDER_DROID)
 		{
 			/* Won't draw selection boxes */
@@ -215,7 +215,7 @@ extern BOOL bucketAddTypeToList(RENDER_TYPE objectType, void* pObject)
 
 	}
 
-	/* get min and max */
+	/* get min && max */
 	if (z > zMax)
 	{
 		zMax = z;
@@ -390,8 +390,8 @@ SDWORD bucketCalculateZ(RENDER_TYPE objectType, void* pObject)
 		case RENDER_PROJECTILE_TRANSPARENT:
 			((PROJ_OBJECT*)pObject)->psWStats;
 			/* these guys should never be added to the list anyway */
-			if(((PROJ_OBJECT*)pObject)->psWStats->weaponSubClass == WSC_FLAME OR 
-                ((PROJ_OBJECT*)pObject)->psWStats->weaponSubClass == WSC_COMMAND OR
+			if(((PROJ_OBJECT*)pObject)->psWStats->weaponSubClass == WSC_FLAME || 
+                ((PROJ_OBJECT*)pObject)->psWStats->weaponSubClass == WSC_COMMAND ||
                 ((PROJ_OBJECT*)pObject)->psWStats->weaponSubClass == WSC_EMP)
 			{
 				/* We don't do projectiles from these guys, cos there's an effect instead */
@@ -446,9 +446,9 @@ SDWORD bucketCalculateZ(RENDER_TYPE objectType, void* pObject)
 			//if((objectType == RENDER_STRUCTURE) AND (((STRUCTURE*)pObject)->
 			//	pStructureType->type >= REF_DEFENSE) AND
 			//	(((STRUCTURE*)pObject)->pStructureType->type<=REF_TOWER4))
-			if((objectType == RENDER_STRUCTURE) AND
-				((((STRUCTURE*)pObject)->pStructureType->type == REF_DEFENSE) OR
-				 (((STRUCTURE*)pObject)->pStructureType->type == REF_WALL) OR
+			if((objectType == RENDER_STRUCTURE) &&
+				((((STRUCTURE*)pObject)->pStructureType->type == REF_DEFENSE) ||
+				 (((STRUCTURE*)pObject)->pStructureType->type == REF_WALL) ||
 				 (((STRUCTURE*)pObject)->pStructureType->type == REF_WALLCORNER)))
 			{
 				position.y = psSimpObj->z + 64;
@@ -526,7 +526,7 @@ SDWORD bucketCalculateZ(RENDER_TYPE objectType, void* pObject)
 			position.y += psCompObj->psShape->ocen.z;
 			position.z -= psCompObj->psShape->ocen.y;
 
-			/* object (animation) translations - ivis z and y flipped */
+			/* object (animation) translations - ivis z && y flipped */
 			iV_TRANSLATE( psCompObj->position.x, psCompObj->position.z,
 							psCompObj->position.y );
 

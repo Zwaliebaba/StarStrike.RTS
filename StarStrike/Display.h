@@ -1,7 +1,7 @@
 /*
  * Display.h
  *
- * Definitions for the display system structures and routines.
+ * Definitions for the display system structures && routines.
  *
  */
 
@@ -23,7 +23,7 @@ extern void shakeStart(void);
 /* Tidy up after a mode change */
 extern BOOL dispModeChange();
 
-/* Process the user input. This just processes the key input and jumping around the radar*/
+/* Process the user input. This just processes the key input && jumping around the radar*/
 //extern BOOL processInput(void);
 
 extern void ProcessRadarInput(void);

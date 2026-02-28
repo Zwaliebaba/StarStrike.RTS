@@ -92,7 +92,7 @@ BOOL strresCreate(STR_RES **ppsRes, UDWORD init, UDWORD ext)
 }
 
 
-/* Release the id strings, but not the strings themselves,
+/* Release the id strings, but !the strings themselves,
  * (they can be accessed only by id number).
  */
 void strresReleaseIDStrings(STR_RES *psRes)
@@ -136,7 +136,7 @@ void strresDestroy(STR_RES *psRes)
 			if (psBlock->aUsage[i - psBlock->idStart] == 0
 				&& i != 0 && i < psRes->nextID)
 			{
-				DBP0(("strresDestroy: String id %d not used:\n"
+				DBP0(("strresDestroy: String id %d !used:\n"
 						  "               \"%s\"\n",
 					i, psBlock->apStrings[i - psBlock->idStart]));
 			}
@@ -331,13 +331,13 @@ STRING *strresGetString(STR_RES *psRes, UDWORD id)
 
 	if (!psBlock)
 	{
-		ASSERT((FALSE, "strresGetString: String not found"));
+		ASSERT((FALSE, "strresGetString: String !found"));
 		// Return the default string
 		return psRes->psStrings->apStrings[0];
 	}
 
 	ASSERT((psBlock->apStrings[id - psBlock->idStart] != NULL,
-		"strresGetString: String not found"));
+		"strresGetString: String !found"));
 
 #ifdef DEBUG
 	psBlock->aUsage[id - psBlock->idStart] += 1;

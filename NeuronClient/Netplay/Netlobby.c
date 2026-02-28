@@ -77,7 +77,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 	// check app exists in registry
 	if(	RegOpenKeyEx( HKEY_LOCAL_MACHINE, basekey,0,KEY_ALL_ACCESS, &key ) != ERROR_SUCCESS)
 	{
-		DBERROR(("NETPLAY: DirectPlay Registry Key Does Not Exist. No Lobby Support"));
+		DBERROR(("NETPLAY: DirectPlay Registry Key Does !Exist. No Lobby Support"));
 		RegCloseKey(key);
 		return FALSE;
 	}
@@ -86,7 +86,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 	resultsize = 256;
 	if(RegQueryValueEx(key,"Guid",NULL,&type,(char*)&result,&resultsize) !=  ERROR_SUCCESS)
 	{
-		DBERROR(("NETPLAY: DirectPlay Registry Key Does Not Have Guid Entry. No Lobby Support"));
+		DBERROR(("NETPLAY: DirectPlay Registry Key Does !Have Guid Entry. No Lobby Support"));
 		RegCloseKey(key);
 		return FALSE;
 	}
@@ -94,7 +94,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 	// check guid matches.
 	if( strcmp(guid,result) != 0)
 	{
-		DBERROR(("NETPLAY: DirectPlay guid does not match game guid. No Lobby Support")); 
+		DBERROR(("NETPLAY: DirectPlay guid does !match game guid. No Lobby Support")); 
 		RegCloseKey(key);
 		return FALSE;
 	}
@@ -103,7 +103,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 	resultsize = 256;
 	if(RegQueryValueEx(key,"Path",	NULL,&type,(char*)&result,&resultsize) !=  ERROR_SUCCESS)
 	{
-		DBERROR(("NETPLAY: DirectPlay Registry Key Does Not Have An Path Entry. No Lobby Support"));
+		DBERROR(("NETPLAY: DirectPlay Registry Key Does !Have An Path Entry. No Lobby Support"));
 		RegCloseKey(key);
 		return FALSE;
 	}
@@ -111,7 +111,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 	resultsize = 256;
 	if(RegQueryValueEx(key,"File",	NULL,&type,(char*)&result,&resultsize) !=  ERROR_SUCCESS)
 	{
-		DBERROR(("NETPLAY: DirectPlay Registry Key Does Not Have An File Entry. No Lobby Support"));
+		DBERROR(("NETPLAY: DirectPlay Registry Key Does !Have An File Entry. No Lobby Support"));
 		RegCloseKey(key);
 		return FALSE;
 	}
@@ -120,7 +120,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 	pFileHandle = fopen(path, "rb");
 	if (pFileHandle == NULL)										// doesn't exist..
 	{
-		DBERROR(("NETPLAY: DirectPlay Registry FileName Does Not Match Your Game Installation. No Lobby Support"));
+		DBERROR(("NETPLAY: DirectPlay Registry FileName Does !Match Your Game Installation. No Lobby Support"));
 		RegCloseKey(key);
 		return FALSE;
 	}

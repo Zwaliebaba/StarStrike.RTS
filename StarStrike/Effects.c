@@ -1,5 +1,5 @@
 /*
-	Spot FX code - will handle every miscellaneous imd render and update for temporary
+	Spot FX code - will handle every miscellaneous imd render && update for temporary
 	entities except projectiles.
 	Handles stuff like
 	- Smoke sprites on the card.
@@ -219,7 +219,7 @@ BOOL	utterlyReject(EFFECT_GROUP group, EFFECT_TYPE type)
 /*	Simply sets the free pointer to the start - actually this isn't necessary
 	as it will work just fine anyway. This WOULD be necessary were we to change
 	the system so that it seeks FREE slots rather than the oldest one. This is because
-	different effects last for different times and the oldest effect may have 
+	different effects last for different times && the oldest effect may have 
 	just got going (if it was a long effect).
 */
 void	initEffectsSystem( void )
@@ -242,7 +242,7 @@ EFFECT	*psEffect;
 
 	for(i=0; i<MAX_EFFECTS; i++)
 	{
-		/* Get a pointer - just cos our macro requires it, speeds not an issue here */
+		/* Get a pointer - just cos our macro requires it, speeds !an issue here */
 		psEffect = &asEffectsList[i];
 		/* Clear all the control bits */
 		psEffect->control = (UBYTE)0;
@@ -362,7 +362,7 @@ BOOL	bSmoke;
 			{
 				bSmoke = FALSE;
 			}
-			/* Others intermittently (50/50 for most and 25/100 for smoke */
+			/* Others intermittently (50/50 for most && 25/100 for smoke */
 			if(bSmoke ? (aeCalls & 0x03) : (aeCalls & 0x01) )
 			{
 				/* Do one */
@@ -375,7 +375,7 @@ BOOL	bSmoke;
 
 
 	for(i=freeEffect,essentialCount=0; (asEffectsList[i].control & EFFECT_ESSENTIAL) 
-		AND essentialCount<MAX_EFFECTS; i++)
+		&& essentialCount<MAX_EFFECTS; i++)
 	{
 		/* Check for wrap around */
 		if(i>= (MAX_EFFECTS-1))
@@ -405,14 +405,14 @@ BOOL	bSmoke;
 
 
 
-	/* Now, note group and type */
+	/* Now, note group && type */
 	asEffectsList[freeEffect].group =(UBYTE) group;
 	asEffectsList[freeEffect].type = (UBYTE) type;
 
 	/* Set when it entered the world */
 	asEffectsList[freeEffect].birthTime = asEffectsList[freeEffect].lastFrame = gameTime;
 
-	if(group == EFFECT_GRAVITON AND (type == GRAVITON_TYPE_GIBLET OR type == GRAVITON_TYPE_EMITTING_DR))
+	if(group == EFFECT_GRAVITON && (type == GRAVITON_TYPE_GIBLET || type == GRAVITON_TYPE_EMITTING_DR))
 	{
 		asEffectsList[freeEffect].frameNumber = lit;
 	}
@@ -489,7 +489,7 @@ BOOL	bSmoke;
 	/* Make the effect active */
 	asEffectsList[freeEffect].status = ES_ACTIVE;
 
-	/* As of yet, it hasn't bounced (or whatever)... */
+	/* As of yet, it hasn't bounced (|| whatever)... */
 	if(type!=EXPLOSION_TYPE_LAND_LIGHT)
 	{
 		asEffectsList[freeEffect].specific = 0;
@@ -497,14 +497,14 @@ BOOL	bSmoke;
 
 	/* Looks like we didn't establish an imd for the effect */
 	/*
-	ASSERT((asEffectsList[freeEffect].imd != NULL OR group == EFFECT_DESTRUCTION OR group == EFFECT_FIRE OR group == EFFECT_SAT_LASER,
+	ASSERT((asEffectsList[freeEffect].imd != NULL || group == EFFECT_DESTRUCTION || group == EFFECT_FIRE || group == EFFECT_SAT_LASER,
 		"null effect imd"));
 	*/
 
 #ifdef DEBUG
 	if(validatePie(group,type,asEffectsList[freeEffect].imd) == FALSE)
 	{
-		ASSERT((FALSE,"No PIE found or specified for an effect"));
+		ASSERT((FALSE,"No PIE found || specified for an effect"));
 	}
 #endif
 
@@ -524,7 +524,7 @@ BOOL	validatePie(EFFECT_GROUP group, EFFECT_TYPE type, iIMDShape *pie)
 	/* If we haven't got a pie */
 	if(pie == NULL)
 	{
-		if(group == EFFECT_DESTRUCTION OR group == EFFECT_FIRE OR group == EFFECT_SAT_LASER)
+		if(group == EFFECT_DESTRUCTION || group == EFFECT_FIRE || group == EFFECT_SAT_LASER)
 		{
 			/* Ok in these cases */
 			return(TRUE);
@@ -581,7 +581,7 @@ UDWORD	num;
 // ----------------------------------------------------------------------------------------
 /*
 drawEffects:-
-This will either draw all the effects that are on the grid in a oner or
+This will either draw all the effects that are on the grid in a oner ||
 more likely add them to the bucket.
 */
 void	drawEffects( void )
@@ -980,7 +980,7 @@ if (pie_Hardware())//pc only on hardware, always on PSX
 		light.colour = LIGHT_YELLOW;
 		processLight(&light);
 #endif
-		if(psEffect->size>MAX_SHOCKWAVE_SIZE OR light.range>600)
+		if(psEffect->size>MAX_SHOCKWAVE_SIZE || light.range>600)
 		{
  			/* Kill it off */
 			KILL_EFFECT(psEffect);
@@ -1013,7 +1013,7 @@ if (pie_Hardware())//pc only on hardware, always on PSX
 
 	if(!gamePaused())
 	{
-		/* Tesla explosions are the only ones that rise, or indeed move */
+		/* Tesla explosions are the only ones that rise, || indeed move */
 		if(psEffect->type == EXPLOSION_TYPE_TESLA)
 		{
 			psEffect->position.y += (MAKEINT(psEffect->velocity.y) * fraction);
@@ -1099,7 +1099,7 @@ void	updatePolySmoke(EFFECT *psEffect)
 
 // ----------------------------------------------------------------------------------------
 /* 
-	Gravitons just fly up for a bit and then drop down and are
+	Gravitons just fly up for a bit && then drop down && are
 	killed off when they hit the ground
 */
 void	updateGraviton(EFFECT *psEffect)
@@ -1135,7 +1135,7 @@ LIGHT	light;
 		psEffect->position.y += (psEffect->velocity.y * fraction);			
 		psEffect->position.z += (psEffect->velocity.z * fraction);
 	/* If it's bounced/drifted off the map then kill it */
-	if(((UDWORD)MAKEINT(psEffect->position.x)/TILE_UNITS >= mapWidth) OR 
+	if(((UDWORD)MAKEINT(psEffect->position.x)/TILE_UNITS >= mapWidth) || 
 		(UDWORD)MAKEINT(psEffect->position.z)/TILE_UNITS >= mapHeight)
 	{
 		KILL_EFFECT(psEffect);
@@ -1144,16 +1144,16 @@ LIGHT	light;
 
 	groundHeight = map_Height((UDWORD)MAKEINT(psEffect->position.x),(UDWORD)MAKEINT(psEffect->position.z));
 
-	/* If it's going up and it's still under the landscape, then remove it... */
-	if(psEffect->position.y<groundHeight AND MAKEINT(psEffect->velocity.y)>0)
+	/* If it's going up && it's still under the landscape, then remove it... */
+	if(psEffect->position.y<groundHeight && MAKEINT(psEffect->velocity.y)>0)
 	{
 		KILL_EFFECT(psEffect);
 		return;
 	}
 
-	/* Does it emit a trail? And is it high enough? */
-	if( (psEffect->type == GRAVITON_TYPE_EMITTING_DR) OR (psEffect->type == GRAVITON_TYPE_EMITTING_ST)
-		AND (psEffect->position.y>(groundHeight+10)))
+	/* Does it emit a trail? && is it high enough? */
+	if( (psEffect->type == GRAVITON_TYPE_EMITTING_DR) || (psEffect->type == GRAVITON_TYPE_EMITTING_ST)
+		&& (psEffect->position.y>(groundHeight+10)))
 	{
 		/* Time to add another trail 'thing'? */
 		if(gameTime>psEffect->lastFrame+psEffect->frameDelay)
@@ -1171,7 +1171,7 @@ LIGHT	light;
 		}	
 	}
 
-	else if(psEffect->type == GRAVITON_TYPE_GIBLET AND (psEffect->position.y>(groundHeight+5)))
+	else if(psEffect->type == GRAVITON_TYPE_GIBLET && (psEffect->position.y>(groundHeight+5)))
 	{
 		/* Time to add another trail 'thing'? */
 		if(gameTime>psEffect->lastFrame+psEffect->frameDelay)
@@ -1192,12 +1192,12 @@ LIGHT	light;
 	psEffect->rotation.y += MAKEINT(((FRACT)psEffect->spin.y) * fraction);
 	psEffect->rotation.z += MAKEINT(((FRACT)psEffect->spin.z) * fraction);
 
-	/* Update velocity (and retarding of descent) according to present frame rate */
+	/* Update velocity (&& retarding of descent) according to present frame rate */
 	accel = (GRAVITON_GRAVITY*fraction);
 	psEffect->velocity.y += accel;
 
 	/* If it's bounced/drifted off the map then kill it */
-	if((MAKEINT(psEffect->position.x) <= TILE_UNITS) OR 
+	if((MAKEINT(psEffect->position.x) <= TILE_UNITS) || 
 		MAKEINT(psEffect->position.z) <= TILE_UNITS)
 	{
 		KILL_EFFECT(psEffect);
@@ -1218,7 +1218,7 @@ LIGHT	light;
    		if(MAKEINT(psEffect->velocity.y)<0)
 		{
 			/* Has it sufficient energy to keep bouncing? */
-			if(abs(MAKEINT(psEffect->velocity.y))>16 AND psEffect->specific <=2) 
+			if(abs(MAKEINT(psEffect->velocity.y))>16 && psEffect->specific <=2) 
 			{
 				psEffect->specific++;
 				/* Half it's velocity */
@@ -1233,7 +1233,7 @@ LIGHT	light;
   				/* Giblets don't blow up when they hit the ground! */
 				if(psEffect->type!=GRAVITON_TYPE_GIBLET)
 				{
-					/* Remove the graviton and add an explosion */
+					/* Remove the graviton && add an explosion */
 					dv.x = MAKEINT(psEffect->position.x);
 					dv.y = MAKEINT(psEffect->position.y+10);
 					dv.z = MAKEINT(psEffect->position.z);
@@ -1435,7 +1435,7 @@ if (pie_Hardware())//pc only on hardware, always on PSX
 // ----------------------------------------------------------------------------------------
 /* 
 updateConstruction:-
-Moves the construction graphic about - dust cloud or whatever....
+Moves the construction graphic about - dust cloud || whatever....
 */
 void	updateConstruction(EFFECT *psEffect)
 {
@@ -1531,7 +1531,7 @@ if (pie_Hardware())//pc only on hardware, always on PSX
 //		pos.x = (MAKEINT(psEffect->position.x) + ((rand()%psEffect->radius) - (rand()%(2*psEffect->radius))));
 //		pos.z = (MAKEINT(psEffect->position.z) + ((rand()%psEffect->radius) - (rand()%(2*psEffect->radius))));
 //		pos.y = map_Height(pos.x,pos.z);
-		if(psEffect->type == FIRE_TYPE_SMOKY OR psEffect->type == FIRE_TYPE_SMOKY_BLUE)
+		if(psEffect->type == FIRE_TYPE_SMOKY || psEffect->type == FIRE_TYPE_SMOKY_BLUE)
 		{
 			pos.x = (MAKEINT(psEffect->position.x) + ((rand()%psEffect->radius/2) - (rand()%(2*psEffect->radius/2))));
 			pos.z = (MAKEINT(psEffect->position.z) + ((rand()%psEffect->radius/2) - (rand()%(2*psEffect->radius/2))));
@@ -1883,7 +1883,7 @@ void	renderExplosionEffect(EFFECT *psEffect)
 	}
 	else if(psEffect->type == EXPLOSION_TYPE_KICKUP)
 	{
-		/* not transparent */
+		/* !transparent */
 		pie_Draw3DShape(psEffect->imd, psEffect->frameNumber, 0, pie_TRANSLUCENT,128, 0, 0);
 	}
 	else
@@ -2088,7 +2088,7 @@ UDWORD brightness, specular;
 		{
 #ifdef HARDWARE_TEST//test additive
 			percent = (MAKEINT(PERCENT((gameTime - psEffect->birthTime),psEffect->lifeSpan)));
-			if(percent<10 AND psEffect->type == SMOKE_TYPE_TRAIL)
+			if(percent<10 && psEffect->type == SMOKE_TYPE_TRAIL)
 			{
 				scaleMatrix((3 * percent/10 * psEffect->baseScale)/100);
 				transparency = (EFFECT_SMOKE_ADDITIVE * (100 - 10))/100;
@@ -2350,7 +2350,7 @@ void	effectSetupGraviton(EFFECT *psEffect)
 // ----------------------------------------------------------------------------------------
 void effectSetupExplosion(EFFECT *psEffect)
 {
-	/* Get an imd if it's not established */
+	/* Get an imd if it's !established */
 	if(psEffect->imd == NULL)
 	{
 		switch(psEffect->type)
@@ -2456,11 +2456,11 @@ void effectSetupExplosion(EFFECT *psEffect)
 		psEffect->lifeSpan = (psEffect->frameDelay *  psEffect->imd->numFrames);
 	}
 
-	if ( (psEffect->type!=EXPLOSION_TYPE_NOT_FACING) AND (psEffect->type!=EXPLOSION_TYPE_SHOCKWAVE))
+	if ( (psEffect->type!=EXPLOSION_TYPE_NOT_FACING) && (psEffect->type!=EXPLOSION_TYPE_SHOCKWAVE))
 	{
 		SET_FACING(psEffect);
 	}
-	/* Randomly flip x and y for variation */
+	/* Randomly flip x && y for variation */
 	if(ONEINTWO)
 	{
 		SET_FLIPPED_X(psEffect);
@@ -2487,7 +2487,7 @@ void	effectSetupConstruction(EFFECT *psEffect)
 	/* It's a cyclic anim - dies on age */
 	SET_CYCLIC(psEffect);
 
-	/* Randomly flip the construction graphics in x and y for variation */
+	/* Randomly flip the construction graphics in x && y for variation */
 	if(ONEINTWO)
 	{
 		SET_FLIPPED_X(psEffect);
@@ -2515,7 +2515,7 @@ void	effectSetupDust(EFFECT *psEffect)
 	/* It's a cyclic anim - dies on age */
 	SET_CYCLIC(psEffect);
 
-	/* Randomly flip the construction graphics in x and y for variation */
+	/* Randomly flip the construction graphics in x && y for variation */
 	if(ONEINTWO)
 	{
 		SET_FLIPPED_X(psEffect);
@@ -2570,7 +2570,7 @@ void    effectSetupDestruction(EFFECT *psEffect)
 		psEffect->lifeSpan = DROID_DESTRUCTION_DURATION;
 		psEffect->frameDelay = DESTRUCTION_FRAME_DELAY;
 	}
-	else if(psEffect->type == DESTRUCTION_TYPE_WALL_SECTION OR
+	else if(psEffect->type == DESTRUCTION_TYPE_WALL_SECTION ||
 			psEffect->type == DESTRUCTION_TYPE_FEATURE)
 	{
 		psEffect->lifeSpan = STRUCTURE_DESTRUCTION_DURATION/4;
@@ -2710,7 +2710,7 @@ void	effectGiveAuxVarSec( UDWORD var)
 }
 
 // ----------------------------------------------------------------------------------------
-/* Runs all the spot effect stuff for the droids - adding of dust and the like... */
+/* Runs all the spot effect stuff for the droids - adding of dust && the like... */
 void	effectDroidUpdates( void )
 {
 UDWORD	i;
@@ -2728,7 +2728,7 @@ SDWORD	xBehind,yBehind;
 			/* Gets it's group number */
 			partition = psDroid->id % EFFECT_DROID_DIVISION;
 			/* Right frame to process? */
-			if(partition == frameGetFrameNumber() % EFFECT_DROID_DIVISION AND ONEINFOUR)		
+			if(partition == frameGetFrameNumber() % EFFECT_DROID_DIVISION && ONEINFOUR)		
 			{
 				/* Sufficent time since last update? - The EQUALS comparison is needed */
 				if(gameTime >= (lastUpdateDroids[partition] + DROID_UPDATE_INTERVAL))
@@ -2736,8 +2736,8 @@ SDWORD	xBehind,yBehind;
 					/* Store away when we last processed this group */
 					lastUpdateDroids[partition] = gameTime;
 					
-					/*	Now add some dust at it's arse end if it's moving or skidding. 
-						The check that it's not 0 is probably not sufficient.						
+					/*	Now add some dust at it's arse end if it's moving || skidding. 
+						The check that it's !0 is probably !sufficient.						
 					*/
 					if( (SDWORD)psDroid->sMove.speed != 0 )
 					{
@@ -2785,7 +2785,7 @@ BOOL		active;
 					lastUpdateStructures[partition] = gameTime;
 					// -------------------------------------------------------------------------------
 					/* Factories puff out smoke, power stations puff out tesla stuff */
-				 	if( (psStructure->pStructureType->type == REF_FACTORY) OR
+				 	if( (psStructure->pStructureType->type == REF_FACTORY) ||
 						(psStructure->pStructureType->type == REF_POWER_GEN) )
 					if( (bMultiPlayer && isHumanPlayer(psStructure->player))
 						|| (psStructure->player == 0) )
@@ -2829,12 +2829,12 @@ BOOL		active;
 								eventPos.y = psStructure->z + 48;
 							}*/
 							/* Add an effect over the central spire - if 
-							connected to Res Extractor and it is active*/
+							connected to Res Extractor && it is active*/
 							//look through the list to see if any connected Res Extr
 							active = FALSE;
 							for (i=0; i < NUM_POWER_MODULES; i++)
 							{
-								if (psPowerGen->apResExtractors[i] AND ((RES_EXTRACTOR *)
+								if (psPowerGen->apResExtractors[i] && ((RES_EXTRACTOR *)
 									psPowerGen->apResExtractors[i]->pFunctionality)->active)
 								{
 									active = TRUE;
@@ -2843,7 +2843,7 @@ BOOL		active;
 							}
 							/*
 							if (((POWER_GEN*)psStructure->pFunctionality)->
-								apResExtractors[0] AND ((RES_EXTRACTOR *)((POWER_GEN*)
+								apResExtractors[0] && ((RES_EXTRACTOR *)((POWER_GEN*)
 								psStructure->pFunctionality)->apResExtractors[0]->
 								pFunctionality)->active)
 							*/
@@ -2858,7 +2858,7 @@ BOOL		active;
 								}
 							}
 							/*	Work out how many spires it has. This is a particularly unpleasant
-								hack and I'm not proud of it, but it needs to done. Honest. AM
+								hack && I'm !proud of it, but it needs to done. Honest. AM
 							*/
 							//if(capacity)
 						}
@@ -2898,13 +2898,13 @@ UDWORD	i;
 UDWORD	posX,posY;
 BOOL	bOnFire;
 
-   	for(i=0, bOnFire = FALSE; i<MAX_EFFECTS AND !bOnFire; i++)
+   	for(i=0, bOnFire = FALSE; i<MAX_EFFECTS && !bOnFire; i++)
 	{
-	 	if( (asEffectsList[i].status == ES_ACTIVE) AND asEffectsList[i].group == EFFECT_FIRE)
+	 	if( (asEffectsList[i].status == ES_ACTIVE) && asEffectsList[i].group == EFFECT_FIRE)
 		{
 			posX = MAKEINT(asEffectsList[i].position.x);
 			posY = MAKEINT(asEffectsList[i].position.z);
-			if( (posX == x) AND (posY == y) )
+			if( (posX == x) && (posY == y) )
 			{
 				bOnFire = TRUE;
 			}
@@ -2938,7 +2938,7 @@ iIMDShape		*psOrig;
 	/* Calculate memory required */
 	fileSize = ( sizeof(struct _fx_save_header) + ( fxEntries*sizeof(struct _effect_def) ) );
 
-	/* Try and allocate it - freed up in same function */
+	/* Try && allocate it - freed up in same function */
 	pFileData = (UBYTE *)MALLOC(fileSize);
 
 	/* Did we get it? */
@@ -3004,21 +3004,21 @@ iIMDShape		*psOrig;
 		return(FALSE);
 	}
 
-	/* Now, try and write it out */
+	/* Now, try && write it out */
 	if (fwrite(pFileData, 1, fileSize, pFile) != fileSize)
 	{
 		DBERROR(("Saving FX data : write failed for %s", pFileName));
 		return(FALSE);
 	}
 
-	/* Finally, try and close it */
+	/* Finally, try && close it */
 	if (fclose(pFile) != 0)
 	{
 		DBERROR(("Saving FX data : couldn't close %s", pFileName));
 		return(FALSE);
 	}
 
-	/* And free up the memory we used */
+	/* && free up the memory we used */
 	if (pFileData != NULL)
 	{
 		FREE(pFileData);

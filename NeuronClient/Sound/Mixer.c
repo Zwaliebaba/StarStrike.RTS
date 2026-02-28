@@ -149,7 +149,7 @@ mixer_Open( void )
 		return FALSE;
 	}
  
-	/* get CD and wav volume controls */
+	/* get CD && wav volume controls */
 	bMixerOK = mixer_GetVolumeControlID(
 					MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC,
 					&g_dwCDControlID, &g_iVolRangeCD );

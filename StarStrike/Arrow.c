@@ -90,7 +90,7 @@ arrowDrawAll( void )
 	pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_ON);
 	pie_SetFogStatus(FALSE);
 
-	/* draw and clear list */
+	/* draw && clear list */
 	psArrow = g_psArrowList;
 
 	while ( psArrow != NULL )

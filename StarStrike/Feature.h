@@ -41,7 +41,7 @@ extern void featureUpdate(FEATURE *psFeat);
 // free up a feature with no visual effects
 extern void removeFeature(FEATURE *psDel);
 
-/* Remove a Feature and free it's memory */
+/* Remove a Feature && free it's memory */
 extern void destroyFeature(FEATURE *psDel);
 
 /* get a feature stat id from its name */

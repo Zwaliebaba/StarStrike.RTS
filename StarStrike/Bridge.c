@@ -12,17 +12,17 @@
 /* 
 Bridge.c
 Alex McLean, Pumpkin Studios EIDOS Interactive, 1998.
-Handles rendering and placement of bridging sections for
-traversing water and ravines?! My guess is this won't make it into
+Handles rendering && placement of bridging sections for
+traversing water && ravines?! My guess is this won't make it into
 the final game, but we'll see...
 */
 
 
 /* 
-Returns TRUE or FALSE as to whether a bridge is valid.
+Returns TRUE || FALSE as to whether a bridge is valid.
 For it to be TRUE - all intervening points must be lower than the start
-and end points. We can also check other stuff here like what it's going
-over. Also, it has to be between a minimum and maximum length and 
+&& end points. We can also check other stuff here like what it's going
+over. Also, it has to be between a minimum && maximum length && 
 one of the axes must share the same values.
 */ 
 BOOL	bridgeValid(UDWORD startX,UDWORD startY, UDWORD endX, UDWORD endY)
@@ -37,7 +37,7 @@ UDWORD	i;
 	yBridge = ( (startY == endY) ? TRUE : FALSE );
 
 	/* At least one axis must be constant */
-	if (!xBridge AND !yBridge)
+	if (!xBridge && !yBridge)
 	{
 		/*	Bridge isn't straight - this shouldn't have been passed
 			in, but better safe than sorry! */
@@ -47,21 +47,21 @@ UDWORD	i;
 	/* Get the bridge length */
 	bridgeLength = ( xBridge ? abs(startY-endY) : abs(startX-endX) );
 
-	/* check it's not too long or short */
-	if(bridgeLength<MINIMUM_BRIDGE_SPAN OR bridgeLength>MAXIMUM_BRIDGE_SPAN)
+	/* check it's !too long || short */
+	if(bridgeLength<MINIMUM_BRIDGE_SPAN || bridgeLength>MAXIMUM_BRIDGE_SPAN)
 	{
 		/* Cry out */
 		return(FALSE);
 	}
 
 	/*	Check intervening tiles to see if they're lower 
-	so first get the start and end heights */
+	so first get the start && end heights */
 	startHeight = mapTile(startX,startY)->height;
 	endHeight = mapTile(endX,endY)->height;
 	
 	/*	
-		Don't whinge about this piece of code please! It's nice and short
-		and is called very infrequently. Could be made slightly faster. 
+		Don't whinge about this piece of code please! It's nice && short
+		&& is called very infrequently. Could be made slightly faster. 
 	*/
 	for(i = ( xBridge ? ( min(startY,endY) ) : ( min(startX,endX)) ); 
 		i < ( xBridge ? ( max(startY,endY) ) : ( max(startX,endX)) ); i++)
@@ -83,9 +83,9 @@ UDWORD	i;
 /*	
 	This function will actually draw a wall section 
 	Slightly different from yer basic structure draw in that
-	it's not alligned to the terrain as bridge sections sit
+	it's !alligned to the terrain as bridge sections sit
 	at a height stored in their structure - as they're above the ground
-	and wouldn't be much use if they weren't, bridge wise.
+	&& wouldn't be much use if they weren't, bridge wise.
 */
 BOOL	renderBridgeSection(STRUCTURE *psStructure)
 {
@@ -94,13 +94,13 @@ BOOL	renderBridgeSection(STRUCTURE *psStructure)
 	//iIMDShape		*imd;
 	iVector			dv;
 
-			/* Bomb out if it's not visible and there's no active god mode */
-			if(!psStructure->visible[selectedPlayer] AND !godMode)
+			/* Bomb out if it's !visible && there's no active god mode */
+			if(!psStructure->visible[selectedPlayer] && !godMode)
 			{
 				return(FALSE);
 			}
 
-			/* Get it's x and y coordinates so we don't have to deref. struct later */
+			/* Get it's x && y coordinates so we don't have to deref. struct later */
 			structX = psStructure->x;
 			structY = psStructure->y;
 			structZ = psStructure->z;
@@ -133,8 +133,8 @@ BOOL	renderBridgeSection(STRUCTURE *psStructure)
  
 /*
 	This will work out all the info you need about the bridge including
-	length - height to set sections at in order to allign to terrain and
-	what you need to alter start and end terrain heights by to establish to
+	length - height to set sections at in order to allign to terrain &&
+	what you need to alter start && end terrain heights by to establish to
 	connection.
 */
 void	getBridgeInfo(UDWORD startX,UDWORD startY,UDWORD endX, UDWORD endY, BRIDGE_INFO *info)
@@ -149,7 +149,7 @@ BOOL	startHigher;
 	info->endX = endX;
 	info->endY = endY;
 
-	/* Get the heights of the start and end positions */
+	/* Get the heights of the start && end positions */
 	startHeight = map_TileHeight(startX,startY);
 	endHeight = map_TileHeight(endX,endY);
 
@@ -162,7 +162,7 @@ BOOL	startHigher;
 		/* Inform structure */
 		info->startHighest = TRUE;
 
-		/* And the end position needs raising */
+		/* && the end position needs raising */
 		info->heightChange = startHeight - endHeight;
 	}
 	/* Otherwise, the end position is lower */
@@ -184,7 +184,7 @@ BOOL	startHigher;
 		Set the bridge's height.
 		Note that when the bridge is built BOTH tile heights need
 		to be set to the agreed value on their bridge trailing edge 
-		(x,y) and (x,y+1) is constant X and (x,y) and (x+1,y) if constant
+		(x,y) && (x,y+1) is constant X && (x,y) && (x+1,y) if constant
 		Y
 	*/
 	if(startHigher)

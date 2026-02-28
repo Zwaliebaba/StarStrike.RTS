@@ -20,7 +20,7 @@
 /* Control Whether the back buffer is in system memory for full screen */
 #define FULL_SCREEN_SYSTEM	TRUE
 
-/* The Current screen size and bit depth */
+/* The Current screen size && bit depth */
 UDWORD		screenWidth = 0;
 UDWORD		screenHeight = 0;
 UDWORD		screenDepth = 0;
@@ -42,9 +42,9 @@ GUID aDDDeviceGUID[MAX_DDDEVICES];
 DDDEVICEIDENTIFIER aDDDeviceInfo[MAX_DDDEVICES];
 DDDEVICEIDENTIFIER aDDHostInfo[MAX_DDDEVICES];
 static numDevices = 0;
-/* The Front and back buffers */
+/* The Front && back buffers */
 LPDIRECTDRAWSURFACE4	psFront = NULL;
-/* The back buffer is not static to give a back door to display routines so
+/* The back buffer is !static to give a back door to display routines so
  * they can get at the back buffer directly.
  * Mainly did this to link in Sam's 3D engine.
  */
@@ -268,7 +268,7 @@ static BOOL getWindowsPixelFormat(void)
 	ASSERT(((psFront == NULL) &&
 			(psBack == NULL) &&
 			(psClipper == NULL),
-		"getWindowsPixelFormat: DD objects have not been released"));
+		"getWindowsPixelFormat: DD objects have !been released"));
 
 	/* Set the cooperative level - windowed */
 	ddrval = psDD->lpVtbl->SetCooperativeLevel(
@@ -391,7 +391,7 @@ static BOOL createDDWindowed( void )
 	ASSERT(((psFront == NULL) &&
 			(psBack == NULL) &&
 			(psClipper == NULL),
-		"createDDWindowed: DD objects have not been released"));
+		"createDDWindowed: DD objects have !been released"));
 
 	/* Set the cooperative level - windowed */
 	ddrval = psDD->lpVtbl->SetCooperativeLevel(
@@ -461,7 +461,7 @@ static BOOL createDDWindowed( void )
 	}
 	else if (sWinPixelFormat.dwRGBBitCount != screenDepth)
 	{
-		DBERROR(("Windows bit depth is not set to the required format.\n"
+		DBERROR(("Windows bit depth is !set to the required format.\n"
 				 "Application switching to full screen mode."));
 		displayMode = MODE_FULLSCREEN;
 		RELEASE(psFront);
@@ -604,7 +604,7 @@ static BOOL createDDWindowed( void )
                        WIN_EXSTYLE);
 
 	/* The rectangle returned has values for the window edges relative to
-	   the display area origin, i.e. left and top are negative - so we have
+	   the display area origin, i.e. left && top are negative - so we have
 	   to adjust */
 	sWinSize.right -= sWinSize.left;
 	sWinSize.left = 0;
@@ -612,7 +612,7 @@ static BOOL createDDWindowed( void )
 	sWinSize.top = 0;
 	
 	/* Set the window size.
-	 * Ripped this out of the D3D example code - not too sure why we
+	 * Ripped this out of the D3D example code - !too sure why we
 	 * have to do it twice.  I've no wish to become a windows programmer
 	 * so if it works why worry :-)
 	 */
@@ -654,7 +654,7 @@ static BOOL createDDFullScreen( void )
 	ASSERT(((psFront == NULL) &&
 			(psBack == NULL) &&
 			(psClipper == NULL),
-		"createDDFullScreen: DD objects have not been released"));
+		"createDDFullScreen: DD objects have !been released"));
 
 	/* Make the app window completely undecorated so GDI is
 	 * effectively shut out.
@@ -845,9 +845,9 @@ static BOOL releaseDDFullScreen(void)
 	}
 
 	ASSERT((screenMode == SCREEN_FULLSCREEN,
-		"releaseDDFullScreen: Attempt to release when not in full screen mode"));
+		"releaseDDFullScreen: Attempt to release when !in full screen mode"));
 	ASSERT((psClipper == NULL,
-		"releaseDDFullScreen: Clipper object not released"));
+		"releaseDDFullScreen: Clipper object !released"));
 
 	/* Clear up exclusive mode */
 	screenFlipToGDI();
@@ -992,7 +992,7 @@ BOOL screenInitialise(UDWORD		width,			// Display width
 	}
 
 	/* DD surface creation removed — D3D9 owns the swap chain.
-	 * Just set the screen mode and initialise the flip synchronisation. */
+	 * Just set the screen mode && initialise the flip synchronisation. */
 	if (fullScreen)
 	{
 		screenMode = SCREEN_FULLSCREEN;
@@ -1006,7 +1006,7 @@ BOOL screenInitialise(UDWORD		width,			// Display width
 		(void)SetWindowLong(hWndMain, GWL_EXSTYLE, WIN_EXSTYLE);
 	}
 
-	/* psFront/psBack are NULL — DD surfaces not created */
+	/* psFront/psBack are NULL — DD surfaces !created */
 	psFront = NULL;
 	psBack  = NULL;
 
@@ -1182,7 +1182,7 @@ void screen_SetFogColour(UDWORD newFogColour)
 	return;
 }
 
-/* Flip back and front buffers */
+/* Flip back && front buffers */
 //always clears or renders backdrop
 void screenFlip(BOOL clearBackBuffer)
 {
@@ -1201,14 +1201,14 @@ void screenFlip(BOOL clearBackBuffer)
 	ReleaseSemaphore(hScreenFlipSemaphore,1,NULL);
 }
 
-/* Swap between windowed and full screen mode */
+/* Swap between windowed && full screen mode */
 void screenToggleMode(void)
 {
 	/* DD mode toggling removed — D3D9 handles mode changes via device Reset */
-	/* Toggling between windowed/fullscreen requires D3D9 device reset — not yet implemented */
+	/* Toggling between windowed/fullscreen requires D3D9 device reset — !yet implemented */
 }
 
-/* Swap between windowed and full screen mode */
+/* Swap between windowed && full screen mode */
 BOOL screenToggleVideoPlaybackMode(void)
 {
 	/* DD video playback mode toggling removed — D3D9 handles resolution via Reset */
@@ -1240,7 +1240,7 @@ void screenSetMode(SCREEN_MODE mode)
 
 /* In full screen mode flip to the GDI buffer.
  * Use this if you want the user to see any GDI output.
- * This is mainly used so that ASSERTs and message boxes appear
+ * This is mainly used so that ASSERTs && message boxes appear
  * even in full screen mode.
  */
 void screenFlipToGDI(void)
@@ -1266,7 +1266,7 @@ void screenSetPalette(UDWORD first, UDWORD count, PALETTEENTRY *psEntries)
 		return;
 	}
 
-	/* ensure that colour 0 is black and 255 is white */
+	/* ensure that colour 0 is black && 255 is white */
 	if ((first == 0 || first == 255) && count == 1)
 	{
 		return;
@@ -1296,7 +1296,7 @@ void screenSetPalette(UDWORD first, UDWORD count, PALETTEENTRY *psEntries)
 		/* Update the true colour version of the palette for the windowed display */
 		updateWindowsPalette(first, count);
 	}
-/* Some testing code to see what the palettes get set to - not really needed
+/* Some testing code to see what the palettes get set to - !really needed
 	// Assign the palette to the front buffer
 	if (displayMode != MODE_8BITFUDGE ||
 		(displayMode == MODE_8BITFUDGE && screenMode == SCREEN_FULLSCREEN))
@@ -1334,7 +1334,7 @@ UBYTE screenGetPalEntry(UBYTE red, UBYTE green, UBYTE blue)
 	UBYTE	colour;
 
 	ASSERT((sBackBufferPixelFormat.dwRGBBitCount == 8,
-		"screenSetPalette: not in a palettised mode"));
+		"screenSetPalette: !in a palettised mode"));
 
 	minDist = 0xff*0xff*0xff;
 	colour = 0;
@@ -1519,10 +1519,10 @@ void screenTextOut(UDWORD x, UDWORD y, STRING *pFormat, ...)
 		}
 		break;
 	case 24:
-		ASSERT((FALSE,"24 bit text output not implemented"));
+		ASSERT((FALSE,"24 bit text output !implemented"));
 		break;
 	case 32:
-		ASSERT((FALSE,"32 bit text output not implemented"));
+		ASSERT((FALSE,"32 bit text output !implemented"));
 		break;
 	default:
 		ASSERT((FALSE,"Unknown display pixel format"));
@@ -1693,7 +1693,7 @@ void screenScaleBlit(SDWORD destX, SDWORD destY,
 
 /* Blit a tile (rectangle) from the surface
  * to the back buffer at the given location.
- * The tile is specified by it's size and number, numbering
+ * The tile is specified by it's size && number, numbering
  * across from top left to bottom right.
  * The blit is clipped to the screen size.
  */
@@ -1876,7 +1876,7 @@ void screenDrawLine(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1)
 		}
 		else
 		{
-			/* At least one of the end points is out of the screen pick it and clip */
+			/* At least one of the end points is out of the screen pick it && clip */
 			if (code0 != 0)
 			{
 				code  = code0;
@@ -1964,7 +1964,7 @@ void screenDrawLine(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1)
 		{
 			/* x dominant */
 			d = ay - ax/2;
-			FOREVER
+			for (;;)
 			{
 				*pOffset = (UBYTE)lineColour;
 				if (x == (SDWORD)x1)
@@ -1987,7 +1987,7 @@ void screenDrawLine(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1)
 		{
 			/* y dominant */
 			d = ax - ay/2;
-			FOREVER
+			for (;;)
 			{
 				*pOffset = (UBYTE)lineColour;
 				if (y == (SDWORD)y1)
@@ -2024,7 +2024,7 @@ void screenDrawLine(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1)
 		{
 			/* x dominant */
 			d = ay - ax/2;
-			FOREVER
+			for (;;)
 			{
 				*((UWORD *)pOffset) = (UWORD)lineColour;
 				if (x == (SDWORD)x1)
@@ -2048,7 +2048,7 @@ void screenDrawLine(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1)
 		{
 			/* y dominant */
 			d = ax - ay/2;
-			FOREVER
+			for (;;)
 			{
 				*((UWORD *)pOffset) = (UWORD)lineColour;
 				if (y == (SDWORD)y1)
@@ -2070,10 +2070,10 @@ void screenDrawLine(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1)
 		}
 		break;
 	case 24:
-		ASSERT((FALSE,"24 bit line drawing not implemented"));
+		ASSERT((FALSE,"24 bit line drawing !implemented"));
 		break;
 	case 32:
-		ASSERT((FALSE,"32 bit line drawing not implemented"));
+		ASSERT((FALSE,"32 bit line drawing !implemented"));
 		break;
 	default:
 		ASSERT((FALSE,"Unknown display pixel format"));
@@ -2200,7 +2200,7 @@ HPEN	hpen;
 	/* Were we successfull? */
 	if (ddrval!=DD_OK)
 	{
-		/* If not, then report the error */
+		/* If !, then report the error */
 		ASSERT((FALSE,"Elipse draw failed - couldn't get device context:\n%s",
 				DDErrorToString(ddrval)));
 	}

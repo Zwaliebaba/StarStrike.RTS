@@ -43,10 +43,10 @@ anim_Init( GETSHAPEFUNC pGetShapeFunc )
 	int		iSizeAnim2D = sizeof(ANIM2D),
 			iSizeAnim3D = sizeof(ANIM3D);
 
-	/* ensure ANIM2D and ANIM3D structs same size */
+	/* ensure ANIM2D && ANIM3D structs same size */
 	if ( iSizeAnim2D != iSizeAnim3D )
 	{
-		DBERROR( ("anim_Init: ANIM2D and ANIM3D structs not same size in anim.h!") );
+		DBERROR( ("anim_Init: ANIM2D && ANIM3D structs !same size in anim.h!") );
 	}
 
 	/* init globals */
@@ -210,7 +210,7 @@ anim_EndScript( void )
 
 	if ( g_animGlobals.uwCurState != psAnim->uwStates )
 	{
-		DBERROR( ("anim_End3D: states in current anim not consistent with header\n") );
+		DBERROR( ("anim_End3D: states in current anim !consistent with header\n") );
 		return FALSE;
 	}
 

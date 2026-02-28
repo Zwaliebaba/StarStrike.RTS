@@ -410,7 +410,7 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 	if ((strcmp(IMD_NAME,buffer) !=0) && (strcmp(PIE_NAME,buffer) !=0)) 
 	{
 		DBPRINTF(("(%s %d)\n",buffer,_IMD_VER));
-		iV_Error(0xff,"(IMDLoad) not an IMD file!");
+		iV_Error(0xff,"(IMDLoad) !an IMD file!");
 		return NULL;
 	}
 
@@ -420,7 +420,7 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 	//Now supporting version 4 files
 	if ((_IMD_VER < 1) || (_IMD_VER > 4)) 
 	{
-		iV_Error(0xff,"(IMDLoad) file version not supported");
+		iV_Error(0xff,"(IMDLoad) file version !supported");
 		return NULL;
 	}
 
@@ -543,7 +543,7 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 				TESTDEBUG=TRUE;
 				texpage=-1;
 #else
-				iV_Error(0xff,"(IMDLoad) could not load/alloc tex page %s or %s/%s",IMDpath,PCXpath,texfile);
+				iV_Error(0xff,"(IMDLoad) could !load/alloc tex page %s || %s/%s",IMDpath,PCXpath,texfile);
 				return NULL;
 #endif
 			}
@@ -599,7 +599,7 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 			}
 
 			if (texpage < 0) {
-				iV_Error(0xff,"(IMDLoad) could not load/alloc tex page %s or %s/%s",IMDpath,PCXpath,texfile);
+				iV_Error(0xff,"(IMDLoad) could !load/alloc tex page %s || %s/%s",IMDpath,PCXpath,texfile);
 				return NULL;
 			}
 		}
@@ -666,7 +666,7 @@ static iBool _imd_load_polys(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *
 
 				if (sscanf1(ppFileData,"%x %d",&flags,&npnts) != 2) 
 				{
-					iV_Error(0xff,"(_load_polys) [poly %d] error loading flags and npoints",i);
+					iV_Error(0xff,"(_load_polys) [poly %d] error loading flags && npoints",i);
 				}
 
 				poly->flags=flags;

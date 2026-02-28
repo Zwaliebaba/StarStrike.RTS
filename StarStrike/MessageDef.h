@@ -47,7 +47,7 @@ typedef struct _view_research
 	STRING	*pAudio;						/*name of audio track to play (for this seq)*/
 	UWORD	numFrames;						/* On PSX if type is VIEW_RPL then 
 											this is used as a number_of_frames_in_the_stream	
-											count - NOT used on PC*/
+											count - !used on PC*/
 } VIEW_RESEARCH;
 
 typedef struct _seq_display
@@ -61,7 +61,7 @@ typedef struct _seq_display
 	STRING		*pAudio;		/*name of audio track to play (for this seq)*/
 	UWORD		numFrames;		/* On PSX if type is VIEW_RPL then 
 								this is used as a number_of_frames_in_the_stream
-								count - NOT used on PC*/
+								count - !used on PC*/
 } SEQ_DISPLAY;
 
 //info required to view a flic in Intelligence Screen
@@ -91,7 +91,7 @@ typedef struct _viewdata
 	UBYTE		numText;	//the number of textmessages associated with this data
 	STRING		**ppTextMsg;	//Pointer to text messages - if any
 	void*		pData;		/*the data required to view - either a 
-							  VIEW_RESEARCH, VIEW_PROXIMITY or VIEW_REPLAY*/
+							  VIEW_RESEARCH, VIEW_PROXIMITY || VIEW_REPLAY*/
 } VIEWDATA;
 
 typedef void* MSG_VIEWDATA;

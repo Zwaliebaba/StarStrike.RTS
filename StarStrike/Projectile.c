@@ -59,8 +59,8 @@
 
 #define NOMINAL_DAMAGE	5
 
-/*#define GFX_VISIBLE(psObj)		 ((psObj->psSource != NULL) AND psObj->psSource->visible[selectedPlayer]) OR \
-								 ((psObj->psDest != NULL) AND psObj->psDest->visible[selectedPlayer] )*/
+/*#define GFX_VISIBLE(psObj)		 ((psObj->psSource != NULL) && psObj->psSource->visible[selectedPlayer]) || \
+								 ((psObj->psDest != NULL) && psObj->psDest->visible[selectedPlayer] )*/
 
 
 /***************************************************************************/
@@ -111,29 +111,29 @@ BOOL gfxVisible(PROJ_OBJECT *psObj)
 	}
 
 	// you can see the source
-	if( (psObj->psSource!=NULL) AND (psObj->psSource->visible[selectedPlayer]) )
+	if( (psObj->psSource!=NULL) && (psObj->psSource->visible[selectedPlayer]) )
 	{
 		bVisible = TRUE;
 	}
 
 	// you can see the destination
-	if( (psObj->psDest!=NULL) AND (psObj->psDest->visible[selectedPlayer]) )
+	if( (psObj->psDest!=NULL) && (psObj->psDest->visible[selectedPlayer]) )
 	{
 		bVisible = TRUE;
 	}
 	
 	// someone elses structure firing at something you can't see
-	if( (psObj->psSource != NULL) AND (psObj->psSource->type == OBJ_STRUCTURE) AND
-		(psObj->psSource->player!=selectedPlayer) AND
-		( (psObj->psDest == NULL) OR (!psObj->psDest->visible[selectedPlayer]) ) )
+	if( (psObj->psSource != NULL) && (psObj->psSource->type == OBJ_STRUCTURE) &&
+		(psObj->psSource->player!=selectedPlayer) &&
+		( (psObj->psDest == NULL) || (!psObj->psDest->visible[selectedPlayer]) ) )
 	{
 		bVisible = FALSE;
 	}
 
 	// something you cannot see firing at a structure that isn't yours
-	if ( (psObj->psDest != NULL) AND (psObj->psDest->type == OBJ_STRUCTURE) AND
-		 (psObj->psDest->player != selectedPlayer) AND
-		 ( (psObj->psSource == NULL) OR (!psObj->psSource->visible[selectedPlayer]) ) )
+	if ( (psObj->psDest != NULL) && (psObj->psDest->type == OBJ_STRUCTURE) &&
+		 (psObj->psDest->player != selectedPlayer) &&
+		 ( (psObj->psSource == NULL) || (!psObj->psSource->visible[selectedPlayer]) ) )
 	{
 		bVisible = FALSE;
 	}
@@ -517,7 +517,7 @@ proj_SendProjectile( WEAPON *psWeap, BASE_OBJECT *psAttacker, SDWORD player,
             else
             {
                 //don't play the sound for a LasSat in multiPlayer
-                if (!(bMultiPlayer AND psWeapStats->weaponSubClass == WSC_LAS_SAT))
+                if (!(bMultiPlayer && psWeapStats->weaponSubClass == WSC_LAS_SAT))
                 {
                     audio_PlayObjStaticTrack(psObj, psObj->psWStats->iAudioFireID);
                 }
@@ -585,8 +585,8 @@ proj_InFlightDirectFunc( PROJ_OBJECT *psObj )
 
 //	}
 
-	/* If it's homing and it has a target (not a miss)... */
-	if(psStats->movementModel == MM_HOMINGDIRECT AND psObj->psDest)
+	/* If it's homing && it has a target (!a miss)... */
+	if(psStats->movementModel == MM_HOMINGDIRECT && psObj->psDest)
 	{
 		dx = (SDWORD)psObj->psDest->x-(SDWORD)psObj->startX;
 		dy = (SDWORD)psObj->psDest->y-(SDWORD)psObj->startY;
@@ -650,8 +650,8 @@ proj_InFlightDirectFunc( PROJ_OBJECT *psObj )
 	}
 
 	else
-	if(psStats->weaponSubClass == WSC_COMMAND OR 
-        psStats->weaponSubClass == WSC_ELECTRONIC OR 
+	if(psStats->weaponSubClass == WSC_COMMAND || 
+        psStats->weaponSubClass == WSC_ELECTRONIC || 
         psStats->weaponSubClass == WSC_EMP)
 	{
 	    if(gfxVisible(psObj))
@@ -667,8 +667,8 @@ proj_InFlightDirectFunc( PROJ_OBJECT *psObj )
 	}
 	/*
 	else
-	if(psStats->weaponSubClass == WSC_ROCKET OR psStats->weaponSubClass == WSC_MISSILE OR
-        psStats->weaponSubClass == WSC_SLOWROCKET OR psStats->weaponSubClass == WSC_SLOWMISSILE)
+	if(psStats->weaponSubClass == WSC_ROCKET || psStats->weaponSubClass == WSC_MISSILE ||
+        psStats->weaponSubClass == WSC_SLOWROCKET || psStats->weaponSubClass == WSC_SLOWMISSILE)
 	{
 		if(GFX_VISIBLE(psObj))
 		{
@@ -679,8 +679,8 @@ proj_InFlightDirectFunc( PROJ_OBJECT *psObj )
 		}
 	}
 	*/
-	if(psStats->weaponSubClass == WSC_ROCKET OR psStats->weaponSubClass == WSC_MISSILE OR
-        psStats->weaponSubClass == WSC_SLOWROCKET OR psStats->weaponSubClass == WSC_SLOWMISSILE)
+	if(psStats->weaponSubClass == WSC_ROCKET || psStats->weaponSubClass == WSC_MISSILE ||
+        psStats->weaponSubClass == WSC_SLOWROCKET || psStats->weaponSubClass == WSC_SLOWMISSILE)
 	{
 	if(gfxVisible(psObj))
 //		if(GFX_VISIBLE(psObj))
@@ -693,7 +693,7 @@ proj_InFlightDirectFunc( PROJ_OBJECT *psObj )
 	}
 	 
 	/* See if effect has finished */
-	if ( (psStats->movementModel == MM_HOMINGDIRECT) AND psObj->psDest )
+	if ( (psStats->movementModel == MM_HOMINGDIRECT) && psObj->psDest )
 	{
 		xdiff = (SDWORD)psObj->x - (SDWORD)psObj->psDest->x;
 		ydiff = (SDWORD)psObj->y - (SDWORD)psObj->psDest->y;
@@ -711,7 +711,7 @@ proj_InFlightDirectFunc( PROJ_OBJECT *psObj )
 	}
 
 #if CHECK_PROJ_ABOVE_GROUND
-	/* check not trying to travel through terrain - if so count as a miss */
+	/* check !trying to travel through terrain - if so count as a miss */
 	if ( mapObjIsAboveGround( (BASE_OBJECT *) psObj ) == FALSE )
 	{
 		psObj->state = PROJ_IMPACT;
@@ -722,7 +722,7 @@ proj_InFlightDirectFunc( PROJ_OBJECT *psObj )
 #endif
 
 	/* add smoke trail to indirect weapons firing directly */
-	if( !proj_Direct( psStats ) AND gfxVisible(psObj))//GFX_VISIBLE(psObj) )
+	if( !proj_Direct( psStats ) && gfxVisible(psObj))//GFX_VISIBLE(psObj) )
 	{
 		pos.x = psObj->x; 
 		pos.y = psObj->z+8; 
@@ -799,8 +799,8 @@ proj_InFlightIndirectFunc( PROJ_OBJECT *psObj )
 		}
 	}
 	else
-	if(psStats->weaponSubClass == WSC_COMMAND OR 
-        psStats->weaponSubClass == WSC_ELECTRONIC OR 
+	if(psStats->weaponSubClass == WSC_COMMAND || 
+        psStats->weaponSubClass == WSC_ELECTRONIC || 
         psStats->weaponSubClass == WSC_EMP)
 	{
     	if(gfxVisible(psObj))
@@ -854,7 +854,7 @@ proj_InFlightIndirectFunc( PROJ_OBJECT *psObj )
 	}
 
 #if CHECK_PROJ_ABOVE_GROUND
-	/* check not trying to travel through terrain - if so count as a miss */
+	/* check !trying to travel through terrain - if so count as a miss */
 	if ( mapObjIsAboveGround( (BASE_OBJECT *) psObj ) == FALSE )
 	{
 		psObj->state = PROJ_IMPACT;
@@ -866,12 +866,12 @@ proj_InFlightIndirectFunc( PROJ_OBJECT *psObj )
 
 	/* Add smoke particle at projectile location (in world coords) */
 	/* Add a trail graphic */
-	/* If it's indirect and not a flamethrower - add a smoke trail! */
+	/* If it's indirect && !a flamethrower - add a smoke trail! */
 	/* MAKE IT ADD A 'TRAIL GRAPHIC'? */
-	if(psStats->weaponSubClass != WSC_FLAME AND psStats->weaponSubClass != 
-        WSC_ENERGY AND psStats->weaponSubClass != WSC_COMMAND 
-		AND psStats->weaponSubClass != WSC_ELECTRONIC AND psStats->
-        weaponSubClass != WSC_EMP AND !bOver)
+	if(psStats->weaponSubClass != WSC_FLAME && psStats->weaponSubClass != 
+        WSC_ENERGY && psStats->weaponSubClass != WSC_COMMAND 
+		&& psStats->weaponSubClass != WSC_ELECTRONIC && psStats->
+        weaponSubClass != WSC_EMP && !bOver)
 	{
 	if(gfxVisible(psObj))
 //		if(GFX_VISIBLE(psObj))// AND psStats->pTrailGraphic )
@@ -951,7 +951,7 @@ proj_ImpactFunc( PROJ_OBJECT *psObj )
 //			position.z = psObj->tarY;
 //			position.y = map_Height(position.x, position.z);
 			/* Shouldn't need to do this check but the stats aren't all at a value yet... */ // FIXME
-			if(psStats->incenRadius AND psStats->incenTime)
+			if(psStats->incenRadius && psStats->incenTime)
 			{
 				position.x = psObj->tarX;
 				position.z = psObj->tarY;
@@ -987,7 +987,7 @@ proj_ImpactFunc( PROJ_OBJECT *psObj )
 	if ( psObj->psDest == NULL )
 //		 (psObj->x != psObj->psDest->x) || (psObj->y != psObj->psDest->y) )
 	{
-		/* The bullet missed or the target was destroyed in flight */
+		/* The bullet missed || the target was destroyed in flight */
 		/* So show the MISS effect */
 	 	position.x = psObj->x;
 		position.z = psObj->y;
@@ -1094,7 +1094,7 @@ proj_ImpactFunc( PROJ_OBJECT *psObj )
 						}
 						/*else
 						{
-							ASSERT((FALSE, "proj_ImpactFunc: EW Weapon not attached to a droid"));
+							ASSERT((FALSE, "proj_ImpactFunc: EW Weapon !attached to a droid"));
 						}*/
                         else if (psObj->psSource->type == OBJ_STRUCTURE)
                         {
@@ -1124,7 +1124,7 @@ proj_ImpactFunc( PROJ_OBJECT *psObj )
 	//			}
 				DBP1(("Damage to object %d, player %d\n",
 						psObj->psDest->id, psObj->psDest->player));
-				/*the damage depends on the weapon effect and the target propulsion type or structure strength*/
+				/*the damage depends on the weapon effect && the target propulsion type || structure strength*/
 	  			bKilled = objectDamage(psObj->psDest,damage , psStats->weaponClass,psStats->weaponSubClass);
 	
 	//#ifdef WIN32
@@ -1256,7 +1256,7 @@ proj_ImpactFunc( PROJ_OBJECT *psObj )
 			}
 		}
 	
-		/* This was just a simple bullet - release it and return */
+		/* This was just a simple bullet - release it && return */
 		if ( hashTable_RemoveElement( g_pProjObjTable, psObj,
 										(int) psObj, UNUSED_KEY ) == FALSE )
 		{
@@ -1389,7 +1389,7 @@ proj_ImpactFunc( PROJ_OBJECT *psObj )
 					}
 				}
 				// Missed by old method, but maybe in landed within the building's footprint(baseplate)
-				else if(ptInStructure(psCurrS,psObj->x,psObj->y) AND (BASE_OBJECT*)psCurrS!=psObj->psDest)
+				else if(ptInStructure(psCurrS,psObj->x,psObj->y) && (BASE_OBJECT*)psCurrS!=psObj->psDest)
 				{
 					damage = NOMINAL_DAMAGE;
 				  	if(bMultiPlayer)
@@ -1502,7 +1502,7 @@ proj_PostImpactFunc( PROJ_OBJECT *psObj )
 	/* Burning effect */
 	if (psStats->incenTime > 0)
 	{
-		/* See if anything is in the fire and burn it */
+		/* See if anything is in the fire && burn it */
 
 		/* Calculate the fire's bounding box */
 		flame.x1 = (SWORD)(psObj->x - psStats->incenRadius);
@@ -1751,7 +1751,7 @@ FEATURE		*psFeat;
 }
 /***************************************************************************/
 
-/*the damage depends on the weapon effect and the target propulsion type or 
+/*the damage depends on the weapon effect && the target propulsion type || 
 structure strength*/
 UDWORD	calcDamage(UDWORD baseDamage, WEAPON_EFFECT weaponEffect, BASE_OBJECT *psTarget)
 {
@@ -1766,7 +1766,7 @@ UDWORD	calcDamage(UDWORD baseDamage, WEAPON_EFFECT weaponEffect, BASE_OBJECT *ps
 			STRUCTURE *)psTarget)->pStructureType->strength] / 100;
 
         //a little fail safe!
-        if (damage == 0 AND baseDamage != 0)
+        if (damage == 0 && baseDamage != 0)
         {
             damage = 1;
         }
@@ -1796,7 +1796,7 @@ UDWORD	calcDamage(UDWORD baseDamage, WEAPON_EFFECT weaponEffect, BASE_OBJECT *ps
 			nStat)->propulsionType] / 100;
 
         //a little fail safe!
-        if (damage == 0 AND baseDamage != 0)
+        if (damage == 0 && baseDamage != 0)
         {
             damage = 1;
         }
@@ -1861,7 +1861,7 @@ STRUCTURE	*psStructure;
 	{
 	case OBJ_DROID:
 		psDroid = (DROID*)psObj;
-		if( (gameTime - psDroid->timeLastHit) < HIT_THRESHOLD AND
+		if( (gameTime - psDroid->timeLastHit) < HIT_THRESHOLD &&
             psDroid->lastHitWeapon == WSC_ELECTRONIC)
 			return(TRUE);
 	case OBJ_FEATURE:
@@ -1871,7 +1871,7 @@ STRUCTURE	*psStructure;
 		break;	
 	case OBJ_STRUCTURE:
 		psStructure = (STRUCTURE*)psObj;
-		if( (gameTime - psStructure->timeLastHit) < HIT_THRESHOLD AND
+		if( (gameTime - psStructure->timeLastHit) < HIT_THRESHOLD &&
             psStructure->lastHitWeapon == WSC_ELECTRONIC)
 			return(TRUE);
 		break;

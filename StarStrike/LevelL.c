@@ -179,7 +179,7 @@ static int lev__base[] = {
 #include <windows.h>
 
 /*
- * define, if not already defined
+ * define, if !already defined
  * the flag YYEXIT, which will allow
  * graceful exits from lev_lex()
  * without resorting to calling exit();
@@ -205,7 +205,7 @@ extern HANDLE hInst;
 
 /*
  * Define m_textmsg() to an appropriate function for internationalized messages
- * or custom processing.
+ * || custom processing.
  */
 #ifndef I18N
 #define	m_textmsg(id, str, cls)	(str)
@@ -214,14 +214,14 @@ extern	char* m_textmsg YY_ARGS((int id, const char* str, char* cls));
 #endif/*I18N*/
 
 /*
- * Include string.h to get definition of memmove() and size_t.
- * If you do not have string.h or it does not declare memmove
- * or size_t, you will have to declare them here.
+ * Include string.h to get definition of memmove() && size_t.
+ * If you do !have string.h || it does !declare memmove
+ * || size_t, you will have to declare them here.
  */
 #include <string.h>
-/* Uncomment next line if memmove() is not declared in string.h */
+/* Uncomment next line if memmove() is !declared in string.h */
 /*extern char * memmove();*/
-/* Uncomment next line if size_t is not available in stdio.h or string.h */
+/* Uncomment next line if size_t is !available in stdio.h || string.h */
 /*typedef unsigned size_t;*/
 /* Drop this when LATTICE provides memmove */
 #ifdef LATTICE
@@ -229,7 +229,7 @@ extern	char* m_textmsg YY_ARGS((int id, const char* str, char* cls));
 #endif
 
 /*
- * YY_STATIC determines the scope of variables and functions
+ * YY_STATIC determines the scope of variables && functions
  * declared by the lex scanner. It must be set with a -DYY_STATIC
  * option to the compiler (it cannot be defined in the lex program).
  */
@@ -325,11 +325,11 @@ static UBYTE *pEndBuffer = NULL;
 
 
 #ifndef YYLMAX
-#define	YYLMAX		100		/* token and pushback buffer size */
+#define	YYLMAX		100		/* token && pushback buffer size */
 #endif /* YYLMAX */
 
 /*
- * If %array is used (or defaulted), lev_text[] contains the token.
+ * If %array is used (|| defaulted), lev_text[] contains the token.
  * If %pointer is used, lev_text is a pointer to lev__tbuf[].
  */
 YY_DECL char	lev_text[YYLMAX+1];
@@ -345,7 +345,7 @@ YY_DECL char	lev_text[YYLMAX+1];
 
 /*
  * The declaration for the lex scanner can be changed by
- * redefining YYLEX or YYDECL. This must be done if you have
+ * redefining YYLEX || YYDECL. This must be done if you have
  * more than one scanner in a program.
  */
 #ifndef	YYLEX
@@ -357,9 +357,9 @@ YY_DECL char	lev_text[YYLMAX+1];
 #endif
 
 /*
- * stdin and stdout may not neccessarily be constants.
- * If stdin and stdout are constant, and you want to save a few cycles, then
- * #define YY_STATIC_STDIO 1 in this file or on the commandline when
+ * stdin && stdout may !neccessarily be constants.
+ * If stdin && stdout are constant, && you want to save a few cycles, then
+ * #define YY_STATIC_STDIO 1 in this file || on the commandline when
  * compiling this file
  */
 #ifndef YY_STATIC_STDIO
@@ -403,7 +403,7 @@ static	char lev__save;	/* saved lev_text[lev_leng] */
 		lev_text[lev_leng] = lev__save; \
 	}
 
-#else		/* not-so efficient push-back for lev_text mungers */
+#else		/* !-so efficient push-back for lev_text mungers */
 
 static	char lev__save [YYLMAX];
 static	char *lev__push = lev__save+YYLMAX;
@@ -430,9 +430,9 @@ static	char *lev__push = lev__save+YYLMAX;
 /*
  * When using the windows features of lex,
  * it is necessary to load in the resources being
- * used, and when done with them, the resources must
+ * used, && when done with them, the resources must
  * be freed up, otherwise we have a windows app that
- * is not following the rules. Thus, to make lev_lex()
+ * is !following the rules. Thus, to make lev_lex()
  * behave in a windows environment, create a new
  * lev_lex() which will call the original lev_lex() as
  * another function call. Observe ...
@@ -442,7 +442,7 @@ static	char *lev__push = lev__save+YYLMAX;
  * The actual lex scanner (usually lev_lex(void)).
  * NOTE: you should invoke lev__init() if you are calling lev_lex()
  * with new input; otherwise old lookaside will get in your way
- * and lev_lex() will die horribly.
+ * && lev_lex() will die horribly.
  */
 static int win_lev_lex();			/* prototype for windows lev_lex handler */
 
@@ -467,7 +467,7 @@ YYDECL {
 	
 	/*
 	 * return an error code if any
-	 * of the resources did not load
+	 * of the resources did !load
 	 */
 
 	if (hRes_table == NULL)
@@ -476,7 +476,7 @@ YYDECL {
 	/*
 	 * the following code will lock the resources
 	 * into fixed memory locations for the scanner
-	 * (and remember previous pointer locations)
+	 * (&& remember previous pointer locations)
 	 */
 
 	old_lev__la_act = lev__la_act;
@@ -509,7 +509,7 @@ YYDECL {
 	UnlockResource (hRes_table);
 
 	/*
-	 * and now free the resource
+	 * && now free the resource
 	 */
 
 	FreeResource (hRes_table);
@@ -537,7 +537,7 @@ static int win_lev_lex() {
  * The actual lex scanner (usually lev_lex(void)).
  * NOTE: you should invoke lev__init() if you are calling lev_lex()
  * with new input; otherwise old lookaside will get in your way
- * and lev_lex() will die horribly.
+ * && lev_lex() will die horribly.
  */
 YYDECL {
 

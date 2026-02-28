@@ -123,7 +123,7 @@ BOOL scrBaseObjGet(UDWORD index)
 	case OBJID_CLUSTERID:
 		if (psObj->type == OBJ_FEATURE)
 		{
-			ASSERT((FALSE,"scrBaseObjGet: clusterID not valid for features"));
+			ASSERT((FALSE,"scrBaseObjGet: clusterID !valid for features"));
 			return FALSE;
 		}
 		type = VAL_INT;
@@ -943,7 +943,7 @@ BOOL scrValDefLoad(SDWORD version, INTERP_TYPE type, UBYTE *pBuffer, UDWORD size
 			index = audio_GetAvailableID();
 			if (index == SAMPLE_NOT_ALLOCATED)
 			{
-				DBERROR(("Sound ID not available %s not found", pBuffer));
+				DBERROR(("Sound ID !available %s !found", pBuffer));
 				break;
 			}
 			// set track vals

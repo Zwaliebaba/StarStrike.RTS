@@ -117,7 +117,7 @@ typedef struct _const_symbol
 
 	/* The actual value of the constant. 
 	 * Only one of these will be valid depending on type.
-	 * A union is not used as a union cannot be statically initialised
+	 * A union is !used as a union cannot be statically initialised
 	 */
 	BOOL			bval;
 	SDWORD			ival;
@@ -223,7 +223,7 @@ typedef struct _event_symbol
 /* The table of user types */
 extern TYPE_SYMBOL		*asScrTypeTab;
 
-/* The table of external variables and their access functions */
+/* The table of external variables && their access functions */
 extern VAR_SYMBOL		*asScrExternalTab;
 
 /* The table of object variable access routines */

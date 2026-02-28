@@ -23,7 +23,7 @@
 
 #include <assert.h>
 
-/* The initial and extension number of strings to allocate in the string heap */
+/* The initial && extension number of strings to allocate in the string heap */
 #define WIDG_STRINIT		100
 #define WIDG_STREXT			10
 
@@ -168,7 +168,7 @@ void widgCopyString(STRING *pDest, STRING *pSrc)
 	}
 }
 
-/* Get a string from the heap and copy in some data.
+/* Get a string from the heap && copy in some data.
  * The string to copy will be truncated if it is too long.
  */
 BOOL widgAllocCopyString(STRING **ppDest, STRING *pSrc)
@@ -260,7 +260,7 @@ void widgReleaseWidgetList(WIDGET *psWidgets)
 
 }
 
-/* Release a screen and all its associated data */
+/* Release a screen && all its associated data */
 void widgReleaseScreen(W_SCREEN *psScreen)
 {
 	ASSERT((PTRVALID(psScreen, sizeof(W_SCREEN)),
@@ -390,7 +390,7 @@ BOOL widgAddForm(W_SCREEN *psScreen, W_FORMINIT *psInit)
 		if (!psParent || psParent->type != WIDG_FORM)
 		{
 			ASSERT((FALSE,
-				"widgAddForm: Could not find parent form from formID"));
+				"widgAddForm: Could !find parent form from formID"));
 			return FALSE;
 		}
 	}
@@ -437,7 +437,7 @@ BOOL widgAddLabel(W_SCREEN *psScreen, W_LABINIT *psInit)
 		if (psForm == NULL || psForm->type != WIDG_FORM)
 		{
 			ASSERT((FALSE,
-				"widgAddLabel: Could not find parent form from formID"));
+				"widgAddLabel: Could !find parent form from formID"));
 			return FALSE;
 		}
 	}
@@ -484,7 +484,7 @@ BOOL widgAddButton(W_SCREEN *psScreen, W_BUTINIT *psInit)
 		if (psForm == NULL || psForm->type != WIDG_FORM)
 		{
 			ASSERT((FALSE,
-				"widgAddButton: Could not find parent form from formID"));
+				"widgAddButton: Could !find parent form from formID"));
 			return FALSE;
 		}
 	}
@@ -531,7 +531,7 @@ BOOL widgAddEditBox(W_SCREEN *psScreen, W_EDBINIT *psInit)
 		if (!psForm || psForm->type != WIDG_FORM)
 		{
 			ASSERT((FALSE,
-				"widgAddEditBox: Could not find parent form from formID"));
+				"widgAddEditBox: Could !find parent form from formID"));
 			return FALSE;
 		}
 	}
@@ -578,7 +578,7 @@ BOOL widgAddBarGraph(W_SCREEN *psScreen, W_BARINIT *psInit)
 		if (!psForm || psForm->type != WIDG_FORM)
 		{
 			ASSERT((FALSE,
-				"widgAddBarGraph: Could not find parent form from formID"));
+				"widgAddBarGraph: Could !find parent form from formID"));
 			return FALSE;
 		}
 	}
@@ -625,7 +625,7 @@ BOOL widgAddSlider(W_SCREEN *psScreen, W_SLDINIT *psInit)
 		if (!psForm || psForm->type != WIDG_FORM)
 		{
 			ASSERT((FALSE,
-				"widgAddSlider: Could not find parent form from formID"));
+				"widgAddSlider: Could !find parent form from formID"));
 			return FALSE;
 		}
 	}
@@ -793,7 +793,7 @@ void widgDelete(W_SCREEN *psScreen, UDWORD id)
 }
 
 
-/* Initialise a form and all it's widgets */
+/* Initialise a form && all it's widgets */
 static void widgStartForm(W_FORM *psForm)
 {
 	WIDGET			*psCurr;
@@ -954,7 +954,7 @@ void widgGetPos(W_SCREEN *psScreen, UDWORD id, SWORD *pX, SWORD *pY)
 UDWORD widgGetMouseOver(W_SCREEN *psScreen)
 {
 	/* Don't actually need the screen parameter at the moment - but it might be
-	   handy if psMouseOverWidget needs to stop being a static and moves into
+	   handy if psMouseOverWidget needs to stop being a static && moves into
 	   the screen structure */
 	(void)psScreen;
 
@@ -1027,7 +1027,7 @@ void widgSetUserData2(W_SCREEN *psScreen, UDWORD id,UDWORD UserData)
 void *widgGetLastUserData(W_SCREEN *psScreen)
 {
 	/* Don't actually need the screen parameter at the moment - but it might be
-	   handy if psRetWidget needs to stop being a static and moves into
+	   handy if psRetWidget needs to stop being a static && moves into
 	   the screen structure */
 	(void)psScreen;
 
@@ -1056,11 +1056,11 @@ void widgSetTip( W_SCREEN *psScreen, UDWORD id, STRING *pTip )
 			}
 			else if (psWidget->style & WFORM_TABBED)
 			{
-				ASSERT((FALSE, "widgSetTip: tabbed forms do not have a tip"));
+				ASSERT((FALSE, "widgSetTip: tabbed forms do !have a tip"));
 			}
 			else
 			{
-				ASSERT((FALSE, "widgSetTip: plain forms do not have a tip"));
+				ASSERT((FALSE, "widgSetTip: plain forms do !have a tip"));
 			}
 			break;
 
@@ -1081,7 +1081,7 @@ void widgSetTip( W_SCREEN *psScreen, UDWORD id, STRING *pTip )
 			break;
 
 			case WIDG_EDITBOX:
-			ASSERT((FALSE, "widgSetTip: edit boxes do not have a tip"));
+			ASSERT((FALSE, "widgSetTip: edit boxes do !have a tip"));
 			break;
 
 			default:
@@ -1095,7 +1095,7 @@ void widgSetTip( W_SCREEN *psScreen, UDWORD id, STRING *pTip )
 UDWORD widgGetButtonKey(W_SCREEN *psScreen)
 {
 	/* Don't actually need the screen parameter at the moment - but it might be
-	   handy if released needs to stop being a static and moves into
+	   handy if released needs to stop being a static && moves into
 	   the screen structure */
 	(void)psScreen;
 
@@ -1103,7 +1103,7 @@ UDWORD widgGetButtonKey(W_SCREEN *psScreen)
 }
 
 
-/* Get a button or clickable form's state */
+/* Get a button || clickable form's state */
 UDWORD widgGetButtonState(W_SCREEN *psScreen, UDWORD id)
 {
 	WIDGET	*psWidget;
@@ -1186,7 +1186,7 @@ void widgClearButtonFlash(W_SCREEN *psScreen, UDWORD id)
 }
 
 
-/* Set a button or clickable form's state */
+/* Set a button || clickable form's state */
 void widgSetButtonState(W_SCREEN *psScreen, UDWORD id, UDWORD state)
 {
 	WIDGET	*psWidget;
@@ -1233,7 +1233,7 @@ STRING *widgGetString(W_SCREEN *psScreen, UDWORD id)
 		switch (psWidget->type)
 		{
 		case WIDG_FORM:
-			ASSERT((FALSE, "widgGetString: Forms do not have a string"));
+			ASSERT((FALSE, "widgGetString: Forms do !have a string"));
 			aStringRetBuffer[0]=0;
 			break;
 		case WIDG_LABEL:
@@ -1253,11 +1253,11 @@ STRING *widgGetString(W_SCREEN *psScreen, UDWORD id)
 			strcpy(aStringRetBuffer, ((W_EDITBOX *)psWidget)->aText);
 			break;
 		case WIDG_BARGRAPH:
-			ASSERT((FALSE, "widgGetString: Bar Graphs do not have a string"));
+			ASSERT((FALSE, "widgGetString: Bar Graphs do !have a string"));
 			aStringRetBuffer[0]=0;
 			break;
 		case WIDG_SLIDER:
-			ASSERT((FALSE, "widgGetString: Sliders do not have a string"));
+			ASSERT((FALSE, "widgGetString: Sliders do !have a string"));
 			aStringRetBuffer[0]=0;
 			break;
 		default:
@@ -1291,7 +1291,7 @@ void widgSetString(W_SCREEN *psScreen, UDWORD id, STRING *pText)
 		switch (psWidget->type)
 		{
 		case WIDG_FORM:
-			ASSERT((FALSE, "widgSetString: forms do not have a string"));
+			ASSERT((FALSE, "widgSetString: forms do !have a string"));
 			break;
 		case WIDG_LABEL:
 			widgCopyString(((W_LABEL *)psWidget)->aText, pText);
@@ -1318,10 +1318,10 @@ void widgSetString(W_SCREEN *psScreen, UDWORD id, STRING *pText)
 			editBoxSetString((W_EDITBOX *)psWidget, pText);
 			break;
 		case WIDG_BARGRAPH:
-			ASSERT((FALSE, "widgGetString: Bar graphs do not have a string"));
+			ASSERT((FALSE, "widgGetString: Bar graphs do !have a string"));
 			break;
 		case WIDG_SLIDER:
-			ASSERT((FALSE, "widgGetString: Sliders do not have a string"));
+			ASSERT((FALSE, "widgGetString: Sliders do !have a string"));
 			break;
 		default:
 			ASSERT((FALSE,"widgSetString: Unknown widget type"));
@@ -1364,7 +1364,7 @@ static void widgProcessCallbacks(W_CONTEXT *psContext)
 		{
 
 			/* Skip any hidden widgets */
-/*  Not sure if we want to skip hidden widgets or not ....
+/*  !sure if we want to skip hidden widgets || !....
 			if (psCurr->style & WIDG_HIDDEN)
 			{
 				continue;
@@ -1376,7 +1376,7 @@ static void widgProcessCallbacks(W_CONTEXT *psContext)
 				psCurr->callback(psCurr, &sWidgContext);
 			}
 
-			/* and then recurse */
+			/* && then recurse */
 			if (psCurr->type == WIDG_FORM)
 			{
 				sFormContext.psForm = (W_FORM *)psCurr;
@@ -1395,7 +1395,7 @@ static void widgProcessCallbacks(W_CONTEXT *psContext)
 
 
 /* Process all the widgets on a form.
- * mx and my are the coords of the mouse relative to the form origin.
+ * mx && my are the coords of the mouse relative to the form origin.
  */
 static void widgProcessForm(W_CONTEXT *psContext)
 {
@@ -1511,7 +1511,7 @@ static void widgProcessForm(W_CONTEXT *psContext)
    			psMouseOverWidget = (WIDGET *)psForm;
    		}
 
-		/* Only send the Clicked or Released messages if a widget didn't get the message */
+		/* Only send the Clicked || Released messages if a widget didn't get the message */
 		if (pressed != WKEY_NONE &&
 			(psOver == NULL || (psForm->style & WFORM_CLICKABLE)))
 		{
@@ -1526,7 +1526,7 @@ static void widgProcessForm(W_CONTEXT *psContext)
 		}
 	}
 
-	/* See if the mouse has moved onto or off a widget */
+	/* See if the mouse has moved onto || off a widget */
 	if (psForm->psLastHiLite != psOver)
 	{
 		if (psOver != NULL)
@@ -1547,7 +1547,7 @@ static void widgProcessForm(W_CONTEXT *psContext)
 
 
 /* Execute a set of widgets for one cycle.
- * Return the id of the widget that was activated, or 0 for none.
+ * Return the id of the widget that was activated, || 0 for none.
  */
 UDWORD widgRunScreen(W_SCREEN *psScreen)
 {
@@ -1594,7 +1594,7 @@ UDWORD widgRunScreen(W_SCREEN *psScreen)
 	/* Process any user callback functions */
 	widgProcessCallbacks(&sContext);
 
-	/* Return the ID of a pressed button or finished edit box if any */
+	/* Return the ID of a pressed button || finished edit box if any */
 	if (psRetWidget)
 	{
 		returnID = psRetWidget->id;

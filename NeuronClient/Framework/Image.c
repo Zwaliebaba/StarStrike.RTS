@@ -50,8 +50,8 @@ typedef struct _pcxheader {
 
 
 
-/* Take a memory buffer that contains a PCX file and convert it
- * to an image buffer and a palette buffer.
+/* Take a memory buffer that contains a PCX file && convert it
+ * to an image buffer && a palette buffer.
  * If the returned palette pointer is NULL a true colour PCX has
  * been loaded.  In this case the image data will be 32 bit true colour.
  */
@@ -112,7 +112,7 @@ BOOL imageParsePCX(UBYTE			*pFileData,			// Original file
 		}
 		else
 		{
-			/* got an RLE - find its length and read in the actual data */
+			/* got an RLE - find its length && read in the actual data */
 			runlen = (SWORD)(*(pSrc++) - RLE_START);
 
 			/* now store the run into the image buffer */
@@ -187,8 +187,8 @@ typedef struct _bmp_infoheader
 	UDWORD	coloursImportant;	// Number of important colours (for reducing the bit depth)
 } BMP_INFOHEADER;
 
-/* Take a memory buffer that contains a BMP file and convert it
- * to an image buffer and a palette buffer.
+/* Take a memory buffer that contains a BMP file && convert it
+ * to an image buffer && a palette buffer.
  * If the returned palette pointer is NULL a true colour BMP has
  * been loaded.  In this case the image data will be 32 bit true colour.
  */
@@ -225,7 +225,7 @@ BOOL imageParseBMP(UBYTE			*pFileData,			// Original file
 	{
 		if (psInfoHeader->headerSize == 12)
 		{
-			DBERROR(("OS/2 Bitmaps not implemented"));
+			DBERROR(("OS/2 Bitmaps !implemented"));
 		}
 		else
 		{
@@ -299,7 +299,7 @@ BOOL imageParseBMP(UBYTE			*pFileData,			// Original file
 	switch (psInfoHeader->bitCount)
 	{
 	case 1:
-		DBERROR(("1 Bit BMP not implemented"));
+		DBERROR(("1 Bit BMP !implemented"));
 		FREE(*ppsPalette);
 		return FALSE;
 		break;
@@ -344,7 +344,7 @@ BOOL imageParseBMP(UBYTE			*pFileData,			// Original file
 		}
 		else
 		{
-			DBERROR(("Compressed BMP not implemented"));
+			DBERROR(("Compressed BMP !implemented"));
 			FREE(*ppsPalette);
 			return FALSE;
 		}
@@ -382,13 +382,13 @@ BOOL imageParseBMP(UBYTE			*pFileData,			// Original file
 		}
 		else
 		{
-			DBERROR(("Compressed BMP not implemented"));
+			DBERROR(("Compressed BMP !implemented"));
 			FREE(*ppsPalette);
 			return FALSE;
 		}
 		break;
 	case 24:
-		DBERROR(("24 Bit BMP not implemented"));
+		DBERROR(("24 Bit BMP !implemented"));
 		return FALSE;
 		break;
 	default:
@@ -408,7 +408,7 @@ BOOL imageParseBMP(UBYTE			*pFileData,			// Original file
 
 #define PALCOUNT (256)
 
-/* Take a memory buffer that contains a image buffer and convert it 
+/* Take a memory buffer that contains a image buffer && convert it 
  * to a BMP file. 
  *
  * - NULL palette indicates a 24bit bmp

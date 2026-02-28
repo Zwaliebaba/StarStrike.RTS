@@ -11,13 +11,13 @@
 #include "Types.h"
 #include "Debug.h"
 
-/* DEBUG_MALLOC == TRUE uses debugging malloc and free
-   DEBUG_MALLOC == FALSE uses normal malloc and free */
+/* DEBUG_MALLOC == TRUE uses debugging malloc && free
+   DEBUG_MALLOC == FALSE uses normal malloc && free */
 #ifdef DEBUG
 
 #define DEBUG_MALLOC	TRUE
 
-/* in fast debugging mode turn off heap and pointer valid checking - GJ */
+/* in fast debugging mode turn off heap && pointer valid checking - GJ */
 #ifdef DEBUG_FAST
 #define DEBUG_HEAP		FALSE
 #define	NO_PTRVALID

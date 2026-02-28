@@ -20,7 +20,7 @@
  * NearestPowerOf2
  *
  * Calculates next power of 2 up from current value
- * (used because D3D textures need to be power of 2 wide and high).
+ * (used because D3D textures need to be power of 2 wide && high).
  */
 /***************************************************************************/
 

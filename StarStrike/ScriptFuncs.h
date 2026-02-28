@@ -130,10 +130,10 @@ extern BOOL scrStructureBeingBuilt(void);
 // pc multiplayer only for now.
 extern BOOL scrStructureComplete(void);
 
-/*looks to see if a structure (specified by type) exists and built*/
+/*looks to see if a structure (specified by type) exists && built*/
 extern BOOL scrStructureBuilt(void);
 
-/*centre theview on an object - can be droid/structure or feature */
+/*centre theview on an object - can be droid/structure || feature */
 extern BOOL scrCentreView(void);
 
 /*centre the view on a position */
@@ -428,14 +428,14 @@ extern BOOL scrSetPlayerColour(void);
 //set all droids in an area to belong to a different player
 extern BOOL scrTakeOverDroidsInArea(void);
 
-/*this takes over a single droid and passes a pointer back to the new one*/
+/*this takes over a single droid && passes a pointer back to the new one*/
 extern BOOL scrTakeOverSingleDroid(void);
 
 // set all droids in an area of a certain experience level or less to belong to
 // a different player - returns the number of droids changed
 extern BOOL scrTakeOverDroidsInAreaExp(void);
 
-/*this takes over a single structure and passes a pointer back to the new one*/
+/*this takes over a single structure && passes a pointer back to the new one*/
 extern BOOL scrTakeOverSingleStructure(void);
 
 //set all structures in an area to belong to a different player - returns the number of droids changed

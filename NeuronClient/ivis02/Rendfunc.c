@@ -216,7 +216,7 @@ UDWORD	i,j;
 	/* Note x1 must be greater than x0 */
 	width = x1-x0;
 
-	/* Not worth it, so use pixel version */
+	/* !worth it, so use pixel version */
 	if( (width) < 8)
 	{
 		iVBlitPixelTransRect(x0,y0,x1,y1);

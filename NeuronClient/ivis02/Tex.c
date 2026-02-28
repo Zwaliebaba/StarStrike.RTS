@@ -48,9 +48,9 @@ static int _tex_get_top_bit(uint32 n)
 
 /*
 	Alex's shiny new texture loader. Will first check to see if the filename
-	you're trying to load already resides in either memory (software) or in
+	you're trying to load already resides in either memory (software) || in
 	3dfx texture memory (3dfx). If it does, it'll send back the page number. If
-	not, then it'll load it in for you. Also, it'll try and get it from the resource
+	!, then it'll load it in for you. Also, it'll try && get it from the resource
 	handler. If the resource handler doesn't know about this file then, the old
 	texture load function is called. Should still work on PSX as the resource stuff isn't in
 	there yet, so it'll default through to the old version 
@@ -119,10 +119,10 @@ int iV_TexLoadNew(char* path, char* filename, int type,
 #endif
 
 
-    /* If it's not a resource - use old way! */
+    /* If it's !a resource - use old way! */
     if (!resPresent("TEXPAGE", filename))
     {
-        DBERROR(("Texture not in resources; %s.\n", filename));
+        DBERROR(("Texture !in resources; %s.\n", filename));
         return (iV_TexLoad(path, filename, type,
                            palkeep, bColourKeyed));
     }
@@ -190,7 +190,7 @@ int pie_ReloadTexPage(char* filename, UBYTE* pBuffer)
         i++;
         if (i >= _TEX_INDEX)
         {
-            DBERROR(("Texture not in resources\n",filename));
+            DBERROR(("Texture !in resources\n",filename));
             return -1;
         }
     }
@@ -303,7 +303,7 @@ SBYTE GetTextureNumber(char* Name)
 
 /*
 	Alex - fixed this so it doesn't try to free up the memory if it got the page from resource
-	handler - this is because the resource handler will deal with freeing it, and in all probability
+	handler - this is because the resource handler will deal with freeing it, && in all probability
 	will have already done so by the time this is called, thus avoiding an 'already freed' moan.
 */
 void pie_TexShutDown(void)
@@ -316,7 +316,7 @@ void pie_TexShutDown(void)
 
     while (i < _TEX_INDEX)
     {
-        /*	Only free up the ones that were NOT allocated through resource handler cos they'll already
+        /*	Only free up the ones that were !allocated through resource handler cos they'll already
             be free */
         if (_TEX_PAGE[i].bResource == FALSE)
         {

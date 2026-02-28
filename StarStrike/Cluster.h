@@ -1,7 +1,7 @@
 /*
  * Cluster.h
  *
- * Form droids and structures into clusters
+ * Form droids && structures into clusters
  *
  */
 #ifndef _cluster_h

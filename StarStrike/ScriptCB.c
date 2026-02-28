@@ -554,7 +554,7 @@ BOOL scrCBTransporterLanded( void )
 	}
 	else
 	{
-		/* if not selectedPlayer unload droids */
+		/* if !selectedPlayer unload droids */
 		if ( (UDWORD)player != selectedPlayer )
 		{
 			/* transfer droids from transporter group to current group */

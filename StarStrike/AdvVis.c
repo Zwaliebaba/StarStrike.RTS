@@ -14,7 +14,7 @@
 #include "Component.h"
 #include "Geometry.h"
 
-/* This uses oodles of memory and so can only be done on the PC */
+/* This uses oodles of memory && so can only be done on the PC */
 
 // ------------------------------------------------------------------------------------
 #define FADE_IN_TIME	(GAME_TICKS_PER_SEC/10)
@@ -61,14 +61,14 @@ SDWORD	lowerX,upperX,lowerY,upperY;
 		upperY = lowerY + visibleYTiles;
 		if(lowerX<0) lowerX = 0;
 		if(lowerY<0) lowerY = 0;
-		if(x>lowerX AND x<upperX AND y>lowerY AND y<upperY)
+		if(x>lowerX && x<upperX && y>lowerY && y<upperY)
 		{
 			/* tile is on grid - so initiate fade up */
 			psTile->level = 0;
 		}
 		else
 		{
-			/* tile is off the gird, so force to maximum and finish */
+			/* tile is off the gird, so force to maximum && finish */
 			psTile->level = psTile->illumination;
 			psTile->bMaxed = TRUE;
 		}
@@ -140,7 +140,7 @@ MAPTILE	*psTile;
 UDWORD	newLevel;
 
 	psTile = mapTile(x,y);
-	if(psTile->level == UBYTE_MAX OR psTile->bMaxed)
+	if(psTile->level == UBYTE_MAX || psTile->bMaxed)
 	{
 		return;
 	}

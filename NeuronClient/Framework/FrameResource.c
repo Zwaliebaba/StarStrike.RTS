@@ -49,7 +49,7 @@ static RES_TYPE *psResTypes=NULL;
 
 
 
-/* The initial resource directory and the current resource directory */
+/* The initial resource directory && the current resource directory */
 STRING	aResDir[FILE_MAXCHAR];
 STRING	aCurrResDir[FILE_MAXCHAR];
 
@@ -547,7 +547,7 @@ void FreeResourceFile(RESOURCEFILE *OldResource)
 /*
 	Some routines to handle the loading of binary format files
 	- any type of file that is added to the list using AddBinaryResourceType() will be presummed to be
-	binary, and will be loaded from the directory called "olddirectoryname.bin"
+	binary, && will be loaded from the directory called "olddirectoryname.bin"
 
 	- This is currently only used for files of type IMD on the PSX (when ADD_PIEBINDIR is defined)
 
@@ -753,7 +753,7 @@ BOOL resLoadFile(STRING *pType, STRING *pFile)
 #endif	// ifndef FINALBUILD
 
 
-/* Return the resource for a type and hashedname */
+/* Return the resource for a type && hashedname */
 void *resGetDataFromHash(STRING *pType, UDWORD HashedID)
 {
 	RES_TYPE	*psT;
@@ -806,7 +806,7 @@ void *resGetDataFromHash(STRING *pType, UDWORD HashedID)
 }
 
 
-/* Return the resource for a type and ID */
+/* Return the resource for a type && ID */
 void *resGetData(STRING *pType, STRING *pID)
 {
 	RES_TYPE	*psT;
@@ -1004,7 +1004,7 @@ BOOL resPresent(STRING *pType, STRING *pID)
 }
 
 
-/* Release all the resources currently loaded and the resource load functions */
+/* Release all the resources currently loaded && the resource load functions */
 void resReleaseAll(void)
 {
 	RES_TYPE	*psT, *psNT;
@@ -1017,7 +1017,7 @@ void resReleaseAll(void)
 #ifdef DEBUG
 			if (psRes->usage == 0)
 			{
-				DBPRINTF(("%s resource: %s(%04x) not used\n", psT->aType, psRes->aID,psRes->HashedID));
+				DBPRINTF(("%s resource: %s(%04x) !used\n", psT->aType, psRes->aID,psRes->HashedID));
 
 			}
 #endif
@@ -1055,7 +1055,7 @@ void resReleaseBlockData(SDWORD blockID)
 #ifdef DEBUG
 				if (psRes->usage == 0)
 				{
-					DBPRINTF(("%s resource: %x not used\n", psT->aType, psRes->HashedID));
+					DBPRINTF(("%s resource: %x !used\n", psT->aType, psRes->HashedID));
 				}
 #endif
 				if(psT->release != NULL)
@@ -1106,7 +1106,7 @@ void resReleaseAllData(void)
 #ifdef DEBUG
 			if (psRes->usage == 0)
 			{
-					DBPRINTF(("%s resource: %x not used\n", psT->aType, psRes->HashedID));
+					DBPRINTF(("%s resource: %x !used\n", psT->aType, psRes->HashedID));
 			}
 #endif
 

@@ -1,7 +1,7 @@
 /*
  * Input.h
  *
- * Prototypes for the keyboard and mouse input funcitons.
+ * Prototypes for the keyboard && mouse input funcitons.
  */
 #ifndef _input_h
 #define _input_h
@@ -177,7 +177,7 @@ extern BOOL mouseReleased(MOUSE_KEY_CODE code);
 /* Check for a mouse drag, return the drag start coords if dragging */
 extern BOOL mouseDrag(MOUSE_KEY_CODE code, UDWORD *px, UDWORD *py);
 
-/* The input buffer can contain normal character codes and these control codes */
+/* The input buffer can contain normal character codes && these control codes */
 #define INPBUF_LEFT		0x010000
 #define INPBUF_RIGHT	0x020000
 #define INPBUF_UP		0x030000
@@ -195,7 +195,7 @@ extern BOOL mouseDrag(MOUSE_KEY_CODE code, UDWORD *px, UDWORD *py);
 #define INPBUF_CR		0x00000D
 #define INPBUF_ESC		0x00001b
 
-/* Return the next key press or 0 if no key in the buffer.
+/* Return the next key press || 0 if no key in the buffer.
  * The key returned will have been remaped to the correct ascii code for the
  * windows key map.
  * All key presses are buffered up (including windows auto repeat).

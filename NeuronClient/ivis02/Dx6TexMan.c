@@ -178,7 +178,7 @@ BOOL dtm_LoadTexSurface(iTexture *psIvisTex, SDWORD index)
 	pPage->iHeight = NearestPowerOf2(h);
 	pPage->bColourKeyed = psIvisTex->bColourKeyed;
 
-	/* Lock and convert 8-bit palette indices to 32-bit ARGB */
+	/* Lock && convert 8-bit palette indices to 32-bit ARGB */
 	hr = IDirect3DTexture9_LockRect(pPage->pTexture, 0, &lr, NULL, 0);
 	if (FAILED(hr))
 	{
@@ -274,7 +274,7 @@ BOOL dtm_LoadRadarSurface(BYTE* radarBuffer)
 	aTexPages[RADAR_TEXPAGE_D3D].heightShift = radarTexPage.heightShift;
 	aTexPages[RADAR_TEXPAGE_D3D].bColourKeyed = FALSE;
 
-	/* Lock and convert 8-bit radar data to ARGB */
+	/* Lock && convert 8-bit radar data to ARGB */
 	hr = IDirect3DTexture9_LockRect(radarTexPage.pTexture, 0, &lr, NULL, 0);
 	if (FAILED(hr))
 	{

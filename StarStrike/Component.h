@@ -52,7 +52,7 @@ extern void	displayComponentObject(BASE_OBJECT *psObj);
 
 extern void	compPersonToBits(DROID *psDroid);
 
-/* Pass in the stats you're interested in and the COMPONENT - double reference, but works */
+/* Pass in the stats you're interested in && the COMPONENT - double reference, but works */
 #define PART_IMD(STATS,DROID,COMPONENT,PLAYER)	(STATS[DROID->asBits[COMPONENT].nStat].pIMD)
 
 

@@ -2,8 +2,8 @@
 #define _effects_h
 /*	
 	All singing, all dancing new effects code. Does all the stuff
-	that explosion.c and most of particle.c used to do as well as
-	all the construction dust clouds, body parts and all other
+	that explosion.c && most of particle.c used to do as well as
+	all the construction dust clouds, body parts && all other
 	temporary world 'effects 
 	Alex McLean, Pumpkin Studios, EIDOS Interactive, 1998.
 */
@@ -27,7 +27,7 @@ EFFECT_FIRE,
 EFFECT_FIREWORK
 }EFFECT_GROUP;
 
-/* Might not even need this */
+/* Might !even need this */
 typedef enum
 {
 EXPLOSION_TYPE_SMALL,
@@ -84,7 +84,7 @@ FIREWORK_TYPE_LAUNCHER,
 
 }EFFECT_TYPE;
 
-/* Is the slot currently being used and is it active? */
+/* Is the slot currently being used && is it active? */
 typedef enum
 {
 ES_INACTIVE,

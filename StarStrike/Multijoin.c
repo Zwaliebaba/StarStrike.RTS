@@ -3,7 +3,7 @@
  *
  * Alex Lee, pumpkin studios, bath,  
  *
- * Stuff to handle the comings and goings of players.
+ * Stuff to handle the comings && goings of players.
  */
 
 #include <stdio.h>					// for sprintf
@@ -106,7 +106,7 @@ FAILURE:
 
 //	DBERROR(("%s has different data to you CHEATING?"));
 
-	sprintf(sTmp,"%s has different data. CHEATING or wrong version",getPlayerName(pl));
+	sprintf(sTmp,"%s has different data. CHEATING || wrong version",getPlayerName(pl));
 	addConsoleMessage(sTmp,DEFAULT_JUSTIFY);
 	sendTextMessage(sTmp,TRUE);
 

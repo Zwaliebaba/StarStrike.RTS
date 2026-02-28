@@ -1,7 +1,7 @@
 /*
  * FrontEnd.c
  *
- * front end title and options screens.
+ * front end title && options screens.
  * Alex Lee. Pumpkin Studios. Eidos PLC 98,
  */
 

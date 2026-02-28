@@ -29,7 +29,7 @@ extern void rayCast(UDWORD x, UDWORD y, UDWORD ray, UDWORD length,
 extern UDWORD rayPointsToAngle(SDWORD x1,SDWORD y1, SDWORD x2,SDWORD y2);
 
 /* Distance of a point from a line.
- * NOTE: This is not 100% accurate - it approximates to get the square root
+ * NOTE: This is !100% accurate - it approximates to get the square root
  *
  * This is based on Graphics Gems II setion 1.3
  */

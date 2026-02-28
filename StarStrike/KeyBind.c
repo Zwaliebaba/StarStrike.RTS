@@ -1019,7 +1019,7 @@ BOOL	Selected;
 	for(psDroid = apsDroidLists[selectedPlayer]; psDroid!=NULL; psDroid = psDroid->psNext)
 	{
 		/* Wipe out the ones in the wrong group */
-		if(psDroid->selected AND psDroid->group!=groupNumber)
+		if(psDroid->selected && psDroid->group!=groupNumber)
 		{
 			psDroid->selected = FALSE;
 		}
@@ -1044,7 +1044,7 @@ BOOL	Selected;
 	// Tell the driving system that the selection may have changed.
 	driveSelectionChanged();
 	/* play group audio but only if they wern't already selected - AM */
-	if ( Selected AND !bAlreadySelected)
+	if ( Selected && !bAlreadySelected)
 	{
 		audio_QueueTrack( ID_SOUND_GROUP_0+groupNumber );
 		audio_QueueTrack( ID_SOUND_REPORTING );
@@ -1216,7 +1216,7 @@ void	kf_DownDroidScale( void )
 	}
 }
 // --------------------------------------------------------------------------
-/* Toggles the power bar display on and off*/
+/* Toggles the power bar display on && off*/
 void	kf_TogglePowerBar( void )
 {
 	togglePowerBar();
@@ -1312,7 +1312,7 @@ void	kf_TogglePauseMode( void )
 		setConsolePause(TRUE);
 		setScriptPause(TRUE);
 		setAudioPause(TRUE);
-		/* And stop the clock */
+		/* && stop the clock */
 		gameTimeStop();
 		addConsoleMessage(strresGetString(psStringRes,STR_MISC_PAUSED),CENTRE_JUSTIFY);
 
@@ -1324,7 +1324,7 @@ void	kf_TogglePauseMode( void )
 		setConsolePause(FALSE);
 		setScriptPause(FALSE);
 		setAudioPause(FALSE);
-		/* And start the clock again */
+		/* && start the clock again */
 		gameTimeStart();
 	}
 }
@@ -1671,7 +1671,7 @@ void	kf_MovePause( void )
 			setConsolePause(TRUE);
 			setScriptPause(TRUE);
 			setAudioPause(TRUE);
-			/* And stop the clock */
+			/* && stop the clock */
 			gameTimeStop();
 			setWidgetsStatus(FALSE);
 			radarOnScreen = FALSE;
@@ -1686,7 +1686,7 @@ void	kf_MovePause( void )
 			setConsolePause(FALSE);
 			setScriptPause(FALSE);
 			setAudioPause(FALSE);
-			/* And start the clock again */
+			/* && start the clock again */
 			gameTimeStart();
 			bMovePause = FALSE;
 		}
@@ -1705,7 +1705,7 @@ void	kf_MoveToLastMessagePos( void )
 	}
 }
 // --------------------------------------------------------------------------
-/* Makes it snow if it's not snowing and stops it if it is */
+/* Makes it snow if it's !snowing && stops it if it is */
 void	kf_ToggleWeather( void )
 {
 	if(atmosGetWeatherType() == WT_NONE)
@@ -1757,7 +1757,7 @@ DROID	*psCDroid,*psNDroid;
 STRUCTURE	*psCStruct, *psNStruct;
 
 
-	for(player = 0; player<MAX_PLAYERS AND !bMultiPlayer; player++)
+	for(player = 0; player<MAX_PLAYERS && !bMultiPlayer; player++)
 	{
 		if(player!=selectedPlayer)
 		{
@@ -1850,7 +1850,7 @@ void kf_SendTextMessage(void)
 {
 	CHAR	ch;									
 
-	if(/*bMultiPlayer || */!bAllowOtherKeyPresses OR getCheatCodeStatus()) 
+	if(/*bMultiPlayer || */!bAllowOtherKeyPresses || getCheatCodeStatus()) 
 	{
 		if(bAllowOtherKeyPresses)									// just starting.
 		{
@@ -1864,7 +1864,7 @@ void kf_SendTextMessage(void)
 		{
 			// Kill if they hit return - it maxes out console or it's more than one line long
 		   	if((ch == INPBUF_CR) || (strlen(sTextToSend)>=MAX_CONSOLE_STRING_LENGTH-16) // Prefixes with ERROR: and terminates with '?'
-				OR iV_GetTextWidth(sTextToSend) > (DISP_WIDTH-64))// sendit
+				|| iV_GetTextWidth(sTextToSend) > (DISP_WIDTH-64))// sendit
 		   //	if((ch == INPBUF_CR) || (strlen(sTextToSend)==MAX_TYPING_LENGTH) 
 			{
 				bAllowOtherKeyPresses = TRUE;
@@ -1992,7 +1992,7 @@ UDWORD	dX,dY;
 		{
 			dX = psDroid->sDisplay.screenX;
 			dY = psDroid->sDisplay.screenY;
-			if(dX>0 AND dY>0 AND dX<DISP_WIDTH AND dY<DISP_HEIGHT)
+			if(dX>0 && dY>0 && dX<DISP_WIDTH && dY<DISP_HEIGHT)
 			{
 				psDroid->selected = TRUE;
 			}
@@ -2260,7 +2260,7 @@ BOOL	found;
 DROID	*psOther;
 
 	found = FALSE;
-	for(psDroid = apsDroidLists[selectedPlayer]; psDroid AND !found; 
+	for(psDroid = apsDroidLists[selectedPlayer]; psDroid && !found; 
 		psDroid = psDroid->psNext)
 		{
 			if(psDroid->selected)
@@ -2283,7 +2283,7 @@ DROID	*psOther;
 void	kf_ScatterDroids( void )
 {
 	// to be written!
-	addConsoleMessage("Scatter droids - not written yet!",LEFT_JUSTIFY);
+	addConsoleMessage("Scatter droids - !written yet!",LEFT_JUSTIFY);
 }// --------------------------------------------------------------------------
 void	kf_CentreOnBase( void )
 {
@@ -2293,7 +2293,7 @@ UDWORD		xJump,yJump;
 
 	/* Got through our buildings */
 	for(psStruct = apsStructLists[selectedPlayer],bGotHQ = FALSE;	// start
-	psStruct AND !bGotHQ;											// terminate
+	psStruct && !bGotHQ;											// terminate
 	psStruct = psStruct->psNext)									// iteration
 	{
 		/* Have we got a HQ? */
@@ -2358,7 +2358,7 @@ BOOL	bFound;
 
 
 	for(psDroid = apsDroidLists[selectedPlayer],bFound = FALSE;
-		psDroid AND !bFound; psDroid = psDroid->psNext)
+		psDroid && !bFound; psDroid = psDroid->psNext)
 	{
 		if(psDroid->selected)// AND droidOnScreen(psDroid,0))
 		{

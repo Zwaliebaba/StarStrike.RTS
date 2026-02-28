@@ -39,7 +39,7 @@ typedef struct _ray_point
 	SDWORD	x,y;
 } RAY_POINT;
 
-/* x and y increments for each ray angle */
+/* x && y increments for each ray angle */
 static SDWORD	rayDX[NUM_RAYS], rayDY[NUM_RAYS];
 static SDWORD	rayHDist[NUM_RAYS], rayVDist[NUM_RAYS];
 //static FRACT	rayTan[NUM_RAYS], rayCos[NUM_RAYS], raySin[NUM_RAYS];
@@ -130,11 +130,11 @@ BOOL rayInitialise(void)
 
 
 /* cast a ray from x,y (world coords) at angle ray (0-360)
- * The ray angle starts at zero along the positive y axis and
+ * The ray angle starts at zero along the positive y axis &&
  * increases towards -ve X.
  *
  * Sorry about the wacky angle set up but that was what I thought
- * warzone used, but turned out not to be after I wrote it.
+ * warzone used, but turned out !to be after I wrote it.
  */
 void rayCast(UDWORD x, UDWORD y, UDWORD ray, UDWORD length, RAY_CALLBACK callback)
 {
@@ -264,7 +264,7 @@ void rayCast(UDWORD x, UDWORD y, UDWORD ray, UDWORD length, RAY_CALLBACK callbac
 		"rayCast: zero distance"));
 	ASSERT(((hDist == (SDWORD)length || hdInc > 0) &&
 			(vDist == (SDWORD)length || vdInc > 0),
-		"rayCast: negative (or 0) distance increment"));
+		"rayCast: negative (|| 0) distance increment"));
 
 #if RAY_CLIP == 0
 	while(hDist < clipLen ||
@@ -378,7 +378,7 @@ UDWORD rayPointsToAngle(SDWORD x1,SDWORD y1, SDWORD x2,SDWORD y2)
 
 
 /* Distance of a point from a line.
- * NOTE: This is not 100% accurate - it approximates to get the square root
+ * NOTE: This is !100% accurate - it approximates to get the square root
  *
  * This is based on Graphics Gems II setion 1.3
  */
@@ -467,7 +467,7 @@ UDWORD	height;
 	if(clipXY(x,y))
 	{
 		height = map_Height(x,y);
-		if( (height > gHighestHeight) AND (dist >= gHMinDist) )
+		if( (height > gHighestHeight) && (dist >= gHMinDist) )
 		{
 			heightDif = height - gHOrigHeight;
 			gHPitch = RAD_TO_DEG(atan2(MAKEFRACT(heightDif),
@@ -557,7 +557,7 @@ iVector	pos;
 		return(FALSE);
 	}
 
-	/* Not at edge yet - so exit */
+	/* !at edge yet - so exit */
 	return(TRUE);
 }
 

@@ -10,7 +10,7 @@
 #include "ObjectDef.h"
 /**************************************************************************************
  *
- * Function prototypes and data storage for the stats
+ * Function prototypes && data storage for the stats
  */
 
 /* The stores for the different stats */
@@ -278,11 +278,11 @@ extern SDWORD	getCompFromResName(UDWORD compType, STRING *pName);
 extern BOOL setTechLevel(BASE_STATS *psStats, STRING *pLevel);
 /*returns the weapon sub class based on the string name passed in */
 extern SDWORD	getWeaponSubClass(STRING *pSubClass);
-/*either gets the name associated with the resource (if one) or allocates space and copies pName*/
+/*either gets the name associated with the resource (if one) || allocates space && copies pName*/
 extern BOOL allocateName(STRING **ppStore, STRING *pName);
 //converts the name read in from Access into the name which is used in the Stat lists (or ignores it)
 extern BOOL getResourceName(STRING *pName);
-/*return the name to display for the interface - valid for OBJECTS and STATS*/
+/*return the name to display for the interface - valid for OBJECTS && STATS*/
 extern STRING* getName(STRING *pNameID);
 /*sets the store to the body size based on the name passed in - returns FALSE 
 if doesn't compare with any*/

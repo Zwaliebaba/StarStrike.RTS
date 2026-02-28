@@ -187,21 +187,21 @@ UDWORD	i;
 	bClipSpecular = bSpecular;
  
 	numPreY = 0;
-	if( (v1->sx > LONG_TEST) OR (v1->sy > LONG_TEST) )
+	if( (v1->sx > LONG_TEST) || (v1->sy > LONG_TEST) )
 	{
 		/* bomb out for out of range points */
 		return(0);
 	}
 	numPreY += pie_ClipXT(v1,v2,&xClip[numPreY]);
 
-	if( (v2->sx > LONG_TEST) OR (v2->sy > LONG_TEST) )
+	if( (v2->sx > LONG_TEST) || (v2->sy > LONG_TEST) )
 	{
 		/* bomb out for out of range points */
 		return(0);
 	}
 	numPreY += pie_ClipXT(v2,v3,&xClip[numPreY]);
 
-	if( (v3->sx > LONG_TEST) OR (v3->sy > LONG_TEST) )
+	if( (v3->sx > LONG_TEST) || (v3->sy > LONG_TEST) )
 	{
 		/* bomb out for out of range points */
 		return(0);
@@ -988,13 +988,13 @@ int	pie_ClipFlat2dLine(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1)
 
 
 
-	if ((x0 > LONG_TEST) OR (y0 > LONG_TEST) )
+	if ((x0 > LONG_TEST) || (y0 > LONG_TEST) )
 	{
 		/* bomb out for out of range points */
 		return(0);
 	}
 
-	if ((x1 > LONG_TEST) OR (y1 > LONG_TEST) )
+	if ((x1 > LONG_TEST) || (y1 > LONG_TEST) )
 	{
 		/* bomb out for out of range points */
 		return(0);

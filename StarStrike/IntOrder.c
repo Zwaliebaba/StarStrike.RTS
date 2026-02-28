@@ -1089,7 +1089,7 @@ static BOOL BuildSelectedDroidList(void)
 
     for (psStruct = apsStructLists[selectedPlayer]; psStruct; psStruct = psStruct->psNext)
     {
-        if (psStruct->selected AND StructIsFactory(psStruct))
+        if (psStruct->selected && StructIsFactory(psStruct))
         {
             //found one - set as one to use for the interface
             psSelectedFactory = psStruct;
@@ -1201,7 +1201,7 @@ static BOOL BuildStructureOrderList(STRUCTURE *psStructure)
     //only valid for Factories (at the moment)
     if (!StructIsFactory(psStructure))
     {
-        ASSERT((FALSE, "BuildStructureOrderList: structure is not a factory"));
+        ASSERT((FALSE, "BuildStructureOrderList: structure is !a factory"));
         return FALSE;
     }
 
@@ -1242,7 +1242,7 @@ static BOOL CheckObjectOrderList(void)
         //only valid for Factories (at the moment)
         if (!StructIsFactory(psSelectedFactory))
         {
-            ASSERT((FALSE, "CheckObjectOrderList: structure is not a factory"));
+            ASSERT((FALSE, "CheckObjectOrderList: structure is !a factory"));
             return FALSE;
         }
 

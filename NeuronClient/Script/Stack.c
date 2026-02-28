@@ -92,7 +92,7 @@ BOOL stackPush(INTERP_VAL  *psVal)
 	   valid space */
 	memcpy(&(psCurrChunk->aVals[currEntry]), psVal, sizeof(INTERP_VAL));
 
-	/* Now update psCurrChunk and currEntry */
+	/* Now update psCurrChunk && currEntry */
 	currEntry++;
 	if (currEntry == psCurrChunk->size)
 	{
@@ -219,7 +219,7 @@ BOOL stackPopParams(SDWORD numParams, ...)
 	}
 	if (!psCurr)
 	{
-		ASSERT((FALSE, "stackPopParams: not enough parameters on stack"));
+		ASSERT((FALSE, "stackPopParams: !enough parameters on stack"));
 		return FALSE;
 	}
 
@@ -333,7 +333,7 @@ void stackPrintTop(void)
 
 
 /* Do binary operations on the top of the stack
- * This effectively pops two values and pushes the result
+ * This effectively pops two values && pushes the result
  */
 BOOL stackBinaryOp(OPCODE opcode)
 {
@@ -343,7 +343,7 @@ BOOL stackBinaryOp(OPCODE opcode)
 	// Get the parameters
 	if (psCurrChunk->psPrev == NULL && currEntry < 2)
 	{
-		ASSERT((FALSE, "stackBinaryOp: not enough entries on stack"));
+		ASSERT((FALSE, "stackBinaryOp: !enough entries on stack"));
 		return FALSE;
 	}
 
@@ -432,7 +432,7 @@ BOOL stackBinaryOp(OPCODE opcode)
 
 
 /* Perform a unary operation on the top of the stack
- * This effectively pops a value and pushes the result
+ * This effectively pops a value && pushes the result
  */
 BOOL stackUnaryOp(OPCODE opcode)
 {
@@ -442,7 +442,7 @@ BOOL stackUnaryOp(OPCODE opcode)
 	// Get the value
 	if (psCurrChunk->psPrev == NULL && currEntry == 0)
 	{
-		ASSERT((FALSE, "stackUnaryOp: not enough entries on stack"));
+		ASSERT((FALSE, "stackUnaryOp: !enough entries on stack"));
 		return FALSE;
 	}
 
@@ -478,7 +478,7 @@ BOOL stackUnaryOp(OPCODE opcode)
 			psVal->v.bval = !psVal->v.bval;
 			break;
 		default:
-			ASSERT((FALSE, "stackUnaryOp: invalid type for NOT"));
+			ASSERT((FALSE, "stackUnaryOp: invalid type for !"));
 			break;
 		}
 		break;
@@ -526,7 +526,7 @@ void stackShutDown(void)
 
 	if ((psCurrChunk != psStackBase) && (currEntry != 0))
 	{
-		DBPRINTF(("stackShutDown: stack is not empty on shutdown"));
+		DBPRINTF(("stackShutDown: stack is !empty on shutdown"));
 	}
 
 	for(psCurr = psStackBase; psCurr != NULL; psCurr = psNext)
@@ -542,7 +542,7 @@ void stackShutDown(void)
 void stackReset(void)
 {
 	ASSERT(( ((psCurrChunk == psStackBase) && (currEntry == 0)),
-		"stackReset: stack is not empty"));
+		"stackReset: stack is !empty"));
 
 	psCurrChunk = psStackBase;
 	currEntry = 0;
@@ -560,7 +560,7 @@ void stackReset(void)
 
 	if (psCurrChunk->psPrev == NULL && currEntry == 0)
 	{
-		ASSERT((FALSE, "stackGetTop: not enough entries on stack"));
+		ASSERT((FALSE, "stackGetTop: !enough entries on stack"));
 		return FALSE;
 	}
 
@@ -591,7 +591,7 @@ void stackReset(void)
 
 	if (psCurrChunk->psPrev == NULL && currEntry == 0)
 	{
-		ASSERT((FALSE, "stackSetTop: not enough entries on stack"));
+		ASSERT((FALSE, "stackSetTop: !enough entries on stack"));
 		return FALSE;
 	}
 
@@ -624,7 +624,7 @@ void stackReset(void)
 
 	if (psCurrChunk->psPrev == NULL && currEntry < 2)
 	{
-		ASSERT((FALSE, "stackGetSecond: not enough entries on stack"));
+		ASSERT((FALSE, "stackGetSecond: !enough entries on stack"));
 		return FALSE;
 	}
 
@@ -654,7 +654,7 @@ void stackReset(void)
 
 	if (psCurrChunk->psPrev == NULL && currEntry < 2)
 	{
-		ASSERT((FALSE, "stackGetSecond: not enough entries on stack"));
+		ASSERT((FALSE, "stackGetSecond: !enough entries on stack"));
 		return FALSE;
 	}
 
@@ -682,7 +682,7 @@ void stackReset(void)
 }*/
 
 
-/* Pop the top value from the stack and replace the new top value
+/* Pop the top value from the stack && replace the new top value
  * This is used to return the result of a binary maths operator
  */
 /*BOOL stackPopAndSet(UDWORD type, UDWORD data)
@@ -692,7 +692,7 @@ void stackReset(void)
 
 	if (psCurrChunk->psPrev == NULL && currEntry < 2)
 	{
-		ASSERT((FALSE, "stackGetSecond: not enough entries on stack"));
+		ASSERT((FALSE, "stackGetSecond: !enough entries on stack"));
 		return FALSE;
 	}
 

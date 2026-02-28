@@ -204,8 +204,8 @@ static void AddIMDPrimativesBSP2(iIMDShape *IMDdef,iIMDPoly *ScrVertices, UDWORD
 /***************************************************************************
  * pie_Draw3dShape
  *
- * Project and render a pumpkin image to render surface
- * Will support zbuffering, texturing, coloured lighting and alpha effects
+ * Project && render a pumpkin image to render surface
+ * Will support zbuffering, texturing, coloured lighting && alpha effects
  * Avoids recalculating vertex projections for every poly 
  ***************************************************************************/
 
@@ -245,7 +245,7 @@ void pie_Draw3DShape(iIMDShape *shape, int frame, int team, UDWORD col, UDWORD s
 	pieCount++;
 
 	// Fix for transparent buildings and features!! */
-	if( (pieFlag & pie_TRANSLUCENT) AND (pieFlagData>220) )
+	if( (pieFlag & pie_TRANSLUCENT) && (pieFlagData>220) )
 	{
 		pieFlag = pieFlagData = 0;	// force to bilinear and non-transparent
 	}
@@ -519,7 +519,7 @@ void pie_Draw3DShape(iIMDShape *shape, int frame, int team, UDWORD col, UDWORD s
 
 #ifdef BSPIMD
 
-	if ((!pie_Hardware()) AND shape->BSPNode!=NULL)
+	if ((!pie_Hardware()) && shape->BSPNode!=NULL)
 	{
 		AddIMDPrimativesBSP2(shape,scrPoints,frame);
 		return;
@@ -594,7 +594,7 @@ void pie_Draw3DShape(iIMDShape *shape, int frame, int team, UDWORD col, UDWORD s
 	pieCount++;
 
 	// Fix for transparent buildings and features!! */
-	if( (pieFlag & pie_TRANSLUCENT) AND (pieFlagData>220) )
+	if( (pieFlag & pie_TRANSLUCENT) && (pieFlagData>220) )
 	{
 		pieFlag = pieFlagData = 0;	// force to bilinear and non-transparent
 	}
@@ -750,7 +750,7 @@ void pie_Draw3DShape(iIMDShape *shape, int frame, int team, UDWORD col, UDWORD s
 
 #ifdef BSPIMD
 
-	if ((!pie_Hardware()) AND shape->BSPNode!=NULL)
+	if ((!pie_Hardware()) && shape->BSPNode!=NULL)
 	{
 		AddIMDPrimativesBSP2(shape,scrPoints,frame);
 		return;
@@ -808,7 +808,7 @@ void pie_Draw3DShape(iIMDShape *shape, int frame, int team, UDWORD col, UDWORD s
  * pie_Drawimage
  *
  * General purpose blit function
- * Will support zbuffering, non_textured, coloured lighting and alpha effects
+ * Will support zbuffering, non_textured, coloured lighting && alpha effects
  *
  * replaces all ivis blit functions 
  *
@@ -868,7 +868,7 @@ void pie_DrawImage(PIEIMAGE *image, PIERECT *dest, PIESTYLE *style)
  * pie_Drawimage270
  *
  * General purpose blit function
- * Will support zbuffering, non_textured, coloured lighting and alpha effects
+ * Will support zbuffering, non_textured, coloured lighting && alpha effects
  *
  * replaces all ivis blit functions 
  *
@@ -1147,7 +1147,7 @@ int	uFrame, vFrame, j, framesPerLine;
  *
  * D3D specific poly draw function should change to use hardpoly
  *
- * Assumes render mode NOT set up externally
+ * Assumes render mode !set up externally
  *                     ---   
  ***************************************************************************/
 
@@ -1212,7 +1212,7 @@ static void pie_D3DPolyFrame(PIED3DPOLY *poly, int frame)
  *
  * optimised poly draw function for software
  *
- * Assumes render mode NOT set up externally
+ * Assumes render mode !set up externally
  *                     ---
  ***************************************************************************/
 static void pie_IvisPoly(SDWORD texPage, iIMDPoly *poly, BOOL bClip)

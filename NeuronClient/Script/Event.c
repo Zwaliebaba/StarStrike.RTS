@@ -238,7 +238,7 @@ STRING *eventGetTriggerID(SCRIPT_CODE *psCode, SDWORD trigger)
 	}
 	else
 	{
-		pID = "NOT FOUND";
+		pID = "!FOUND";
 		for(i=0; i<psCode->debugEntries; i++)
 		{
 			if (psCode->psDebug[i].offset == psCode->pTriggerTab[trigger])
@@ -267,7 +267,7 @@ STRING *eventGetEventID(SCRIPT_CODE *psCode, SDWORD event)
 		return aIDNum;
 	}
 
-	pID = "NOT FOUND";
+	pID = "!FOUND";
 	for(i=0; i<psCode->debugEntries; i++)
 	{
 		if (psCode->psDebug[i].offset == psCode->pEventTab[event])
@@ -601,7 +601,7 @@ void eventRemoveContext(SCRIPT_CONTEXT *psContext)
 				chunkStart += CONTEXT_VALS;
 				psCChunk = psCChunk->psNext;
 				ASSERT((psCChunk != NULL,
-					"eventRemoveContext: not enough value chunks"));
+					"eventRemoveContext: !enough value chunks"));
 			}
 			psVal = psCChunk->asVals + (i - chunkStart);
 			if (psVal->type < numFuncs && asReleaseFuncs[psVal->type] != NULL)
@@ -639,7 +639,7 @@ void eventRemoveContext(SCRIPT_CONTEXT *psContext)
 		}
 		else
 		{
-			ASSERT((FALSE, "eventRemoveContext: context not found"));
+			ASSERT((FALSE, "eventRemoveContext: context !found"));
 		}
 	}
 }
@@ -658,7 +658,7 @@ BOOL eventGetContextVal(SCRIPT_CONTEXT *psContext, UDWORD index, INTERP_VAL **pp
 	}
 	if (!psChunk)
 	{
-		ASSERT((FALSE, "eventGetContextVal: Variable not found"));
+		ASSERT((FALSE, "eventGetContextVal: Variable !found"));
 		return FALSE;
 	}
 

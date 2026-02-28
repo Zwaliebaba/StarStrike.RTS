@@ -7,7 +7,7 @@
 	Makes heavy use of the functions available in display3d.c. Could have
 	messed about with display3d.c to make to world render dual purpose, but
 	it's neater as a separate file, as the intelligence map has special requirements
-	and overlays and needs to render to a specified buffer for later use.
+	&& overlays && needs to render to a specified buffer for later use.
 */
 
 /* ----------------------------------------------------------------------------------------- */
@@ -52,7 +52,7 @@ extern BOOL		godMode;
 /* ----------------------------------------------------------------------------------------- */
 /* Function prototypes */
 
-/*	Sets up the intelligence map by allocating the necessary memory and assigning world
+/*	Sets up the intelligence map by allocating the necessary memory && assigning world
 	variables for the renderer to work with */
 //void		setUpIntelMap		(UDWORD width, UDWORD height);
 /* Draws the intelligence map to the already setup buffer */
@@ -142,7 +142,7 @@ iSurface	*pMapSurface;
 	//setUpIntelColours();
 
 	/*	Return a pointer to our surface - from this they can get the rendered buffer
-		as well as info about width and height etc. */
+		as well as info about width && height etc. */
 	return(pMapSurface);
 }
 
@@ -210,7 +210,7 @@ void	drawMapWorld(void)
 	}
 	pie_MatRotY(DEG(angle) + mapPos.y);
 
-	/* Now we're in camera and viewer context */
+	/* Now we're in camera && viewer context */
 
 	for(i=0; i<mapGridWidth+1; i++)
 	{
@@ -220,7 +220,7 @@ void	drawMapWorld(void)
 			tileCoords.x	= ((j - mapGridMidX)<<TILE_SHIFT);
 			tileCoords.y	= psTile->height;
 			tileCoords.z	= ((mapGridMidY-i)<<TILE_SHIFT);
-			/* Rotate and project the tile to get its screen coords and distance away */
+			/* Rotate && project the tile to get its screen coords && distance away */
 			tileScreenCoords[i][j].z = pie_RotProj(&tileCoords,(iPoint *)&tileScreenCoords[i][j]);
 		}
 	}
@@ -295,7 +295,7 @@ void	drawMapTile(SDWORD i, SDWORD j)
 /*void	fillMapBuffer(iSurface *surface)
 {
 #ifdef PSX
-	DBPRINTF(("fillMapBuffer not defined on psx\n");
+	DBPRINTF(("fillMapBuffer !defined on psx\n");
 #else
 	UBYTE		*toFill;
 	UDWORD		width, height, extraWidth;
@@ -361,7 +361,7 @@ void	fillMapBufferWithBitmap(iSurface *surface)
 /*void clearIntelText(iSurface *surface)
 {
 #ifdef PSX
-	DBPRINTF(("clearIntelText not defined on psx\n");
+	DBPRINTF(("clearIntelText !defined on psx\n");
 #else
 	UBYTE		*toFill;
 	UDWORD		width, height, extraWidth;
@@ -420,7 +420,7 @@ iPoint	offset;
 			texturePage.bmp = tilesRAW[tileNumber & TILE_NUMMASK];
 		}
  		  
-		/* Check for flipped and rotated tiles */
+		/* Check for flipped && rotated tiles */
 		tileLayouts(tileNumber & ~TILE_NUMMASK);
 
 		if(TRI_FLIPPED(psTile))
@@ -699,7 +699,7 @@ void renderResearchToBuffer(iSurface *pSurface, RESEARCH *psResearch,
                 /*HACK HACK HACK! 
                 if its a 'tall thin (ie tower)' structure stat with something on 
                 the top - offset the position to show the object on top*/
-                if (((STRUCTURE_STATS*)psResearch->psStat)->pIMD->nconnectors AND 
+                if (((STRUCTURE_STATS*)psResearch->psStat)->pIMD->nconnectors && 
                     getStructureStatHeight((STRUCTURE_STATS*)psResearch->psStat) > TOWER_HEIGHT)
                 {
                     Position.y -= 30;

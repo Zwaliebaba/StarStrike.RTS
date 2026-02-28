@@ -1,6 +1,6 @@
 /*
  * config.h
- * load and save favourites to the registry.
+ * load && save favourites to the registry.
  */
 
 extern BOOL loadConfig				(BOOL bResourceAvailable);

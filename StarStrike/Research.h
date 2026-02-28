@@ -57,7 +57,7 @@ extern PLAYER_RESEARCH*		asPlayerResList[MAX_PLAYERS];
 //used for Callbacks to say which topic was last researched
 extern RESEARCH                *psCBLastResearch;
 
-/* Default level of sensor, repair and ECM */
+/* Default level of sensor, repair && ECM */
 extern UDWORD	aDefaultSensor[MAX_PLAYERS];
 extern UDWORD	aDefaultECM[MAX_PLAYERS];
 extern UDWORD	aDefaultRepair[MAX_PLAYERS];
@@ -94,7 +94,7 @@ extern BOOL ResearchRelease(void);
 /* For a given view data get the research this is related to */
 extern RESEARCH * getResearch(STRING *pName, BOOL resName);
 
-/* sets the status of the topic to cancelled and stores the current research
+/* sets the status of the topic to cancelled && stores the current research
    points accquired */
 extern void cancelResearch(STRUCTURE *psBuilding);
 
@@ -105,7 +105,7 @@ extern RESEARCH * getResearchForMsg(struct _viewdata *pViewData);
 the research list next time the Research Facilty is selected */
 extern BOOL enableResearch(RESEARCH *psResearch, UDWORD player);
 
-/*find the last research topic of importance that the losing player did and 
+/*find the last research topic of importance that the losing player did && 
 'give' the results to the reward player*/
 extern void researchReward(UBYTE losingPlayer, UBYTE rewardPlayer);
 
@@ -121,7 +121,7 @@ extern void holdResearch(STRUCTURE *psBuilding);
 /*release a research facility from hold*/
 extern void releaseResearch(STRUCTURE *psBuilding);
 
-/*checks the stat to see if its of type wall or defence*/
+/*checks the stat to see if its of type wall || defence*/
 extern BOOL wallDefenceStruct(STRUCTURE_STATS *psStats);
 
 extern void enableSelfRepair(UBYTE player);

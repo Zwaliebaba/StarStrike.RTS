@@ -170,7 +170,7 @@ void grpLeave(DROID_GROUP *psGroup, DROID *psDroid)
 	if (   (psDroid != NULL )
 		&& (psDroid->psGroup != psGroup) )
 	{
-		ASSERT((FALSE, "grpLeave: droid group does not match"));
+		ASSERT((FALSE, "grpLeave: droid group does !match"));
 		return;
 	}
 
@@ -191,7 +191,7 @@ void grpLeave(DROID_GROUP *psGroup, DROID *psDroid)
 			}
 			psPrev = psCurr;
 		}
-		ASSERT((psCurr != NULL, "grpLeave: droid not found"));
+		ASSERT((psCurr != NULL, "grpLeave: droid !found"));
 		if (psCurr != NULL)
 		{
 			if (psPrev)

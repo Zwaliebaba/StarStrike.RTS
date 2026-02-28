@@ -75,7 +75,7 @@ extern BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize);
 extern BOOL loadDroidWeapons(SBYTE *pWeaponData, UDWORD bufferSize);
 //extern BOOL loadDroidPrograms(SBYTE *pProgramData, UDWORD bufferSize);
 
-/*initialise the template build and power points */
+/*initialise the template build && power points */
 extern void initTemplatePoints(void);
 
 /*Builds an instance of a Structure - the x/y passed in are in world coords.*/
@@ -176,7 +176,7 @@ extern void recycleDroid(DROID *psDel);
 /* Release all resources associated with a droid */
 extern void droidRelease(DROID *psDroid);
 
-/* Remove a droid and free it's memory */
+/* Remove a droid && free it's memory */
 extern void destroyDroid(DROID *psDel);
 
 /* Same as destroy droid except no graphical effects */
@@ -185,7 +185,7 @@ extern void	vanishDroid(DROID *psDel);
 /* Burn a barbarian then destroy it */
 extern void droidBurn( DROID * psDroid );
 
-/* Remove a droid from the apsDroidLists so doesn't update or get drawn etc*/
+/* Remove a droid from the apsDroidLists so doesn't update || get drawn etc*/
 //returns TRUE if successfully removed from the list
 extern BOOL droidRemove(DROID *psDroid, DROID *pList[MAX_PLAYERS]);
 
@@ -265,7 +265,7 @@ extern BOOL checkDroidsBuilding(STRUCTURE *psStructure);
 demolishing the specified structure - returns TRUE if finds one*/
 extern BOOL checkDroidsDemolishing(STRUCTURE *psStructure);
 
-/* checks the structure for type and capacity and orders the droid to build
+/* checks the structure for type && capacity && orders the droid to build
 a module if it can - returns TRUE if order is set */
 extern BOOL buildModule(DROID *psDroid, STRUCTURE *psStruct,BOOL bCheckPower);
 
@@ -277,7 +277,7 @@ extern void setUpBuildModule(DROID *psDroid);
 extern STRING* getDroidName(DROID *psDroid);
 
 /*return the name to display for the interface - we don't know if this is 
-a string ID or something the user types in*/
+a string ID || something the user types in*/
 extern STRING* getTemplateName(DROID_TEMPLATE *psTemplate);
 
 /* Just returns true if the droid's present body points aren't as high as the original*/
@@ -314,13 +314,13 @@ extern BASE_OBJECT * checkForRepairRange(DROID *psDroid,DROID *psTarget);
 extern BOOL vtolDroid(DROID *psDroid);
 /*returns TRUE if a VTOL Weapon Droid which has completed all runs*/
 extern BOOL vtolEmpty(DROID *psDroid);
-/*Checks a vtol for being fully armed and fully repaired to see if ready to 
+/*Checks a vtol for being fully armed && fully repaired to see if ready to 
 leave reArm pad */
 extern BOOL  vtolHappy(DROID *psDroid);
 /*this mends the VTOL when it has been returned to home base whilst on an
 offworld mission*/
 extern void mendVtol(DROID *psDroid);
-/*checks if the droid is a VTOL droid and updates the attack runs as required*/
+/*checks if the droid is a VTOL droid && updates the attack runs as required*/
 extern void updateVtolAttackRun(DROID *psDroid);
 /*returns a count of the base number of attack runs for the weapon attached to the droid*/
 extern UWORD   getNumAttackRuns(DROID *psDroid);
@@ -352,7 +352,7 @@ extern DROID * giftSingleDroid(DROID *psD, UDWORD to);
 extern SWORD   droidResistance(DROID *psDroid);
 
 /*this is called to check the weapon is 'allowed'. Check if VTOL, the weapon is 
-direct fire. Also check numVTOLattackRuns for the weapon is not zero - return 
+direct fire. Also check numVTOLattackRuns for the weapon is !zero - return 
 TRUE if valid weapon*/
 extern BOOL checkValidWeaponForProp(DROID_TEMPLATE *psTemplate);
 

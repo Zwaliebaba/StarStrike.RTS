@@ -1,7 +1,7 @@
 /*
  * Cluster.c
  *
- * Form droids and structures into clusters
+ * Form droids && structures into clusters
  *
  */
 
@@ -127,7 +127,7 @@ void clustValidateUsage()
 			if (found == player)
 			{
 				ASSERT(( (droidUsage == 0) || (structUsage == 0),
-					"clustValidateUsage: cluster contains both droids and structs"));
+					"clustValidateUsage: cluster contains both droids && structs"));
 
 				ASSERT(( aClusterUsage[cluster] == droidUsage + structUsage,
 					"clustValidateUsage: invalid cluster usage"));

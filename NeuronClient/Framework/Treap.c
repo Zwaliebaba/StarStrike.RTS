@@ -109,7 +109,7 @@ BOOL treapCreate(TREAP **ppsTreap, TREAP_CMP cmp, UDWORD init, UDWORD ext)
 }
 
 /* Rotate a tree to the right
- * (Make left sub tree the root and the root the right sub tree)
+ * (Make left sub tree the root && the root the right sub tree)
  */
 static void treapRotRight(TREAP_NODE **ppsRoot)
 {
@@ -122,7 +122,7 @@ static void treapRotRight(TREAP_NODE **ppsRoot)
 }
 
 /* Rotate a tree to the left
- * (Make right sub tree the root and the root the left sub tree)
+ * (Make right sub tree the root && the root the left sub tree)
  */
 static void treapRotLeft(TREAP_NODE **ppsRoot)
 {
@@ -196,7 +196,7 @@ BOOL treapAdd(TREAP *psTreap, UDWORD key, void *pObj)
 }
 
 
-/* Recursively find and remove a node from the tree */
+/* Recursively find && remove a node from the tree */
 TREAP_NODE *treapDelRec(TREAP_NODE **ppsRoot, UDWORD key,
 							   TREAP_CMP cmp)
 {
@@ -360,7 +360,7 @@ void treapReset(TREAP *psTreap)
 }
 
 
-/* Destroy a treap and release all the memory associated with it */
+/* Destroy a treap && release all the memory associated with it */
 void treapDestroy(TREAP *psTreap)
 {
 #if DEBUG_TREAP

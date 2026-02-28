@@ -178,7 +178,7 @@ ID_SOUND_THAT_IS_INCORRECT,				"PCV432.wav",
 ID_SOUND_WELL_DONE,						"PCV433.wav", 
 ID_SOUND_EXCELLENT,						"PCV434.wav", 
 
-/* Group and Commander Assignment */
+/* Group && Commander Assignment */
 
 ID_SOUND_ASSIGNED_TO_COMMANDER,			"PCV435.wav", 
 ID_SOUND_GROUP_REPORTING,				"PCV436.wav", 
@@ -190,7 +190,7 @@ ID_SOUND_ROUTE_OBSTRUCTED,				"PCV438.wav",
 ID_SOUND_NO_ROUTE_AVAILABLE,			"PCV439.wav", 
 #endif
 
-/* Transports and LZS */
+/* Transports && LZS */
 ID_SOUND_REINFORCEMENTS_AVAILABLE,		"PCV440.wav", 
 ID_SOUND_REINFORCEMENTS_IN_TRANSIT,		"PCV441.wav", 
 ID_SOUND_TRANSPORT_LANDING,				"PCV442.wav", 
@@ -243,7 +243,7 @@ ID_TECHNOLOGY_TRANSFER,					"PCV485.wav",
 ID_UNITS_TRANSFER,						"PCV486.wav", 
 
 #ifndef COVERMOUNT
-/* Group and Commander Voices - Male */
+/* Group && Commander Voices - Male */
 ID_SOUND_GROUP,							"Group.wav",
 ID_SOUND_GROUP_0,						"0.wav",
 ID_SOUND_GROUP_1,						"1.wav",

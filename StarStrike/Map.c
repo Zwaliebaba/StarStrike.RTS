@@ -42,7 +42,7 @@ MAPTILE *tileHasNeighbourType(UDWORD x, UDWORD y, TYPE_OF_TERRAIN type);
 //scroll min and max values
 SDWORD		scrollMinX, scrollMaxX, scrollMinY, scrollMaxY;
 
-/* Structure definitions for loading and saving map data */
+/* Structure definitions for loading && saving map data */
 typedef struct _map_save_header
 {
 	STRING		aFileType[4];
@@ -134,7 +134,7 @@ typedef float AAFLOAT;
 /* Number of entries in the sqrt(1/(1+x*x)) table for aaLine */
 #define	ROOT_TABLE_SIZE		1024	
 
-/* aaLine direction bits and tables */
+/* aaLine direction bits && tables */
 #define DIR_STEEP			1  /* set when abs(dy) > abs(dx) */
 #define DIR_NEGY			2  /* set whey dy < 0 */
 
@@ -145,7 +145,7 @@ typedef float AAFLOAT;
 
 
 
-/* The size and contents of the map */
+/* The size && contents of the map */
 UDWORD	mapWidth = 0, mapHeight = 0;
 MAPTILE	*psMapTiles = NULL;
 
@@ -199,7 +199,7 @@ BOOL mapNew(UDWORD width, UDWORD height)
 	/* See if a map has already been allocated */
 	if (psMapTiles != NULL)
 	{
-		/* Clear all the objects off the map and free up the map memory */
+		/* Clear all the objects off the map && free up the map memory */
 		freeAllDroids();
 		freeAllStructs();
 		freeAllFeatures();
@@ -291,7 +291,7 @@ BOOL mapNew(UDWORD width, UDWORD height)
 	*/
 	//environInit();
     environReset();
-	/*set up the scroll mins and maxs - set values to valid ones for a new map*/
+	/*set up the scroll mins && maxs - set values to valid ones for a new map*/
 	scrollMinX = scrollMinY = 0;
 	scrollMaxX = mapWidth;
 	scrollMaxY = mapHeight;
@@ -579,7 +579,7 @@ BOOL mapLoad(UBYTE *pFileData, UDWORD fileSize)
 		return FALSE;
 	}
 
-	/* Get the width and height */
+	/* Get the width && height */
 	width = psHeader->width;
 	height = psHeader->height;
 
@@ -621,7 +621,7 @@ BOOL mapLoad(UBYTE *pFileData, UDWORD fileSize)
 		}
 		else
 		{
-			/* Clear all the objects off the map and free up the map memory */
+			/* Clear all the objects off the map && free up the map memory */
 			freeAllDroids();
 			freeAllStructs();
 			freeAllFeatures();
@@ -685,7 +685,7 @@ BOOL mapLoad(UBYTE *pFileData, UDWORD fileSize)
   	//environInit();
     environReset();
 
-	/* set up the scroll mins and maxs - set values to valid ones for any new map */
+	/* set up the scroll mins && maxs - set values to valid ones for any new map */
 	scrollMinX = scrollMinY = 0;
 	scrollMaxX = mapWidth;
 	scrollMaxY = mapHeight;
@@ -849,7 +849,7 @@ BOOL mapShutdown(void)
 
 
 /* work along a line on the map storing the points in aPoints.
- * The start and end points are in MAPTILE coordinates.
+ * The start && end points are in MAPTILE coordinates.
  */
 void mapCalcLine(UDWORD startX, UDWORD startY,
 				 UDWORD endX, UDWORD endY,
@@ -1069,7 +1069,7 @@ extern BOOL mapObjIsAboveGround( BASE_OBJECT *psObj )
 	}
 }
 
-/* returns the max and min height of a tile by looking at the four corners 
+/* returns the max && min height of a tile by looking at the four corners 
    in tile coords */
 void getTileMaxMin(UDWORD x, UDWORD y, UDWORD *pMax, UDWORD *pMin)
 {
@@ -1126,7 +1126,7 @@ UDWORD			i;
 	/* Calculate memory required */
 	fileSize = ( sizeof(struct _vis_save_header) + ( mapEntries*sizeof(UBYTE) ) );
 
-	/* Try and allocate it - freed up in same function */
+	/* Try && allocate it - freed up in same function */
 	pFileData = (UBYTE *)MALLOC(fileSize);
 
 	/* Did we get it? */
@@ -1164,21 +1164,21 @@ UDWORD			i;
 		return(FALSE);
 	}
 
-	/* Now, try and write it out */
+	/* Now, try && write it out */
 	if (fwrite(pFileData, 1, fileSize, pFile) != fileSize)
 	{
 		DBERROR(("Saving visibility data : write failed for %s", pFileName));
 		return(FALSE);
 	}
 
-	/* Finally, try and close it */
+	/* Finally, try && close it */
 	if (fclose(pFile) != 0)
 	{
 		DBERROR(("Saving visibility data : couldn't close %s", pFileName));
 		return(FALSE);
 	}
 
-	/* And free up the memory we used */
+	/* && free up the memory we used */
 	if (pFileData != NULL)
 	{
 		FREE(pFileData);

@@ -4,7 +4,7 @@
  *   Alex Lee
  * 
  * Pumpkin Studios, Eidos PLC, Jan98.
- * Definitions for multi player statistics and scores for league tables.
+ * Definitions for multi player statistics && scores for league tables.
  * Also Definitions for saved Arena Forces to enable teams to be saved to disk
  */
 

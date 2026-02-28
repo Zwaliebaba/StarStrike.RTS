@@ -56,7 +56,7 @@ KEY_MAPPING	*keyGetMappingFromFunction(void	*function)
 KEY_MAPPING	*psMapping,*psReturn;
 
 	for(psMapping = keyMappings,psReturn = NULL; 
-		psMapping AND !psReturn;
+		psMapping && !psReturn;
 		psMapping = psMapping->psNext)
 		{
 			if(psMapping->function == function)
@@ -88,7 +88,7 @@ KEY_MAPPING	*keyMappings;
 /* Holds number of active mappings */
 UDWORD	numActiveMappings;
 
-/* Last meta and sub key that were recorded */
+/* Last meta && sub key that were recorded */
 static KEY_CODE	lastMetaKey,lastSubKey;
 static BOOL	bKeyProcessing = TRUE;
 
@@ -219,7 +219,7 @@ _keymapsave keyMapSaveTable[] =
 
 // ----------------------------------------------------------------------------------
 /*	
-	Here is where we assign functions to keys and to combinations of keys.
+	Here is where we assign functions to keys && to combinations of keys.
 	these will be read in from a .cfg file customisable by the player from
 	an in-game menu 
 */
@@ -454,7 +454,7 @@ if(bAllowDebugMode)
 	keyAddMapping(KEYMAP__DEBUG,KEY_IGNORE,KEY_S,KEYMAP_PRESSED,kf_FrameRate,"Show Frame Rate");
 	keyAddMapping(KEYMAP_ALWAYS,KEY_IGNORE,KEY_T,KEYMAP_PRESSED,kf_SendTextMessage,"Send Text Message");	
 	keyAddMapping(KEYMAP_ALWAYS,KEY_IGNORE,KEY_U,KEYMAP_PRESSED,kf_ToggleBackgroundFog,"Toggle Background Fog");	
-	keyAddMapping(KEYMAP__DEBUG,KEY_IGNORE,KEY_V,KEYMAP_PRESSED,kf_BuildInfo,"Build date and time");
+	keyAddMapping(KEYMAP__DEBUG,KEY_IGNORE,KEY_V,KEYMAP_PRESSED,kf_BuildInfo,"Build date && time");
 	keyAddMapping(KEYMAP__DEBUG,KEY_IGNORE,KEY_W,KEYMAP_DOWN,kf_LowerTile,"Lower tile height");
 	keyAddMapping(KEYMAP__DEBUG,KEY_IGNORE,KEY_X,KEYMAP_PRESSED,kf_DebugDroidInfo,"Droid Debug Info");
 	keyAddMapping(KEYMAP__DEBUG,KEY_IGNORE,KEY_Y,KEYMAP_PRESSED,kf_ToggleDemoMode,"Toggles on/off DEMO Mode");
@@ -504,11 +504,11 @@ BLOCK_HEAP  *psHeap;
 	/* When it was last called - needed? */
 	newMapping->lastCalled	= gameTime;
 
-	/* And what gets called when it's activated */
+	/* && what gets called when it's activated */
 	//newMapping->function	= function;
 	newMapping->function	= pKeyMapFunc;
 
-	/* Is it functional on the key being down or just pressed */
+	/* Is it functional on the key being down || just pressed */
 	newMapping->action		= action;
 
 	newMapping->altMetaKeyCode = KEY_IGNORE;
@@ -547,7 +547,7 @@ KEY_MAPPING	*psCurr;
 	/* See if we can find it */	
 	for(psCurr = keyMappings; psCurr != NULL; psCurr = psCurr->psNext)
 		{
-			if(psCurr->metaKeyCode == metaCode AND psCurr->subKeyCode == subCode)
+			if(psCurr->metaKeyCode == metaCode && psCurr->subKeyCode == subCode)
 			{
 				return(psCurr);
 			}
@@ -556,7 +556,7 @@ KEY_MAPPING	*psCurr;
 }
 
 // ----------------------------------------------------------------------------------
-/* clears the mappings list and frees the memory */
+/* clears the mappings list && frees the memory */
 void	keyClearMappings( void )
 {
 	while(keyMappings)
@@ -577,7 +577,7 @@ KEY_MAPPING	*psPrev,*psCurr;
 		return(FALSE);
 	}
 
-	if(psToRemove == keyMappings AND keyMappings->psNext == NULL)
+	if(psToRemove == keyMappings && keyMappings->psNext == NULL)
 	{
 		if (keyMappings->pName)	FREE(keyMappings->pName);		// ffs
 		FREE(keyMappings);
@@ -588,7 +588,7 @@ KEY_MAPPING	*psPrev,*psCurr;
 
 	/* See if we can find it */	
 	for(psPrev = NULL, psCurr = keyMappings;
-		psCurr != NULL AND psCurr!=psToRemove;
+		psCurr != NULL && psCurr!=psToRemove;
 		psPrev = psCurr, psCurr = psCurr->psNext)
 		{
 		  /*NOP*/	
@@ -610,7 +610,7 @@ KEY_MAPPING	*psPrev,*psCurr;
 		}
 		/* Free up the memory, first for the string  */
 		if (psCurr->pName)	FREE(psCurr->pName);		// only free it if it was allocated in the first place (ffs)
-		/* and then for the mapping itself */
+		/* && then for the mapping itself */
 		FREE(psCurr);
 		numActiveMappings--;
 		return(TRUE);
@@ -635,7 +635,7 @@ BOOL		bMetaKeyDown;
 BOOL		bKeyProcessed;
 
 	/* Bomb out if there are none */
-	if(!keyMappings OR !numActiveMappings OR !bKeyProcessing)
+	if(!keyMappings || !numActiveMappings || !bKeyProcessing)
 	{
 		return;
 	}
@@ -645,8 +645,8 @@ BOOL		bKeyProcessed;
   	(void) checkQwertyKeys();
 
 	/* Check for the meta keys */
-	if(keyDown(KEY_LCTRL) OR keyDown(KEY_RCTRL) OR keyDown(KEY_LALT)
-		OR keyDown(KEY_RALT) OR keyDown(KEY_LSHIFT) OR keyDown(KEY_RSHIFT))
+	if(keyDown(KEY_LCTRL) || keyDown(KEY_RCTRL) || keyDown(KEY_LALT)
+		|| keyDown(KEY_RALT) || keyDown(KEY_LSHIFT) || keyDown(KEY_RSHIFT))
 	{
 		bMetaKeyDown = TRUE;
 	}
@@ -666,7 +666,7 @@ BOOL		bKeyProcessed;
 			break;
 		}
 		/* Skip innappropriate ones when necessary */
-		if(bExclude AND keyToProcess->status!=KEYMAP_ALWAYS_PROCESS)
+		if(bExclude && keyToProcess->status!=KEYMAP_ALWAYS_PROCESS)
 		{
 			break;
 		}
@@ -675,8 +675,8 @@ BOOL		bKeyProcessed;
 			continue;
 		}
 
-		if(keyToProcess->metaKeyCode==KEY_IGNORE AND !bMetaKeyDown AND
-			!(keyToProcess->status==KEYMAP__DEBUG AND bDoingDebugMappings == FALSE) )
+		if(keyToProcess->metaKeyCode==KEY_IGNORE && !bMetaKeyDown &&
+			!(keyToProcess->status==KEYMAP__DEBUG && bDoingDebugMappings == FALSE) )
  		{
 			switch(keyToProcess->action)
  			{
@@ -719,11 +719,11 @@ BOOL		bKeyProcessed;
 			}
  		}
 		/* Process the combi ones */
- 		if( (keyToProcess->metaKeyCode!=KEY_IGNORE AND bMetaKeyDown) AND
-			!(keyToProcess->status==KEYMAP__DEBUG AND bDoingDebugMappings == FALSE)) 
+ 		if( (keyToProcess->metaKeyCode!=KEY_IGNORE && bMetaKeyDown) &&
+			!(keyToProcess->status==KEYMAP__DEBUG && bDoingDebugMappings == FALSE)) 
  		{
- 			/* It's a combo keypress - one held down and the other pressed */
- 			if(keyDown(keyToProcess->metaKeyCode) AND keyPressed(keyToProcess->subKeyCode) )
+ 			/* It's a combo keypress - one held down && the other pressed */
+ 			if(keyDown(keyToProcess->metaKeyCode) && keyPressed(keyToProcess->subKeyCode) )
  			{
  				lastMetaKey = keyToProcess->metaKeyCode;
  				lastSubKey = keyToProcess->subKeyCode;
@@ -732,7 +732,7 @@ BOOL		bKeyProcessed;
  			}
 			else if(keyToProcess->altMetaKeyCode!=KEY_IGNORE)
 			{
-				if(keyDown(keyToProcess->altMetaKeyCode) AND keyPressed(keyToProcess->subKeyCode))
+				if(keyDown(keyToProcess->altMetaKeyCode) && keyPressed(keyToProcess->subKeyCode))
 				{
  					lastMetaKey = keyToProcess->metaKeyCode;
  					lastSubKey = keyToProcess->subKeyCode;
@@ -743,7 +743,7 @@ BOOL		bKeyProcessed;
  		}
 		if(bKeyProcessed)
 		{
-			if(keyToProcess->status==KEYMAP__DEBUG AND bDoingDebugMappings)
+			if(keyToProcess->status==KEYMAP__DEBUG && bDoingDebugMappings)
 			{
 				CONPRINTF(ConsoleString,(ConsoleString,"DEBUG MAPPING : %s",keyToProcess->pName));
 			}
@@ -779,7 +779,7 @@ BOOL		aquired;
 				keyAddMapping(KEYMAP_ALWAYS,KEY_LSHIFT,qKey,KEYMAP_PRESSED,kf_JumpToMapMarker,"Jump to new map marker");
 			aquired = TRUE;
 
-			/* Store away the position and view angle */
+			/* Store away the position && view angle */
 			qwertyKeyMappings[tableEntry].xPos = player.p.x;
 			qwertyKeyMappings[tableEntry].yPos = player.p.z;
 			qwertyKeyMappings[tableEntry].spin = player.r.y;
@@ -821,7 +821,7 @@ BOOL	onlySub;
 	}
 	else
 	{
-		CONPRINTF(ConsoleString,(ConsoleString,"%s and %s - %s",asciiMeta,asciiSub,psMapping->pName));
+		CONPRINTF(ConsoleString,(ConsoleString,"%s && %s - %s",asciiMeta,asciiSub,psMapping->pName));
 	}
 }
 // ----------------------------------------------------------------------------------
@@ -975,14 +975,14 @@ BOOL	keyReAssignMapping( KEY_CODE origMetaCode, KEY_CODE origSubCode,
 KEY_MAPPING	*psMapping;
 BOOL		bFound;
 
-	for(psMapping = keyMappings,bFound = FALSE; psMapping AND !bFound; 
+	for(psMapping = keyMappings,bFound = FALSE; psMapping && !bFound; 
 		psMapping = psMapping->psNext)
 	{
 		/* Find the original */
-		if(psMapping->metaKeyCode == origMetaCode AND psMapping->subKeyCode == origSubCode)
+		if(psMapping->metaKeyCode == origMetaCode && psMapping->subKeyCode == origSubCode)
 		{
-			/* Not all can be remapped */
-			if(psMapping->status != KEYMAP_ALWAYS OR psMapping->status == KEYMAP_ALWAYS_PROCESS)
+			/* !all can be remapped */
+			if(psMapping->status != KEYMAP_ALWAYS || psMapping->status == KEYMAP_ALWAYS_PROCESS)
 			{
 				psMapping->metaKeyCode = newMetaCode;
 				psMapping->subKeyCode = newSubCode;
@@ -1002,7 +1002,7 @@ KEY_MAPPING	*psMapping;
 KEY_CODE	origMetaCode,origSubCode;
 BOOL	bReplaced;
 
-  	for(psMapping = keyMappings,bReplaced = FALSE; psMapping AND !bReplaced; 
+  	for(psMapping = keyMappings,bReplaced = FALSE; psMapping && !bReplaced; 
 		psMapping = psMapping->psNext)
 	{
 		if(strcmp(psMapping->pName,pName) == FALSE)	//negative

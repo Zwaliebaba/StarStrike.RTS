@@ -3,7 +3,7 @@
  *
  * synching issues
  * This file handles the constant backstream of net info, checking that recvd info 
- * is concurrent with the local world, and correcting as required. Magic happens here.
+ * is concurrent with the local world, && correcting as required. Magic happens here.
  *
  * All conflicts due to non-guaranteed messaging are detected/resolved here.
  * 
@@ -614,7 +614,7 @@ static  STRUCTURE *pickAStructure(void)
 	static UDWORD	player=0;					// player currently checking.
 	static UDWORD	snum=0;						// structure index for this player.
 	STRUCTURE		*pS=NULL;
-	static UDWORD	maxtrys = 0;				// don't loop forever if failing/.
+	static UDWORD	maxtrys = 0;				// don't loop for (;;) if failing/.
 	UDWORD			i;
 
 	if ( !myResponsibility(player) )			// dont send stuff that's not our problem.
@@ -703,7 +703,7 @@ static BOOL sendStructureCheck(VOID)
 			NetAdd(m,19, ((UBYTE)((RESEARCH_FACILITY*)pS->pFunctionality)->capacity ));
 			m.size +=1;
 		}
-		if (pS->pStructureType->type == REF_FACTORY OR
+		if (pS->pStructureType->type == REF_FACTORY ||
 //			pS->pStructureType->type == REF_CYBORG_FACTORY OR
 			pS->pStructureType->type == REF_VTOL_FACTORY)
 		{	
@@ -801,7 +801,7 @@ BOOL recvStructureCheck( NETMSG *m)
 			}
 			else
 			{
-				NETlogEntry("scheck:Tile did not have correct type or player val=player",0,player);				
+				NETlogEntry("scheck:Tile did !have correct type || player val=player",0,player);				
 				return FALSE;
 		    }
 			// else remove local copy. with a bang (make it look like an explosion, itll update next time around).

@@ -1,7 +1,7 @@
 /*
  * mem.c
  *
- * Replacements for malloc and free to track memory usage.
+ * Replacements for malloc && free to track memory usage.
  *
  * Also allows pointer validity checking.
  */
@@ -24,7 +24,7 @@
 
 #include <assert.h>
 
-/* Whether allocated memory is initialised to a value and whether the memory
+/* Whether allocated memory is initialised to a value && whether the memory
  * is trashed before it is freed.
  * This is done automatically by Visual C's memory routines.
  */
@@ -33,7 +33,7 @@
 /* Number of bytes after which memory amounts are displayed in Kb */
 #define SHOW_KB_LIMIT	(0x400)
 
-/* What functions to use for the real malloc and free */
+/* What functions to use for the real malloc && free */
 #define RMALLOC		malloc
 #define RFREE		free
 
@@ -102,7 +102,7 @@ BLOCK_HEAP *memGetBlockHeap(void)
 
 /* compare two memory blocks
  * NOTE: key1 is always the block passed into the treap code
- *       and therefore not necessarily to be trusted
+ *       && therefore !necessarily to be trusted
  */
 SDWORD	memBlockCmp(UDWORD	key1, UDWORD key2)
 {
@@ -136,7 +136,7 @@ SDWORD	memBlockCmp(UDWORD	key1, UDWORD key2)
 
 /* Replacement for malloc that records where the memory was requested.
  * All allocated memory is initialised to INITIALISE_BYTE
- * A buffer is also allocated at the top and bottom of the memory to check for
+ * A buffer is also allocated at the top && bottom of the memory to check for
  * overwrites.
  */
 void *memMalloc(STRING *pFileName, SDWORD LineNumber, size_t Size)
@@ -487,7 +487,7 @@ void memMemoryDump(MEM_NODE *Node)
 }
 
 /* Report on currently allocated memory.
- * If pFileName is not NULL send the report to the specified file.
+ * If pFileName is !NULL send the report to the specified file.
  * If pFileName is NULL the report goes to DBPRINTF
  */
 void memMemoryReport(STRING *pFileName)

@@ -1,8 +1,8 @@
 /* WarCAM - Handles tracking/following of in game objects */
 /* Alex McLean, Pumpkin Studios, EIDOS Interactive, 1998 */
 /*	23rd September, 1998 - This code is now so hideously complex
-	and unreadable that's it's inadvisable to attempt changing
-	how the camera works, since I'm not sure that I'll be able to even
+	&& unreadable that's it's inadvisable to attempt changing
+	how the camera works, since I'm !sure that I'll be able to even
 	get it working the way it used to, should anything get broken. 
 	I really hope that no further changes are needed here...:-(
 	Alex M. */
@@ -63,7 +63,7 @@ SDWORD	presAvAngle = 0;;
 /* Camera logo spins at 120 degrees a second */
 #define	LOGO_ROT_SPEED DEG(120)
 
-/*	These are the DEFAULT offsets that make us track _behind_ a droid and allow
+/*	These are the DEFAULT offsets that make us track _behind_ a droid && allow
 	it to be pretty far _down_ the screen, so we can see more 
 */
 #define	CAM_DEFAULT_X_OFFSET	-400
@@ -76,7 +76,7 @@ void	updateCameraAcceleration	( UBYTE update );
 void	updateCameraVelocity		( UBYTE update );
 void	updateCameraPosition		( UBYTE update );
 
-/* And now, rotation */
+/* && now, rotation */
 void	updateCameraRotationAcceleration( UBYTE update );
 void	updateCameraRotationVelocity( UBYTE update );
 void	updateCameraRotationPosition( UBYTE update );
@@ -122,7 +122,7 @@ static	BOOL bRadarTrackingRequested = FALSE;
 //static  SDWORD	 radarX,radarY;	
 static  FRACT	 radarX,radarY;	
 
-/*	Where we were up to (pos and rot) last update - allows us to see whether
+/*	Where we were up to (pos && rot) last update - allows us to see whether
 	we are sufficently near our target to disable further tracking */
 static	iVector	oldPosition,oldRotation;
 
@@ -135,7 +135,7 @@ static BOOL OldViewValid;
 /* Sets the camera to inactive to begin with */
 void	initWarCam( void )
 {
-	/* We're not intitially following anything */
+	/* We're !intitially following anything */
 	trackingCamera.status = CAM_INACTIVE;	
 
 	/* Set up the default tracking variables */
@@ -193,7 +193,7 @@ BOOL Status = TRUE;
 			/* See if we can find the target to follow */
 			foundTarget = camFindTarget();
 			
-			if(foundTarget AND !foundTarget->died)
+			if(foundTarget && !foundTarget->died)
 			{
 				/* We've got one, so store away info */
 				camAllignWithTarget(foundTarget);
@@ -225,11 +225,11 @@ BOOL Status = TRUE;
 			if(!camTrackCamera())
 			{
 				/*
-					Camera track came back false, either because droid died or is
+					Camera track came back false, either because droid died || is
 					no longer selected, so reset to old values 
 				*/
 				foundTarget = camFindTarget();
-				if(foundTarget AND !foundTarget->died)
+				if(foundTarget && !foundTarget->died)
 				{
 					trackingCamera.status = CAM_REQUEST;
 				}
@@ -282,7 +282,7 @@ void	setWarCamActive(BOOL status)
 	/* We're trying to switch it on */
 	if(status == TRUE)
 	{
-		/* If it's not inactive then it's already in use - so return */
+		/* If it's !inactive then it's already in use - so return */
 		/* We're tracking a droid */
 		if(trackingCamera.status!=CAM_INACTIVE)
 		{
@@ -372,7 +372,7 @@ void	updateTestAngle( void )
 }
 //-----------------------------------------------------------------------------------
 
-/* Stores away old viewangle info and sets up new distance and angles */
+/* Stores away old viewangle info && sets up new distance && angles */
 void	camAllignWithTarget(BASE_OBJECT *psTarget)
 {
 	/* Store away the target */
@@ -383,7 +383,7 @@ void	camAllignWithTarget(BASE_OBJECT *psTarget)
 	trackingCamera.oldView.r.y = trackingCamera.rotation.y = MAKEFRACT(player.r.y);
 	trackingCamera.oldView.r.z = trackingCamera.rotation.z = MAKEFRACT(player.r.z);
 
-	/* Store away the old positions and set the start position too */
+	/* Store away the old positions && set the start position too */
 	trackingCamera.oldView.p.x = trackingCamera.position.x = MAKEFRACT(player.p.x);
 	trackingCamera.oldView.p.y = trackingCamera.position.y = MAKEFRACT(player.p.y);
 	trackingCamera.oldView.p.z = trackingCamera.position.z = MAKEFRACT(player.p.z);
@@ -415,10 +415,10 @@ void	camAllignWithTarget(BASE_OBJECT *psTarget)
 //-----------------------------------------------------------------------------------
 							/* How this all works */
 /*
-Each frame we calculate the new acceleration, velocity and positions for the location
-and rotation of the camera. The velocity is obviously based on the acceleration and this
+Each frame we calculate the new acceleration, velocity && positions for the location
+&& rotation of the camera. The velocity is obviously based on the acceleration && this
 in turn is based on the separation between the two objects. This separation is distance
-in the case of location and degrees of arc in the case of rotation.
+in the case of location && degrees of arc in the case of rotation.
 
   Each frame:-
 
@@ -427,33 +427,33 @@ in the case of location and degrees of arc in the case of rotation.
   POSITION		-	P
   Location of camera	(x1,y1)
   Location of droid		(x2,y2)
-  Separation(distance) = D. This is the distance between (x1,y1) and (x2,y2)
+  Separation(distance) = D. This is the distance between (x1,y1) && (x2,y2)
 
-  A = c1D - c2V		Where c1 and c2 are two constants to be found (by experiment)
+  A = c1D - c2V		Where c1 && c2 are two constants to be found (by experiment)
   V = V + A(frameTime/GAME_TICKS_PER_SEC)
   P = P + V(frameTime/GAME_TICKS_PER_SEC)
 
   Things are the same for the rotation except that D is then the difference in angles 
-  between the way the camera and droid being tracked are facing. AND.... the two
-  constants c1 and c2 will be different as we're dealing with entirely different scales
-  and units. Separation in terms of distance could be in the thousands whereas degrees
+  between the way the camera && droid being tracked are facing. &&.... the two
+  constants c1 && c2 will be different as we're dealing with entirely different scales
+  && units. Separation in terms of distance could be in the thousands whereas degrees
   cannot exceed 180.
 
   This all works because acceleration is based on how far apart they are minus some factor
   times the camera's present velocity. This minus factor is what slows it down when the 
   separation gets very small. Without this, it would continually oscillate about it's target
-  point. The four constants (two each for rotation and position) need to be found 
-  by trial and error since the metrics of time,space and rotation are entirely warzone
+  point. The four constants (two each for rotation && position) need to be found 
+  by trial && error since the metrics of time,space && rotation are entirely warzone
   specific.
 
-  And that's all folks.
+  && that's all folks.
 */  
 
 //-----------------------------------------------------------------------------------
 
 
 //-----------------------------------------------------------------------------------
-/*	N.B. the code from here on in is not very PSX friendly as there's lots of 
+/*	N.B. the code from here on in is !very PSX friendly as there's lots of 
 	unfriendly little floats - essentially the next 6 functions */
 
 void	updateCameraAcceleration(UBYTE update)
@@ -483,7 +483,7 @@ SDWORD	angle;
 		}
 	}
 	/*	This is where we check what it is we're tracking. 
-		Were we to track a building or location - this is
+		Were we to track a building || location - this is
 		where it'd be set up */
 	
 	/*	If we're tracking a droid, then we nned to track slightly in front
@@ -521,7 +521,7 @@ SDWORD	angle;
 	}
 
 	/*	Get these new coordinates */
-	if(getNumDroidsSelected()>2 AND trackingCamera.target->type == OBJ_DROID)
+	if(getNumDroidsSelected()>2 && trackingCamera.target->type == OBJ_DROID)
 	{
 	 	xConcern = trackingCamera.target->x;		  // nb - still NEED to be set
 		yConcern = trackingCamera.target->z;
@@ -545,7 +545,7 @@ SDWORD	angle;
 		zConcern = trackingCamera.target->y;
 	}
 
-	if(trackingCamera.target->type == OBJ_DROID AND getNumDroidsSelected()<=2)
+	if(trackingCamera.target->type == OBJ_DROID && getNumDroidsSelected()<=2)
 	{
 //		getBestPitchToEdgeOfGrid(trackingCamera.target->x,trackingCamera.target->z,
 //			360-((trackingCamera.target->direction+180)%360),&pitch);
@@ -623,7 +623,7 @@ FRACT	fraction;
 	
 	/*	Get the time fraction of a second - the next two lines are present in 4
 		of the next six functions. All 4 of these functions are called every frame, so
-		it may be an idea to calculate these higher up and store them in a static but 
+		it may be an idea to calculate these higher up && store them in a static but 
 		I've left them in for clarity for now */
 
 //	frameTime = gameTime - trackingCamera.lastUpdate;
@@ -735,7 +735,7 @@ SDWORD	xPos,yPos,zPos;
 	{
 		/* Presently only y rotation being calculated - but same idea for other axes */
 		/* Check what we're tracking */
-		if(getNumDroidsSelected()>2 AND trackingCamera.target->type == OBJ_DROID)
+		if(getNumDroidsSelected()>2 && trackingCamera.target->type == OBJ_DROID)
 		{
 			if(trackingCamera.target->selected)
 			{
@@ -776,7 +776,7 @@ SDWORD	xPos,yPos,zPos;
 
 	if(update & X_UPDATE)
 	{
-		if(trackingCamera.target->type == OBJ_DROID AND !bGotFlying)
+		if(trackingCamera.target->type == OBJ_DROID && !bGotFlying)
 		{
 			psDroid = (DROID*)trackingCamera.target;
 			getTrackingConcerns(&xPos,&yPos,&zPos);
@@ -919,7 +919,7 @@ SDWORD	yPos;
 	xPos = player.p.x +(VISIBLE_XTILES*TILE_UNITS)/2;
 	yPos = player.p.z +(VISIBLE_YTILES*TILE_UNITS)/2;
 
-	if( (abs(xPos-trackingCamera.target->x) <= 256) AND
+	if( (abs(xPos-trackingCamera.target->x) <= 256) &&
 		(abs(yPos-trackingCamera.target->y) <= 256) )
 		{
 			retVal = TRUE;
@@ -944,7 +944,7 @@ BOOL	bFlying;
 	}
 
 	/*	Cancel tracking if it's no longer selected.
-		This may not be desirable? 	*/
+		This may !be desirable? 	*/
    	if(trackingCamera.target->type == OBJ_DROID)
 	{
 
@@ -954,14 +954,14 @@ BOOL	bFlying;
 //		}
 	}
 
-	/* Update the acceleration,velocity and position of the camera for movement */
+	/* Update the acceleration,velocity && position of the camera for movement */
 	updateCameraAcceleration(CAM_ALL);
 	updateCameraVelocity(CAM_ALL);
 	updateCameraPosition(CAM_ALL);
 
-	/* Update the acceleration,velocity and rotation of the camera for rotation */
-	/*	You can track roll as well (z axis) but it makes you ill and looks 
-		like a flight sim, so for now just pitch and orientation */
+	/* Update the acceleration,velocity && rotation of the camera for rotation */
+	/*	You can track roll as well (z axis) but it makes you ill && looks 
+		like a flight sim, so for now just pitch && orientation */
 
 	
 	if(trackingCamera.target->type == OBJ_DROID)
@@ -986,7 +986,7 @@ BOOL	bFlying;
 */
 	
 	
-	if(bRadarAllign OR trackingCamera.target->type == OBJ_DROID)
+	if(bRadarAllign || trackingCamera.target->type == OBJ_DROID)
 	{
 		if(bFlying)
 		{
@@ -1050,7 +1050,7 @@ BOOL	bFlying;
 	/* Clip the position to the edge of the map */
 	CheckScrollLimits();
 
-	/* Store away our last update as acceleration and velocity are all fn()/dt */
+	/* Store away our last update as acceleration && velocity are all fn()/dt */
 	trackingCamera.lastUpdate = gameTime2;
 	if(bFullInfo)
 	{
@@ -1061,15 +1061,15 @@ BOOL	bFlying;
 		}
 	}
 
-	/* Switch off if we're jumping to a new location and we've got there */
+	/* Switch off if we're jumping to a new location && we've got there */
 	if(getRadarTrackingStatus())
 	{
-		/*	This will ensure we come to a rest and terminate the tracking
+		/*	This will ensure we come to a rest && terminate the tracking
 			routine once we're close enough 
 		*/
 		if(getRotationMagnitude()<10000)
 		{
-			if(nearEnough() AND getPositionMagnitude() < 60)
+			if(nearEnough() && getPositionMagnitude() < 60)
 			{
 				camToggleStatus();
 			}
@@ -1152,7 +1152,7 @@ UDWORD	bestSoFar;
 		for(psDroid = apsDroidLists[selectedPlayer]; psDroid; psDroid=psDroid->psNext)
 		{
 			/* Is it even on the sscreen? */
-			if(DrawnInLastFrame(psDroid->sDisplay.frameNumber) AND psDroid->selected AND psDroid!=psPresent)
+			if(DrawnInLastFrame(psDroid->sDisplay.frameNumber) && psDroid->selected && psDroid!=psPresent)
 			{
 				if(psDroid->sDisplay.screenX<psPresent->sDisplay.screenX)
 				{
@@ -1171,7 +1171,7 @@ UDWORD	bestSoFar;
 		for(psDroid = apsDroidLists[selectedPlayer]; psDroid; psDroid=psDroid->psNext)
 		{
 			/* Is it even on the sscreen? */
-			if(DrawnInLastFrame(psDroid->sDisplay.frameNumber) AND psDroid->selected AND psDroid!=psPresent)
+			if(DrawnInLastFrame(psDroid->sDisplay.frameNumber) && psDroid->selected && psDroid!=psPresent)
 			{
 				if(psDroid->sDisplay.screenX>psPresent->sDisplay.screenX)
 				{
@@ -1190,7 +1190,7 @@ UDWORD	bestSoFar;
 		for(psDroid = apsDroidLists[selectedPlayer]; psDroid; psDroid=psDroid->psNext)
 		{
 			/* Is it even on the sscreen? */
-			if(DrawnInLastFrame(psDroid->sDisplay.frameNumber) AND psDroid->selected AND psDroid!=psPresent)
+			if(DrawnInLastFrame(psDroid->sDisplay.frameNumber) && psDroid->selected && psDroid!=psPresent)
 			{
 				if(psDroid->sDisplay.screenY<psPresent->sDisplay.screenY)
 				{
@@ -1209,7 +1209,7 @@ UDWORD	bestSoFar;
 		for(psDroid = apsDroidLists[selectedPlayer]; psDroid; psDroid=psDroid->psNext)
 		{
 			/* Is it even on the sscreen? */
-			if(DrawnInLastFrame(psDroid->sDisplay.frameNumber) AND psDroid->selected AND psDroid!=psPresent)
+			if(DrawnInLastFrame(psDroid->sDisplay.frameNumber) && psDroid->selected && psDroid!=psPresent)
 			{
 				if(psDroid->sDisplay.screenY>psPresent->sDisplay.screenY)
 				{
@@ -1505,14 +1505,14 @@ void camSetOldView(int x,int y,int z,int rx,int ry,int dist)
 }
 
 
-/* Static function that switches off tracking - and might not be desirable? - Jim?*/
+/* Static function that switches off tracking - && might !be desirable? - Jim?*/
 void	camSwitchOff( void )
 {
  	/* Restore the angles */
 //	player.r.x = trackingCamera.oldView.r.x;
 	player.r.z = trackingCamera.oldView.r.z;
 
-	/* And height */
+	/* && height */
 	/* Is this desirable??? */
 //	player.p.y = trackingCamera.oldView.p.y;	
 
@@ -1522,7 +1522,7 @@ void	camSwitchOff( void )
 
 //-----------------------------------------------------------------------------------
 
-/* Returns whether or not the tracking camera is active */
+/* Returns whether || !the tracking camera is active */
 BOOL	getWarCamStatus( void )
 {
 	/* Is it switched off? */
@@ -1562,7 +1562,7 @@ void	camToggleStatus( void )
 
 
 /*	Flips on/off whether we print out full info about the droid being tracked.
-	If ON then this info is permanent on screen and realtime updating */
+	If ON then this info is permanent on screen && realtime updating */
 void	camToggleInfo(void)
 {
 	bFullInfo = !bFullInfo;
@@ -1575,7 +1575,7 @@ void	setUpRadarTarget(SDWORD x, SDWORD y)
 
 	radarTarget.x = x;
 	radarTarget.y = y;
-	if( (x<0) OR (y<0) OR (x > (SDWORD)((mapWidth-1)*TILE_UNITS)) OR (y > (SDWORD)((mapHeight-1)*TILE_UNITS)) )
+	if( (x<0) || (y<0) || (x > (SDWORD)((mapWidth-1)*TILE_UNITS)) || (y > (SDWORD)((mapHeight-1)*TILE_UNITS)) )
 	{
 		radarTarget.z = 128 * ELEVATION_SCALE;
 	}

@@ -13,7 +13,7 @@
 /* The range out of which the random number for the to hit should be taken */
 #define HIT_DICE	100
 
-/* set a variable to the role of a die between 0 and HIT_DICE */
+/* set a variable to the role of a die between 0 && HIT_DICE */
 #define HIT_ROLL(d)  (d) = rand() % HIT_DICE
 
 // maximum difference in direction for a fixed turret to fire
@@ -31,7 +31,7 @@ extern BOOL combShutdown(void);
 /* Fire a weapon at something */
 extern void combFire(WEAPON *psWeap, BASE_OBJECT *psAttacker, BASE_OBJECT *psTarget);
 
-/*checks through the target players list of structures and droids to see 
+/*checks through the target players list of structures && droids to see 
 if any support a counter battery sensor*/
 extern void counterBatteryFire(BASE_OBJECT *psAttacker, BASE_OBJECT *psTarget);
 

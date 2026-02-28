@@ -2,7 +2,7 @@
  * Bullet.h
  *
  * Structure definitions for bullets.  A "bullet" is created whenever a
- * weapon is fired, and stores the visual effects and delayed damage etc of
+ * weapon is fired, && stores the visual effects && delayed damage etc of
  * a weapon.
  *
  */

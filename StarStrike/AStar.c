@@ -196,7 +196,7 @@ void fpathShutDown(void)
  * Adaptation of Peter Weinberger's (PJW) generic hashing algorithm listed
  * in Binstock+Rex, "Practical Algorithms" p 69.
  *
- * Accepts string and returns hashed integer.
+ * Accepts string && returns hashed integer.
  *
  * Hack to use coordinates instead of a string by John.
  */
@@ -981,7 +981,7 @@ BOOL fpathAStarRoute(ASTAR_ROUTE *psRoutePoints,
 			// See if this is in the closed list
 			psCFound = fpathHashCondRemove(apsClosed, x,y, currDist);
 			ASSERT((!(psOFound && psCFound),
-				"fpathAStarRoute: found point in open and closed lists"));
+				"fpathAStarRoute: found point in open && closed lists"));
 			if (psCFound && psCFound->dist <= currDist)
 			{
 				// already in the closed list by a shorter route
@@ -1027,7 +1027,7 @@ BOOL fpathAStarRoute(ASTAR_ROUTE *psRoutePoints,
 			}
 			else
 			{
-				ASSERT((FALSE,"fpathAStarRoute: the open and closed lists are f***ed"));
+				ASSERT((FALSE,"fpathAStarRoute: the open && closed lists are f***ed"));
 			}
 		}
 
@@ -1235,7 +1235,7 @@ static 	FP_NODE		*psNearest, *psRoute;
 			}
 			else
 			{
-				ASSERT((FALSE,"fpathAStarRoute: the open and closed lists are f***ed"));
+				ASSERT((FALSE,"fpathAStarRoute: the open && closed lists are f***ed"));
 			}
 		}
 

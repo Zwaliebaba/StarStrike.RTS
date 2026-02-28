@@ -206,7 +206,7 @@ static void intDisplayMessageButton(struct _widget *psWidget, UDWORD xOffset,
   button has been pressed*/
 static void intIntelButtonPressed(BOOL proxMsg, UDWORD id);
 
-/*this sets the width and height for the Intel map surface so that it fill the 
+/*this sets the width && height for the Intel map surface so that it fill the 
 appropriate sized image for the view*/
 //static void setIntelBufferSize(UDWORD type);
 
@@ -445,7 +445,7 @@ static BOOL intAddMessageForm(BOOL playCurrent)
 			continue;
 		}
 
-		/* Set the tip and add the button */
+		/* Set the tip && add the button */
 		switch (psMessage->type)
 		{
 			case MSG_RESEARCH:
@@ -653,7 +653,7 @@ BOOL intAddMessageView(MESSAGE * psMessage)
 
 	psResearch = getResearchForMsg((VIEWDATA *)psMessage->pViewData);
 
-	ASSERT((psResearch!=NULL,"Research not found"));
+	ASSERT((psResearch!=NULL,"Research !found"));
 	//sLabInit.pText=psResearch->pName;
 	sLabInit.pText = getStatName(psResearch);
 
@@ -839,7 +839,7 @@ void _intIntelButtonPressed(BOOL proxMsg, UDWORD id)
 	ASSERT((proxMsg = TRUE, 
 		"intIntelButtonPressed: Shouldn't be able to get a proximity message!"));
 
-	/* message button has been pressed - clear the old button and messageView*/
+	/* message button has been pressed - clear the old button && messageView*/
 	if (messageID != 0)
 	{
 		widgSetButtonState(psWScreen, messageID, 0);
@@ -978,7 +978,7 @@ void intCleanUpIntelMap(void)
 		psNext)
 	{
 		psNext = psMessage->psNext;
-		if (psMessage->type == MSG_RESEARCH AND psMessage->read)
+		if (psMessage->type == MSG_RESEARCH && psMessage->read)
 		{
 			removeMessage(psMessage, selectedPlayer);
 		}
@@ -1245,7 +1245,7 @@ void intDisplayPIEView(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset,
 		return;
 	}
 
-	if (psMessage AND psMessage->pViewData)
+	if (psMessage && psMessage->pViewData)
 	{
 		x0 = xOffset+Form->x;
 		y0 = yOffset+Form->y;
@@ -1311,7 +1311,7 @@ void intDisplayFLICView(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 		return;
 	}
 
-	if (psMessage AND psMessage->pViewData)
+	if (psMessage && psMessage->pViewData)
 	{
 		if (((VIEWDATA *)psMessage->pViewData)->type != VIEW_RES)
 		{
@@ -1417,7 +1417,7 @@ void addVideoText(SEQ_DISPLAY *psSeqDisplay, UDWORD sequence)
 	}
 }
 
-/*rotate the view so looking directly down if forward = TRUE or
+/*rotate the view so looking directly down if forward = TRUE ||
  back to previous view if forward = FALSE */
 /*void intelMapView(BOOL forward)
 {
@@ -1442,7 +1442,7 @@ void addVideoText(SEQ_DISPLAY *psSeqDisplay, UDWORD sequence)
 	}
 }*/
 
-/*this sets the width and height for the Intel map surface so that it fill the 
+/*this sets the width && height for the Intel map surface so that it fill the 
 appropriate sized image for the view*/
 /*void setIntelBufferSize(UDWORD type)
 {
@@ -1555,7 +1555,7 @@ void setCurrentMsg(void)
 	currentTextDisplay.startTime = 0;
 	currentTextDisplay.text[0] = '\0';
 
-	if (psMessage == NULL OR psMessage->pViewData->pTextMsg == NULL)
+	if (psMessage == NULL || psMessage->pViewData->pTextMsg == NULL)
 	{
 		currentTextDisplay.totalFrames = 0;
 		return;
@@ -1664,7 +1664,7 @@ void setCurrentMsg(void)
 		endChar = strLen;
 	}
 	text = 0;
-	for (inc = startChar; inc != endChar AND inc < strLen; inc++)
+	for (inc = startChar; inc != endChar && inc < strLen; inc++)
 	{
 		currentTextDisplay.text[text++] = pText[inc];
 	}
@@ -1756,7 +1756,7 @@ void setCurrentMsg(void)
 	psButton->y = (SWORD)psProximityDisplay->screenY;
 
 	//get the screen coords for the message - check not 'off' the screen
-	if (psButton->x < 0 OR psButton->x > DISP_WIDTH OR psButton->y < 0 OR
+	if (psButton->x < 0 || psButton->x > DISP_WIDTH || psButton->y < 0 ||
 		psButton->y > DISP_HEIGHT)
 	{
 		return;
@@ -1797,14 +1797,14 @@ void setCurrentMsg(void)
 	//adjust button x and y for width and height of button
 	psButton->x = (SWORD)(psButton->x - psButton->width/(UWORD)2);
 	psButton->y = (SWORD)(psButton->y - psButton->height/(UWORD)2);
-	if (psButton->x < 0 OR psButton->x > DISP_WIDTH OR psButton->y < 0 OR
+	if (psButton->x < 0 || psButton->x > DISP_WIDTH || psButton->y < 0 ||
 		psButton->y > DISP_HEIGHT)
 	{
 		return;
 	}
 
 	//if there is a message 3Dview up - don't draw the proximity messages underneath
-	if (psCurrentMsg AND psCurrentMsg->pViewData)
+	if (psCurrentMsg && psCurrentMsg->pViewData)
 	{
 		if (!checkMessageOverlap(psCurrentMsg, psButton->x, psButton->y))
 		{
@@ -1815,7 +1815,7 @@ void setCurrentMsg(void)
 	//draw the 'button'
 	iV_DrawTransImage(IntImages,imageID, psButton->x, psButton->y);
 }*/
-/*check the x and y are within the messages 3D view if on screen */
+/*check the x && y are within the messages 3D view if on screen */
 /*BOOL checkMessageOverlap(MESSAGE *psMessage, SWORD x, SWORD y)
 {
 	SWORD		messageX, messageY, messageWidth, messageHeight;
@@ -1846,8 +1846,8 @@ void setCurrentMsg(void)
 		return FALSE;
 	}
 
-	if ((x > messageX AND x < (messageX + messageWidth)) AND
-		(y > messageY AND y < (messageY + messageHeight)))
+	if ((x > messageX && x < (messageX + messageWidth)) &&
+		(y > messageY && y < (messageY + messageHeight)))
 	{
 		return FALSE;
 	}

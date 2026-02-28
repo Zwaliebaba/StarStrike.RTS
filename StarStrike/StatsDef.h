@@ -81,7 +81,7 @@ typedef struct _comp_base_stats
 	COMPONENT_STATS;
 } COMP_BASE_STATS;
 
-/* LOC used for holding locations for Sensors and ECM's*/
+/* LOC used for holding locations for Sensors && ECM's*/
 typedef enum _loc
 {
 	LOC_DEFAULT,
@@ -326,7 +326,7 @@ typedef struct _repair_stats
 } PROGRAM_STATS;*/
 
 /*these are defined in Access database - if you change them in there,
-  then change them here! (and the rest of the code)
+  then change them here! (&& the rest of the code)
   They are made up values for now - defined when Jim does it!*/
 /*typedef enum _program_orders
 {

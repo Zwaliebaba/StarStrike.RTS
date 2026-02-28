@@ -31,7 +31,7 @@ BOOL wdgLoadCompleteCatalog(char *pWDGName);
 BOOL wdgMultiInit(void)
 {
 	ASSERT((psWDGCache == NULL,
-		"wdgMultiInit: the WDG cache has not been reset"));
+		"wdgMultiInit: the WDG cache has !been reset"));
 	psWDGCache = NULL;
 	psWDGCacheRev = NULL;
 	psWDGCacheStore = NULL;
@@ -258,7 +258,7 @@ BOOL wdgLoadCompleteCatalog(char *pWDGName)
 	// load the WDGINFO
 	if (!WDG_SetCurrentWDG(pWDGName))
 	{
-		DBERROR(("wdgLoadCompleteCatalog: could not set %s as Current WDG", pWDGName));
+		DBERROR(("wdgLoadCompleteCatalog: could !set %s as Current WDG", pWDGName));
 		return FALSE;
 	}
 
@@ -284,7 +284,7 @@ BOOL wdgLoadCompleteCatalog(char *pWDGName)
 	pFileHandle = fopen(pWDGName, "rb");
 	if (pFileHandle == NULL)
 	{
-		DBERROR(("wdgLoadCompleteCatalog: could not open %s", pWDGName));
+		DBERROR(("wdgLoadCompleteCatalog: could !open %s", pWDGName));
 		return FALSE;
 	}
 	if (!wdgLoadAdditionalHeader(pFileHandle, psNew))
@@ -303,7 +303,7 @@ BOOL wdgLoadCompleteCatalog(char *pWDGName)
 
 		if (!LoadWRFCatalog(psCat + i, pFileHandle))
 		{
-			DBERROR(("wdgLoadCompleteCatalog: could not read file catalog for WRF number %d", i));
+			DBERROR(("wdgLoadCompleteCatalog: could !read file catalog for WRF number %d", i));
 			fclose(pFileHandle);
 			return FALSE;
 		}

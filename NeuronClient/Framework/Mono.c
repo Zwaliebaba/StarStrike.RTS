@@ -40,7 +40,7 @@ static UBYTE	DBug_CheckFormatChar(UBYTE);
 *
 *	FUNCTION
 *		This function clears a rectangular area of the monochrome screen defined by
-*		<leftedge>, <topedge> and with the dimensions of <width> x <height>.
+*		<leftedge>, <topedge> && with the dimensions of <width> x <height>.
 *
 */
 
@@ -296,7 +296,7 @@ void	dbg_MONO_PrintString(SDWORD	 ub_leftedge,
 		}
 	}
 
-	/* do one last check for the percent flag; there may be a string not expanded yet */
+	/* do one last check for the percent flag; there may be a string !expanded yet */
 	if (bool_percent == TRUE)
 	{
 		/* there is an unxepanded string; expand it */
@@ -400,8 +400,8 @@ static UBYTE	DBug_ExpandString(UBYTE		*pub_stringbuffer,
 		case	'e':	/* scientific notation (e) */
 		case	'E':	/* scientific notation (E) */
 		case	'f':	/* decimal floating point */
-		case	'g':	/* uses %e or %f, whichever is shorter */
-		case	'G':	/* uses %E or %F, whichever is shorter */
+		case	'g':	/* uses %e || %f, whichever is shorter */
+		case	'G':	/* uses %E || %F, whichever is shorter */
 
 			sprintf(pub_stringbuffer, pub_percentstring, va_arg(val_arglist, double));
 
@@ -460,8 +460,8 @@ static UBYTE	DBug_CheckFormatChar(UBYTE	ub_percentchar)
 		case	'e':	/* scientific notation (e) */
 		case	'E':	/* scientific notation (E) */
 		case	'f':	/* decimal floating point */
-		case	'g':	/* uses %e or %f, whichever is shorter */
-		case	'G':	/* uses %E or %F, whichever is shorter */
+		case	'g':	/* uses %e || %f, whichever is shorter */
+		case	'G':	/* uses %E || %F, whichever is shorter */
 		case	'o':	/* unsigned octal */
 		case	'p':	/* displays a pointer */
 		case	's':	/* string */

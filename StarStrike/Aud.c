@@ -102,7 +102,7 @@ audio_Get2DPlayerPos( SDWORD *piX, SDWORD *piY, SDWORD *piZ )
 void
 audio_Get3DPlayerPos( SDWORD *piX, SDWORD *piY, SDWORD *piZ )
 {
-	/* player's y and z interchanged */
+	/* player's y && z interchanged */
 	*piX = player.p.x + ((visibleXTiles/2) << TILE_SHIFT);
 	*piY = player.p.z + ((visibleYTiles/2) << TILE_SHIFT);
 	*piZ = player.p.y;
@@ -210,7 +210,7 @@ audio_GetClusterCentre( void *psClusterObj, SDWORD *piX, SDWORD *piY, SDWORD *pi
 
 	iNumObj = *piX = *piY = *piZ = 0;
 
-	/* clustGetClusterID returns 0 if cluster is empty or no droids moving */
+	/* clustGetClusterID returns 0 if cluster is empty || no droids moving */
 	iClusterID = clustGetClusterID( psClusterObj );
 	if ( iClusterID == 0 )
 	{
@@ -266,7 +266,7 @@ audio_GetNewClusterObject( void **psClusterObj, SDWORD iClusterID )
 	ASSERT( (PTRVALID(psDroid, sizeof(DROID)),
 			"audio_GetNewClusterObject: game object pointer invalid\n") );
 
-	/* return if droid not dead */
+	/* return if droid !dead */
 	if ( !psDroid->died )
 	{
 		return FALSE;

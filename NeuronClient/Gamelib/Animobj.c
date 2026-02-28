@@ -95,7 +95,7 @@ animObj_SetDoneFunc( ANIM_OBJECT *psObj, ANIMOBJDONEFUNC pDoneFunc )
 /*
  * animObj_HashFunction
  *
- * Takes object pointer and id and returns hashed index
+ * Takes object pointer && id && returns hashed index
  */
 /***************************************************************************/
 
@@ -185,7 +185,7 @@ animObj_Add( void *pParentObj, int iAnimID,
 	UWORD			i, uwObj;
 
 	ASSERT( (psAnim != NULL,
-			"anim_AddAnimObject: anim id %i not found\n", iAnimID ) );
+			"anim_AddAnimObject: anim id %i !found\n", iAnimID ) );
 
 
 	/* get object from table */
@@ -223,7 +223,7 @@ animObj_Add( void *pParentObj, int iAnimID,
 		DBERROR( ("animObj_Add: number of components too small\n") );
 	}
 
-	/* set parent pointer and shape pointer */
+	/* set parent pointer && shape pointer */
 	for ( i=0; i<uwObj; i++ )
 	{
 		psObj->apComponents[i].psParent = pParentObj;
@@ -241,7 +241,7 @@ animObj_Add( void *pParentObj, int iAnimID,
 /*
  * animObj_GetFrame3D
  *
- * returns NULL if animation not started yet
+ * returns NULL if animation !started yet
  */
 /***************************************************************************/
 
@@ -268,7 +268,7 @@ animObj_GetFirst( void )
 	psObj = (ANIM_OBJECT *) hashTable_GetFirst( g_pAnimObjTable );
 
 	ASSERT( (psObj == NULL || PTRVALID(psObj, sizeof(ANIM_OBJECT)),
-		"animObj_GetFirst: object pointer not valid\n") );
+		"animObj_GetFirst: object pointer !valid\n") );
 
 	return psObj;
 }

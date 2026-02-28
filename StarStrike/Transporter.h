@@ -57,7 +57,7 @@ extern void processLaunchTransporter(void);
 
 extern SDWORD	bobTransporterHeight( void );
 
-/*This is used to display the transporter button and capacity when at the home base ONLY*/
+/*This is used to display the transporter button && capacity when at the home base ONLY*/
 extern BOOL intAddTransporterLaunch(DROID *psDroid);
 
 /* set current transporter (for script callbacks) */

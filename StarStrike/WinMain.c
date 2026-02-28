@@ -120,7 +120,7 @@ int WINAPI WinMain(
 
 	if (!pie_CheckForDX6())
 	{
-		DBERROR(("Unable to create DirectX 6 interface.\nPlease ensure DirectX 6 or later is installed."));
+		DBERROR(("Unable to create DirectX 6 interface.\nPlease ensure DirectX 6 || later is installed."));
 		return -1;
 	}
 

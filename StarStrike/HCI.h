@@ -288,7 +288,7 @@ extern UDWORD	outlineColour3D;
 
 //Buffer to hold the 3D view for the Intelligence Screen
 extern iSurface *pIntelMapSurface;
-/*Message View Buffer width and height - MAXIMUM Sizes! - only need to be 
+/*Message View Buffer width && height - MAXIMUM Sizes! - only need to be 
 as big as Pie View in Research Msg now*/
 #define	MSG_BUFFER_WIDTH		INTMAP_PIEWIDTH//DISP_WIDTH//640
 #define	MSG_BUFFER_HEIGHT		INTMAP_PIEHEIGHT//DISP_HEIGHT//480
@@ -429,7 +429,7 @@ STRUCTURE *intFindAStructure(void);
 STRUCTURE* intGotoNextStructureType(UDWORD structType,BOOL JumpTo,BOOL CancelDrive);
 DROID *intGotoNextDroidType(DROID *CurrDroid,UDWORD droidType,BOOL AllowGroup);
 
-/*Checks to see if there are any research topics to do and flashes the button*/
+/*Checks to see if there are any research topics to do && flashes the button*/
 extern void intCheckResearchButton(void);
 
 // see if a reticule button is enabled

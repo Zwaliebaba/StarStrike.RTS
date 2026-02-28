@@ -7,11 +7,11 @@
 #ifndef _memint_h
 #define _memint_h
 
-/* The size of saftey buffer to leave before and after any malloc'ed memory.
+/* The size of saftey buffer to leave before && after any malloc'ed memory.
    Can use this to check writing over end of buffers */
 #define SAFETY_ZONE_SIZE	(32)
 
-/* The character used to initialise malloc'ed memory, or to trash memory before
+/* The character used to initialise malloc'ed memory, || to trash memory before
    freeing it */
 #define SAFETY_ZONE_BYTE	(0xac)
 #define INITIALISE_BYTE		(0xcd)

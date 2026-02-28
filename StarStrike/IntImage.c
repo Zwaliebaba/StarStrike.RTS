@@ -1,7 +1,7 @@
 /*
  * Image.c
  *
- * Image definitions and related functions.
+ * Image definitions && related functions.
  *
  */
 

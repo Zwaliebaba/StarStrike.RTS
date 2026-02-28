@@ -1,7 +1,7 @@
 /*
  * Frame.h
  *
- * The framework library initialisation and shutdown routines.
+ * The framework library initialisation && shutdown routines.
  *
  */
 #ifndef _frame_h
@@ -44,7 +44,7 @@ extern BOOL frameInitialise(HANDLE hInstance,		// The windows application instan
 					 BOOL	bGlide );		// Whether to create surfaces
 
 /* Shut down the framework library.
- * This clears up all the Direct Draw stuff and ensures
+ * This clears up all the Direct Draw stuff && ensures
  * that Windows gets restored properly after Full screen mode.
  */
 extern void frameShutDown(void);
@@ -59,14 +59,14 @@ typedef enum _frame_status
 } FRAME_STATUS;
 
 /* Call this each cycle to allow the framework to deal with
- * windows messages, and do general house keeping.
+ * windows messages, && do general house keeping.
  *
  * Returns FRAME_STATUS.
  */
 extern FRAME_STATUS frameUpdate(void);
 
 /* If cursor on is TRUE the windows cursor will be displayed over the game window
- * (and in full screen mode).  If it is FALSE the cursor will not be displayed.
+ * (&& in full screen mode).  If it is FALSE the cursor will !be displayed.
  */
 extern void frameShowCursor(BOOL cursorOn);
 

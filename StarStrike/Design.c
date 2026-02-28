@@ -291,7 +291,7 @@ DROID_TEMPLATE	sDefaultDesignTemplate;
 extern void intDisplayPlainForm(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 void desSetupDesignTemplates( void );
 
-/* Set the current mode of the design screen, and display the appropriate component lists */
+/* Set the current mode of the design screen, && display the appropriate component lists */
 static void intSetDesignMode(DES_COMPMODE newCompMode);
 /* Set all the design bar graphs from a design template */
 static void intSetDesignStats(DROID_TEMPLATE *psTemplate);
@@ -313,7 +313,7 @@ static UDWORD intNumAvailable(UBYTE *aAvailable, UDWORD numEntries,
 							  COMP_BASE_STATS *asStats, UDWORD size);
 /* Add the system buttons (weapons, command droid, etc) to the design screen */
 static BOOL intAddSystemButtons(SDWORD mode);
-/* Add the component buttons to the main tab of the system or component form */
+/* Add the component buttons to the main tab of the system || component form */
 static BOOL intAddComponentButtons(COMP_BASE_STATS *psStats, UDWORD size,
 								   UBYTE *aAvailable,	UDWORD numEntries,
 								   UDWORD compID,UDWORD WhichTab);
@@ -807,7 +807,7 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 	/* Set the text colour for the form */
 	widgSetColour(psWScreen, IDDES_POWERFORM, WCOL_TEXT, 0, 164, 0);
 
-	/* Add the design template power bar and label*/
+	/* Add the design template power bar && label*/
 	sLabInit.formID	= IDDES_POWERFORM;
 	sLabInit.id = IDDES_TEMPPOWERLAB;
 	sLabInit.x = DES_POWERX;
@@ -839,7 +839,7 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return FALSE;
 	}
 
-	/* Add the design template body points bar and label*/
+	/* Add the design template body points bar && label*/
 	sLabInit.formID	= IDDES_POWERFORM;
 	sLabInit.id = IDDES_TEMPBODYLAB;
 	sLabInit.x = DES_POWERX;
@@ -873,7 +873,7 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 		return FALSE;
 	}
 
-	/* Add the variable bits of the design screen and set the bar graphs */
+	/* Add the variable bits of the design screen && set the bar graphs */
 	desCompMode = IDES_NOCOMPONENT;
 	desSysMode = IDES_NOSYSTEM;
 	desPropMode = IDES_NOPROPULSION;
@@ -882,7 +882,7 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 	intSetDesignPower(&sCurrDesign);
 	intSetDesignMode(IDES_BODY);
 
-	/* hide design and component forms until required */
+	/* hide design && component forms until required */
 	if ( bShowCentreScreen == FALSE )
 	{
 		widgHide( psWScreen, IDDES_FORM );
@@ -907,8 +907,8 @@ void desSetupDesignTemplates( void )
 	psTempl = apsDroidTemplates[selectedPlayer];
 	while ((psTempl != NULL) && (i < MAXTEMPLATES))
 	{
-		/* add template to list if not a transporter,
-		 * cyborg, person or command droid
+		/* add template to list if !a transporter,
+		 * cyborg, person || command droid
 		 */
 		if ( psTempl->droidType != DROID_TRANSPORTER        &&
 			 psTempl->droidType != DROID_CYBORG             &&
@@ -1064,7 +1064,7 @@ BOOL intAddTemplateButtons(UDWORD formID, UDWORD formWidth, UDWORD formHeight,
 		{
 			psTempl = apsTemplateList[i];
 
-			/* Set the tip and add the button */
+			/* Set the tip && add the button */
 
 
 			// On the playstation the tips are additionaly setup when they are displayed ... because we only have one text name buffer
@@ -1145,7 +1145,7 @@ BOOL intAddTemplateButtons(UDWORD formID, UDWORD formWidth, UDWORD formHeight,
 
 
 
-/* Set the current mode of the design screen, and display the appropriate
+/* Set the current mode of the design screen, && display the appropriate
  * component lists
  */
 static void intSetDesignMode(DES_COMPMODE newCompMode)
@@ -2222,7 +2222,7 @@ static UDWORD intNumAvailable(UBYTE *aAvailable, UDWORD numEntries,
 		//if ((aAvailable[i] & AVAILABLE) &&
 		//	intGetLocation(psCurrStats) != LOC_DEFAULT)
 
-		if (psCurrStats->design AND
+		if (psCurrStats->design &&
 			(aAvailable[i] & AVAILABLE))
 		{
 			numButtons++;
@@ -2397,7 +2397,7 @@ static BOOL intAddComponentForm(UDWORD numButtons)
 	numButtons = 0;
     for(i=0; i < numSensor; i++)
 	{
-		if ((aSensor[i] & AVAILABLE) AND 
+		if ((aSensor[i] & AVAILABLE) && 
 			intGetLocation((COMP_BASE_STATS *)&asSensorStats[i]) != LOC_DEFAULT)
 		{
 			numButtons++;
@@ -2411,7 +2411,7 @@ static BOOL intAddComponentForm(UDWORD numButtons)
 	{
 		for(i=0; i < numECM; i++)
 		{
-			if ((aECM[i] & AVAILABLE) AND 
+			if ((aECM[i] & AVAILABLE) && 
 				intGetLocation((COMP_BASE_STATS *)&asECMStats[i]) != LOC_DEFAULT)
 			{
 				numButtons++;
@@ -2598,8 +2598,8 @@ static BOOL intAddComponentButtons(COMP_BASE_STATS *psStats, UDWORD size,
 			break;
 		}
 
-		/* Skip unavailable entries and non-design ones*/
-		if (!(aAvailable[i] & AVAILABLE) OR !psCurrStats->design)
+		/* Skip unavailable entries && non-design ones*/
+		if (!(aAvailable[i] & AVAILABLE) || !psCurrStats->design)
 		{
 			/* Update the stats pointer for the next button */
 			psCurrStats = (COMP_BASE_STATS *)(((UBYTE *)psCurrStats) + size);
@@ -2607,7 +2607,7 @@ static BOOL intAddComponentButtons(COMP_BASE_STATS *psStats, UDWORD size,
 			continue;
 		}
 
-		/*skip indirect weapons if VTOL propulsion or numVTOLattackRuns for the weapon is zero*/
+		/*skip indirect weapons if VTOL propulsion || numVTOLattackRuns for the weapon is zero*/
 		if ( bWeapon )
 		{
 			if ( ((WEAPON_STATS *)psCurrStats)->vtolAttackRuns )
@@ -2627,7 +2627,7 @@ static BOOL intAddComponentButtons(COMP_BASE_STATS *psStats, UDWORD size,
 			}
 		}
 
-		/* Set the tip and add the button */
+		/* Set the tip && add the button */
 		strncpy(aButText, getStatName(psCurrStats), DES_COMPBUTMAXCHAR);
 		sButInit.pTip = getStatName(psCurrStats);
 
@@ -2975,7 +2975,7 @@ static void intSetSystemStats(COMP_BASE_STATS *psStats)
 static void intSetSystemShadowStats(COMP_BASE_STATS *psStats)
 {
 	/* Set the correct system stats - psStats can be set to NULL if
-	 * desSysMode does not match the type of the stats.
+	 * desSysMode does !match the type of the stats.
 	 */
 	if (psStats)
 	{
@@ -3449,12 +3449,12 @@ static void intSetTemplatePowerShadowStats(COMP_BASE_STATS *psStats)
 	//SDWORD				Avail, Used, Total;
 	DROID_TEMPLATE		compTempl;
 
-	if (&sCurrDesign != NULL AND psStats != NULL)
+	if (&sCurrDesign != NULL && psStats != NULL)
 	{
 		//create the comparison Template
 		memcpy(&compTempl, &sCurrDesign, sizeof(DROID_TEMPLATE));
 		type = statType(psStats->ref);
-		/*if type = BODY or PROPULSION can do a straight comparison but if the new stat is
+		/*if type = BODY || PROPULSION can do a straight comparison but if the new stat is
 		a 'system' stat then need to find out which 'system' is currently in place so the
 		comparison is meaningful*/
 		if (desCompMode == IDES_SYSTEM)
@@ -3547,12 +3547,12 @@ static void intSetTemplateBodyShadowStats(COMP_BASE_STATS *psStats)
 //	return;
 //#endif
 
-	if (&sCurrDesign != NULL AND psStats != NULL)
+	if (&sCurrDesign != NULL && psStats != NULL)
 	{
 		//create the comparison Template
 		memcpy(&compTempl, &sCurrDesign, sizeof(DROID_TEMPLATE));
 		type = statType(psStats->ref);
-		/*if type = BODY or PROPULSION can do a straight comparison but if the new stat is
+		/*if type = BODY || PROPULSION can do a straight comparison but if the new stat is
 		a 'system' stat then need to find out which 'system' is currently in place so the
 		comparison is meaningful*/
 		if (desCompMode == IDES_SYSTEM)
@@ -3641,7 +3641,7 @@ static UDWORD intCalcSpeed(TYPE_OF_TERRAIN type, PROPULSION_STATS *psProp)
     //we want the design screen to show zero speed over water for all prop types except Hover and Vtol
     if (type == TER_WATER)
     {
-        if (!(psProp->propulsionType == HOVER OR psProp->propulsionType == LIFT))
+        if (!(psProp->propulsionType == HOVER || psProp->propulsionType == LIFT))
         {
             return 0;
         }
@@ -3980,7 +3980,7 @@ void intSetButtonFlash( UDWORD id, BOOL bFlash )
 #ifdef FLASH_BUTTONS
 	WIDGET	*psWidget = widgGetFromID( psWScreen, id );
 
-	ASSERT((psWidget->type == WIDG_BUTTON,"intSetButtonFlash : Not a button"));
+	ASSERT((psWidget->type == WIDG_BUTTON,"intSetButtonFlash : !a button"));
 
 	if ( bFlash == TRUE )
 	{
@@ -3996,8 +3996,7 @@ void intSetButtonFlash( UDWORD id, BOOL bFlash )
 /*
  * desTemplateNameCustomised
  *
- * Checks whether user has customised template name : template not
- * customised if not complete or if generated name same as current.
+ * Checks whether user has customised template name : template !* customised if !complete || if generated name same as current.
  */
 BOOL desTemplateNameCustomised( DROID_TEMPLATE *psTemplate )
 {
@@ -4013,7 +4012,7 @@ BOOL desTemplateNameCustomised( DROID_TEMPLATE *psTemplate )
 	}
 }
 
-/* checks whether to update name or has user already changed it */
+/* checks whether to update name || has user already changed it */
 void desUpdateDesignName( DROID_TEMPLATE *psTemplate, STRING *szCurrName )
 {
 
@@ -4063,7 +4062,7 @@ void intProcessDesign(UDWORD id)
 //			strncpy(aCurrName, strresGetString(psStringRes, STR_DES_NEWVEH),
 //				WIDG_MAXSTR-1);
 
-			/* hide body and system component buttons */
+			/* hide body && system component buttons */
 			widgHide( psWScreen, IDDES_SYSTEMBUTTON );
 //			widgHide( psWScreen, IDDES_BODYBUTTON );
 			widgHide( psWScreen, IDDES_PROPBUTTON );
@@ -4088,7 +4087,7 @@ void intProcessDesign(UDWORD id)
 				currID ++;
 			}
 
-			ASSERT( (psTempl != NULL, "intProcessDesign: template not found!\n") );
+			ASSERT( (psTempl != NULL, "intProcessDesign: template !found!\n") );
 
 			if ( psTempl != NULL )
 			{
@@ -4096,7 +4095,7 @@ void intProcessDesign(UDWORD id)
 				memcpy(&sCurrDesign, psTempl, sizeof(DROID_TEMPLATE));
 				//strcpy( sCurrDesign.aName, aCurrName );
 				strncpy( aCurrName, getTemplateName(psTempl), WIDG_MAXSTR-1);
-				/* reveal body and propulsion component buttons */
+				/* reveal body && propulsion component buttons */
 				widgReveal( psWScreen, IDDES_BODYBUTTON );
 				widgReveal( psWScreen, IDDES_PROPBUTTON );
 				widgReveal( psWScreen, IDDES_SYSTEMBUTTON );
@@ -4115,14 +4114,14 @@ void intProcessDesign(UDWORD id)
 			intSetDesignMode(IDES_BODY);
 		}
 
-		/* reveal and flash body component button */
+		/* reveal && flash body component button */
 		widgReveal( psWScreen, IDDES_BODYBUTTON );
 
 
 #ifdef FLASH_BUTTONS
 		widgSetButtonState(psWScreen, IDDES_BODYBUTTON, WBUT_CLICKLOCK);
 #endif
-		/* reveal design form if not already on-screen */
+		/* reveal design form if !already on-screen */
 		widgReveal( psWScreen, IDDES_FORM );
 
 		/* Droid template button has been pressed - clear the old button */
@@ -4197,7 +4196,7 @@ void intProcessDesign(UDWORD id)
 				((WEAPON_STATS *)apsComponentList[id - IDDES_COMPSTART]) -
 				asWeaponStats;
 			sCurrDesign.numWeaps = 1;
-			/* Reset the sensor, ECM and constructor and repair
+			/* Reset the sensor, ECM && constructor && repair
 				- defaults will be set when OK is hit */
 			sCurrDesign.asParts[COMP_SENSOR] = 0;
 			sCurrDesign.asParts[COMP_ECM] = 0;
@@ -4279,7 +4278,7 @@ void intProcessDesign(UDWORD id)
 		/*Update the body points */
 		intSetBodyPoints(&sCurrDesign);
 
-		/* update name if not customised */
+		/* update name if !customised */
 		if ( bTemplateNameCustomised == FALSE )
 		{
 			strcpy( sCurrDesign.aName,
@@ -4289,7 +4288,7 @@ void intProcessDesign(UDWORD id)
 		/* Update the name in the edit box */
 		intSetEditBoxTextFromTemplate( &sCurrDesign );
 
-		/* flash next button if design not complete */
+		/* flash next button if design !complete */
 		if ( intValidTemplate( &sCurrDesign ) == FALSE )
 		{
 			/* reset button states */
@@ -4398,7 +4397,7 @@ void intProcessDesign(UDWORD id)
 			sCurrDesign.asParts[COMP_BRAIN] = 
 				((BRAIN_STATS *)apsExtraSysList[id - IDDES_EXTRASYSSTART]) -
 					asBrainStats;
-			/* Reset the sensor, ECM and constructor and repair
+			/* Reset the sensor, ECM && constructor && repair
 				- defaults will be set when OK is hit */
 			sCurrDesign.asParts[COMP_SENSOR] = 0;
 			sCurrDesign.asParts[COMP_ECM] = 0;
@@ -4421,7 +4420,7 @@ void intProcessDesign(UDWORD id)
 		// Update the body points
 		intSetBodyPoints(&sCurrDesign);
 
-		/* update name if not customised */
+		/* update name if !customised */
 		if ( bTemplateNameCustomised == FALSE )
 		{
 			strcpy( sCurrDesign.aName,
@@ -4538,7 +4537,7 @@ void intProcessDesign(UDWORD id)
                 deleteTemplateFromProduction(psTempl, (UBYTE)selectedPlayer);
 				HEAP_FREE(psTemplateHeap, psTempl);
 
-				/* get previous template and set as current */
+				/* get previous template && set as current */
 				psTempl = apsTemplateList[i-1];
 				
 				/* update local list */
@@ -4595,7 +4594,7 @@ void intProcessDesign(UDWORD id)
 				intSetDesignMode(IDES_TURRET);
 				break;
 			}
-			/* reveal components if not already onscreen */
+			/* reveal components if !already onscreen */
 			widgReveal( psWScreen, IDDES_STATSFORM );
 			widgReveal( psWScreen, IDDES_RIGHTBASE );
 			widgReveal( psWScreen, IDDES_SYSTEMFORM );
@@ -4615,7 +4614,7 @@ void intProcessDesign(UDWORD id)
 
 			break;
 		case IDDES_BODYBUTTON:
-			/* reveal components if not already onscreen */
+			/* reveal components if !already onscreen */
 			widgReveal( psWScreen, IDDES_RIGHTBASE );
 			intSetDesignMode(IDES_BODY);
 
@@ -4637,7 +4636,7 @@ void intProcessDesign(UDWORD id)
 
 			break;
 		case IDDES_PROPBUTTON:
-			/* reveal components if not already onscreen */
+			/* reveal components if !already onscreen */
 			widgReveal( psWScreen, IDDES_RIGHTBASE );
 			intSetDesignMode(IDES_PROPULSION);
 			widgReveal( psWScreen, IDDES_STATSFORM );
@@ -4660,7 +4659,7 @@ void intProcessDesign(UDWORD id)
 		}
 	}
 
-	/* show body button if component button pressed and
+	/* show body button if component button pressed &&
 	 * save template if valid
 	 */
 	if ( ( id >= IDDES_COMPSTART && id <= IDDES_COMPEND ) ||
@@ -5002,7 +5001,7 @@ void intDisplayComponentButton(struct _widget *psWidget, UDWORD xOffset, UDWORD 
 //	CurrentStatsIndex = OldCurIndex;
 }
 
-/* General display window for the design form  SOLID BACKGROUND - NOT TRANSPARENT*/
+/* General display window for the design form  SOLID BACKGROUND - !TRANSPARENT*/
 void intDisplayDesignForm(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
 {
 	W_TABFORM *Form = (W_TABFORM*)psWidget;
@@ -5034,7 +5033,7 @@ BOOL saveTemplate(void)
 	 */
 	if ( droidTemplID == IDDES_TEMPLSTART )
 	{
-		/* find empty template and point to that */
+		/* find empty template && point to that */
 		for( i=1; i<MAXTEMPLATES; i++ )
 		{
 			psTempl = apsTemplateList[i];
@@ -5098,7 +5097,7 @@ BOOL saveTemplate(void)
 				psPrevTempl->psNext = psTempl;
 			}
 
-			/* set button render routines to highlight, not flash */
+			/* set button render routines to highlight, !flash */
 			intSetButtonFlash( IDDES_SYSTEMBUTTON, FALSE );
 			intSetButtonFlash( IDDES_BODYBUTTON,   FALSE );
 			intSetButtonFlash( IDDES_PROPBUTTON,   FALSE );
@@ -5114,7 +5113,7 @@ BOOL saveTemplate(void)
 			psTempl = apsTemplateList[i];
 			newTemplate = FALSE;
             /*ANY change to the template affect the production - even if the 
-            template is changed and then changed back again!*/
+            template is changed && then changed back again!*/
             deleteTemplateFromProduction(psTempl, (UBYTE)selectedPlayer);
 		}
 
@@ -5170,7 +5169,7 @@ void runTemplateShadowStats(UDWORD id)
 	}
 
 	//if we're over a different template
-	if (psTempl AND psTempl != &sCurrDesign)
+	if (psTempl && psTempl != &sCurrDesign)
 	{
 		/* Now set the bar graphs for the stats */
 		intSetBodyShadowStats(asBodyStats + psTempl->asParts[COMP_BODY]);
@@ -5253,7 +5252,7 @@ void resetDesignPauseState(void)
 
 /*this is called when a new propulsion type is added to the current design
 to check the weapon is 'allowed'. Check if VTOL, the weapon is direct fire. 
-Also check numVTOLattackRuns for the weapon is not zero - return TRUE if valid weapon*/
+Also check numVTOLattackRuns for the weapon is !zero - return TRUE if valid weapon*/
 static BOOL intCheckValidWeaponForProp(void)
 {
     return checkValidWeaponForProp(&sCurrDesign);
@@ -5292,7 +5291,7 @@ BOOL checkTemplateIsVtol(DROID_TEMPLATE *psTemplate)
 }
 
 /*goes thru' the list passed in reversing the order so the first entry becomes 
-the last and the last entry becomes the first!*/
+the last && the last entry becomes the first!*/
 void reverseTemplateList(DROID_TEMPLATE **ppsList)
 {
     DROID_TEMPLATE     *psPrev, *psNext, *psCurrent, *psObjList;

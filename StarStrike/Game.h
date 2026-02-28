@@ -1,7 +1,7 @@
 /*
  * game.h	  
  *
- * load and save game routines.
+ * load && save game routines.
  * Very likely to ALL change! All the headers are separately defined at the 
  * moment - they probably don't need to be - if no difference make into one. 
  * Also the struct defintions throughout the game could be re-ordered to contain 

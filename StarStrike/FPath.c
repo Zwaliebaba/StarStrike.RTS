@@ -121,7 +121,7 @@ BOOL fpathGroundBlockingTile(SDWORD x, SDWORD y)
 //	FEATURE	*psFeat;
 
     //doesn't look like we need this - pickATile wasn't working with it! - AB 8/2/99
-	/* check VTOL limits if not routing */
+	/* check VTOL limits if !routing */
 	/*if ( g_psObjRoute == NULL )
 	{
 		if ( x < VTOL_MAP_EDGE_TILES || y < VTOL_MAP_EDGE_TILES ||
@@ -147,8 +147,8 @@ BOOL fpathGroundBlockingTile(SDWORD x, SDWORD y)
 	psTile = mapTile((UDWORD)x, (UDWORD)y);
 /*
 	// THIS CAN'T BE HERE - TESTING ONLY FIXME
-	if( (TILE_HAS_STRUCTURE(psTile)) AND
-		(getTileStructure(x,y)->pStructureType->type == REF_BLASTDOOR) AND	  // slow bit
+	if( (TILE_HAS_STRUCTURE(psTile)) &&
+		(getTileStructure(x,y)->pStructureType->type == REF_BLASTDOOR) &&	  // slow bit
 		(getTileStructure(x,y)->player==selectedPlayer) )
 	{
 		return(FALSE);
@@ -161,7 +161,7 @@ BOOL fpathGroundBlockingTile(SDWORD x, SDWORD y)
 	{
 		psFeat = getTileFeature(x,y);
 		if ((psFeat != NULL) &&
-			(psFeat->psStats->subType == FEAT_GEN_ARTE OR psFeat->psStats->subType == FEAT_OIL_DRUM))
+			(psFeat->psStats->subType == FEAT_GEN_ARTE || psFeat->psStats->subType == FEAT_OIL_DRUM))
 		{
 			return(FALSE);
 		}
@@ -1016,7 +1016,7 @@ SDWORD fpathGatewayRoute(BASE_OBJECT *psObj, SDWORD routeMode, SDWORD GWTerrain,
 				{
 					// no route found - try ditching this gateway
 					// and trying a new gateway route
-					DBP2(("   Route failed - ignore gateway/link and reroute\n"));
+					DBP2(("   Route failed - ignore gateway/link && reroute\n"));
 					if (fpathRouteCloser(psMoveCntl, &sAStarRoute, fx,fy))
 					{
 						psMoveCntl->numPoints = 0;

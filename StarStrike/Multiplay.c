@@ -3,7 +3,7 @@
  * 
  * Alex Lee, Sep97, Pumpkin Studios
  * 
- * Contains the day to day networking stuff, and received message handler.
+ * Contains the day to day networking stuff, && received message handler.
  */
 
 #include "Frame.h"

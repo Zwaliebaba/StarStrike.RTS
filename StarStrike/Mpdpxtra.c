@@ -14,9 +14,9 @@
 								progress details, etc.
 
 	Score Reporting			-	Allows games to report game statistics
-								and scores to be saved in a database which
+								&& scores to be saved in a database which
 								can then be queried to generate rankings,
-								ratings, and high score lists.
+								ratings, && high score lists.
 								
 	Written By Andy Riedel
 	Coptyright 1996-97. Mpath Interactive, Inc.
@@ -149,7 +149,7 @@ void		MPDPXTRA_CheckDisplayErrors()
 
 	Initializes the Mplayer DirectPlay Extras Library. This function must be called
 	before using any of the other functions available in the library. If called,
-	multiple time within a single process, the library will only be loaded once and
+	multiple time within a single process, the library will only be loaded once &&
 	a reference count will be incremented for each call after the first. Each call
 	to MPDPXTRA_Init must have a matching call to MPDPXTRA_Destroy which decrements
 	the reference count. The library will be unloaded when the refence count reaches
@@ -194,8 +194,8 @@ MPDPXTRAERR		MPDPXTRA_Init()
 
 	MPDPXTRA_Destroy
 
-	Decrements the reference count for the Mplayer DirectPlay Extras Library and
-	releases the library and all associate resources if it reaches zero.
+	Decrements the reference count for the Mplayer DirectPlay Extras Library &&
+	releases the library && all associate resources if it reaches zero.
 
 	Inputs:
 
@@ -288,14 +288,14 @@ MPDPXTRAERR		MPDPXTRA_DPIDToMPPLAYERID(DPID dpid,MPPLAYERID *mpPlayerID)
 	MPDPXTRA_PostLobbyData
  
 	Send an opaque chunk of data to clients in the lobby.  Their Game Extension DLLs
-	will then interpret the object and display relevant information about the running
+	will then interpret the object && display relevant information about the running
 	game instance.
 
 	The general purpose of this API is to allow a running game instance to report
-	significant events to the lobby, for the general edification and entertainment
+	significant events to the lobby, for the general edification && entertainment
 	of people outside the game.
 
-	The actual objects sent should be small, and infrequent.
+	The actual objects sent should be small, && infrequent.
 
 	Valid LobbyData objects ID's are:
 
@@ -314,7 +314,7 @@ MPDPXTRAERR		MPDPXTRA_DPIDToMPPLAYERID(DPID dpid,MPPLAYERID *mpPlayerID)
 						MP_LOBBYDATA_COMMENT		- A pointer to the string to replace the 
 													  lobby's room comment with.
 						MP_LOBBYDATA_SHORT_STATUS	- Opaque data for the game's extension DLL
-													  representing small and simple updates such as
+													  representing small && simple updates such as
 													  simple scores.
 						MP_LOBBYDATA_LONG_STATUS	- Opaque data for the game's extension DLL
 													  representing larger updates such as a game's 
@@ -511,14 +511,14 @@ MPDPXTRAERR		MPDPXTRA_SaveScoreResults(void)
 	Posts an opaque data block up to 256K bytes in size to the game server
 	so that it can be shared with others attached to the same game session.
 	The data can be retrieved from the server either synchronously via the blocking
-	function MPDPXTRA_FetchSharedGameData or asynchronously using the non-blocking
+	function MPDPXTRA_FetchSharedGameData || asynchronously using the non-blocking
 	function MPDPXTRA_SubscribeSharedGameData.
 
 	Note that this post function is non-blocking.
 
 	Inputs:
 
-		key -			Key value for the opaque data block between 0 and 0x7FFFFFFF.
+		key -			Key value for the opaque data block between 0 && 0x7FFFFFFF.
 						This key is game specific so developers are free to choose any
 						key they wish.
 		pData -			A pointer to opaque data block to be saved on the game server.
@@ -567,9 +567,9 @@ MPDPXTRAERR		MPDPXTRA_PostServerGameData(UINT key,void *pData,UINT dataLen)
 
 	Fetches an opaque data block up to 256K bytes in size from the game server
 	in a synchronous, blocking manner (i.e. the function won't return until
-	the complete block has been received or an error has occurred).
+	the complete block has been received || an error has occurred).
 
-	This function should really only be used for VERY small blocks (< 4K or so)
+	This function should really only be used for VERY small blocks (< 4K || so)
 	of data where the user won't be aware that data transfer is occurring. The
 	reason for this is that the game's user interface might block waiting for this
 	call. For large blocks, it is recommended that developers use the
@@ -579,11 +579,11 @@ MPDPXTRAERR		MPDPXTRA_PostServerGameData(UINT key,void *pData,UINT dataLen)
 	for the dataLen. The function will return an error of
 	MPDPXTRAERR_SERVER_GAME_DATA_SIZE_TOO_SMALL but the dataLen will be set to the
 	correct size. A buffer can then be allocated, pData can be sent to point to it
-	and this function can be called again.
+	&& this function can be called again.
 
 	Inputs:
 
-		key -			Key value for the opaque data block between 0 and 0x7FFFFFFF.
+		key -			Key value for the opaque data block between 0 && 0x7FFFFFFF.
 						This key is game specific so developers are free to choose any
 						key they wish.
 		pData -			A pointer to a buffer to be filled with the opaque server game
@@ -637,7 +637,7 @@ MPDPXTRAERR		MPDPXTRA_FetchServerGameData(UINT key,void *pData,UINT *pDataLen)
 
 	The first time this function is called, the server will be checked for the
 	specified key. If there is an opqaue data block associated with the specified
-	key stored on the server, an asynchronous transfer will begin and the callback
+	key stored on the server, an asynchronous transfer will begin && the callback
 	function will be called when the complete block as been received. Subsequent
 	updates to the opaque data block on the server via the MPDPXTRA_PostServerGameData
 	function will cause the subscribed block to be asynchronously transmitted to
@@ -645,21 +645,21 @@ MPDPXTRAERR		MPDPXTRA_FetchServerGameData(UINT key,void *pData,UINT *pDataLen)
 	complete block has been received by the subscriber.
 
 	It is possible to subscribe to a data block with the same key but with different
-	callback functions and different contexts. Each unique pair of callback function
-	pointer and context will be treated a a separate "subscriber."
+	callback functions && different contexts. Each unique pair of callback function
+	pointer && context will be treated a a separate "subscriber."
 
 	***** WARNING *****
 
 	Note that these callback functions are called on the Mplayer network's transmission
-	thread. For this reason, it is not safe to do very much becuase any activity that
+	thread. For this reason, it is !safe to do very much becuase any activity that
 	occurs inside the callback will be blocking network transmission. It is suggested
 	that a minimal amount of activity take place such as copying the returned buffer,
-	posting a message or event, and immediately returning.
+	posting a message || event, && immediately returning.
 
 
 	Inputs:
 
-		key -			Key value for the opaque data block between 0 and 0x7FFFFFFF.
+		key -			Key value for the opaque data block between 0 && 0x7FFFFFFF.
 						This key is game specific so developers are free to choose any
 						key they wish.
 		cbf -			A pointer to a callback function of type SERVER_GAME_DATA_CBF.
@@ -706,11 +706,11 @@ MPDPXTRAERR		MPDPXTRA_SubscribeServerGameData(UINT key,SERVER_GAME_DATA_CBF *cbf
 	MPDPXTRA_UnsubscribeServerGameData
 
 	Unsubscribes from updates of server game data blocks associated with the specified
-	key, callback function, and context.
+	key, callback function, && context.
 
 	Inputs:
 
-		key -			Key value for the opaque data block between 0 and 0x7FFFFFFF.
+		key -			Key value for the opaque data block between 0 && 0x7FFFFFFF.
 						This key is game specific so developers are free to choose any
 						key they wish.
 		cbf -			A pointer to a callback function of type SERVER_GAME_DATA_CBF.

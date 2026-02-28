@@ -47,18 +47,18 @@
 /* The drag start threshold distance (in squared world coordinates) */
 #define DRAG_THRESHOLD ((4*5)*(4*5))
 
-/* The size and number of tiles for the explosion bitmap */
+/* The size && number of tiles for the explosion bitmap */
 #define EXP_SIZE 112
 #define EXP_TILES 15
 
 /* The size of the muzzle flash tiles */
 #define FLASH_SIZE 64
 
-/* The size and number of the flame tiles */
+/* The size && number of the flame tiles */
 #define FLAME_SIZE 32
 #define FLAME_TILES 16
 
-/* The size and number of bullet tiles */
+/* The size && number of bullet tiles */
 #define BULLET_SIZE 8
 #define BULLET_TILES 8
 
@@ -525,7 +525,7 @@ BOOL process2DInput(void)
 
 	quitting = FALSE;
 
-	if(!keyDown(KEY_LCTRL) AND !keyDown(KEY_RCTRL))
+	if(!keyDown(KEY_LCTRL) && !keyDown(KEY_RCTRL))
 	{
 		/* Move the map around with the cursor keys */
 		if (keyDown(KEY_LEFTARROW) && (mapX > 0))
@@ -581,7 +581,7 @@ removed cos types are different - am
 	{
 	case MSM_NORMAL:
 		/* See if we are doing a structure position */
-		if (structPosMode == SPM_POS OR structPosMode == SPM_VALID)
+		if (structPosMode == SPM_POS || structPosMode == SPM_VALID)
 		{
 			/* Update the position of structure cursor */
 			if ((sStructPos.width % 2) == 0)
@@ -619,7 +619,7 @@ removed cos types are different - am
 				}
 			}
 		}
-		/* Check for a mouse click to select or move a droid or to select a Structure*/
+		/* Check for a mouse click to select || move a droid || to select a Structure*/
 		else if (mousePressed(MOUSE_LMB))
 		{
 			/* Note the position of a possible drag */
@@ -627,7 +627,7 @@ removed cos types are different - am
 			dragSY=dragCY = worldY;
 			mouseSelMode = MSM_DRAGSTART;
 
-			/* Check for a click and release in one frame */
+			/* Check for a click && release in one frame */
 			if (mouseReleased(MOUSE_LMB))
 			{
 				noDrag = TRUE;
@@ -648,7 +648,7 @@ removed cos types are different - am
 		dragCY = worldY;
 		if (mouseReleased(MOUSE_LMB) || noDrag)
 		{
-			/* Not dragging - go back to normal mouse mode */
+			/* !dragging - go back to normal mouse mode */
 			mouseSelMode = MSM_NORMAL;
 			noDrag = FALSE;
 
@@ -824,7 +824,7 @@ removed cos types are different - am
 		objSelMode = OSEL_NONE;
 	}
 
-	/* Check for toggling between 2D and 3D */
+	/* Check for toggling between 2D && 3D */
 	if (keyPressed(KEY_TAB))
 	{
 		display3D = TRUE;
@@ -867,7 +867,7 @@ void blitTile(RECT *psDestRect, RECT *psSrcRect, UDWORD texture)
 	psP3 = &sP3;
 	psP4 = &sP4;
 
-	/* Now flip and rotate the source rectangle using the point pointers */
+	/* Now flip && rotate the source rectangle using the point pointers */
 	if (texture & TILE_XFLIP)
 	{
 		psPTemp = psP1;
@@ -943,7 +943,7 @@ void blitTile(RECT *psDestRect, RECT *psSrcRect, UDWORD texture)
 	switch (sDDSDDest.ddpfPixelFormat.dwRGBBitCount)
 	{
 	case 8:
-		/* See if P1 -> P2 is horizontal or vertical */
+		/* See if P1 -> P2 is horizontal || vertical */
 		if (psP1->y == psP2->y)
 		{
 			/* P1 -> P2 is horizontal */
@@ -964,7 +964,7 @@ void blitTile(RECT *psDestRect, RECT *psSrcRect, UDWORD texture)
 			{
 				srcInc = - sDDSDSrc.lPitch - (psP2->x - psP1->x);
 			}
-			/* Have to adjust start point if xDir or yDir are negative */
+			/* Have to adjust start point if xDir || yDir are negative */
 			if (xDir < 0)
 			{
 				p8Src--;
@@ -1016,7 +1016,7 @@ void blitTile(RECT *psDestRect, RECT *psSrcRect, UDWORD texture)
 		}
 		break;
 	case 16:
-		/* See if P1 -> P2 is horizontal or vertical */
+		/* See if P1 -> P2 is horizontal || vertical */
 		if (psP1->y == psP2->y)
 		{
 			/* P1 -> P2 is horizontal */
@@ -1037,7 +1037,7 @@ void blitTile(RECT *psDestRect, RECT *psSrcRect, UDWORD texture)
 			{
 				srcInc = - sDDSDSrc.lPitch - ((psP2->x - psP1->x) << 1);
 			}
-			/* Have to adjust start point if xDir or yDir are negative */
+			/* Have to adjust start point if xDir || yDir are negative */
 			if (xDir < 0)
 			{
 				p16Src--;
@@ -1189,7 +1189,7 @@ static void display2DMap(void)
 	sDDBltFx.dwSize = sizeof(DDBLTFX);
 
 	/* The coordinates give the centre point of the view - shift it to
-	   the top left and clip to the map size */
+	   the top left && clip to the map size */
 	if (x < (UDWORD)(TILES_ACROSS/2))
 	{
 		x = 0;
@@ -1218,7 +1218,7 @@ static void display2DMap(void)
 	viewX = x;
 	viewY = y;
 
-	/* Now zip through the tiles that are visible and blit them to the screen */
+	/* Now zip through the tiles that are visible && blit them to the screen */
 	screenSetTextColour(0xff,0xff,0xff);
 	sDestRect.top = 0;
 	sDestRect.left = 0;
@@ -1233,7 +1233,7 @@ static void display2DMap(void)
 			psTile = mapTile(x,y);
 //			if (psTile->tileVisible[selectedPlayer] OR godMode)
 //			if  ( (psTile->tileVisBits & (1<<selectedPlayer) OR godMode))
-			if ( TEST_TILE_VISIBLE(selectedPlayer,psTile) OR godMode)
+			if ( TEST_TILE_VISIBLE(selectedPlayer,psTile) || godMode)
 			{
 				sSrcRect.left = ((psTile->texture & TILE_NUMMASK)
 									% tilesPerLine) << SCR_TILE_SHIFT;
@@ -1267,7 +1267,7 @@ static void display2DMap(void)
 	}
 
 	/* Display the structure positioning box */
-	if (structPosMode == SPM_VALID OR structPosMode == SPM_POS)
+	if (structPosMode == SPM_VALID || structPosMode == SPM_POS)
 	{
 		disp2DFromWorld(sStructPos.x << TILE_SHIFT, sStructPos.y << TILE_SHIFT, &sx0,&sy0);
 		sx1 = sx0 + (sStructPos.width * TILE_SIZE2D);
@@ -1289,7 +1289,7 @@ static void display2DMap(void)
 	{
 		for(psDroid = apsDroidLists[i]; psDroid != NULL; psDroid = psDroid->psNext)
 		{
-			if ((psDroid->visible[selectedPlayer] OR godMode) &&
+			if ((psDroid->visible[selectedPlayer] || godMode) &&
 				(((psDroid->x - TILE_SIZE2D/2) >> TILE_SHIFT) >= (viewX)) &&
 				(((psDroid->x + TILE_SIZE2D/2) >> TILE_SHIFT) < (viewX + TILES_ACROSS)) &&
 				(((psDroid->y - TILE_SIZE2D/2) >> TILE_SHIFT) >= (viewY)) &&
@@ -1414,7 +1414,7 @@ static void display2DMap(void)
 		{
 	   		width = psStructure->pStructureType->baseWidth;
 	   		breadth = psStructure->pStructureType->baseBreadth;
-			if ((psStructure->visible[selectedPlayer] OR godMode) &&
+			if ((psStructure->visible[selectedPlayer] || godMode) &&
 				(((psStructure->x - width * TILE_SIZE2D/2) >> TILE_SHIFT)
 								>= (viewX)) &&
 				(((psStructure->x + width *  TILE_SIZE2D/2) >> TILE_SHIFT)
@@ -1472,7 +1472,7 @@ static void display2DMap(void)
 	{
 	   	width = psFeature->psStats->baseWidth;
 	   	breadth = psFeature->psStats->baseBreadth;
-		if ((psFeature->visible[selectedPlayer] OR godMode) &&
+		if ((psFeature->visible[selectedPlayer] || godMode) &&
 			(((psFeature->x - width * TILE_SIZE2D/2) >> TILE_SHIFT)
 							>= (viewX)) &&
 			(((psFeature->x + width *  TILE_SIZE2D/2) >> TILE_SHIFT)
@@ -1569,7 +1569,7 @@ static void display2DBullets(void)
 	/* All bullets are red lines for now */
 	screenSetLineColour(0xff,0,0);
 
-	/* Zip through the list and display em */
+	/* Zip through the list && display em */
 	for(psCurr = psActiveBullets; psCurr != NULL; psCurr = psCurr->psNext)
 	{
 		psStats = psCurr->psWStats;
@@ -1638,7 +1638,7 @@ static void display2DBullets(void)
 						xDiff = i - tileX;
 						yDiff = j - tileY;
 //						if ((mapTile(i,j)->tileVisible[selectedPlayer] || godMode) &&
-						if ( ((mapTile(i,j)->tileVisBits & 1<<selectedPlayer) OR godMode) AND
+						if ( ((mapTile(i,j)->tileVisBits & 1<<selectedPlayer) || godMode) &&
 						    ((xDiff*xDiff + yDiff*yDiff) < radSquared))
 						{
 							/* We've got us a burning tile - burn baby burn !! */

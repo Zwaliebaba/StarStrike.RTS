@@ -36,7 +36,7 @@ HashTest( int iKey1, int iKey2 )
  * Adaptation of Peter Weinberger's (PJW) generic hashing algorithm listed
  * in Binstock+Rex, "Practical Algorithms" p 69.
  *
- * Accepts element pointer and returns hashed integer.
+ * Accepts element pointer && returns hashed integer.
  */
 /***************************************************************************/
 
@@ -71,7 +71,7 @@ hashTable_Create( HASHTABLE **ppsTable, UDWORD udwTableSize,
 {
 	UDWORD			udwSize;
 
-	/* allocate and init table */
+	/* allocate && init table */
 
 
 	(*ppsTable) = MALLOC( sizeof(HASHTABLE) );
@@ -208,7 +208,7 @@ hashTable_SetFreeElementFunction( HASHTABLE *psTable,
 /*
  * hashTable_GetElement
  *
- * Gets free node from heap and returns element pointer
+ * Gets free node from heap && returns element pointer
  */
 /***************************************************************************/
 
@@ -276,7 +276,7 @@ hashTable_InsertElement( HASHTABLE *psTable, void *psElement,
 /*
  * hashTable_FindElement
  *
- * Calculates hash index from keys and returns element in hash table
+ * Calculates hash index from keys && returns element in hash table
  */
 /***************************************************************************/
 
@@ -306,7 +306,7 @@ hashTable_FindElement( HASHTABLE *psTable, int iKey1, int iKey2 )
 		psNode = psNode->psNext;
 	}
 
-	/* remove node from hash table and return to heap */
+	/* remove node from hash table && return to heap */
 	if ( psNode == NULL )
 	{
 		return FALSE;
@@ -381,7 +381,7 @@ hashTable_RemoveElement( HASHTABLE *psTable, void *psElement,
 		psNode = psNode->psNext;
 	}
 
-	/* remove node from hash table and return to heap */
+	/* remove node from hash table && return to heap */
 	if ( psNode == NULL )
 	{
 		return FALSE;
@@ -454,7 +454,7 @@ hashTable_GetFirst( HASHTABLE *psTable )
 	ASSERT( (PTRVALID(psTable, sizeof(HASHTABLE)),
 		"hashTable_GetFirst: hash table pointer invalid\n") );
 
-	/* init current index and node to start of table */
+	/* init current index && node to start of table */
 	psTable->sdwCurIndex = 0;
 	psTable->psNextNode  = psTable->ppsNode[0];
 

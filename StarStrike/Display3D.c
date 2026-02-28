@@ -1,5 +1,5 @@
 /* 
-	Display3D.c - draws the 3D terrain view. Both the 3D and pseudo-3D components:-
+	Display3D.c - draws the 3D terrain view. Both the 3D && pseudo-3D components:-
 	textured tiles.
 
 	  -------------------------------------------------------------------
@@ -229,7 +229,7 @@ BOOL	spinScene = FALSE;
 UDWORD	mapX=45,mapY=80;
 /* Have we made a selection by clicking the mouse - used for dragging etc */
 BOOL	selectAttempt = FALSE;
-/* Vectors that hold the player and camera directions and positions */
+/* Vectors that hold the player && camera directions && positions */
 iView	player, camera;
 /* Temporary rotation vectors to store rotations for droids etc */
 iVector	imdRot,imdRot2;
@@ -248,12 +248,12 @@ TILE_BUCKET		tileIJ[LAND_YGRD][LAND_XGRD];
 SDWORD		fileSize;
 /* Stores the texture for a specific tile */
 static	iTexture texturePage = {6, 64, 64, NULL};
-/* Points for flipping the texture around if the tile is flipped or rotated */
+/* Points for flipping the texture around if the tile is flipped || rotated */
 POINT 	sP1,sP2,sP3,sP4;
 POINT	*psP1,*psP2,*psP3,*psP4,*psPTemp;
 /* Pointer to which tile the mouse is currently over */
 MAPTILE	*tile3dOver = NULL;
-/* Records the present X and Y values for the current mouse tile (in tiles */
+/* Records the present X && Y values for the current mouse tile (in tiles */
 SDWORD	mouseTileX,mouseTileY;
 /* World coordinates that the mouse is over */
 UDWORD	tile3dX,tile3dY;
@@ -271,7 +271,7 @@ int32 playerXTile, playerZTile, rx, rz;
 BOOL	gouraudShading = TRUE;
 /* Have we located the mouse? */
 BOOL	mouseLocated = TRUE;
-/* Mouse x and y - saves reading them every time we want to use them */
+/* Mouse x && y - saves reading them every time we want to use them */
 SDWORD	mX,mY;
 /* Index so we know how to find the tile BEHIND the one currently being processed for any view angle */
 UDWORD	stepIndex;
@@ -456,7 +456,7 @@ BOOL		bPlayerHasHQ = FALSE;
 //#ifdef WIN32
 //	if(radarOnScreen AND (bPlayerHasHQ || (bMultiPlayer && (game.type == DMATCH)) ))
 //#else
-	if(radarOnScreen AND bPlayerHasHQ)
+	if(radarOnScreen && bPlayerHasHQ)
 //#endif
 	{
 		pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_ON);
@@ -547,7 +547,7 @@ BOOL		bPlayerHasHQ = FALSE;
  //----------------------------------------------------------
 //----------------------------------------------------------
 //----------------------------------------------------------
- 	if(getDebugMappingStatus() AND !demoGetStatus() AND !gamePaused())
+ 	if(getDebugMappingStatus() && !demoGetStatus() && !gamePaused())
  	{
  		iV_DrawText("DEBUG ",RET_X+134,440+E_H);
   	}
@@ -772,7 +772,7 @@ void drawTiles(iView *camera, iView *player)
 		player->r.y+=DEG(3);
 
 	/* ---------------------------------------------------------------- */
-	/* Do boundary and extent checking                                  */
+	/* Do boundary && extent checking                                  */
 	/* ---------------------------------------------------------------- */
 	/* Get the mid point of the grid */
 	terrainMidX = (visibleXTiles>>1);
@@ -810,7 +810,7 @@ void drawTiles(iView *camera, iView *player)
 	pie_TRANSLATE(-rx,-player->p.y,rz);
 	
 	/* ---------------------------------------------------------------- */
-	/* Rotate and project all the tiles within the grid                 */
+	/* Rotate && project all the tiles within the grid                 */
 	/* ---------------------------------------------------------------- */
 	/*	We track the height here - so make sure we get the average heights
 		of the tiles in the grid
@@ -826,9 +826,9 @@ void drawTiles(iView *camera, iView *player)
 			{
 				tileScreenInfo[i][j].bWater = FALSE;
 			}
-			if( (playerXTile+j < 0) OR 
-				(playerZTile+i < 0)	OR
-				(playerXTile+j > (SDWORD)(mapWidth-1)) OR
+			if( (playerXTile+j < 0) || 
+				(playerZTile+i < 0)	||
+				(playerXTile+j > (SDWORD)(mapWidth-1)) ||
 				(playerZTile+i > (SDWORD)(mapHeight-1)) )
 			{
 				edgeX = playerXTile+j;
@@ -864,9 +864,9 @@ void drawTiles(iView *camera, iView *player)
 			  	}
 
 					
-				if( (playerXTile+j <-1 ) OR 
-				(playerZTile+i <-1)	OR
-				(playerXTile+j > (SDWORD)(mapWidth-1)) OR
+				if( (playerXTile+j <-1 ) || 
+				(playerZTile+i <-1)	||
+				(playerXTile+j > (SDWORD)(mapWidth-1)) ||
 				(playerZTile+i > (SDWORD)(mapHeight-1)) )
 				{
 					tileScreenInfo[i][j].drawInfo = FALSE;
@@ -895,8 +895,8 @@ void drawTiles(iView *camera, iView *player)
 				tileXYZ.y = map_TileHeight(playerXTile+j, playerZTile+i);
 				tileXYZ.z = ((terrainMidY-i)<<TILE_SHIFT);
 
-				/* Is it in the centre and therefore worth averaging height over? */
-				if(i > MIN_TILE_Y AND i < MAX_TILE_Y AND j > MIN_TILE_X AND j < MAX_TILE_X)
+				/* Is it in the centre && therefore worth averaging height over? */
+				if(i > MIN_TILE_Y && i < MAX_TILE_Y && j > MIN_TILE_X && j < MAX_TILE_X)
 				{
 					averageCentreTerrainHeight += tileXYZ.y;
 					numTilesAveraged++;
@@ -904,7 +904,7 @@ void drawTiles(iView *camera, iView *player)
 				realX = playerXTile+j;
 				realY = playerZTile+i;
 				bEdgeTile = FALSE;
-				if(realX<=1 OR realY<=1 OR realX >= mapWidth-2 OR realY >= mapHeight-2)
+				if(realX<=1 || realY<=1 || realX >= mapWidth-2 || realY >= mapHeight-2)
 				{
 					bEdgeTile = TRUE;
 				}
@@ -938,7 +938,7 @@ void drawTiles(iView *camera, iView *player)
 					IsWaterTile = (TERRAIN_TYPE(psTile) == TER_WATER);
 					// If it's the main water tile then..
 					PushedDown = FALSE;
-					if( TextNum == WaterTileID AND !bEdgeTile) 
+					if( TextNum == WaterTileID && !bEdgeTile) 
 					{
 						// Push the terrain down for the river bed.
 						PushedDown = TRUE;
@@ -1012,7 +1012,7 @@ void drawTiles(iView *camera, iView *player)
 
 //	doBuildingLights();
 	/* ---------------------------------------------------------------- */
-	/* Draw all the tiles or add them to bucket sort                     */
+	/* Draw all the tiles || add them to bucket sort                     */
 	/* ---------------------------------------------------------------- */
 	tilesRejected = 0;
 	for (i= 0; i < (SDWORD)visibleYTiles; i++) 
@@ -1035,7 +1035,7 @@ void drawTiles(iView *camera, iView *player)
 				zMax = pie_MAX(zMax, tileScreenInfo[i + 1][j + 1].sz);
 				zMax = pie_MAX(zMax, tileScreenInfo[i][j + 1].sz);
 				tileIJ[i][j].depth = zMax;
-				if((UDWORD)i>mapHeight OR (UDWORD)j>mapWidth)
+				if((UDWORD)i>mapHeight || (UDWORD)j>mapWidth)
 				{
 					ASSERT((FALSE,"Weirdy tile coords"));
 				}
@@ -1127,7 +1127,7 @@ BOOL	init3DView(void)
 	theSun.y = -3441;
 	theSun.z = 2619;
 
-	/* Make sure and change these to comply with map.c */
+	/* Make sure && change these to comply with map.c */
 	imdRot.x = -35;
 	/* Maximum map size */
 	terrainMaxX = 128;
@@ -1202,7 +1202,7 @@ void disp3d_getView(iView *newView)
 }
 
 /* John's routine - deals with flipping around the vertex ordering for source textures
-   when flips and rotations are being done */
+   when flips && rotations are being done */
 void	flipsAndRots(int texture)
 {
 
@@ -1275,19 +1275,19 @@ void	flipsAndRots(int texture)
 /* Establishes whether it's worth trying to render a droid - is it actually on the grid? */
 BOOL clipDroid(DROID *psDroid)
 {
-	if (psDroid->x>=(UDWORD)player.p.x AND psDroid->x<(UDWORD)player.p.x+(visibleXTiles*TILE_UNITS) AND
-		psDroid->y>=(UDWORD)player.p.z AND psDroid->y<(UDWORD)player.p.z+(visibleYTiles*TILE_UNITS))
+	if (psDroid->x>=(UDWORD)player.p.x && psDroid->x<(UDWORD)player.p.x+(visibleXTiles*TILE_UNITS) &&
+		psDroid->y>=(UDWORD)player.p.z && psDroid->y<(UDWORD)player.p.z+(visibleYTiles*TILE_UNITS))
 		return(TRUE);
 	else
 		return(FALSE);
 }
 
-/* Clips anything - not necessarily a droid */
+/* Clips anything - !necessarily a droid */
 BOOL clipXY(SDWORD x, SDWORD y)
 {
-	if (x > (SDWORD)player.p.x AND  x < (SDWORD)(player.p.x+(visibleXTiles*
-		TILE_UNITS)) AND
-		y > (SDWORD)player.p.z AND y < (SDWORD)(player.p.z+(visibleYTiles*TILE_UNITS)))
+	if (x > (SDWORD)player.p.x &&  x < (SDWORD)(player.p.x+(visibleXTiles*
+		TILE_UNITS)) &&
+		y > (SDWORD)player.p.z && y < (SDWORD)(player.p.z+(visibleYTiles*TILE_UNITS)))
 		return(TRUE);
 	else
 		return(FALSE);
@@ -1310,7 +1310,7 @@ void	calcFlagPosScreenCoords(SDWORD *pX, SDWORD *pY, SDWORD *pR)
 	/* How big a box do we want - will ultimately be calculated using xmax, ymax, zmax etc */
 	radius = 22;
 
-	/* Pop matrices and get the screen coordinates for last point*/
+	/* Pop matrices && get the screen coordinates for last point*/
 	pie_ROTATE_PROJECT(centX,centY,centZ,cX,cY);
 
 	/*store the coords*/
@@ -1320,7 +1320,7 @@ void	calcFlagPosScreenCoords(SDWORD *pX, SDWORD *pY, SDWORD *pR)
 }
 
 
-/* Renders the bullets and their effects in 3D */
+/* Renders the bullets && their effects in 3D */
 void display3DProjectiles( void )
 {
 	PROJ_OBJECT		*psObj;
@@ -1351,12 +1351,12 @@ void display3DProjectiles( void )
 					renderProjectile(psObj);
 	#else
 					/* these guys get drawn last */
-					if(psObj->psWStats->weaponSubClass == WSC_ROCKET OR 
-						psObj->psWStats->weaponSubClass == WSC_MISSILE OR
-						psObj->psWStats->weaponSubClass == WSC_COMMAND OR
-						psObj->psWStats->weaponSubClass == WSC_SLOWMISSILE OR
-						psObj->psWStats->weaponSubClass == WSC_SLOWROCKET OR
-						psObj->psWStats->weaponSubClass == WSC_ENERGY OR
+					if(psObj->psWStats->weaponSubClass == WSC_ROCKET || 
+						psObj->psWStats->weaponSubClass == WSC_MISSILE ||
+						psObj->psWStats->weaponSubClass == WSC_COMMAND ||
+						psObj->psWStats->weaponSubClass == WSC_SLOWMISSILE ||
+						psObj->psWStats->weaponSubClass == WSC_SLOWROCKET ||
+						psObj->psWStats->weaponSubClass == WSC_ENERGY ||
                         psObj->psWStats->weaponSubClass == WSC_EMP)
 					{
 						bucketAddTypeToList(RENDER_PROJECTILE_TRANSPARENT, psObj);
@@ -1393,12 +1393,12 @@ void	renderProjectile(PROJ_OBJECT *psCurr)
 //	SDWORD		centreX, centreZ;
 	
 	psStats = psCurr->psWStats;
-	/* Reject flame or command since they have interim drawn fx */
-	if(psStats->weaponSubClass == WSC_FLAME OR 
-        psStats->weaponSubClass == WSC_COMMAND OR // OR psStats->weaponSubClass == WSC_ENERGY)
-		psStats->weaponSubClass == WSC_ELECTRONIC OR
-        psStats->weaponSubClass == WSC_EMP OR
-        (bMultiPlayer AND psStats->weaponSubClass == WSC_LAS_SAT))
+	/* Reject flame || command since they have interim drawn fx */
+	if(psStats->weaponSubClass == WSC_FLAME || 
+        psStats->weaponSubClass == WSC_COMMAND || // OR psStats->weaponSubClass == WSC_ENERGY)
+		psStats->weaponSubClass == WSC_ELECTRONIC ||
+        psStats->weaponSubClass == WSC_EMP ||
+        (bMultiPlayer && psStats->weaponSubClass == WSC_LAS_SAT))
 //		OR psStats->weaponSubClass == WSC_ROCKET)
 	{
 		/* We don't do projectiles from these guys, cos there's an effect instead */
@@ -1446,8 +1446,8 @@ void	renderProjectile(PROJ_OBJECT *psCurr)
 //		centreZ = ( player.p.z + ((visibleYTiles/2)<<TILE_SHIFT) );
 
 		brightness = (UDWORD)lightDoFogAndIllumination(pie_MAX_BRIGHT_LEVEL,getCentreX()-psCurr->x,getCentreZ()-psCurr->y, &specular);
-	  	if(psStats->weaponSubClass == WSC_ROCKET OR psStats->weaponSubClass == WSC_MISSILE OR
-	  	psStats->weaponSubClass == WSC_SLOWROCKET OR psStats->weaponSubClass == WSC_SLOWMISSILE)
+	  	if(psStats->weaponSubClass == WSC_ROCKET || psStats->weaponSubClass == WSC_MISSILE ||
+	  	psStats->weaponSubClass == WSC_SLOWROCKET || psStats->weaponSubClass == WSC_SLOWMISSILE)
 		{
 	   	  	pie_Draw3DShape(pIMD, 0, 0, brightness, 0, pie_ADDITIVE, 164);
 
@@ -1478,7 +1478,7 @@ renderAnimComponent( COMPONENT_OBJECT *psObj )
 		"renderAnimComponent: invalid parent object pointer") );
 
 	/* only draw visible bits */
-	if( (psParentObj->type == OBJ_DROID) AND !godMode AND !demoGetStatus())
+	if( (psParentObj->type == OBJ_DROID) && !godMode && !demoGetStatus())
 	{
 		if( ((DROID*)psParentObj)->visible[selectedPlayer] != UBYTE_MAX)
 		{
@@ -1521,7 +1521,7 @@ renderAnimComponent( COMPONENT_OBJECT *psObj )
    		imdRot2.x = DEG(psParentObj->pitch);
 	   	iV_MatrixRotateX(imdRot2.x);
 
-		/* object (animation) translations - ivis z and y flipped */
+		/* object (animation) translations - ivis z && y flipped */
 		iV_TRANSLATE( psObj->position.x, psObj->position.z, psObj->position.y );
 
 		/* object (animation) rotations */
@@ -1586,8 +1586,8 @@ renderAnimComponent( COMPONENT_OBJECT *psObj )
 	}
 }
 
-/*	Renders ONE terrain tile and any droids, structures, features that are on it. Sorts the objects though, so's there
-	only drawn once and drawn at the appropriate time so tles aren't drawn over them */
+/*	Renders ONE terrain tile && any droids, structures, features that are on it. Sorts the objects though, so's there
+	only drawn once && drawn at the appropriate time so tles aren't drawn over them */
 void	drawTexturedTile(UDWORD	i, UDWORD j)
 {
 UDWORD	tileNumber;
@@ -1608,9 +1608,9 @@ BOOL	bEdgeTile;
 	realY = playerZTile+i;
 
 	/* Get a pointer to the tile we're going to render */
-	if( (realX<0) OR
-		(realY<0) OR
-		(realX>mapWidth-2) OR
+	if( (realX<0) ||
+		(realY<0) ||
+		(realX>mapWidth-2) ||
 		(realY>mapHeight-2) )
 	{
 		psTile = &edgeTile;
@@ -1624,7 +1624,7 @@ BOOL	bEdgeTile;
 
 	if(!TILE_DRAW(psTile))
 	{
-		/* Bomb out if we're not supposed to draw this tile! */
+		/* Bomb out if we're !supposed to draw this tile! */
 		return;
 	}
 
@@ -1681,7 +1681,7 @@ BOOL	bEdgeTile;
 		
 			
 
-			/* Check for flipped and rotated tiles */
+			/* Check for flipped && rotated tiles */
    			flipsAndRots(tileNumber & ~TILE_NUMMASK);
 
 			if(TRI_FLIPPED(psTile))
@@ -1768,7 +1768,7 @@ BOOL	bEdgeTile;
 			// end tile-draw
 
 			// -------------------------------------------------------------------------
-				if (terrainOutline OR tileOutlined)
+				if (terrainOutline || tileOutlined)
 				{
 					/*iV_Line(tileScreenInfo[i+0][j+0].sx,tileScreenInfo[i+0][j+0].sy,
     					tileScreenInfo[i+0][j+1].sx,tileScreenInfo[i+0][j+1].sy,255);
@@ -1849,7 +1849,7 @@ void displayStaticObjects( void )
 					}
 					else
 					{
-						if ( psStructure->visible[selectedPlayer] OR godMode )
+						if ( psStructure->visible[selectedPlayer] || godMode )
 						{
 							//check not a resource extractors
 							if (psStructure->pStructureType->type != 
@@ -2045,7 +2045,7 @@ void displayDynamicObjects( void )
 				if(clipXY(psDroid->x,psDroid->y))
 				{
 					/* No point in adding it if you can't see it? */
-					if(psDroid->visible[selectedPlayer] OR godMode OR demoGetStatus())
+					if(psDroid->visible[selectedPlayer] || godMode || demoGetStatus())
 					{
 					 	psDroid->sDisplay.frameNumber = currentGameFrame;
 						//don't use #ifndef BUCKET for now - need to do it this way for renderMapToBuffer
@@ -2076,7 +2076,7 @@ void displayDynamicObjects( void )
 	} // end for clan
 } // end Fn
 
-/* Sets the player's position and view angle - defaults player rotations as well */
+/* Sets the player's position && view angle - defaults player rotations as well */
 void setViewPos(UDWORD x, UDWORD y,BOOL Pan)
 {
 //BOOL	changed = FALSE;
@@ -2161,12 +2161,12 @@ BOOL		bForceDraw;
 //		return;//don't draw 'em	
 //	}
 
-	bForceDraw = ( !getRevealStatus() AND psFeature->psStats->visibleAtStart);
+	bForceDraw = ( !getRevealStatus() && psFeature->psStats->visibleAtStart);
 
-	if (psFeature->visible[selectedPlayer] OR godMode OR demoGetStatus() OR bForceDraw)
+	if (psFeature->visible[selectedPlayer] || godMode || demoGetStatus() || bForceDraw)
 	{
 		psFeature->sDisplay.frameNumber = currentGameFrame;
-		/* Get it's x and y coordinates so we don't have to deref. struct later */
+		/* Get it's x && y coordinates so we don't have to deref. struct later */
 		featX = psFeature->x;
 		featY = psFeature->y;
 		/* Daft hack to get around the oild derrick issue */
@@ -2210,7 +2210,7 @@ BOOL		bForceDraw;
 		}
 
 
-		if(godMode OR demoGetStatus() OR bForceDraw)
+		if(godMode || demoGetStatus() || bForceDraw)
 		{
 			brightness = 200;
 		}
@@ -2259,7 +2259,7 @@ void renderProximityMsg(PROXIMITY_DISPLAY *psProxDisp)
 	//store the frame number for when deciding what has been clicked on
 	psProxDisp->frameNumber = currentGameFrame;
 
-	/* Get it's x and y coordinates so we don't have to deref. struct later */
+	/* Get it's x && y coordinates so we don't have to deref. struct later */
 	if (psProxDisp->type == POS_PROXDATA)
 	{
 		pViewProximity = (VIEW_PROXIMITY*)((VIEWDATA *)psProxDisp->psMessage->
@@ -2392,7 +2392,7 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 	//REF_DEFENSE no longer drawn as sloping wall
 	//if(psStructure->pStructureType->type>=REF_WALL AND
 	//	psStructure->pStructureType->type<=REF_TOWER4)
-	if(psStructure->pStructureType->type == REF_WALL OR
+	if(psStructure->pStructureType->type == REF_WALL ||
 		psStructure->pStructureType->type == REF_WALLCORNER)
 	{
 		renderWallSection(psStructure);
@@ -2406,14 +2406,14 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 	}
 
 	// -------------------------------------------------------------------------------
-	/* Power stations and factories have pulsing lights  */
+	/* Power stations && factories have pulsing lights  */
 	if(psStructure->sDisplay.imd->numFrames > 0)
 	{
         /*OK, so we've got a hack for a new structure - its a 2x2 wall but 
         we've called it a BLAST_DOOR cos we don't want it to use the wallDrag code
-        So its got clan colour trim and not really an anim - these HACKS just keep
+        So its got clan colour trim && !really an anim - these HACKS just keep
         coming back to haunt us hey? - AB 02/09/99*/
-        if (bMultiPlayer AND psStructure->pStructureType->type == REF_BLASTDOOR)
+        if (bMultiPlayer && psStructure->pStructureType->type == REF_BLASTDOOR)
         {
             animFrame = getPlayerColour(psStructure->player);;
         }
@@ -2433,10 +2433,10 @@ REPAIR_FACILITY		*psRepairFac = NULL;
   	// -------------------------------------------------------------------------------
 
   
-	if(psStructure->visible[selectedPlayer] OR godMode OR demoGetStatus())
+	if(psStructure->visible[selectedPlayer] || godMode || demoGetStatus())
 	{
 		psStructure->sDisplay.frameNumber = currentGameFrame;
-		/* Get it's x and y coordinates so we don't have to deref. struct later */
+		/* Get it's x && y coordinates so we don't have to deref. struct later */
 		structX = psStructure->x;
 		structY = psStructure->y;
 		dv.x = (structX - player.p.x) - terrainMidX*TILE_UNITS;
@@ -2457,7 +2457,7 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 		/* Translate */
 		iV_TRANSLATE(rx,0,-rz);
 		/* OK - here is where we establish which IMD to draw for the building - luckily static objects,
-		buildings in other words are NOT made up of components - much quicker! */
+		buildings in other words are !made up of components - much quicker! */
 	
 	
 		rotation = DEG(psStructure->direction);
@@ -2466,7 +2466,7 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 //		centreZ = ( player.p.z + ((visibleYTiles/2)<<TILE_SHIFT) );
 
 		bHitByElectronic = FALSE;
-		if( (gameTime2-psStructure->timeLastHit < ELEC_DAMAGE_DURATION) AND 
+		if( (gameTime2-psStructure->timeLastHit < ELEC_DAMAGE_DURATION) && 
 				(psStructure->lastHitWeapon == WSC_ELECTRONIC) )
 		{
 			bHitByElectronic = TRUE;
@@ -2489,7 +2489,7 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 			buildingBrightness = 200+brightVar;
 		}
 		
-		if(godMode OR demoGetStatus())
+		if(godMode || demoGetStatus())
 		{
 			buildingBrightness = buildingBrightness;
 		}
@@ -2516,7 +2516,7 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 
 		imd = psStructure->sDisplay.imd;
 
-	   	if(imd!=NULL AND bHitByElectronic)
+	   	if(imd!=NULL && bHitByElectronic)
 		{
 			// Get a copy of the points 
 			memcpy(alteredPoints,imd->points,imd->npoints*sizeof(iVector));
@@ -2534,9 +2534,9 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 
 
 		//first check if partially built - ANOTHER HACK!
-		if ( (psStructure->status == SS_BEING_BUILT ) OR
-			 (psStructure->status == SS_BEING_DEMOLISHED ) OR
-			 (psStructure->status == SS_BEING_BUILT AND psStructure->pStructureType->type == REF_RESOURCE_EXTRACTOR) )
+		if ( (psStructure->status == SS_BEING_BUILT ) ||
+			 (psStructure->status == SS_BEING_DEMOLISHED ) ||
+			 (psStructure->status == SS_BEING_BUILT && psStructure->pStructureType->type == REF_RESOURCE_EXTRACTOR) )
 		{
 			pie_Draw3DShape(imd, 0, playerFrame, 
 			buildingBrightness, specular, pie_HEIGHT_SCALED, 
@@ -2619,8 +2619,8 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 					{
 						psRepairFac = (REPAIR_FACILITY*)psStructure->pFunctionality;
                         //draw repair flash if the Repair Facility has a target which it has started work on
-						if(weaponImd->nconnectors AND psRepairFac->psObj!=NULL
-                            AND psRepairFac->psObj->type == OBJ_DROID AND
+						if(weaponImd->nconnectors && psRepairFac->psObj!=NULL
+                            && psRepairFac->psObj->type == OBJ_DROID &&
                             ((DROID *)psRepairFac->psObj)->action == DACTION_WAITDURINGREPAIR )
 						{
 							iV_TRANSLATE(weaponImd->connectors->x,weaponImd->connectors->z-12,weaponImd->connectors->y);
@@ -2649,7 +2649,7 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 						}
 					}
 					//we have a droid weapon so do we draw a muzzle flash
-					else if( weaponImd->nconnectors AND psStructure->visible[selectedPlayer]>(UBYTE_MAX/2))
+					else if( weaponImd->nconnectors && psStructure->visible[selectedPlayer]>(UBYTE_MAX/2))
 					{
 						/* Now we need to move to the end fo the barrel */
 						pie_TRANSLATE( weaponImd->connectors[0].x,
@@ -2780,11 +2780,11 @@ SDWORD			brightVar;
   	playerFrame =getPlayerColour(psStructure->player);// psStructure->player
    	animFrame = playerFrame;
 	// -------------------------------------------------------------------------------
-	if(psStructure->visible[selectedPlayer] OR godMode OR demoGetStatus())
+	if(psStructure->visible[selectedPlayer] || godMode || demoGetStatus())
 	{
   		/* Mark it as having been drawn */
 		psStructure->sDisplay.frameNumber = currentGameFrame;
-		/* Get it's x and y coordinates so we don't have to deref. struct later */
+		/* Get it's x && y coordinates so we don't have to deref. struct later */
 		structX = psStructure->x;
 		structY = psStructure->y;
 		/* Get coordinates of world centre - hmmm. optimise this out? */
@@ -2848,7 +2848,7 @@ SDWORD			brightVar;
 
 			buildingBrightness = 200 + brightVar;
 		}
-		if(godMode OR demoGetStatus())
+		if(godMode || demoGetStatus())
 		{
 			buildingBrightness = buildingBrightness;
 		}
@@ -2860,7 +2860,7 @@ SDWORD			brightVar;
 		brightness = lightDoFogAndIllumination((UBYTE)buildingBrightness,getCentreX()-structX,getCentreZ()-structY, &specular);
 
 		//first check if partially built - ANOTHER HACK!
-		if ( (psStructure->status == SS_BEING_BUILT ) OR (psStructure->status == SS_BEING_DEMOLISHED ) )
+		if ( (psStructure->status == SS_BEING_BUILT ) || (psStructure->status == SS_BEING_DEMOLISHED ) )
 		{
 			temp = imd->points;
 			imd->points = alteredPoints;
@@ -2939,7 +2939,7 @@ SDWORD			brightVar;
 
 					pie_Draw3DShape(weaponImd, animFrame, 0, brightness, specular, 0,0);
 					//we have a droid weapon so do we draw a muzzle flash
-					if( weaponImd->nconnectors AND psStructure->visible[selectedPlayer]>(UBYTE_MAX/2))
+					if( weaponImd->nconnectors && psStructure->visible[selectedPlayer]>(UBYTE_MAX/2))
 					{
 						/* Now we need to move to the end fo the barrel */
 						pie_TRANSLATE( weaponImd->connectors[0].x,
@@ -3084,7 +3084,7 @@ void	renderDeliveryPoint(FLAG_POSITION *psPosition)
 
 	//quick check for invalid data
 	//ASSERT((psPosition->factoryType < NUM_FACTORY_TYPES AND 
-    ASSERT((psPosition->factoryType < NUM_FLAG_TYPES AND 
+    ASSERT((psPosition->factoryType < NUM_FLAG_TYPES && 
 		psPosition->factoryInc < MAX_FACTORY, "Invalid assembly point"));
 
 	if(!psPosition->selected)
@@ -3141,10 +3141,10 @@ BOOL	renderWallSection(STRUCTURE *psStructure)
 	SDWORD			brightVar;
 
          
-	if(psStructure->visible[selectedPlayer] OR godMode OR demoGetStatus())
+	if(psStructure->visible[selectedPlayer] || godMode || demoGetStatus())
 	{
 		psStructure->sDisplay.frameNumber = currentGameFrame;
-		/* Get it's x and y coordinates so we don't have to deref. struct later */
+		/* Get it's x && y coordinates so we don't have to deref. struct later */
 		structX = psStructure->x;
 		structY = psStructure->y;
  //		centreX = ( player.p.x + ((visibleXTiles/2)<<TILE_SHIFT) );
@@ -3167,7 +3167,7 @@ BOOL	renderWallSection(STRUCTURE *psStructure)
 			buildingBrightness = 200 + brightVar;
 		}
 
-		if(godMode OR demoGetStatus())
+		if(godMode || demoGetStatus())
 		{
 			/* NOP */
 		}
@@ -3181,7 +3181,7 @@ BOOL	renderWallSection(STRUCTURE *psStructure)
 	//	brightness = lightDoFogAndIllumination(pie_MAX_BRIGHT_LEVEL,centreX-structX,centreZ-structY);
 		/* 
 		Right, now the tricky bit, we need to bugger about with the coordinates of the imd to make it
-		fit tightly to the ground and to neighbours. 
+		fit tightly to the ground && to neighbours. 
 		*/
 		imd = psStructure->pStructureType->pBaseIMD;
 		if(imd!=NULL)
@@ -3244,9 +3244,9 @@ BOOL	renderWallSection(STRUCTURE *psStructure)
 		flattenImd(imd,structX,structY,psStructure->direction);
 
 		/* Actually render it */
-		if ( (psStructure->status == SS_BEING_BUILT ) OR
-			 (psStructure->status == SS_BEING_DEMOLISHED ) OR
-			 (psStructure->status == SS_BEING_BUILT AND psStructure->pStructureType->type == REF_RESOURCE_EXTRACTOR) )
+		if ( (psStructure->status == SS_BEING_BUILT ) ||
+			 (psStructure->status == SS_BEING_DEMOLISHED ) ||
+			 (psStructure->status == SS_BEING_BUILT && psStructure->pStructureType->type == REF_RESOURCE_EXTRACTOR) )
 		{
 			pie_Draw3DShape(psStructure->sDisplay.imd, 0,getPlayerColour(psStructure->player) , 
 				brightness, specular, pie_HEIGHT_SCALED, 
@@ -3373,7 +3373,7 @@ void renderDroid( DROID *psDroid )
 /* Draws the strobing 3D drag box that is used for multiple selection */
 void	drawDragBox( void )
 {
-	if(dragBox3D.status == DRAG_DRAGGING AND buildState == BUILD3D_NONE)
+	if(dragBox3D.status == DRAG_DRAGGING && buildState == BUILD3D_NONE)
 	{
 		if(gameTime - dragBox3D.lastTime > BOX_PULSE_SPEED)
 		{
@@ -3461,14 +3461,14 @@ void drawWeaponReloadBar(BASE_OBJECT *psObj, WEAPON *psWeap)
 	psStats = asWeaponStats + psWeap->nStat;
 
 	/* Justifiable only when greater than a one second reload 
-		or intra salvo time  */
+		|| intra salvo time  */
 	bSalvo = FALSE;
 	if(psStats->numRounds > 1)
 	{
 		bSalvo = TRUE;
 	}
-	if( (bSalvo AND (psStats->reloadTime > GAME_TICKS_PER_SEC)) OR
-		(psStats->firePause > GAME_TICKS_PER_SEC) OR
+	if( (bSalvo && (psStats->reloadTime > GAME_TICKS_PER_SEC)) ||
+		(psStats->firePause > GAME_TICKS_PER_SEC) ||
 		((psObj->type == OBJ_DROID) && vtolDroid((DROID *)psObj)) )
 	{
 		if ((psObj->type == OBJ_DROID) &&
@@ -3569,7 +3569,7 @@ BOOL		bMouseOverOwnStructure = FALSE;
 FRACT		mulH;
 
 	psClickedOn = mouseTarget();
-	if(psClickedOn!=NULL AND psClickedOn->type == OBJ_STRUCTURE)
+	if(psClickedOn!=NULL && psClickedOn->type == OBJ_STRUCTURE)
 	{
 		bMouseOverStructure = TRUE;
 		if(psClickedOn->player == selectedPlayer)
@@ -3586,10 +3586,10 @@ FRACT		mulH;
 		{
 			/* If it's selected */
 			if( (psStruct->selected) 
-				OR (bMouseOverOwnStructure AND (psStruct==(STRUCTURE*)psClickedOn) 
-										   AND (((STRUCTURE*)psClickedOn)->status==SS_BUILT) )
+				|| (bMouseOverOwnStructure && (psStruct==(STRUCTURE*)psClickedOn) 
+										   && (((STRUCTURE*)psClickedOn)->status==SS_BUILT) )
 										   /* If it was clipped - reject it */
-										   AND psStruct->sDisplay.frameNumber == currentGameFrame)
+										   && psStruct->sDisplay.frameNumber == currentGameFrame)
 			{
 			//----
 				scale = max(psStruct->pStructureType->baseWidth,psStruct->pStructureType->baseBreadth);
@@ -3652,7 +3652,7 @@ FRACT		mulH;
 			}
 			else
 			{
-				if(psStruct->status == SS_BEING_BUILT AND psStruct->sDisplay.frameNumber == currentGameFrame)
+				if(psStruct->status == SS_BEING_BUILT && psStruct->sDisplay.frameNumber == currentGameFrame)
 				{
 					scale = max(psStruct->pStructureType->baseWidth,psStruct->pStructureType->baseBreadth);
 					width = scale*20;
@@ -3704,7 +3704,7 @@ FRACT		mulH;
 			{
 				if(clipXY(psStruct->x,psStruct->y))
 				{
-					/* If it's targetted and on-screen */
+					/* If it's targetted && on-screen */
 					if(psStruct->targetted) 
 					{
 						if(psStruct->sDisplay.frameNumber == currentGameFrame)
@@ -3733,7 +3733,7 @@ FRACT		mulH;
 		}
 	}
 
-	if(bMouseOverStructure AND !bMouseOverOwnStructure)
+	if(bMouseOverStructure && !bMouseOverOwnStructure)
 	{
 		if(mouseDown(MOUSE_RMB))
 		{
@@ -3915,8 +3915,8 @@ BOOL	doHighlight( DROID *psDroid )
 
 void	showDroidSelection( DROID *psDroid )
 {
-	/* First, let's see if we need to - Get out if it's not selected and no appropriate to highlight */
-	if(!psDroid->selected AND !doHighlight(psDroid))
+	/* First, let's see if we need to - Get out if it's !selected && no appropriate to highlight */
+	if(!psDroid->selected && !doHighlight(psDroid))
 	{
 		/* No need - so get out now */
 		return;
@@ -3928,7 +3928,7 @@ void	showDroidSelection( DROID *psDroid )
 	/* Now, display it's rank */
 	drawDroidRanking(psDroid);
 
-	/* And the reload bars... */
+	/* && the reload bars... */
 	drawDroidReloadBar(psDroid);
 }
 
@@ -3941,24 +3941,24 @@ SDWORD			scrX,scrY,scrR;
 	for(psDelivPoint = apsFlagPosLists[selectedPlayer]; psDelivPoint; psDelivPoint = 
 		psDelivPoint->psNext)
 	{
-		if(psDelivPoint->selected AND psDelivPoint->frameNumber == currentGameFrame)
+		if(psDelivPoint->selected && psDelivPoint->frameNumber == currentGameFrame)
 		{
 			scrX = psDelivPoint->screenX;
 			scrY = psDelivPoint->screenY;
 			scrR = psDelivPoint->screenR;
 			if (pie_Hardware())
 			{
-				/* Three DFX clips properly right now - not sure if software does */
-				if((scrX+scrR)>0 AND (scrY+scrR)>0 AND (scrX-scrR)<DISP_WIDTH 
-					AND (scrY-scrR)<DISP_HEIGHT)
+				/* Three DFX clips properly right now - !sure if software does */
+				if((scrX+scrR)>0 && (scrY+scrR)>0 && (scrX-scrR)<DISP_WIDTH 
+					&& (scrY-scrR)<DISP_HEIGHT)
 				{
 					iV_Box(scrX - scrR, scrY - scrR, scrX + scrR, scrY + scrR, 110);
 				}
 			}
 			else
 			{
-				if( ((SDWORD)(scrX - scrR) > 0) AND (scrX + scrR < DISP_WIDTH) AND 
-						((SDWORD)(scrY - scrR) > 0) AND (scrY + scrR < DISP_HEIGHT) )
+				if( ((SDWORD)(scrX - scrR) > 0) && (scrX + scrR < DISP_WIDTH) && 
+						((SDWORD)(scrY - scrR) > 0) && (scrY + scrR < DISP_HEIGHT) )
 				{
 					iV_Box(scrX - scrR, scrY - scrR, scrX + scrR, scrY + scrR, 110);
 				}
@@ -3985,10 +3985,10 @@ FEATURE			*psFeature;
 FRACT			mulH;
 
 	psClickedOn = mouseTarget();
-	if(psClickedOn!=NULL AND psClickedOn->type == OBJ_DROID)
+	if(psClickedOn!=NULL && psClickedOn->type == OBJ_DROID)
 	{
 		bMouseOverDroid = TRUE;
-		if(psClickedOn->player == selectedPlayer AND !psClickedOn->selected)
+		if(psClickedOn->player == selectedPlayer && !psClickedOn->selected)
 		{
 			bMouseOverOwnDroid = TRUE;
 		}
@@ -4018,11 +4018,11 @@ FRACT			mulH;
 	for(psDroid = apsDroidLists[selectedPlayer]; psDroid; psDroid = psDroid->psNext)
 	{
 		bBeingTracked = FALSE;
-		/* If it's selected and on screen or it's the one the mouse is over OR*/
+		/* If it's selected && on screen || it's the one the mouse is over ||*/
 		// ABSOLUTELY MAD LOGICAL EXPRESSION!!! :-)
-		if( ( eitherSelected(psDroid) AND psDroid->sDisplay.frameNumber == currentGameFrame) OR
-			( bMouseOverOwnDroid AND (psDroid == (DROID*)psClickedOn)) OR 
-			( droidUnderRepair(psDroid) AND psDroid->sDisplay.frameNumber == currentGameFrame) )	
+		if( ( eitherSelected(psDroid) && psDroid->sDisplay.frameNumber == currentGameFrame) ||
+			( bMouseOverOwnDroid && (psDroid == (DROID*)psClickedOn)) || 
+			( droidUnderRepair(psDroid) && psDroid->sDisplay.frameNumber == currentGameFrame) )	
 		{
 //show resistance values if CTRL/SHIFT depressed (now done in reload bar)
 //            if (ctrlShiftDown())
@@ -4078,7 +4078,7 @@ FRACT			mulH;
 			scrR = psDroid->sDisplay.screenR;
 
 			/* Yeah, yeah yeah - hardcoded palette entries - need to change to #defined colour names */
-			/* Three DFX clips properly right now - not sure if software does */
+			/* Three DFX clips properly right now - !sure if software does */
 //			if((scrX+scrR)>0 AND (scrY+scrR)>0 AND (scrX-scrR)<DISP_WIDTH
 //				AND (scrY-scrR)<DISP_HEIGHT)
 			{
@@ -4162,8 +4162,8 @@ FRACT			mulH;
 				}
 			
 				/* Write the droid rank out */
-				if((scrX+scrR)>0 AND (scrY+scrR)>0 AND (scrX-scrR)<DISP_WIDTH
-					AND (scrY-scrR)<DISP_HEIGHT)
+				if((scrX+scrR)>0 && (scrY+scrR)>0 && (scrX-scrR)<DISP_WIDTH
+					&& (scrY-scrR)<DISP_HEIGHT)
 				{
 					drawDroidRank(psDroid);
 					drawDroidSensorLock(psDroid);
@@ -4192,11 +4192,11 @@ FRACT			mulH;
 
   
 	/* Are we over an enemy droid */
-	if(bMouseOverDroid AND !bMouseOverOwnDroid)
+	if(bMouseOverDroid && !bMouseOverOwnDroid)
 	{
 		if(mouseDown(MOUSE_RMB))
 		{
-			if(psClickedOn->player!=selectedPlayer AND psClickedOn->sDisplay.frameNumber == currentGameFrame)
+			if(psClickedOn->player!=selectedPlayer && psClickedOn->sDisplay.frameNumber == currentGameFrame)
 			{
 				psDroid = (DROID*)psClickedOn;
                 //show resistance values if CTRL/SHIFT depressed
@@ -4254,8 +4254,8 @@ FRACT			mulH;
 				scrR = psDroid->sDisplay.screenR;
 
 				/* Yeah, yeah yeah - hardcoded palette entries - need to change to #defined colour names */
-				/* Three DFX clips properly right now - not sure if software does */
-				if((scrX+scrR)>0 AND (scrY+scrR)>0 AND (scrX-scrR)<DISP_WIDTH AND (scrY-scrR)<DISP_HEIGHT)
+				/* Three DFX clips properly right now - !sure if software does */
+				if((scrX+scrR)>0 && (scrY+scrR)>0 && (scrX-scrR)<DISP_WIDTH && (scrY-scrR)<DISP_HEIGHT)
 				{
 					if(!driveModeActive() || driveIsDriven(psDroid)) {
 						boxCol = defaultColours.white;
@@ -4291,10 +4291,10 @@ FRACT			mulH;
 		/* Go thru' all the droidss */
 		for(psDroid = apsDroidLists[i]; psDroid; psDroid = psDroid->psNext)
 		{
-			if(i!=selectedPlayer AND !psDroid->died AND psDroid->sDisplay.frameNumber == currentGameFrame)		
+			if(i!=selectedPlayer && !psDroid->died && psDroid->sDisplay.frameNumber == currentGameFrame)		
 			{
 				/* If it's selected */
-				if(psDroid->bTargetted AND (psDroid->visible[selectedPlayer] == UBYTE_MAX))
+				if(psDroid->bTargetted && (psDroid->visible[selectedPlayer] == UBYTE_MAX))
 				{
 					psDroid->bTargetted = FALSE;
 					scrX = psDroid->sDisplay.screenX;
@@ -4308,7 +4308,7 @@ FRACT			mulH;
 
 	for(psFeature = apsFeatureLists[0]; psFeature; psFeature = psFeature->psNext)
 	{
-		if(!psFeature->died AND psFeature->sDisplay.frameNumber == currentGameFrame)
+		if(!psFeature->died && psFeature->sDisplay.frameNumber == currentGameFrame)
 		{
 			if(psFeature->bTargetted)
 			{
@@ -4328,7 +4328,7 @@ void	drawBuildingLines( void )
 {
 iVector	first,second;
 
-if(buildState == BUILD3D_VALID OR buildState == BUILD3D_POS)
+if(buildState == BUILD3D_VALID || buildState == BUILD3D_POS)
 	{
 		pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_ON);
 		pie_SetFogStatus(FALSE);
@@ -4361,7 +4361,7 @@ SDWORD	xShift,yShift;
 	id = id2 = UDWORD_MAX;
 
 	/* Is the unit in a group? */
-	if(psDroid->psGroup AND psDroid->psGroup->type == GT_COMMAND)
+	if(psDroid->psGroup && psDroid->psGroup->type == GT_COMMAND)
 	{
 		id2 = IMAGE_GN_STAR;
 
@@ -4534,7 +4534,7 @@ iPoint	srcS,destS;
 }
 
 /*	Get the onscreen corrdinates of a droid - so we can draw a bounding box - this need to be severely
-	speeded up and the accuracy increased to allow variable size bouding boxes */
+	speeded up && the accuracy increased to allow variable size bouding boxes */
 void	calcScreenCoords(DROID *psDroid)
 {
 //BOOL	setMouse = FALSE;
@@ -4567,7 +4567,7 @@ POINT	pt;
 
 	radius = ((radius * pie_GetResScalingFactor())/100);
 
-	/* Pop matrices and get the screen corrdinates */
+	/* Pop matrices && get the screen corrdinates */
 	pie_ROTATE_PROJECT(centX,centY,centZ,cX,cY);
 
 	/* Deselect all the droids if we've released the drag box */
@@ -4575,11 +4575,11 @@ POINT	pt;
 	{
 		pt.x = cX;
 		pt.y = cY;
-		if(inQuad(&pt,&dragQuad) AND psDroid->player == selectedPlayer)
+		if(inQuad(&pt,&dragQuad) && psDroid->player == selectedPlayer)
 		{	   	
 			//don't allow Transporter Droids to be selected here
             //unless we're in multiPlayer mode!!!!
-			if (psDroid->droidType != DROID_TRANSPORTER OR bMultiPlayer)
+			if (psDroid->droidType != DROID_TRANSPORTER || bMultiPlayer)
 			{
 				dealWithDroidSelect(psDroid, TRUE);
 /*				psDroid->selected = TRUE;
@@ -4609,11 +4609,11 @@ SDWORD  order;
 //UDWORD	tileCount;
 
 	/* Set up the highlights if we're putting down a wall */
-	if(wallDrag.status == DRAG_PLACING OR wallDrag.status == DRAG_DRAGGING)
+	if(wallDrag.status == DRAG_PLACING || wallDrag.status == DRAG_DRAGGING)
 	{
 		/* Ensure the start point is always shown */
 		SET_TILE_HIGHLIGHT(mapTile(wallDrag.x1,wallDrag.y1));
-		if( (wallDrag.x1 == wallDrag.x2) OR (wallDrag.y1 == wallDrag.y2) )
+		if( (wallDrag.x1 == wallDrag.x2) || (wallDrag.y1 == wallDrag.y2) )
 		{
 			/* First process the ones inside the wall dragging area */
 			left = min(wallDrag.x1,wallDrag.x2);
@@ -4632,7 +4632,7 @@ SDWORD  order;
 	}
 	else
 	/* Only bother if we're placing a building */
-	if(buildState == BUILD3D_VALID OR buildState == BUILD3D_POS)
+	if(buildState == BUILD3D_VALID || buildState == BUILD3D_POS)
 	{
 	/* Now do the ones inside the building highlight */
 		left = buildSite.xTL;
@@ -4666,7 +4666,7 @@ SDWORD  order;
             for (psDroid = apsDroidLists[selectedPlayer]; psDroid; psDroid = psDroid->psNext)
             {
                 //psDroid = (DROID *)psObj;
-                if (psDroid->droidType == DROID_CONSTRUCT OR
+                if (psDroid->droidType == DROID_CONSTRUCT ||
                     psDroid->droidType == DROID_CYBORG_CONSTRUCT)
                 {
                     //draw the current build site if its a line of structures
@@ -4769,10 +4769,10 @@ UDWORD	left,right,up,down;
 MAPTILE	*psTile;
 
 	// Clear the highlights if we're putting down a wall
-	if(wallDrag.status == DRAG_PLACING OR wallDrag.status == DRAG_DRAGGING)
+	if(wallDrag.status == DRAG_PLACING || wallDrag.status == DRAG_DRAGGING)
 	{
 		// Only show valid walls
-		if( (wallDrag.x1 == wallDrag.x2) OR (wallDrag.y1 == wallDrag.y2) )
+		if( (wallDrag.x1 == wallDrag.x2) || (wallDrag.y1 == wallDrag.y2) )
 		{
 			// First process the ones inside the wall dragging area
 			left = min(wallDrag.x1,wallDrag.x2);
@@ -4853,9 +4853,9 @@ BOOL	bWaterTile;
 
  					tile3dX = playerXTile+j;
 					tile3dY = playerZTile+i;
-					if( (tile3dX > 0) AND
-						(tile3dY > 0) AND
-						(tile3dX <= mapWidth-1) AND
+					if( (tile3dX > 0) &&
+						(tile3dY > 0) &&
+						(tile3dX <= mapWidth-1) &&
 						(tile3dY <= mapHeight-1) )
 
 					tile3dOver = mapTile(tile3dX,tile3dY);
@@ -4954,7 +4954,7 @@ void renderSky(void)
 	}
 }
 
-/* Flattens an imd to the landscape and handles 4 different rotations */
+/* Flattens an imd to the landscape && handles 4 different rotations */
 iIMDShape	*flattenImd(iIMDShape *imd, UDWORD structX, UDWORD structY, UDWORD direction)
 {
 UDWORD	i;
@@ -4973,7 +4973,7 @@ SDWORD	shift;
   	/* Now we go through the shape looking for vertices on the edge */
   	/* Flip reference coords if we're on a vertical wall */
 
-	/* Little hack below 'cos sometimes they're not exactly 90 degree alligned. */
+	/* Little hack below 'cos sometimes they're !exactly 90 degree alligned. */
 	direction /= 90;
 	direction *= 90;
 
@@ -4982,7 +4982,7 @@ SDWORD	shift;
   	case 0:
   		for(i=0; i<(UDWORD)imd->npoints; i++)
     		{
-				if(abs(alteredPoints[i].x) >= 63 OR abs(alteredPoints[i].z)>=63)
+				if(abs(alteredPoints[i].x) >= 63 || abs(alteredPoints[i].z)>=63)
 				{
   					pointHeight = map_Height(structX+alteredPoints[i].x,structY-alteredPoints[i].z);
     					shift = centreHeight - pointHeight;
@@ -4993,7 +4993,7 @@ SDWORD	shift;
   	case 90:
   		for(i=0; i<(UDWORD)imd->npoints; i++)
     		{
-				if(abs(alteredPoints[i].x) >= 63 OR abs(alteredPoints[i].z)>=63)
+				if(abs(alteredPoints[i].x) >= 63 || abs(alteredPoints[i].z)>=63)
 				{
   					pointHeight = map_Height(structX-alteredPoints[i].z,structY-alteredPoints[i].x);
     				shift = centreHeight - pointHeight;
@@ -5005,7 +5005,7 @@ SDWORD	shift;
   	case 180:
   		for(i=0; i<(UDWORD)imd->npoints; i++)
     		{
-				if(abs(alteredPoints[i].x) >= 63 OR abs(alteredPoints[i].z)>=63)
+				if(abs(alteredPoints[i].x) >= 63 || abs(alteredPoints[i].z)>=63)
 				{
   					pointHeight = map_Height(structX-alteredPoints[i].x,structY+alteredPoints[i].z);
     					shift = centreHeight - pointHeight;
@@ -5016,7 +5016,7 @@ SDWORD	shift;
   	case 270:
   		for(i=0; i<(UDWORD)imd->npoints; i++)
     		{
-				if(abs(alteredPoints[i].x) >= 63 OR abs(alteredPoints[i].z)>=63)
+				if(abs(alteredPoints[i].x) >= 63 || abs(alteredPoints[i].z)>=63)
 				{
   					pointHeight = map_Height(structX+alteredPoints[i].z,structY+alteredPoints[i].x);
     					shift = centreHeight - pointHeight;
@@ -5071,7 +5071,7 @@ defaultColours.white = iV_PaletteNearestColour(255,255,255);
 #endif
 
 // -------------------------------------------------------------------------------------
-/* New improved (and much faster) tile drawer */
+/* New improved (&& much faster) tile drawer */
 // -------------------------------------------------------------------------------------
 void	drawTerrainTile(UDWORD i, UDWORD j)//hardware only
 {
@@ -5095,10 +5095,10 @@ UDWORD	oldColoursWord[4];
 
 
 
-	/* Let's just get out now if we're not supposed to draw it */
-	if( (actualX<0) OR
-		(actualY<0) OR
-		(actualX>mapWidth-1) OR
+	/* Let's just get out now if we're !supposed to draw it */
+	if( (actualX<0) ||
+		(actualY<0) ||
+		(actualX>mapWidth-1) ||
 		(actualY>mapHeight-1) )
 	{
 		psTile = &edgeTile;
@@ -5133,7 +5133,7 @@ UDWORD	oldColoursWord[4];
 		bOutlined = TRUE;
 		//set tilenumber
 //		tileNumber = FOUNDATION_TEXTURE;
-		if( (i<LAND_XGRD-1) AND (j<(LAND_YGRD-1)) )		// FIXME
+		if( (i<LAND_XGRD-1) && (j<(LAND_YGRD-1)) )		// FIXME
 		{
 			if(outlineColour3D == outlineOK3D)
 			{
@@ -5218,7 +5218,7 @@ UDWORD	oldColoursWord[4];
 	}
 	*/
 	/* Get the right texture page */
-	/* 3dfx is pre stored and indexed */
+	/* 3dfx is pre stored && indexed */
 	pie_SetTexturePage(tileTexInfo[tileNumber & TILE_NUMMASK].texPage);
 
 
@@ -5227,7 +5227,7 @@ UDWORD	oldColoursWord[4];
 	offset.x = (tileTexInfo[tileNumber & TILE_NUMMASK].xOffset * 64);
 	offset.y = (tileTexInfo[tileNumber & TILE_NUMMASK].yOffset * 64);
 
-	/* Check for rotations and flips - this sets up the coordinates for texturing */
+	/* Check for rotations && flips - this sets up the coordinates for texturing */
 	flipsAndRots(tileNumber & ~TILE_NUMMASK);
 
 	tileScreenInfo[i+0][j+0].tu = (UWORD)(psP1->x + offset.x);
@@ -5374,10 +5374,10 @@ void	drawTerrainWEdgeTile(UDWORD i, UDWORD j)
 	/* Get the correct tile index for the y coordinate */
 	actualY = playerZTile + i;
 
-	/* Let's just get out now if we're not supposed to draw it */
-	if( (actualX<0) OR
-		(actualY<0) OR
-		(actualX>mapWidth-1) OR
+	/* Let's just get out now if we're !supposed to draw it */
+	if( (actualX<0) ||
+		(actualY<0) ||
+		(actualX>mapWidth-1) ||
 		(actualY>mapHeight-1) )
 	{
 		psTile = &edgeTile;
@@ -5391,7 +5391,7 @@ void	drawTerrainWEdgeTile(UDWORD i, UDWORD j)
 	/* what tile texture number is it? */
 	tileNumber = psTile->texture;
 
-	/* 3dfx is pre stored and indexed */
+	/* 3dfx is pre stored && indexed */
 	pie_SetTexturePage(tileTexInfo[tileNumber & TILE_NUMMASK].texPage);
 
 
@@ -5400,7 +5400,7 @@ void	drawTerrainWEdgeTile(UDWORD i, UDWORD j)
 	offset.x = (tileTexInfo[tileNumber & TILE_NUMMASK].xOffset * 64);
 	offset.y = (tileTexInfo[tileNumber & TILE_NUMMASK].yOffset * 64);
 
-	/* Check for rotations and flips - this sets up the coordinates for texturing */
+	/* Check for rotations && flips - this sets up the coordinates for texturing */
 	flipsAndRots(tileNumber & ~TILE_NUMMASK);
 
 	tileScreenInfo[i+0][j+0].tu = (UWORD)(psP1->x + offset.x);
@@ -5535,10 +5535,10 @@ void drawTerrainWaterTile(UDWORD i, UDWORD j)	//hardware only
 	/* Get the correct tile index for the y coordinate */
 	actualY = playerZTile + i;
 
-	/* Let's just get out now if we're not supposed to draw it */
-	if( (actualX<0) OR
-		(actualY<0) OR
-		(actualX>mapWidth-1) OR
+	/* Let's just get out now if we're !supposed to draw it */
+	if( (actualX<0) ||
+		(actualY<0) ||
+		(actualX>mapWidth-1) ||
 		(actualY>mapHeight-1) )
 	{
 		return;
@@ -5553,7 +5553,7 @@ void drawTerrainWaterTile(UDWORD i, UDWORD j)	//hardware only
 		tileNumber = getWaterTileNum();
 		// Draw the main water tile.
 	
-		/* 3dfx is pre stored and indexed */
+		/* 3dfx is pre stored && indexed */
 		pie_SetTexturePage(tileTexInfo[tileNumber & TILE_NUMMASK].texPage);
 
 		offset.x = (tileTexInfo[tileNumber & TILE_NUMMASK].xOffset * 64);
@@ -5672,14 +5672,14 @@ UDWORD	desPitch;
 		/* Work out accelertion... */
 		acceleration = MAKEINT(((ACCEL_CONSTANT*2)*separation - (VELOCITY_CONSTANT)*(FRACT)heightSpeed));
 
-		/* ...and now speed */
+		/* ...&& now speed */
 		heightSpeed += MAKEINT(((FRACT)acceleration * fraction));
 
 		/* Adjust the height accordingly */
 		player.p.y += MAKEINT(((FRACT)heightSpeed * fraction));
 
-		/* Now do auto pitch as well, but only if we're not using mouselook and not tracking */
-		if(!getWarCamStatus() AND !getRotActive())
+		/* Now do auto pitch as well, but only if we're !using mouselook && !tracking */
+		if(!getWarCamStatus() && !getRotActive())
 		{
 			/* Get the suggested pitch */
 			pitch = getSuggestedPitch();
@@ -5690,7 +5690,7 @@ UDWORD	desPitch;
 				player.r.x+=DEG(360);
 			}
 		   
-			/* Or too much */
+			/* || too much */
 			while(player.r.x > DEG(360))
 			{
 				player.r.x -= DEG(360);
@@ -5778,7 +5778,7 @@ void	processSensorTarget( void )
 		if( (gameTime2 - lastTargetAssignation) < TARGET_TO_SENSOR_TIME)
 		{
 			//if(!psSensorDroid->died)
-			if(!psSensorObj->died AND psSensorObj->sDisplay.frameNumber == currentGameFrame)
+			if(!psSensorObj->died && psSensorObj->sDisplay.frameNumber == currentGameFrame)
 			{
 				x = /*mouseX();*/(SWORD)psSensorObj->sDisplay.screenX;
 				y = (SWORD)psSensorObj->sDisplay.screenY;
@@ -5916,7 +5916,7 @@ void	testEffect2( UDWORD player )
 	{
 		if(psStructure->status == SS_BUILT)
 		{
-			if(psStructure->pStructureType->type == REF_POWER_GEN AND psStructure->visible[selectedPlayer])
+			if(psStructure->pStructureType->type == REF_POWER_GEN && psStructure->visible[selectedPlayer])
 			{
 				psPowerGen = (POWER_GEN *)psStructure->pFunctionality;
 				numConnected = 0;
@@ -5980,7 +5980,7 @@ void	testEffect2( UDWORD player )
 			}
 			/* Might be a re-arm pad! */
 			else if(psStructure->pStructureType->type == REF_REARM_PAD 
-				AND psStructure->visible[selectedPlayer] )
+				&& psStructure->visible[selectedPlayer] )
 			{
 			 	psReArmPad = (REARM_PAD *) psStructure->pFunctionality;
 				psChosenObj = psReArmPad->psObj;
@@ -5990,7 +5990,7 @@ void	testEffect2( UDWORD player )
 					{
 				   		bFXSize = 0;
 						psDroid = (DROID*) psChosenObj;
-						if(!psDroid->died AND psDroid->action == DACTION_WAITDURINGREARM )
+						if(!psDroid->died && psDroid->action == DACTION_WAITDURINGREARM )
 						{
 				   			bFXSize = 30;
 
@@ -6033,8 +6033,8 @@ void	testEffect( void )
 {
 	UDWORD	i;
 
-	/* Hardware only effect, and then only if you've got additive! */
-	if((pie_Hardware() AND war_GetAdditive()) )
+	/* Hardware only effect, && then only if you've got additive! */
+	if((pie_Hardware() && war_GetAdditive()) )
 	{
 		/* Only do for player 0 power stations */
 
@@ -6042,7 +6042,7 @@ void	testEffect( void )
 		{
 			for(i=0;i<MAX_PLAYERS;i++)
 			{
-				 if(isHumanPlayer(i) AND apsStructLists[i] )
+				 if(isHumanPlayer(i) && apsStructLists[i] )
 				 {
 					testEffect2(i);
 				 }
@@ -6166,7 +6166,7 @@ void debugToggleSensorDisplay( void )
 UDWORD  getDroidRankGraphic(DROID *psDroid)
 {
     UDWORD gfxId; 
-	/* Not found yet */
+	/* !found yet */
 	gfxId = UDWORD_MAX;
 
 //#ifdef JOHN
@@ -6279,7 +6279,7 @@ UDWORD  getDroidRankGraphic(DROID *psDroid)
     return gfxId;
 }
 
-/*	DOES : Assumes matrix context set and that z-buffer write is force enabled (Always). 
+/*	DOES : Assumes matrix context set && that z-buffer write is force enabled (Always). 
 	Will render a graphic depiction of the droid's present rank.
 	BY : Alex McLean.
 */
@@ -6298,7 +6298,7 @@ UDWORD	gfxId;
 	}
 }
 
-/*	DOES : Assumes matrix context set and that z-buffer write is force enabled (Always). 
+/*	DOES : Assumes matrix context set && that z-buffer write is force enabled (Always). 
 	Will render a graphic depiction of the droid's present rank.
 */
 void	drawDroidSensorLock(DROID *psDroid)
@@ -6327,7 +6327,7 @@ UDWORD	i;
 			if(clipXY(psDroid->x,psDroid->y))
 			{
 
-				if( (psDroid->visible[selectedPlayer]==UBYTE_MAX) AND 
+				if( (psDroid->visible[selectedPlayer]==UBYTE_MAX) && 
  					(psDroid->sMove.Status != MOVESHUFFLE) ) 
 				{
 					if(psDroid->action == DACTION_BUILD)
@@ -6341,9 +6341,9 @@ UDWORD	i;
 						}
 					}	
 					
-					else if ((psDroid->action == DACTION_DEMOLISH) OR
-							(psDroid->action == DACTION_REPAIR) OR
-							(psDroid->action == DACTION_CLEARWRECK) OR
+					else if ((psDroid->action == DACTION_DEMOLISH) ||
+							(psDroid->action == DACTION_REPAIR) ||
+							(psDroid->action == DACTION_CLEARWRECK) ||
 							(psDroid->action == DACTION_RESTORE))
 					{
 						if(psDroid->psActionTarget)
@@ -6472,7 +6472,7 @@ UDWORD	trans = 0;
 			trans = colour & 0xff;
 		}
 		trans >>= 1;//divide by 2
-		if (	(psDroid->action == DACTION_DEMOLISH) OR
+		if (	(psDroid->action == DACTION_DEMOLISH) ||
 			(psDroid->action == DACTION_CLEARWRECK) )
 		{
 			colour = 0x00ff0000;//red
@@ -6488,7 +6488,7 @@ UDWORD	trans = 0;
 	else
 	{
 		colour &= 0xff;
-		if (	(psDroid->action == DACTION_DEMOLISH) OR
+		if (	(psDroid->action == DACTION_DEMOLISH) ||
 		(psDroid->action == DACTION_CLEARWRECK) )
 		{
 			colour <<= 16;//red
@@ -6522,9 +6522,9 @@ UDWORD	trans = 0;
 
  
 /* Only do if at least one point is on-screen */
-	if( ((pts[0].sx>0 AND pts[0].sx<DISP_WIDTH) AND	(pts[0].sy>0 AND pts[0].sy<DISP_HEIGHT)) OR
-	   ( (pts[1].sx>0 AND pts[1].sx<DISP_WIDTH) AND	(pts[1].sy>0 AND pts[1].sy<DISP_HEIGHT)) OR
-		((pts[2].sx>0 AND pts[2].sx<DISP_WIDTH) AND (pts[2].sy>0 AND pts[2].sy<DISP_HEIGHT)) )
+	if( ((pts[0].sx>0 && pts[0].sx<DISP_WIDTH) &&	(pts[0].sy>0 && pts[0].sy<DISP_HEIGHT)) ||
+	   ( (pts[1].sx>0 && pts[1].sx<DISP_WIDTH) &&	(pts[1].sy>0 && pts[1].sy<DISP_HEIGHT)) ||
+		((pts[2].sx>0 && pts[2].sx<DISP_WIDTH) && (pts[2].sy>0 && pts[2].sy<DISP_HEIGHT)) )
 	{
 		pie_TransColouredTriangle((PIEVERTEX*)&pts,colour,trans);
 	}

@@ -182,15 +182,15 @@ void printWeaponInfo(WEAPON_STATS *psStats)
 				psStats->incenTime, psStats->incenDamage, psStats->incenRadius));
 	OPRINTF(ConsoleString,(ConsoleString,"   flSpd %d inHt %d %s\n",
 				psStats->flightSpeed, psStats->indirectHeight,
-				psStats->fireOnMove ? "fireOnMove" : "not fireOnMove"));
+				psStats->fireOnMove ? "fireOnMove" : "!fireOnMove"));
 	OPRINTF(ConsoleString,(ConsoleString,"   %s %s %s\n", pWC, pWSC, pMM));
 	/*OPRINTF(ConsoleString,(ConsoleString,"   %shoming %srotate recoil %d\n"
 			  "   dLife %d radLife %d\n",
-			  psStats->homingRound ? "" : "not ", psStats->rotate ? "" : "not ",
+			  psStats->homingRound ? "" : "!", psStats->rotate ? "" : "!",
 			  psStats->recoilValue, psStats->directLife, psStats->radiusLife));*/
 	OPRINTF(ConsoleString,(ConsoleString,"   %srotate recoil %d\n"
 			  "   dLife %d radLife %d\n",
-			  psStats->rotate ? "" : "not ",
+			  psStats->rotate ? "" : "!",
 			  psStats->recoilValue, psStats->directLife, psStats->radiusLife));
 }
 

@@ -160,7 +160,7 @@ BOOL pie_PCXLoadToBuffer(char *file, iSprite *s, iColour* pal)
 	iV_DEBUG1("pcx[PCXLoad] = loading pcx file '%s':\n",file);
 
 	if ((_PCX_FI = iV_FileOpen(file,iV_FBF_MODE_R,51200)) <0) {
-		iV_DEBUG1("pcx[PCXLoad] = could not open pcx file %d\n",_PCX_FI);
+		iV_DEBUG1("pcx[PCXLoad] = could !open pcx file %d\n",_PCX_FI);
 		return FALSE;
 	}
 
@@ -227,7 +227,7 @@ iBool iV_PCXLoad(char *file, iSprite *s, iColour *pal)
 	iV_DEBUG1("pcx[PCXLoad] = loading pcx file '%s':\n",file);
 
 	if ((_PCX_FI = iV_FileOpen(file,iV_FBF_MODE_R,51200)) <0) {
-		iV_DEBUG1("pcx[PCXLoad] = could not open pcx file %d\n",_PCX_FI);
+		iV_DEBUG1("pcx[PCXLoad] = could !open pcx file %d\n",_PCX_FI);
 		return FALSE;
 	}
 

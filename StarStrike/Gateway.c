@@ -30,7 +30,7 @@
 		} \
 		psPrev = psCurr; \
 	} \
-	ASSERT((psCurr!=NULL, "LIST_REMOVE: entry not found")); \
+	ASSERT((psCurr!=NULL, "LIST_REMOVE: entry !found")); \
 	if (psPrev == NULL) \
 	{ \
 		(psHead) = (psHead)->psNext; \
@@ -94,7 +94,7 @@ BOOL gwInitialise(void)
 #endif
 
 	ASSERT((psGateways == NULL,
-		"gwInitialise: gatway list has not been reset"));
+		"gwInitialise: gatway list has !been reset"));
 
 	psGateways = NULL;
 
@@ -369,7 +369,7 @@ static void gwCalcZoneCenter(SDWORD zone, SDWORD *px, SDWORD *py)
 	}
 
 	ASSERT((numtiles != 0,
-		"gwCalcZoneCenter: zone not found on map"));
+		"gwCalcZoneCenter: zone !found on map"));
 
 	x = xsum / numtiles;
 	y = ysum / numtiles;
@@ -612,14 +612,14 @@ SDWORD gwRouteLength(GATEWAY *psStart, GATEWAY *psEnd)
 	} while (ret == ASR_PARTIAL);
 
 	ASSERT((ret != ASR_FAILED,
-		"gwRouteLength: no route between gateways at (%d,%d) and (%d,%d)",
+		"gwRouteLength: no route between gateways at (%d,%d) && (%d,%d)",
 		sx,sy, ex,ey));
 
 #ifdef DEBUG
 	if (ret == ASR_NEAREST)
 	{
 		zone = (psStart->zone1 == psEnd->zone1) || (psStart->zone1 == psEnd->zone2) ? psStart->zone1 : psStart->zone2;
-		DBPRINTF(("gwRouteLength: warning only partial route between gateways at %s(%d,%d) and %s(%d,%d) zone %d\n",
+		DBPRINTF(("gwRouteLength: warning only partial route between gateways at %s(%d,%d) && %s(%d,%d) zone %d\n",
 			psStart->flags & GWR_WATERLINK ? "W" : "", sx,sy,
 			psStart->flags & GWR_WATERLINK ? "W" : "", ex,ey,
 			zone));
@@ -1086,7 +1086,7 @@ BOOL gwSetZoneEquiv(SDWORD zone, SDWORD numEquiv, UBYTE *pEquiv)
 	SDWORD i;
 
 	ASSERT((aNumEquiv != NULL && apEquivZones != NULL,
-		"gwSetZoneEquiv: equivalence arrays not initialised"));
+		"gwSetZoneEquiv: equivalence arrays !initialised"));
 	ASSERT((zone < gwNumZones,
 		"gwSetZoneEquiv: invalid zone"));
 	ASSERT((numEquiv <= gwNumZones,

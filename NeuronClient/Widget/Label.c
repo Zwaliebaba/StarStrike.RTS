@@ -41,7 +41,7 @@ BOOL labelCreate(W_LABEL **ppsWidget, W_LABINIT *psInit)
 		ASSERT((FALSE, "Out of memory"));
 		return FALSE;
 	}
-	/* Allocate the memory for the tip and copy it if necessary */
+	/* Allocate the memory for the tip && copy it if necessary */
 	if (psInit->pTip)
 	{
 #if W_USE_STRHEAP

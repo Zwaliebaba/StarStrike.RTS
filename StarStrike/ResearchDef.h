@@ -55,7 +55,7 @@ typedef struct research_stats
 	COMP_BASE_STATS	**pArtefactResults;	/*List of Artefacts that are possible after
 										  this research*/
 	COMP_BASE_STATS	**pReplacedArtefacts;/*List of artefacts that are replaced by the above 
-										  result - not necessarily any! 1 to 1 relation with 
+										  result - !necessarily any! 1 to 1 relation with 
 										  above list */
 	struct _viewdata	*pViewData;		/*data used to display a message in the 
 										  Intelligence Screen*/

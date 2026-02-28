@@ -195,7 +195,7 @@ GAMECODE gameLoop(void)
 #endif
 		}
 
-		/* Run the in game interface and see if it grabbed any mouse clicks */
+		/* Run the in game interface && see if it grabbed any mouse clicks */
 		DBP1(("loop: Run Widgets Update\n"));
 	  	if( (!rotActive) && getWidgetsStatus() &&
 			(dragBox3D.status != DRAG_DRAGGING) &&
@@ -209,13 +209,13 @@ GAMECODE gameLoop(void)
 		}
 
         //don't process the object lists if paused or about to quit to the front end
-		if (!(gameUpdatePaused() OR intRetVal == INT_QUIT))
+		if (!(gameUpdatePaused() || intRetVal == INT_QUIT))
 		{
 			if( (dragBox3D.status != DRAG_DRAGGING) && (wallDrag.status 
 				!= DRAG_DRAGGING)) 
 			{
 				if( (intRetVal == INT_INTERCEPT) 
-					|| (radarOnScreen && CoordInRadar(mouseX(),mouseY()) AND 
+					|| (radarOnScreen && CoordInRadar(mouseX(),mouseY()) && 
                     getHQExists(selectedPlayer)) )
 				{
 					pie_SetMouse(IntImages,IMAGE_CURSOR_DEFAULT);
@@ -306,7 +306,7 @@ GAMECODE gameLoop(void)
 
 				for(psCurr = apsDroidLists[i]; psCurr; psCurr = psNext)
 				{
-					/* Copy the next pointer - not 100% sure if the droid could get destroyed
+					/* Copy the next pointer - !100% sure if the droid could get destroyed
 					   but this covers us anyway */
 					psNext = psCurr->psNext;
 					droidUpdate(psCurr);
@@ -337,7 +337,7 @@ GAMECODE gameLoop(void)
 				numMissionDroids[i]=0;
 				for(psCurr = mission.apsDroidLists[i]; psCurr; psCurr = psNext)
 				{
-					/* Copy the next pointer - not 100% sure if the droid could
+					/* Copy the next pointer - !100% sure if the droid could
 					get destroyed but this covers us anyway */
 					psNext = psCurr->psNext;
 					missionDroidUpdate(psCurr);
@@ -363,7 +363,7 @@ GAMECODE gameLoop(void)
 				}
 				for(psCurr = apsLimboDroids[i]; psCurr; psCurr = psNext)
 				{
-					/* Copy the next pointer - not 100% sure if the droid could
+					/* Copy the next pointer - !100% sure if the droid could
 					get destroyed but this covers us anyway */
 					psNext = psCurr->psNext;
 
@@ -387,22 +387,22 @@ GAMECODE gameLoop(void)
                 setLasSatExists(FALSE, i);
 				for (psCBuilding = apsStructLists[i]; psCBuilding; psCBuilding = psNBuilding)
 				{
-					/* Copy the next pointer - not 100% sure if the structure could get destroyed
+					/* Copy the next pointer - !100% sure if the structure could get destroyed
 					   but this covers us anyway */
 					psNBuilding = psCBuilding->psNext;
 					structureUpdate(psCBuilding);
 					//set animation flag
-					/*if (psCBuilding->pStructureType->type == REF_POWER_GEN AND
+					/*if (psCBuilding->pStructureType->type == REF_POWER_GEN &&
 						psCBuilding->status == SS_BUILT)
 					{
 						setPowerGenExists(TRUE, i);
 					}*/
-					if (psCBuilding->pStructureType->type == REF_HQ AND
+					if (psCBuilding->pStructureType->type == REF_HQ &&
 						psCBuilding->status == SS_BUILT)
 					{
 						setHQExists(TRUE, i);
 					}
-					if (psCBuilding->pStructureType->type == REF_SAT_UPLINK AND
+					if (psCBuilding->pStructureType->type == REF_SAT_UPLINK &&
 						psCBuilding->status == SS_BUILT)
 					{
 						setSatUplinkExists(TRUE, i);
@@ -417,16 +417,16 @@ GAMECODE gameLoop(void)
 				for (psCBuilding = mission.apsStructLists[i]; psCBuilding; 
 						psCBuilding = psNBuilding)
 				{
-					/* Copy the next pointer - not 100% sure if the structure could get destroyed
-					   but this covers us anyway It shouldn't do since its not even on the map!*/
+					/* Copy the next pointer - !100% sure if the structure could get destroyed
+					   but this covers us anyway It shouldn't do since its !even on the map!*/
 					psNBuilding = psCBuilding->psNext;
 					missionStructureUpdate(psCBuilding);
-					if (psCBuilding->pStructureType->type == REF_HQ AND
+					if (psCBuilding->pStructureType->type == REF_HQ &&
 						psCBuilding->status == SS_BUILT)
 					{
 						setHQExists(TRUE, i);
 					}
-					if (psCBuilding->pStructureType->type == REF_SAT_UPLINK AND
+					if (psCBuilding->pStructureType->type == REF_SAT_UPLINK &&
 						psCBuilding->status == SS_BUILT)
 					{
 						setSatUplinkExists(TRUE, i);
@@ -464,7 +464,7 @@ GAMECODE gameLoop(void)
 			/* update animations */
 			animObj_Update();
 
-			/* Raise and increase frames of explosions */
+			/* Raise && increase frames of explosions */
 //			updateExplosions();
 			/* Update all the temporary world effects */
 //			processEffects();
@@ -630,7 +630,7 @@ GAMECODE gameLoop(void)
 				if (display3D)
 				{
 					/*bPlayerHasHQ=FALSE;
-					for (psStructure = apsStructLists[selectedPlayer]; psStructure AND 
+					for (psStructure = apsStructLists[selectedPlayer]; psStructure && 
 						!bPlayerHasHQ; psStructure = psStructure->psNext)
 					{
 						if (psStructure->pStructureType->type == REF_HQ)
@@ -808,7 +808,7 @@ GAMECODE gameLoop(void)
 		{
 			/* Check for toggling display mode */
 			if ((keyDown(KEY_LALT) || keyDown(KEY_RALT)) &&
-				keyPressed(KEY_RETURN) AND pie_GetRenderEngine()!=ENGINE_GLIDE)
+				keyPressed(KEY_RETURN) && pie_GetRenderEngine()!=ENGINE_GLIDE)
 			{
 				screenToggleMode();
 		#ifdef DISP2D
@@ -876,7 +876,7 @@ GAMECODE gameLoop(void)
 		{
 			/* Check for toggling display mode */
 			if ((keyDown(KEY_LALT) || keyDown(KEY_RALT)) &&
-				keyPressed(KEY_RETURN) AND pie_GetRenderEngine()!=ENGINE_GLIDE)
+				keyPressed(KEY_RETURN) && pie_GetRenderEngine()!=ENGINE_GLIDE)
 			{
 				screenToggleMode();
 		#ifdef DISP2D
@@ -900,7 +900,7 @@ GAMECODE gameLoop(void)
 		{
 			/* Check for toggling display mode */
 			if ((keyDown(KEY_LALT) || keyDown(KEY_RALT)) &&
-				keyPressed(KEY_RETURN) AND pie_GetRenderEngine()!=ENGINE_GLIDE)
+				keyPressed(KEY_RETURN) && pie_GetRenderEngine()!=ENGINE_GLIDE)
 			{
 				screenToggleMode();
 		#ifdef DISP2D
@@ -918,7 +918,7 @@ GAMECODE gameLoop(void)
 	}
 	
 	/*
-	if( (intMode == INT_NORMAL) AND (forceWidgetsOn == TRUE) )
+	if( (intMode == INT_NORMAL) && (forceWidgetsOn == TRUE) )
 	{
 		forceWidgetsOn = FALSE;
 	}

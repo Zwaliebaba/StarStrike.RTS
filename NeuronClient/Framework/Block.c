@@ -26,11 +26,11 @@
 
 #include "Block.h"
 
-/* What functions to use for the real malloc and free */
+/* What functions to use for the real malloc && free */
 #define RMALLOC		malloc
 #define RFREE		free
 
-/* Whether allocated memory is initialised to a value and whether the memory
+/* Whether allocated memory is initialised to a value && whether the memory
  * is trashed before it is freed.
  * This is done automatically by Visual C's memory routines.
  */

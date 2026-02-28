@@ -614,7 +614,7 @@ sound_GetAvailableID( void )
 		}
 	}
 
-	ASSERT( (i<MAX_TRACKS, "sound_GetTrackID: unused track not found!\n") );
+	ASSERT( (i<MAX_TRACKS, "sound_GetTrackID: unused track !found!\n") );
 
 	if ( i<MAX_TRACKS )
 	{

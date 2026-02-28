@@ -55,7 +55,7 @@ void	putRectIntoPage(UDWORD width, UDWORD height, unsigned char *dest, UDWORD bu
 /* Extracts the tile texture in pcx format of abc..
 											  def..
 											  ghi..   (say)
-   and puts them into raw format of a
+   && puts them into raw format of a
 									b
 									c
 									d
@@ -166,7 +166,7 @@ int remakeTileTextures(void)
 }
 
 /*	
-	Extracts the tile textures into separate texture pages and builds
+	Extracts the tile textures into separate texture pages && builds
 	a table of which texture page to find each tile in, as well as which one it is
 	within that page. 
 	
@@ -178,9 +178,9 @@ int remakeTileTextures(void)
 	The above shows the different possible locations for a tile in the page.
 	So we have a table of MAX_TILES showing
 
-	pageNumber and [0..15]
+	pageNumber && [0..15]
 		
-	We must then make sure that we source in that texture page and set the 
+	We must then make sure that we source in that texture page && set the 
 	texture coordinate for a complete tile to be its position.
 */
 void	makeTileTexturePages(UDWORD srcWidth,UDWORD srcHeight, UDWORD tileWidth, UDWORD tileHeight, unsigned char *src)
@@ -233,7 +233,7 @@ iSprite	sprite;
 			/* Have we run out of texture page? */
 			if(tilesProcessed%tilesPerPage == 0)
 			{
-				/* If so, download this one and reset to start again */
+				/* If so, download this one && reset to start again */
 				pageId[pageNumber] = pie_AddBMPtoTexPages( 	&sprite, "terrain", 0, TRUE, FALSE);
 				sprite.bmp = MALLOC(TEXTURE_PAGE_SIZE);
 				pageNumber++;
@@ -318,14 +318,14 @@ SDWORD  index;
 			{
 				if(pie_GetRenderEngine() == ENGINE_GLIDE)
 				{
-					/* If so, download this one and reset to start again */
+					/* If so, download this one && reset to start again */
 					index = iV_TEXPAGE(firstTexturePage+pageNumber)->textPage3dfx;
 					pageId[pageNumber] = index;
 					pie_Reload8bitTexturePage(sprite.bmp, (UWORD)sprite.width, (UWORD)sprite.height, index);
 				}
 				else //D3D
 				{
-					/* If so, download this one and reset to start again */
+					/* If so, download this one && reset to start again */
 					dtm_LoadTexSurface(&_TEX_PAGE[pageId[pageNumber]].tex, pageId[pageNumber]);
 				}
 				pageNumber++;
@@ -503,7 +503,7 @@ iColour		*psCurrentPalette;
 	{
 		/* Get the next colour */
 		paletteIndex = *origBuffer++;
-		/* Flush out destination word (and alpha bits) */
+		/* Flush out destination word (&& alpha bits) */
 		newColour = 0;
 		/* Get red bits - 5 */
 		mask = (UWORD)(psCurrentPalette[paletteIndex].r>>3);

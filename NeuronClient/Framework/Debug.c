@@ -57,7 +57,7 @@ void dbg_SetAssertCallback(DB_MBCALLBACK callback)
  * dbg_printf
  *
  * Replacement for printf for debugging output.
- * Sends strings to OutputDebugString and/or a file.
+ * Sends strings to OutputDebugString &&/|| a file.
  * Output is controlled by the functions :
  *
  * dbg_SetOutputFile, dbg_NoOutputFile
@@ -254,7 +254,7 @@ void dbg_ErrorBox(SBYTE *pFormat, ...)
 /*
  * dbg_AssertPosition
  *
- * Set the file and position for an assertion.
+ * Set the file && position for an assertion.
  * This should only be used directly before a call to dbg_Assert.
  * (In fact there is no reason for this to be used outside the ASSERT macro)
  */
@@ -296,7 +296,7 @@ void dbg_AssertPosition(SBYTE *pFile, UDWORD Line)
  * dbg_Assert
  *
  * Rewritten assert macro.
- * If Expression is false it uses the Format string and va_list to
+ * If Expression is false it uses the Format string && va_list to
  * generate a string which it displays in a message box.
  * 
  * DebugBreak is used to jump into the debugger.
@@ -349,7 +349,7 @@ void dbg_Assert(BOOL Expression, SBYTE *pFormat, ...)
 		else if (retVal == DBR_NO || Result == IDNO)
 		{
 			/* Can only do a DebugBreak in window mode -
-			 * Do it in full screen and GDI can't get in so the machine hangs.
+			 * Do it in full screen && GDI can't get in so the machine hangs.
 			 */
 			screenSetMode(SCREEN_WINDOWED);
 			DebugBreak();

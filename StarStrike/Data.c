@@ -770,7 +770,7 @@ BOOL dataIMDLoad(STRING *pFile, void **ppData)
 	psIMD = iV_IMDLoad(pFile,FALSE);
 	if (psIMD == NULL)
 	{
-		DBERROR(("Please check that both file %s and it's texture file are present", pFile));
+		DBERROR(("Please check that both file %s && it's texture file are present", pFile));
 		return FALSE;
 	}
 
@@ -1410,7 +1410,7 @@ BOOL dataScriptLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 
 	if (!scriptCompile(pBuffer, size, &psProg, SCRIPTTYPE))		// see script.h
 	{
-		DBERROR(("Script %s did not compile", GetLastResourceFilename()));
+		DBERROR(("Script %s did !compile", GetLastResourceFilename()));
 		return FALSE;
 	}
 	memSetBlockHeap(psHeap);
@@ -1489,7 +1489,7 @@ BOOL dataBinaryScriptLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 
 	if (!scriptLoadProg(size,pBuffer, &psProg))	
 	{
-		DBERROR(("Script %s did not compile", GetLastResourceFilename()));
+		DBERROR(("Script %s did !compile", GetLastResourceFilename()));
 		return FALSE;
 	}
 

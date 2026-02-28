@@ -272,17 +272,17 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_DROID:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: Droid variable not found"));
+					DBERROR(("scrvLinkValues: Droid variable !found"));
 					return FALSE;
 				}
 				if (!scrvGetBaseObj((UDWORD)psVal->v.ival, &psObj))
 				{
-					DBERROR(("scrvLinkValues: Droid id %d not found", psVal->v.ival));
+					DBERROR(("scrvLinkValues: Droid id %d !found", psVal->v.ival));
 					return FALSE;
 				}
 				if (psObj->type != OBJ_DROID)
 				{
-					DBERROR(("scrvLinkValues: Object id %d is not a droid"));
+					DBERROR(("scrvLinkValues: Object id %d is !a droid"));
 					return FALSE;
 				}
 				else
@@ -293,17 +293,17 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_STRUCTURE:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: Structure variable not found"));
+					DBERROR(("scrvLinkValues: Structure variable !found"));
 					return FALSE;
 				}
 				if (!scrvGetBaseObj((UDWORD)psVal->v.ival, &psObj))
 				{
-					DBERROR(("scrvLinkValues: Structure id %d not found", psVal->v.ival));
+					DBERROR(("scrvLinkValues: Structure id %d !found", psVal->v.ival));
 					return FALSE;
 				}
 				if (psObj->type != OBJ_STRUCTURE)
 				{
-					DBERROR(("scrvLinkValues: Object id %d is not a structure"));
+					DBERROR(("scrvLinkValues: Object id %d is !a structure"));
 					return FALSE;
 				}
 				else
@@ -314,17 +314,17 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_FEATURE:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: Feature variable not found"));
+					DBERROR(("scrvLinkValues: Feature variable !found"));
 					return FALSE;
 				}
 				if (!scrvGetBaseObj((UDWORD)psVal->v.ival, &psObj))
 				{
-					DBERROR(("scrvLinkValues: Feature id %d not found", psVal->v.ival));
+					DBERROR(("scrvLinkValues: Feature id %d !found", psVal->v.ival));
 					return FALSE;
 				}
 				if (psObj->type != OBJ_FEATURE)
 				{
-					DBERROR(("scrvLinkValues: Object id %d is not a Feature"));
+					DBERROR(("scrvLinkValues: Object id %d is !a Feature"));
 					return FALSE;
 				}
 				else
@@ -335,13 +335,13 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_BODY:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: body variable not found"));
+					DBERROR(("scrvLinkValues: body variable !found"));
 					return FALSE;
 				}
 				compIndex = getCompFromName(COMP_BODY, psVal->v.sval);
 				if (compIndex == -1)
 				{
-					DBERROR(("scrvLinkValues: body component %s not found",
+					DBERROR(("scrvLinkValues: body component %s !found",
 						psVal->v.sval));
 					return FALSE;
 				}
@@ -351,13 +351,13 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_PROPULSION:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: propulsion variable not found"));
+					DBERROR(("scrvLinkValues: propulsion variable !found"));
 					return FALSE;
 				}
 				compIndex = getCompFromName(COMP_PROPULSION, psVal->v.sval);
 				if (compIndex == -1)
 				{
-					DBERROR(("scrvLinkValues: propulsion component %s not found",
+					DBERROR(("scrvLinkValues: propulsion component %s !found",
 						psVal->v.sval));
 					return FALSE;
 				}
@@ -367,13 +367,13 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_ECM:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: ECM variable not found"));
+					DBERROR(("scrvLinkValues: ECM variable !found"));
 					return FALSE;
 				}
 				compIndex = getCompFromName(COMP_ECM, psVal->v.sval);
 				if (compIndex == -1)
 				{
-					DBERROR(("scrvLinkValues: ECM component %s not found",
+					DBERROR(("scrvLinkValues: ECM component %s !found",
 						psVal->v.sval));
 					return FALSE;
 				}
@@ -383,13 +383,13 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_SENSOR:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: sensor variable not found"));
+					DBERROR(("scrvLinkValues: sensor variable !found"));
 					return FALSE;
 				}
 				compIndex = getCompFromName(COMP_SENSOR, psVal->v.sval);
 				if (compIndex == -1)
 				{
-					DBERROR(("scrvLinkValues: sensor component %s not found",
+					DBERROR(("scrvLinkValues: sensor component %s !found",
 						psVal->v.sval));
 					return FALSE;
 				}
@@ -399,13 +399,13 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_CONSTRUCT:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: construct variable not found"));
+					DBERROR(("scrvLinkValues: construct variable !found"));
 					return FALSE;
 				}
 				compIndex = getCompFromName(COMP_CONSTRUCT, psVal->v.sval);
 				if (compIndex == -1)
 				{
-					DBERROR(("scrvLinkValues: construct component %s not found",
+					DBERROR(("scrvLinkValues: construct component %s !found",
 						psVal->v.sval));
 					return FALSE;
 				}
@@ -415,13 +415,13 @@ BOOL scrvGetString(STRING *pStringID, STRING **ppString)
 			case ST_WEAPON:
 				if (!eventGetContextVal(psContext, index, &psVal))
 				{
-					DBERROR(("scrvLinkValues: weapon variable not found"));
+					DBERROR(("scrvLinkValues: weapon variable !found"));
 					return FALSE;
 				}
 				compIndex = getCompFromName(COMP_WEAPON, psVal->v.sval);
 				if (compIndex == -1)
 				{
-					DBERROR(("scrvLinkValues: weapon component %s not found",
+					DBERROR(("scrvLinkValues: weapon component %s !found",
 						psVal->v.sval));
 					return FALSE;
 				}

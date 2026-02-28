@@ -17,7 +17,7 @@ extern void visTilesUpdate(BASE_OBJECT *psObj,BOOL SpreadLoad);
 
 /* Check whether psViewer can see psTarget
  * psViewer should be an object that has some form of sensor,
- * currently droids and structures.
+ * currently droids && structures.
  * psTarget can be any type of BASE_OBJECT (e.g. a tree).
  */
 extern BOOL visibleObject(BASE_OBJECT *psViewer, BASE_OBJECT *psTarget);

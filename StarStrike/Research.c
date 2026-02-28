@@ -1,7 +1,7 @@
 /*
  * Research.c
  *
- * Research tree and functions!
+ * Research tree && functions!
  *
  */
 #include <stdio.h>
@@ -93,7 +93,7 @@ UBYTE               numResearchArteRep;
 //List of pointers to arrays of PLAYER_RESEARCH[numResearch] for each player
 PLAYER_RESEARCH*		asPlayerResList[MAX_PLAYERS];
 
-/* Default level of sensor, Repair and ECM */
+/* Default level of sensor, Repair && ECM */
 UDWORD					aDefaultSensor[MAX_PLAYERS];
 UDWORD					aDefaultECM[MAX_PLAYERS];
 UDWORD					aDefaultRepair[MAX_PLAYERS];
@@ -506,7 +506,7 @@ BOOL loadResearch(SBYTE *pResearchData, UDWORD bufferSize)
 			//check its a major tech code
 			if (pResearch->techCode != TC_MAJOR)
 			{
-				DBERROR(("This research should not have a message associated with it, %s the message will be ignored!", getResearchName(pResearch)));
+				DBERROR(("This research should !have a message associated with it, %s the message will be ignored!", getResearchName(pResearch)));
 			}
 			else
 			{
@@ -975,8 +975,8 @@ BOOL loadResearchArtefacts(SBYTE *pArteData, UDWORD bufferSize, UDWORD listNumbe
 		pResearch->storeCount++;
 
         //quick check that haven't reached maxArtes
-        if (numResearchArteRed >= MAX_RESEARCH_ARTE_RED OR numResearchArteRes >= 
-            MAX_RESEARCH_ARTE_RES OR numResearchArteRep > MAX_RESEARCH_ARTE_RES)
+        if (numResearchArteRed >= MAX_RESEARCH_ARTE_RED || numResearchArteRes >= 
+            MAX_RESEARCH_ARTE_RES || numResearchArteRep > MAX_RESEARCH_ARTE_RES)
         {
             //don't load any more since will write over memory!
             break;
@@ -1124,8 +1124,8 @@ BOOL loadResearchStructures(SBYTE *pStructData, UDWORD bufferSize,UDWORD listNum
 		}
 
         //quick check that haven't reached max structs
-        if (numResearchStructPR >= MAX_RESEARCH_STRUCT_PR OR
-            numResearchStructRes >= MAX_RESEARCH_STRUCT_RES OR
+        if (numResearchStructPR >= MAX_RESEARCH_STRUCT_PR ||
+            numResearchStructRes >= MAX_RESEARCH_STRUCT_RES ||
             numResearchStructRed >= MAX_RESEARCH_STRUCT_RED)
         {
             //don't load any more since will write over memory!
@@ -1243,8 +1243,8 @@ Function to check what can be researched for a particular player at any one
 instant.
 
 A topic can be researched if the playerRes 'possible' flag has been set (by script) 
-or if the research pre-req topics have been researched. A check is made for any 
-structures that are required to have been built for topics that do not have 
+|| if the research pre-req topics have been researched. A check is made for any 
+structures that are required to have been built for topics that do !have 
 the 'possible' flag set. 
 
  **NB** A topic with zero PR's can ONLY be researched once the 'possible' flag 
@@ -1475,18 +1475,18 @@ void researchResult(UDWORD researchIndex, UBYTE player, BOOL bDisplay)
 				for (psCurr = apsStructLists[player]; psCurr != NULL; psCurr = 
 					psCurr->psNext)
 				{
-					/*if (psCurr->pStructureType->type == REF_FACTORY OR
-						psCurr->pStructureType->type == REF_CYBORG_FACTORY OR
+					/*if (psCurr->pStructureType->type == REF_FACTORY ||
+						psCurr->pStructureType->type == REF_CYBORG_FACTORY ||
 						psCurr->pStructureType->type == REF_VTOL_FACTORY)
 					{
 						//upgrade the Output
 						productionUpgrade(pFunction, psCurr);
 					}*/
-					if ((psCurr->pStructureType->type == REF_FACTORY AND
-						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->factory) OR
-						(psCurr->pStructureType->type == REF_CYBORG_FACTORY AND
-						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->cyborgFactory) OR
-						(psCurr->pStructureType->type == REF_VTOL_FACTORY AND
+					if ((psCurr->pStructureType->type == REF_FACTORY &&
+						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->factory) ||
+						(psCurr->pStructureType->type == REF_CYBORG_FACTORY &&
+						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->cyborgFactory) ||
+						(psCurr->pStructureType->type == REF_VTOL_FACTORY &&
 						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->vtolFactory))
 					{
 						//upgrade the Output for the structure
@@ -1508,11 +1508,11 @@ void researchResult(UDWORD researchIndex, UBYTE player, BOOL bDisplay)
 				for (psCurr = mission.apsStructLists[player]; psCurr != NULL; psCurr = 
 					psCurr->psNext)
 				{
-					if ((psCurr->pStructureType->type == REF_FACTORY AND
-						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->factory) OR
-						(psCurr->pStructureType->type == REF_CYBORG_FACTORY AND
-						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->cyborgFactory) OR
-						(psCurr->pStructureType->type == REF_VTOL_FACTORY AND
+					if ((psCurr->pStructureType->type == REF_FACTORY &&
+						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->factory) ||
+						(psCurr->pStructureType->type == REF_CYBORG_FACTORY &&
+						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->cyborgFactory) ||
+						(psCurr->pStructureType->type == REF_VTOL_FACTORY &&
 						((PRODUCTION_UPGRADE_FUNCTION *)pFunction)->vtolFactory))
 					{
 						//upgrade the Output for the structure
@@ -1987,7 +1987,7 @@ void researchResult(UDWORD researchIndex, UBYTE player, BOOL bDisplay)
 
 //just a debug check...
 #ifdef DEBUG
-    /*this just checks that there are not more than 32 weapons now available for
+    /*this just checks that there are !more than 32 weapons now available for
     the design screen - it'll give us grief in the design screen (which we may HAVE TO fix)!*/
     //only check if selectedPlayer has done the research
     if (player == selectedPlayer)
@@ -1997,7 +1997,7 @@ void researchResult(UDWORD researchIndex, UBYTE player, BOOL bDisplay)
         compInc = vtolCompInc =0;
 	    for (inc = 0; inc < numWeaponStats; inc++)
 	    {
-		    if (apCompLists[selectedPlayer][COMP_WEAPON][inc] == AVAILABLE AND
+		    if (apCompLists[selectedPlayer][COMP_WEAPON][inc] == AVAILABLE &&
                 asWeaponStats[inc].design)
             {
                 if (asWeaponStats[inc].vtolAttackRuns)
@@ -2138,7 +2138,7 @@ void holdResearch(STRUCTURE *psBuilding)
 	RESEARCH_FACILITY		*psResFac;
 
 	ASSERT((psBuilding->pStructureType->type == REF_RESEARCH, 
-		"holdResearch: structure not a research facility"));
+		"holdResearch: structure !a research facility"));
 
 	psResFac = (RESEARCH_FACILITY *)psBuilding->pFunctionality;
 
@@ -2160,11 +2160,11 @@ void releaseResearch(STRUCTURE *psBuilding)
 	RESEARCH_FACILITY		*psResFac;
 
 	ASSERT((psBuilding->pStructureType->type == REF_RESEARCH, 
-		"releaseResearch: structure not a research facility"));
+		"releaseResearch: structure !a research facility"));
 
 	psResFac = (RESEARCH_FACILITY *)psBuilding->pFunctionality;
 
-	if (psResFac->psSubject AND psResFac->timeStartHold)
+	if (psResFac->psSubject && psResFac->timeStartHold)
 	{
 		//adjust the start time for the current subject
 		if (psResFac->timeStarted != ACTION_START_TIME)
@@ -2202,7 +2202,7 @@ void CancelAllResearch(UDWORD pl)
 	}
 }
 
-/* sets the status of the topic to cancelled and stores the current research
+/* sets the status of the topic to cancelled && stores the current research
    points accquired */
 void cancelResearch(STRUCTURE *psBuilding)
 {
@@ -2211,7 +2211,7 @@ void cancelResearch(STRUCTURE *psBuilding)
 	RESEARCH_FACILITY	*psResFac;
 
 	ASSERT((psBuilding->pStructureType->type == REF_RESEARCH, 
-		"cancelResearch: structure not a research facility"));
+		"cancelResearch: structure !a research facility"));
 
 	psResFac = (RESEARCH_FACILITY *)psBuilding->pFunctionality;
     topicInc = ((RESEARCH *)psResFac->psSubject) - asResearch;
@@ -2236,7 +2236,7 @@ void cancelResearch(STRUCTURE *psBuilding)
 		else
 		{
 			/*store the points - need to keep this so can add points after the topic 
-			has been cancelled and restarted*/
+			has been cancelled && restarted*/
 			pPlayerRes->currentPoints += (psResFac->researchPoints * (gameTime - 
                 psResFac->timeStarted)) / GAME_TICKS_PER_SEC;
 
@@ -2646,7 +2646,7 @@ RESEARCH * getResearch(STRING *pName, BOOL resName)
 	return NULL;
 }
 
-/* looks through the players lists of structures and droids to see if any are using
+/* looks through the players lists of structures && droids to see if any are using
  the old component - if any then replaces them with the new component */
 void replaceComponent(COMP_BASE_STATS *pNewComponent, COMP_BASE_STATS *pOldComponent,
 					  UBYTE player)
@@ -2813,8 +2813,7 @@ void replaceComponent(COMP_BASE_STATS *pNewComponent, COMP_BASE_STATS *pOldCompo
 	}*/
 }
 
-/*Looks through all the currently allocated stats to check the name is not 
-a duplicate*/
+/*Looks through all the currently allocated stats to check the name is !a duplicate*/
 static BOOL checkResearchName(RESEARCH *psResearch, UDWORD numStats)
 {
 	UDWORD inc;
@@ -2861,8 +2860,8 @@ BOOL enableResearch(RESEARCH *psResearch, UDWORD player)
 		//set the research reticule button to flash if research facility is free
 		for (psStruct = apsStructLists[selectedPlayer]; psStruct != NULL; psStruct=psStruct->psNext)
 		{
-			if (psStruct->pStructureType->type == REF_RESEARCH AND
-                psStruct->status == SS_BUILT AND
+			if (psStruct->pStructureType->type == REF_RESEARCH &&
+                psStruct->status == SS_BUILT &&
 				((RESEARCH_FACILITY *)psStruct->pFunctionality)->psSubject == NULL)
 			{
 				resFree = TRUE;
@@ -2879,7 +2878,7 @@ BOOL enableResearch(RESEARCH *psResearch, UDWORD player)
 	return TRUE;
 }
 
-/*find the last research topic of importance that the losing player did and 
+/*find the last research topic of importance that the losing player did && 
 'give' the results to the reward player*/
 void researchReward(UBYTE losingPlayer, UBYTE rewardPlayer)
 {
@@ -2927,7 +2926,7 @@ void researchReward(UBYTE losingPlayer, UBYTE rewardPlayer)
                 getName(asResearch[rewardID].pName)));
 		}
 	}
-	/* Not worth mentioning if nothing useful to gain?
+	/* !worth mentioning if nothing useful to gain?
     if (rewardPlayer == selectedPlayer)
 	{
 		addConsoleMessage(strresGetString(psStringRes,STR_GAM_RESREWARD), DEFAULT_JUSTIFY);
@@ -3124,12 +3123,12 @@ BOOL selfRepairEnabled(UBYTE player)
 	}
 }
 
-/*checks the stat to see if its of type wall or defence*/
+/*checks the stat to see if its of type wall || defence*/
 BOOL wallDefenceStruct(STRUCTURE_STATS *psStats)
 {
-	if (psStats->type == REF_DEFENSE OR 
-		psStats->type == REF_WALL OR 
-		psStats->type == REF_WALLCORNER OR
+	if (psStats->type == REF_DEFENSE || 
+		psStats->type == REF_WALL || 
+		psStats->type == REF_WALLCORNER ||
         psStats->type == REF_BLASTDOOR)
 	{
 		return TRUE;
@@ -3183,7 +3182,7 @@ void replaceStructureComponent(STRUCTURE *pList, UDWORD oldType, UDWORD oldCompI
     STRUCTURE   *psStructure;
 
     //if the type is not one we are interested in, then don't bother checking
-    if (!(oldType == COMP_ECM OR oldType == COMP_SENSOR OR oldType == COMP_WEAPON))
+    if (!(oldType == COMP_ECM || oldType == COMP_SENSOR || oldType == COMP_WEAPON))
     {
         return;
     }

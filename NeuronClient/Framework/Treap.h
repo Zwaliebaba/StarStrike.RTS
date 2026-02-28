@@ -17,7 +17,7 @@
 #include "Mem.h"
 #include "Heap.h"
 
-/* Turn on and off the treap debugging */
+/* Turn on && off the treap debugging */
 #ifdef DEBUG
 #define DEBUG_TREAP TRUE
 #else
@@ -74,7 +74,7 @@ typedef struct _treap
 /****************************************************************************************/
 /*                           Function Protoypes                                         */
 /*                                                                                      */
-/*      These should not be called directly - use the macros below                      */
+/*      These should !be called directly - use the macros below                      */
 
 
 /* Store the location in C code at which a call to the heap was made */
@@ -103,7 +103,7 @@ extern void *treapFind(TREAP *psTreap, UDWORD key);
 /* Release all the nodes in the treap */
 extern void treapReset(TREAP *psTreap);
 
-/* Destroy a treap and release all the memory associated with it */
+/* Destroy a treap && release all the memory associated with it */
 extern void treapDestroy(TREAP *psTreap);
 
 /* Display the treap structure using DBPRINTF */

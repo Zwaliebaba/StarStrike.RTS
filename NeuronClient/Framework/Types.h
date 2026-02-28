@@ -99,15 +99,5 @@ typedef	int	BOOL;
 
 // now in fractions.h #define ROUND(x) ((x)>=0 ? (SDWORD)((x) + 0.5) : (SDWORD)((x) - 0.5))
 
-/* Boolean operators */
-
-#define	AND &&
-#define OR ||
-#define NOT !
-
-/* Break loop construct */
-
-#define FOREVER for (;;)
-
 
 #endif

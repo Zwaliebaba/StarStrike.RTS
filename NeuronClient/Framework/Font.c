@@ -275,10 +275,10 @@ void fontPrint(SDWORD x, SDWORD y, STRING *pFormat, ...)
 		}
 		break;
 	case 24:
-		ASSERT((FALSE, "24 bit text output not implemented"));
+		ASSERT((FALSE, "24 bit text output !implemented"));
 		break;
 	case 32:
-		ASSERT((FALSE, "32 bit text output not implemented"));
+		ASSERT((FALSE, "32 bit text output !implemented"));
 		break;
 	default:
 		ASSERT((FALSE, "Unknown display pixel format"));
@@ -371,10 +371,10 @@ void fontPrintChar(SDWORD x,SDWORD y, PROP_CHAR *psChar, UDWORD height)
 		}
 		break;
 	case 24:
-		ASSERT((FALSE, "24 bit text output not implemented"));
+		ASSERT((FALSE, "24 bit text output !implemented"));
 		break;
 	case 32:
-		ASSERT((FALSE, "32 bit text output not implemented"));
+		ASSERT((FALSE, "32 bit text output !implemented"));
 		break;
 	default:
 		ASSERT((FALSE, "Unknown display pixel format"));
@@ -481,7 +481,7 @@ BOOL fontLoad(UBYTE *pFileData, UDWORD fileSize, PROP_FONT **ppsFont)
 
 	*ppsFont = NULL;
 
-	/* Check the file type and version */
+	/* Check the file type && version */
 	psHdr = (FONT_SAVEHDR *)pFileData;
 	if (!(psHdr->aFileType[0] == 'f' &&
 		  psHdr->aFileType[1] == 'o' &&
@@ -512,7 +512,7 @@ BOOL fontLoad(UBYTE *pFileData, UDWORD fileSize, PROP_FONT **ppsFont)
 	(*ppsFont)->numOffset = psHdr->numOffset;
 	(*ppsFont)->numChars = psHdr->numChars;
 
-	/* Allocate the offset and character buffers */
+	/* Allocate the offset && character buffers */
 	(*ppsFont)->psOffset = (PROP_PRINTABLE *)MALLOC(sizeof(PROP_PRINTABLE)
 													* psHdr->numOffset);
 	if (!(*ppsFont)->psOffset)
@@ -572,7 +572,7 @@ BOOL fontLoad(UBYTE *pFileData, UDWORD fileSize, PROP_FONT **ppsFont)
 
 	return TRUE;
 
-	/* Free up any memory that may have been allocated and exit with error */
+	/* Free up any memory that may have been allocated && exit with error */
 error:
 	if (*ppsFont)
 	{

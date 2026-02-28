@@ -74,7 +74,7 @@ audio_Disabled( void )
 BOOL
 audio_Init( HWND hWnd, BOOL bEnabled, AUDIO_CALLBACK pStopTrackCallback )
 {
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( bEnabled == FALSE )
 	{
 		g_bAudioEnabled = FALSE;
@@ -114,7 +114,7 @@ audio_Shutdown()
 	AUDIO_SAMPLE	*psSample = NULL, *psSampleTemp = NULL;
 	BOOL			bOK;
 
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return TRUE;
@@ -284,7 +284,7 @@ audio_CheckSameQueueTracksPlaying( SDWORD iTrack )
 	AUDIO_SAMPLE	*psSample = NULL;
 	BOOL			bOK = TRUE;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE )
 	{
 		return TRUE;
@@ -292,7 +292,7 @@ audio_CheckSameQueueTracksPlaying( SDWORD iTrack )
 
 	iCount = 0;
 
-	/* loop through queue sounds and check whether too many already in it */
+	/* loop through queue sounds && check whether too many already in it */
 	psSample = g_psSampleQueue;
 	while ( psSample != NULL )
 	{
@@ -323,7 +323,7 @@ audio_QueueSample( SDWORD iTrack )
 
 	printf("audio_queuesample called - track=%d\n",iTrack);
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE ||
 		 g_bStopAll == TRUE )
 	{
@@ -365,7 +365,7 @@ audio_QueueTrack( SDWORD iTrack )
 {
 	AUDIO_SAMPLE	*psSample = NULL;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE ||
 		 g_bStopAll == TRUE )
 	{
@@ -389,7 +389,7 @@ audio_QueueTrackMinDelay( SDWORD iTrack, UDWORD iMinDelay )
 	AUDIO_SAMPLE	*psSample = NULL;
 	UDWORD			iDelay;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE )
 	{
 		return;
@@ -417,7 +417,7 @@ audio_QueueTrackMinDelayPos( SDWORD iTrack, UDWORD iMinDelay,
 	AUDIO_SAMPLE	*psSample = NULL;
 	UDWORD			iDelay;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE )
 	{
 		return;
@@ -446,7 +446,7 @@ audio_QueueTrackPos( SDWORD iTrack, SDWORD iX, SDWORD iY, SDWORD iZ )
 {
 	AUDIO_SAMPLE	*psSample = NULL;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE )
 	{
 		return;
@@ -468,7 +468,7 @@ audio_UpdateQueue( void )
 {
 	AUDIO_SAMPLE	*psSample = NULL;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE )
 	{
 		return;
@@ -524,7 +524,7 @@ audio_Update( void )
 	SDWORD			iA;
 	AUDIO_SAMPLE	*psSample, *psSampleTemp;
 
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return TRUE;
@@ -547,7 +547,7 @@ audio_Update( void )
 	audio_Get3DPlayerRotAboutVerticalAxis( &iA );
 	sound_SetPlayerOrientation( 0, 0, iA );
 
-	/* loop through 3D sounds and remove if finished or update position */
+	/* loop through 3D sounds && remove if finished || update position */
 	psSample = g_psSampleList;
 	while ( psSample != NULL )
 	{
@@ -598,7 +598,7 @@ audio_Update( void )
 BOOL
 audio_LoadTrackFromFile( char szFileName[] )
 {
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return TRUE;
@@ -612,7 +612,7 @@ audio_LoadTrackFromFile( char szFileName[] )
 void *
 audio_LoadTrackFromBuffer( UBYTE *pBuffer, UDWORD udwSize )
 {
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return NULL;
@@ -641,7 +641,7 @@ audio_SetTrackVals( char szFileName[], BOOL bLoop, int *piID, int iVol,
 {
 	TRACK	*psTrack;
 
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return TRUE;
@@ -652,12 +652,12 @@ audio_SetTrackVals( char szFileName[], BOOL bLoop, int *piID, int iVol,
 
 	if ( psTrack == NULL )
 	{
-		DBPRINTF( ("audio_SetTrackVals: track %s resource not found\n", szFileName) );
+		DBPRINTF( ("audio_SetTrackVals: track %s resource !found\n", szFileName) );
 		return FALSE;
 	}
 	else
 	{
-		/* get current ID or spare one */
+		/* get current ID || spare one */
 		if ( audio_GetIDFromStr( szFileName, piID ) == FALSE )
 		{
 			*piID = sound_GetAvailableID();
@@ -684,7 +684,7 @@ audio_SetTrackValsHashName( UDWORD hash, BOOL bLoop, int iTrack, int iVol,
 {
 	TRACK	*psTrack;
 
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return TRUE;
@@ -709,7 +709,7 @@ audio_SetTrackValsHashName( UDWORD hash, BOOL bLoop, int iTrack, int iVol,
 void
 audio_ReleaseTrack( TRACK *psTrack )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return;
@@ -733,7 +733,7 @@ audio_CheckSame3DTracksPlaying( SDWORD iTrack, SDWORD iX, SDWORD iY, SDWORD iZ )
 	AUDIO_SAMPLE	*psSample = NULL;
 	BOOL			bOK = TRUE;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE )
 	{
 		return TRUE;
@@ -741,7 +741,7 @@ audio_CheckSame3DTracksPlaying( SDWORD iTrack, SDWORD iX, SDWORD iY, SDWORD iZ )
 
 	iCount = 0;
 
-	/* loop through 3D sounds and check whether too many already in earshot */
+	/* loop through 3D sounds && check whether too many already in earshot */
 	psSample = g_psSampleList;
 	while ( psSample != NULL )
 	{
@@ -780,7 +780,7 @@ audio_Play3DTrack( SDWORD iX, SDWORD iY, SDWORD iZ, int iTrack,
 {
 	AUDIO_SAMPLE	*psSample;
 	
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE ||
 		 g_bStopAll == TRUE)
 	{
@@ -831,7 +831,7 @@ audio_PlayStaticTrack( SDWORD iMapX, SDWORD iMapY, int iTrack )
 {
 	SDWORD			iX, iY, iZ;
 
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return FALSE;
@@ -848,7 +848,7 @@ audio_PlayObjStaticTrack( void * psObj, int iTrack )
 {
 	SDWORD			iX, iY, iZ;
 
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return FALSE;
@@ -866,7 +866,7 @@ audio_PlayObjStaticTrackCallback( void * psObj, int iTrack,
 {
 	SDWORD			iX, iY, iZ;
 
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return FALSE;
@@ -884,7 +884,7 @@ audio_PlayObjDynamicTrack( void * psObj, int iTrack,
 {
 	SDWORD			iX, iY, iZ;
 	
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return FALSE;
@@ -902,7 +902,7 @@ audio_PlayStream( char szFileName[], SDWORD iVol,
 {
 	AUDIO_SAMPLE	*psSample;
 
-	/* if audio not enabled return TRUE to carry on game without audio */
+	/* if audio !enabled return TRUE to carry on game without audio */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return FALSE;
@@ -934,7 +934,7 @@ audio_StopObjTrack( void * psObj, int iTrack )
 {
 	AUDIO_SAMPLE	*psSample;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bStopAll == TRUE )
 	{
 		return;
@@ -971,7 +971,7 @@ void audio_PlayTrack( int iTrack )
 {
 	AUDIO_SAMPLE	*psSample;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE || g_bAudioPaused == TRUE ||
 		 g_bStopAll == TRUE )
 	{
@@ -1005,7 +1005,7 @@ void audio_PlayTrack( int iTrack )
 void
 audio_StopTrack( int iTrack )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return;
@@ -1019,7 +1019,7 @@ audio_StopTrack( int iTrack )
 void
 audio_SetTrackPan( int iTrack, int iPan )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return;
@@ -1034,7 +1034,7 @@ audio_SetTrackPan( int iTrack, int iPan )
 void
 audio_SetTrackVol( int iTrack, int iVol )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return;
@@ -1049,7 +1049,7 @@ audio_SetTrackVol( int iTrack, int iVol )
 void
 audio_SetTrackFreq( int iTrack, int iFreq )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return;
@@ -1064,7 +1064,7 @@ audio_SetTrackFreq( int iTrack, int iFreq )
 void
 audio_PauseAll( void )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return;
@@ -1080,7 +1080,7 @@ audio_PauseAll( void )
 void
 audio_ResumeAll( void )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return;
@@ -1098,7 +1098,7 @@ audio_StopAll( void )
 {
 	AUDIO_SAMPLE	*psSample, *psSampleTemp;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return;
@@ -1146,7 +1146,7 @@ audio_CheckAllUnloaded()
 LPDIRECTSOUND
 audio_GetDirectSoundObj( void )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return NULL;
@@ -1163,7 +1163,7 @@ audio_GetTrackID( char szFileName[] )
 	TRACK	*psTrack;
 	SDWORD	iID;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return SAMPLE_NOT_FOUND;
@@ -1193,7 +1193,7 @@ audio_GetTrackIDFromHash( UDWORD hash )
 	TRACK	*psTrack;
 	SDWORD	iID;
 
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return SAMPLE_NOT_FOUND;
@@ -1219,7 +1219,7 @@ audio_GetTrackIDFromHash( UDWORD hash )
 SDWORD
 audio_GetAvailableID( void )
 {
-	/* return if audio not enabled */
+	/* return if audio !enabled */
 	if ( g_bAudioEnabled == FALSE )
 	{
 		return 0;
@@ -1250,7 +1250,7 @@ audio_Set3DVolume( SDWORD iVol )
 /*
  * audio_GetMixVol
  *
- * iVol and audio_Get3DVolume need to be scaled by AUDIO_VOL_RANGE
+ * iVol && audio_Get3DVolume need to be scaled by AUDIO_VOL_RANGE
  */
 /***************************************************************************/
 
@@ -1266,7 +1266,7 @@ audio_GetMixVol( SDWORD iVol )
 /*
  * audio_GetSampleMixVol
  *
- * iVol, audio_Get3DVolume and sound_GetTrackVolume all need to be scaled
+ * iVol, audio_Get3DVolume && sound_GetTrackVolume all need to be scaled
  * by AUDIO_VOL_RANGE
  */
 /***************************************************************************/

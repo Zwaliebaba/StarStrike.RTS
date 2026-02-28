@@ -43,14 +43,14 @@ extern BOOL strresCreate(STR_RES **ppsRes, UDWORD init, UDWORD ext);
 /* Release a string resource object */
 extern void strresDestroy(STR_RES *psRes);
 
-/* Release the id strings, but not the strings themselves,
+/* Release the id strings, but !the strings themselves,
  * (they can be accessed only by id number).
  */
 extern void strresReleaseIDStrings(STR_RES *psRes);
 
 /* Load a list of string ID's from a memory buffer
  * id == 0 should be a default string which is returned if the
- * requested string is not found.
+ * requested string is !found.
  */
 extern BOOL strresLoadFixedID(STR_RES *psRes, STR_ID *psID, UDWORD numID);
 

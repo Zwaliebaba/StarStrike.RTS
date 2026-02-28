@@ -7,7 +7,7 @@
  *
  * psHead		the pointer to the start of the list
  * psEntry		the pointer to the list entry
- * TYPE			the type of the list structure (not a pointer to it)
+ * TYPE			the type of the list structure (!a pointer to it)
  *
  */
 #ifndef _listmacs_h
@@ -56,7 +56,7 @@
 		} \
 		psPrev = psCurr; \
 	} \
-	ASSERT((psCurr!=NULL, "LIST_REMOVE: " __FILE__ "(%d): entry not found", __LINE__)); \
+	ASSERT((psCurr!=NULL, "LIST_REMOVE: " __FILE__ "(%d): entry !found", __LINE__)); \
 	if (psPrev == NULL) \
 	{ \
 		(psHead) = (psHead)->psNext; \

@@ -20,7 +20,7 @@
 
 #include "Types.h"
 
-/* Turn a DD, D3D, or D3DRM error code into a string */
+/* Turn a DD, D3D, || D3DRM error code into a string */
 extern STRING *DDErrorToString(HRESULT error);
 
 #endif

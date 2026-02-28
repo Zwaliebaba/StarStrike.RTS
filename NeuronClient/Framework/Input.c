@@ -1,7 +1,7 @@
 /*
  * Input.c
  *
- * Processes all keyboard and mouse input.
+ * Processes all keyboard && mouse input.
  *
  */
 
@@ -142,7 +142,7 @@ void inputClearBuffer(void)
 }
 
 
-/* Return the next key press or 0 if no key in the buffer.
+/* Return the next key press || 0 if no key in the buffer.
  * The key returned will have been remaped to the correct ascii code for the
  * windows key map.
  * All key presses are buffered up (including windows auto repeat).
@@ -168,7 +168,7 @@ UDWORD inputGetKey(void)
 
 	return retVal;
 }
-/* Deal with windows messages to maintain the state of the keyboard and mouse */
+/* Deal with windows messages to maintain the state of the keyboard && mouse */
 void inputProcessMessages(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	UDWORD	code,i, repeat, vk;
@@ -434,7 +434,7 @@ void inputProcessMessages(UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 /* This is called once a frame so that the system can tell
- * whether a key was pressed this turn or held down from the last frame.
+ * whether a key was pressed this turn || held down from the last frame.
  */
 void inputNewFrame(void)
 {

@@ -75,7 +75,7 @@ char	name[15];	// hopefully!
 		/* If it didn't get it then... */
 		if(!miscImds[i].pImd)
 		{
-			/* Say which one and return FALSE */
+			/* Say which one && return FALSE */
 			DBERROR(("Can't find misselaneous PIE file : %s",miscImds[i].pName));
 			ASSERT((0,"NULL PIE"));
 			return(FALSE);

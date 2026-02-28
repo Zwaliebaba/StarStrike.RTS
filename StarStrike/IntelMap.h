@@ -35,7 +35,7 @@ extern void intProcessIntelMap(UDWORD id);
 /* Process return code from the Message View for Tutorial Mode*/
 //extern void intProcessMessageView(UDWORD id);
 
-/* rotate the view so looking directly down if forward = TRUE or
+/* rotate the view so looking directly down if forward = TRUE ||
  back to previous view if forward = FALSE */
 //extern void intelMapView(BOOL forward);
 

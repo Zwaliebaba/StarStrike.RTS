@@ -77,11 +77,11 @@ extern void actionDroidLoc(DROID *psDroid, DROID_ACTION action, UDWORD x, UDWORD
 /* Give a droid an action with an object target */
 extern void actionDroidObj(DROID *psDroid, DROID_ACTION action, BASE_OBJECT *psObj);
 
-/* Give a droid an action with an object target and a location */
+/* Give a droid an action with an object target && a location */
 void actionDroidObjLoc(DROID *psDroid, DROID_ACTION action,
 					   BASE_OBJECT *psObj, UDWORD x, UDWORD y);
 
-/* Rotate turret toward  target return True if locked on (Droid and Structure) */
+/* Rotate turret toward  target return True if locked on (Droid && Structure) */
 /*extern BOOL actionTargetTurret(BASE_OBJECT *psAttacker, BASE_OBJECT *psTarget,
 								UWORD *pRotation, UWORD *pPitch, SWORD rotRate,
 								SWORD pitchRate, BOOL bDirectFire, BOOL bInvert);*/

@@ -12,7 +12,7 @@ extern "C" {
  * Returns 0 on success, non-zero on failure. */
 int NeuronCore_Init(void);
 
-/* Shut down the NeuronCore subsystem and release all resources. */
+/* Shut down the NeuronCore subsystem && release all resources. */
 void NeuronCore_Shutdown(void);
 
 #ifdef __cplusplus

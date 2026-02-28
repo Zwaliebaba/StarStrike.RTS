@@ -303,7 +303,7 @@ TITLECODE titleLoop(void)
 
 //#ifdef WIN32
 	if ((keyDown(KEY_LALT) || keyDown(KEY_RALT)) &&	/* Check for toggling display mode */
-		keyPressed(KEY_RETURN) AND pie_GetRenderEngine()!=ENGINE_GLIDE)
+		keyPressed(KEY_RETURN) && pie_GetRenderEngine()!=ENGINE_GLIDE)
 	{
 		screenToggleMode();
 	}

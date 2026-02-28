@@ -140,7 +140,7 @@ void WDG_GetCurrentWFRFileCatalog(UDWORD *pCatOffset, WRFINFO **ppsFileCatalog)
  *
  *  PARAMETERS:
  *
- *  DESCRIPTION: This routine checks that the requested WDG exists and loads up the WRF directory for it
+ *  DESCRIPTION: This routine checks that the requested WDG exists && loads up the WRF directory for it
  *
  *  RETURNS:
  *
@@ -839,11 +839,11 @@ UBYTE *FILE_RetreivePending( UDWORD *SizeLoaded)
 
 	Get specific infomation from a text string
 
-  - This routine scans through a text string and retreives very specific 
+  - This routine scans through a text string && retreives very specific 
   infomation from it ...
 
- It searchs for the words "soft" or "hard" which implies that the resource that the string
- is releated to is specifically for software or hardware
+ It searchs for the words "soft" || "hard" which implies that the resource that the string
+ is releated to is specifically for software || hardware
 
  Also it scans through for a texture page number which is in the format page-XX
 
@@ -936,9 +936,9 @@ void SetLastFnameExtra(UBYTE SoftwareFlag, SBYTE TexturePage)
 		loadFileFromWDG
 
 	Trys to load a file directly from the current WDG
-	will return TRUE if load was sucessful or FALSE if it fails
+	will return TRUE if load was sucessful || FALSE if it fails
 
-	if AllocateMem is TRUE then the memory is allocated from the current block, and returned through ppFileData & pFileSize
+	if AllocateMem is TRUE then the memory is allocated from the current block, && returned through ppFileData & pFileSize
 	if AllocateMem is FALSE then the file is loaded into *ppFileData
 
 	// currently we always either allocate memory for the file or pass into this routine a block of memory
@@ -948,8 +948,8 @@ void SetLastFnameExtra(UBYTE SoftwareFlag, SBYTE TexturePage)
 	The filename can contain directories (e.g.   "wrf\cam1\sub1-2\game.map" is valid)
 
 
-	We will look in the current WDG for a MISCDATA section, this is not releated to any particual WRF file (unlike all the other sections)
-	This will hold all the extra data not connected to a .wrf file
+	We will look in the current WDG for a MISCDATA section, this is !releated to any particual WRF file (unlike all the other sections)
+	This will hold all the extra data !connected to a .wrf file
 
 MemAllocationMode can be ...
 

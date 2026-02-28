@@ -2,7 +2,7 @@
 /*
  * pieState.c
  *
- * renderer setup and state control routines for 3D rendering
+ * renderer setup && state control routines for 3D rendering
  *
  */
 /***************************************************************************/

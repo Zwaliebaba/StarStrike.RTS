@@ -151,7 +151,7 @@ queue_Enqueue( QUEUE * pQueue, void * psElement, int iPriority )
 	}
 #endif
 
-	/* check list not empty */
+	/* check list !empty */
 	if ( pQueue->psFreeNodeList == NULL )
 	{
 		DBPRINTF( ("queue_GetFreeElement: all nodes allocated: flushing queue.\n") );
@@ -256,7 +256,7 @@ queue_Dequeue( QUEUE * pQueue )
 /*
  * queue_FindElement
  *
- * Find specific element in queue and return node pointer
+ * Find specific element in queue && return node pointer
  */
 /***************************************************************************/
 
@@ -374,7 +374,7 @@ queue_RemoveNode( QUEUE * pQueue, QUEUE_NODE *psNode )
 	ASSERT( (PTRVALID(psNode,sizeof(QUEUE_NODE)),
 			"queue_RemoveNode: node pointer invalid\n") );
 
-	/* if node valid, remove from queue and return to free node list */
+	/* if node valid, remove from queue && return to free node list */
 	if ( psNode == NULL )
 	{
 		return FALSE;

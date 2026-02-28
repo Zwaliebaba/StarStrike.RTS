@@ -1,7 +1,7 @@
 /*
  * StrResLY.h
  *
- * Interface to the string resource lex and yacc functions.
+ * Interface to the string resource lex && yacc functions.
  */
 #ifndef _strresly_h
 #define _strresly_h
@@ -18,7 +18,7 @@ extern STR_RES	*psCurrRes;
 /* Set the current input buffer for the lexer - used by strresLoad */
 extern void strresSetInputBuffer(UBYTE *pBuffer, UDWORD size);
 
-/* Give access to the line number and current text for error messages */
+/* Give access to the line number && current text for error messages */
 extern void strresGetErrorData(int *pLine, char **ppText);
 
 /* Call the yacc parser */

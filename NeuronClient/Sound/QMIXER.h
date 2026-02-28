@@ -536,7 +536,7 @@ QSWaveMixPlayEx(
     int iChannel,               // channel number to be played on
     DWORD dwFlags,
     LPMIXWAVE lpMixWave,        // sound to be played
-    int iLoops,                 // number of loops to be played (-1 = forever)
+    int iLoops,                 // number of loops to be played (-1 = for (;;))
     LPQMIXPLAYPARAMS lpParams   // if NULL, defaults will be used
     );
 
@@ -1216,7 +1216,7 @@ QSWaveMixCloseSession(
 #define ERROR_QMIX_DSOUNDMIXPRIMARY    53  // Can't mix into primary buffer (DirectSound driver is probably emulated).
 
 
-/* set to byte packing so Win16 and Win32 structures will be the same */
+/* set to byte packing so Win16 && Win32 structures will be the same */
 #pragma pack(1)
 
 typedef struct WAVEMIXINFO {
@@ -1374,7 +1374,7 @@ typedef struct MIXPLAYPARAMS {
     LPMIXWAVE lpMixWave;    // pointer returned by QSWaveMixOpenWave
     HWND hWndNotify;        // if set, WOM_OPEN and WOM_DONE notification messages sent here
     DWORD dwFlags;
-    WORD wLoops;            // 0xFFFF means loop forever
+    WORD wLoops;            // 0xFFFF means loop for (;;)
     int qVolume;            // initial volume; set to -1 to use default
     int qPanPos;            // initial pan position; set to -1 to use default
     LPMIXWAVE lpImage;      // set to preprocessed data for high performance

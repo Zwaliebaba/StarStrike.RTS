@@ -25,7 +25,7 @@
 
 /*
 
-	Playstation and PC stuff   ... just the matrix stack & surface normal code is all thats needed on the PSX
+	Playstation && PC stuff   ... just the matrix stack & surface normal code is all thats needed on the PSX
 
 */
 

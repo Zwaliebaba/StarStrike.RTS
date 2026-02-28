@@ -40,7 +40,7 @@ BOOL blockingTile(UDWORD x, UDWORD y, UDWORD mask)
 //psor	if (!(TERRAIN_TYPE(psTile) & mask) OR
 //psor		(!(mask & TER_OBJECT) && psTile->psObject))
 
-/*	if (!(TERRAIN_TYPE(psTile) & mask) OR
+/*	if (!(TERRAIN_TYPE(psTile) & mask) ||
 		(!(mask & TER_OBJECT) && TILE_OCCUPIED(psTile)))*/
 	if (mask == 0 &&// TILE_OCCUPIED(psTile))
 		(TILE_OCCUPIED(psTile) || TERRAIN_TYPE(psTile) == TER_CLIFFFACE))
@@ -71,7 +71,7 @@ SDWORD	MovementIndex;
   
 /* WARNING - there's a lot of block move/pixel move conflicts going on here - they're 
    resolved in the movement update routine by masking out higher bits - read the commented
-   out code below and it should be clearer - Alex . This whole findpath routine HAS to be 
+   out code below && it should be clearer - Alex . This whole findpath routine HAS to be 
    re-written from scratch.......:-( */
 
 						  
@@ -546,7 +546,7 @@ void TurnToTarget(BASE_OBJECT *Obj, MOVE_CONTROL *MoveData,
 }
 
 
-/* Return whether to decrement or increment a direction
+/* Return whether to decrement || increment a direction
    in order to get to the other direction quickest */
 static void updateTurn(MOVE_CONTROL *psMove)
 {
@@ -697,7 +697,7 @@ FRACT		fraction;
 			Obj->x = MoveData->targetX;
 			Obj->y = MoveData->targetY;
 	   
-			/* And tell system to get to the next journey waypoint */
+			/* && tell system to get to the next journey waypoint */
 			MoveData->Position++;
 			MoveData->Status = MOVENAVIGATE;
 			MoveData->startedMoving = FALSE;
@@ -713,7 +713,7 @@ FRACT		fraction;
 	}
 
 	/* Have we got there? */
-	if (Obj->x == (UDWORD)MoveData->DestinationX AND 
+	if (Obj->x == (UDWORD)MoveData->DestinationX && 
 		Obj->y == (UDWORD)MoveData->DestinationY)
 	{
 		MoveData->Status = MOVEINACTIVE;
@@ -734,7 +734,7 @@ FRACT		fraction;
 //	gameTimeStart();
 #endif
 
-	/* We're not there yet */
+	/* We're !there yet */
 	return(FALSE);
 }
 
@@ -744,7 +744,7 @@ FRACT	xDif,yDif;
 FRACT	eta;
 FRACT	length;
 
-	/* Get differences between start and end points */
+	/* Get differences between start && end points */
 	xDif = MAKEFRACT(abs(x1-x2));
 	yDif = MAKEFRACT(abs(y1-y2));
 
@@ -753,10 +753,10 @@ FRACT	length;
 	length = fSQRT(FRACTmul(xDif,xDif) + FRACTmul(yDif,yDif));
 
 
-	/* And how long should that take, given the passed in speed */
+	/* && how long should that take, given the passed in speed */
 	eta = ((length/speed)*GAME_TICKS_PER_SEC);
 
-	/* Convert to natural number N+, and return */
+	/* Convert to natural number N+, && return */
 	return(MAKEINT(eta));
 }
 													
@@ -807,11 +807,11 @@ UDWORD vect2Follow[COMPASS_POINTS][3]=
 		yVect = NIL;
 
 	i=0;
-	while (!found AND i<8)
+	while (!found && i<8)
 	{
 		xComp = vect2Follow[i][0];
 		yComp = vect2Follow[i][1];
-		if (xComp == xVect AND yComp == yVect)
+		if (xComp == xVect && yComp == yVect)
 		{
 			found = TRUE;
 		}

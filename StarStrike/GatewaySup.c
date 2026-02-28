@@ -42,8 +42,8 @@
 typedef int Pixel;		/* 1-channel frame buffer assumed */
 
 struct FRect {			/* window: a discrete 2-D rectangle */
-    int x0, y0;			/* xmin and ymin */
-    int x1, y1;			/* xmax and ymax (inclusive) */
+    int x0, y0;			/* xmin && ymin */
+    int x1, y1;			/* xmax && ymax (inclusive) */
 };
 
 struct Segment {
@@ -83,9 +83,9 @@ struct Segment stack[MAX], *sp = stack;	/* stack of filled segments */
 // Flood fill a map zone from a given point
 // stopping at blocking tiles
 /*
- * fill: set the pixel at (x,y) and all of its 4-connected neighbors
+ * fill: set the pixel at (x,y) && all of its 4-connected neighbors
  * with the same pixel value to the new pixel value nv.
- * A 4-connected neighbor is a pixel above, below, left, or right of a pixel.
+ * A 4-connected neighbor is a pixel above, below, left, || right of a pixel.
  */
 void gwSeedFill(SDWORD x, SDWORD y, SDWORD nv)
 {
@@ -103,7 +103,7 @@ void gwSeedFill(SDWORD x, SDWORD y, SDWORD nv)
     PUSH(y+1, x, x, -1);		/* seed segment (popped 1st) */
 
     while (sp>stack) {
-		/* pop segment off stack and fill a neighboring scan line */
+		/* pop segment off stack && fill a neighboring scan line */
 		POP(y, x1, x2, dy);
 		/*
 		 * segment of scan line y-dy for x1<=x<=x2 was previously filled,

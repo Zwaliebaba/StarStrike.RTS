@@ -119,7 +119,7 @@ static BOOL pushedKeyCombo(UDWORD subkey)
 	
 	// check if bound to a fixed combo.
 	pExist = keyFindMapping(  metakey,  subkey );
-	if(pExist && (pExist->status == KEYMAP_ALWAYS OR pExist->status == KEYMAP_ALWAYS_PROCESS))
+	if(pExist && (pExist->status == KEYMAP_ALWAYS || pExist->status == KEYMAP_ALWAYS_PROCESS))
 	{
 		selectedKeyMap = NULL;	// unhighlght selected.
 		return FALSE;
@@ -128,10 +128,10 @@ static BOOL pushedKeyCombo(UDWORD subkey)
 	/* Clear down mappings using these keys... But only if it isn't unassigned */
 	keyReAssignMapping( metakey, subkey, KEY_IGNORE, KEY_MAXSCAN );
 
-	/* Try and see if its there already - damn well should be! */
+	/* Try && see if its there already - damn well should be! */
 	psMapping = keyGetMappingFromFunction(selectedKeyMap->function);
 
-	/* Cough if it's not there */
+	/* Cough if it's !there */
 	ASSERT((psMapping!=NULL,"Trying to patch a non-existant function mapping - whoop whoop!!!"));
 
 	/* Now alter it to the new values */
@@ -280,7 +280,7 @@ VOID displayKeyMap(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDW
 	{
 		pie_BoxFillIndex(x,y,x+w,y+h,COL_GREEN);
 	}
-	else if(psMapping->status == KEYMAP_ALWAYS OR psMapping->status == KEYMAP_ALWAYS_PROCESS)
+	else if(psMapping->status == KEYMAP_ALWAYS || psMapping->status == KEYMAP_ALWAYS_PROCESS)
 	{
 		pie_BoxFillIndex(x,y,x+w,y+h,COL_RED);
 	}
@@ -409,8 +409,8 @@ BOOL startKeyMapEditor(BOOL first)
 	/* Now add the others... */
 	bubbleCount = 0;
 	bAtEnd = FALSE;
-	/* Stop when the right number or when aphabetically last - not sure...! */
-	while(bubbleCount<mapcount-1 AND !bAtEnd)
+	/* Stop when the right number || when aphabetically last - !sure...! */
+	while(bubbleCount<mapcount-1 && !bAtEnd)
 	{
 		/* Same test as before for upper limit */
 	 	strcpy(test,"zzzzzzzzzzzzzzzzzzzzz");
@@ -420,7 +420,7 @@ BOOL startKeyMapEditor(BOOL first)
 			if( (psMapping->status!=KEYMAP__DEBUG)&&(psMapping->status!=KEYMAP___HIDE))		// if it's not a debug mapping..
 			{
 				/* If it's alphabetically good but better then next one */
-				if(strcmp(psMapping->pName,test) < 0 AND strcmp(psMapping->pName,psPresent->pName) > 0)
+				if(strcmp(psMapping->pName,test) < 0 && strcmp(psMapping->pName,psPresent->pName) > 0)
 				{
 					/* Keep a record of it */
 					strcpy(test,psMapping->pName);

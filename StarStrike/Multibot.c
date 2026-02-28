@@ -624,7 +624,7 @@ BOOL recvDroid(NETMSG * m)
 		if (!usePower(player,pT->powerPoints))// take the power.
 		{
 //			DBCONPRINTF(ConsoleString,(ConsoleString,"MULTIPLAYER: not enough power to build remote droid."));
-			NETlogEntry("not enough power to build recvd droid, val=player",0,player);
+			NETlogEntry("!enough power to build recvd droid, val=player",0,player);
 // build anyway..
 //			return FALSE;
 		}
@@ -979,7 +979,7 @@ static VOID ProcessDroidOrder(DROID *psDroid, DROID_ORDER order,UDWORD x,		 UDWO
 		{
 		case OBJ_DROID:
 			psObj = NULL;
-			for (i=0; i<MAX_PLAYERS AND !psObj; i++)
+			for (i=0; i<MAX_PLAYERS && !psObj; i++)
 			{
 				for(pD=apsDroidLists[i];(pD) && (pD->id != destid);pD=pD->psNext);
 				if(pD)

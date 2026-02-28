@@ -40,7 +40,7 @@ typedef struct PROJ_OBJECT
 	UBYTE			state;			/* current projectile state */
 	UBYTE			airTarget;		/* whether the projectile was fired at an airborn target */
 	
-	UBYTE			player;			/* needed because damage and radDamage vary 
+	UBYTE			player;			/* needed because damage && radDamage vary 
 									from base stat per player because of upgrades*/
 	UBYTE			bVisible;		// whether the selected player should see the projectile
 

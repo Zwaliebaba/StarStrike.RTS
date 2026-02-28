@@ -19,7 +19,7 @@
 #include "ScriptCB.h"
 #include "Mission.h"
 
-/* Allocation sizes for the droid, structure and feature heaps */
+/* Allocation sizes for the droid, structure && feature heaps */
 
 #define DROID_INIT		400
 #define STRUCTURE_INIT	200
@@ -367,7 +367,7 @@ void objmemUpdate(void)
 			psPrev = psCurr; \
 		} \
 		ASSERT((psCurr != NULL, \
-			"destroyObject:" #type " object not found")); \
+			"destroyObject:" #type " object !found")); \
 		if (psCurr != NULL) \
 		{ \
 			psPrev->psNext = psCurr->psNext; \
@@ -401,7 +401,7 @@ void objmemUpdate(void)
 			psPrev = psCurr; \
 		} \
 		ASSERT((psCurr != NULL, \
-			"removeObject:" #type " object not found")); \
+			"removeObject:" #type " object !found")); \
 		if (psCurr != NULL) \
 		{ \
 			psPrev->psNext = psCurr->psNext; \
@@ -480,7 +480,7 @@ BOOL createDroid(UDWORD player, DROID **ppsNew)
 void killDroid(DROID *psDel)
 {
 	ASSERT((psDel->type == OBJ_DROID,
-		"killUnit: pointer is not a unit"));
+		"killUnit: pointer is !a unit"));
 	ASSERT((psDel->player < MAX_PLAYERS,
 		"killUnit: invalid player for unit"));
 	DESTROY(apsDroidLists, psDel, DROID);
@@ -496,7 +496,7 @@ void freeAllDroids(void)
 void removeDroid(DROID *psDroidToRemove, DROID *pList[MAX_PLAYERS])
 {
 	ASSERT((psDroidToRemove->type == OBJ_DROID,
-		"removeUnit: pointer is not a unit"));
+		"removeUnit: pointer is !a unit"));
 	ASSERT((psDroidToRemove->player < MAX_PLAYERS,
 		"removeUnit: invalid player for unit"));
 	REMOVE(pList, psDroidToRemove, DROID);
@@ -540,7 +540,7 @@ void addStructure(STRUCTURE *psStructToAdd)
 void killStruct(STRUCTURE *psDel)
 {
 	ASSERT((psDel->type == OBJ_STRUCTURE,
-		"killStruct: pointer is not a droid"));
+		"killStruct: pointer is !a droid"));
 	ASSERT((psDel->player < MAX_PLAYERS,
 		"killStruct: invalid player for stucture"));
 	DESTROY(apsStructLists, psDel, STRUCTURE);
@@ -556,7 +556,7 @@ void freeAllStructs(void)
 void removeStructureFromList(STRUCTURE *psStructToRemove, STRUCTURE *pList[MAX_PLAYERS])
 {
 	ASSERT((psStructToRemove->type == OBJ_STRUCTURE,
-		"removeStructureFromList: pointer is not a structure"));
+		"removeStructureFromList: pointer is !a structure"));
 	ASSERT((psStructToRemove->player < MAX_PLAYERS,
 		"removeStructureFromList: invalid player for structure"));
 	REMOVE(pList, psStructToRemove, STRUCTURE);
@@ -582,7 +582,7 @@ BOOL createFeature(FEATURE **ppsNew)
 void killFeature(FEATURE *psDel)
 {
 	ASSERT((psDel->type == OBJ_FEATURE,
-		"killFeature: pointer is not a feature"));
+		"killFeature: pointer is !a feature"));
 	psDel->player = 0;
 	DESTROY(apsFeatureLists, psDel, FEATURE);
 }
@@ -642,7 +642,7 @@ void removeFlagPosition(FLAG_POSITION *psDel)
 			psPrev = psCurr;
 		}
 		ASSERT((psCurr != NULL,
-			"removeFlagPosition:object not found"));
+			"removeFlagPosition:object !found"));
 		if (psCurr != NULL)
 		{
 			psPrev->psNext = psCurr->psNext;

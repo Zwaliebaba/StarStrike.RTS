@@ -1,7 +1,7 @@
 /*	
 	Selection.c 
 	Alex McLean, Pumpkin studios, EIDOS. 
-	Attempt to rationalise the unit selection procedure and	
+	Attempt to rationalise the unit selection procedure &&	
 	also necessary as we now need to return the number of 
 	units selected according to specified criteria.
 */
@@ -41,7 +41,7 @@ UDWORD	selNameSelect			( STRING *droidName, UDWORD player, BOOL bOnScreen );
 // ---------------------------------------------------------------------
 /*	
 	Selects the units of a given player according to given criteria.
-	It is also possible to request whether the units be onscreen or not.
+	It is also possible to request whether the units be onscreen || !.
 */
 
 DROID	*psOldRD = NULL;	// pointer to last selected repair unit
@@ -155,7 +155,7 @@ UDWORD	count;
 			ASSERT( (PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),
 				"moveUpdateUnit: invalid propulsion stats pointer") );
 			/* Same as that asked for - don't want Transporters*/
-			if ( psPropStats->propulsionType == propType AND psDroid->droidType != DROID_TRANSPORTER)
+			if ( psPropStats->propulsionType == propType && psDroid->droidType != DROID_TRANSPORTER)
 			{
 				psDroid->selected = TRUE;
 				count++;
@@ -323,14 +323,14 @@ DROID	*psFirst;
 BOOL	bLaterInList, bMatch;
 
 	for(psCurr = apsDroidLists[selectedPlayer],psFirst = NULL,psResult = NULL,bLaterInList = FALSE; 
-		psCurr AND !psResult; psCurr = psCurr->psNext)
+		psCurr && !psResult; psCurr = psCurr->psNext)
 	{
 		//if( psCurr->droidType == (SDWORD)unitType )
         //exceptions - as always...
         bMatch = FALSE;
         if (unitType == DROID_CONSTRUCT)
         {
-            if (psCurr->droidType == DROID_CONSTRUCT OR 
+            if (psCurr->droidType == DROID_CONSTRUCT || 
                 psCurr->droidType == DROID_CYBORG_CONSTRUCT)
             {
                 bMatch = TRUE;
@@ -338,7 +338,7 @@ BOOL	bLaterInList, bMatch;
         }
         else if (unitType == DROID_REPAIR)
         {
-            if (psCurr->droidType == DROID_REPAIR OR 
+            if (psCurr->droidType == DROID_REPAIR || 
                 psCurr->droidType == DROID_CYBORG_REPAIR)
             {
                 bMatch = TRUE;
@@ -367,8 +367,8 @@ BOOL	bLaterInList, bMatch;
 				psResult = psCurr;
 			}
 
-			/* Only select is this isn't the old one and it's further on in list */
-			else if(psCurr!=psOldRD AND bLaterInList)
+			/* Only select is this isn't the old one && it's further on in list */
+			else if(psCurr!=psOldRD && bLaterInList)
 			{
 				psResult = psCurr;
 			} 	
@@ -386,7 +386,7 @@ BOOL	bLaterInList, bMatch;
 		}
 	}
 
-	if(psResult AND !psResult->died)
+	if(psResult && !psResult->died)
 	{
 	 	selDroidDeselect(selectedPlayer);
 //		psResult->selected = TRUE;
@@ -435,7 +435,7 @@ DROID	*psFirst;
 BOOL	bLaterInList;
 	
 	for(psCurr = apsDroidLists[selectedPlayer],psFirst = NULL,psResult = NULL,bLaterInList = FALSE; 
-		psCurr AND !psResult; psCurr = psCurr->psNext)
+		psCurr && !psResult; psCurr = psCurr->psNext)
 	{
 		/* Only look at unselected ones */
 		if(psCurr->group==UBYTE_MAX)
@@ -459,7 +459,7 @@ BOOL	bLaterInList;
 			}
 
 			/* Dont choose same one again */
-			else if(psCurr!=psOldNS AND bLaterInList)
+			else if(psCurr!=psOldNS && bLaterInList)
 			{
 				psResult = psCurr;
 			} 	
@@ -476,7 +476,7 @@ BOOL	bLaterInList;
 		}
 	}
 
-	if(psResult AND !psResult->died)
+	if(psResult && !psResult->died)
 	{
 	 	selDroidDeselect(selectedPlayer);
 //		psResult->selected = TRUE;
@@ -511,11 +511,11 @@ STRUCTURE	*psFirst;
 BOOL		bLaterInList;
 
 	/* Firstly, start coughing if the type is invalid */
-	ASSERT((structType>=REF_HQ AND structType<=NUM_DIFF_BUILDINGS,
+	ASSERT((structType>=REF_HQ && structType<=NUM_DIFF_BUILDINGS,
 		"Invalid structure type in selNextSpecifiedBuilding"));
 
 	for(psCurr = apsStructLists[selectedPlayer], psFirst = NULL,psResult = NULL,bLaterInList = FALSE;
-		psCurr AND !psResult; psCurr = psCurr->psNext)
+		psCurr && !psResult; psCurr = psCurr->psNext)
 		{
 			if(psCurr->pStructureType->type == structType)
 			{
@@ -531,7 +531,7 @@ BOOL		bLaterInList;
 				{
 					psResult = psCurr;
 				}
-				else if(psCurr!=psOldStruct AND bLaterInList)
+				else if(psCurr!=psOldStruct && bLaterInList)
 				{
 					psResult = psCurr;
 				}
@@ -546,7 +546,7 @@ BOOL		bLaterInList;
 			}
 		}
 
-		if(psResult AND !psResult->died)
+		if(psResult && !psResult->died)
 		{
 			if(getWarCamStatus())
 			{

@@ -145,7 +145,7 @@ BOOL ParseCommandLine( LPSTR psCmdLine, BOOL bGlideDllPresent)
 
 			if (_chdir(token) != 0)
 			{
-				DBERROR(("Path not found: %s\n", token));
+				DBERROR(("Path !found: %s\n", token));
 			}
 		}
 
@@ -341,7 +341,7 @@ BOOL scanGameSpyFlags(LPSTR gflag,LPSTR value)
 		strcpy(game.name,value);
 	}
 
-/*not used from here on..
+/*!used from here on..
 +ip
 +maxplayers
 +game

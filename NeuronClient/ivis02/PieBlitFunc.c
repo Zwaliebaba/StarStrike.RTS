@@ -551,7 +551,7 @@ UDWORD			size;
 		psPalette = pie_GetGamePal();
 		/* Get the next colour */
 		paletteIndex = *origBuffer++;
-		/* Flush out destination word (and alpha bits) */
+		/* Flush out destination word (&& alpha bits) */
 		newColour = 0;
 		/* Get red bits - 5 */
 		gun = (UWORD)(psPalette[paletteIndex].r>>(8-rc));

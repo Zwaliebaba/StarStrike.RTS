@@ -121,7 +121,7 @@ ptrList_Clear( PTRLIST *ptrList )
 /*
  * ptrList_GetElement
  *
- * Gets free node from heap and returns element pointer
+ * Gets free node from heap && returns element pointer
  */
 /***************************************************************************/
 
@@ -143,7 +143,7 @@ ptrList_GetElement( PTRLIST *ptrList )
  * ptrList_FreeElement 
  *
  * Free element that was allocated using ptrList_GetElement without
- * inserting in list: will fail if element not allocated from ptrList
+ * inserting in list: will fail if element !allocated from ptrList
  */
 /***************************************************************************/
 
@@ -238,7 +238,7 @@ ptrList_RemoveElement( PTRLIST *ptrList, void *psElement, SDWORD sdwKey )
 		psCurNode = psCurNode->psNext;
 	}
 
-	/* remove node from hash table and return to heap */
+	/* remove node from hash table && return to heap */
 	if ( psCurNode == NULL )
 	{
 		bOK = FALSE;
@@ -265,7 +265,7 @@ ASSERT( (psCurNode->psElement == psElement,
 			/* point it to the previous node if valid */
 			if ( psPrevNode == NULL )
 			{
-				/* set next node and set flag */
+				/* set next node && set flag */
 				ptrList->psCurNode = psCurNode->psNext;
 				ptrList->bDontGetNext = TRUE;
 			}

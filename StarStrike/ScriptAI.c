@@ -276,7 +276,7 @@ BOOL scrIterateGroup(void)
 
 	if (psGroup != psScrIterateGroup)
 	{
-		ASSERT((FALSE, "scrIterateGroup: invalid group, InitGroupIterate not called?"));
+		ASSERT((FALSE, "scrIterateGroup: invalid group, InitGroupIterate !called?"));
 		return FALSE;
 	}
 
@@ -938,7 +938,7 @@ UDWORD scrStructTargetMask(STRUCTURE *psStruct)
 	case REF_BLASTDOOR:
 	default:
 		ASSERT((FALSE,
-			"scrStructTargetMask: unknown or invalid target structure type"));
+			"scrStructTargetMask: unknown || invalid target structure type"));
 		mask = 0;
 		break;
 	}
@@ -1017,7 +1017,7 @@ UDWORD scrDroidTargetMask(DROID *psDroid)
 	case DROID_ANY:
 	default:
 		ASSERT((FALSE,
-			"scrUnitTargetMask: unknown or invalid target unit type"));
+			"scrUnitTargetMask: unknown || invalid target unit type"));
 		break;
 	}
 
@@ -1039,7 +1039,7 @@ UDWORD scrDroidTargetMask(DROID *psDroid)
 		break;
 	default:
 		ASSERT((FALSE,
-			"scrUnitTargetMask: unknown or invalid target body size"));
+			"scrUnitTargetMask: unknown || invalid target body size"));
 		break;
 	}
 
@@ -1070,7 +1070,7 @@ UDWORD scrDroidTargetMask(DROID *psDroid)
 	case SKI:
 	default:
 		ASSERT((FALSE,
-			"scrUnitTargetMask: unknown or invalid target unit propulsion type"));
+			"scrUnitTargetMask: unknown || invalid target unit propulsion type"));
 		break;
 	}
 

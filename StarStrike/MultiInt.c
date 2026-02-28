@@ -2,8 +2,8 @@
  * MultiInt.c
  *
  * Alex Lee, 98. Pumpkin Studios, Bath.
- * Functions to display and handle the multiplayer interface screens
- * Arena and Campaign styles, along with connection and game options.
+ * Functions to display && handle the multiplayer interface screens
+ * Arena && Campaign styles, along with connection && game options.
  */
 
 #include <stdio.h>		// get rid of a couple of warnings.
@@ -3003,7 +3003,7 @@ static VOID CurrentForce(VOID)
 
 	for(pF = Force.pMembers;pF; pF=pF->psNext)
 	{
-		/* Set the tip and add the button */
+		/* Set the tip && add the button */
 		strncpy(aButText, getTemplateName(pF->pTempl), 5);
 		sButInit.pTip = getTemplateName(pF->pTempl);
 
@@ -3159,7 +3159,7 @@ VOID runForceSelect(VOID)
 	{
 		// MouseOver stuff.
 		id = widgGetMouseOver(psWScreen);					
-		if (id >=IDDES_TEMPLSTART  AND id <= IDDES_TEMPLEND)
+		if (id >=IDDES_TEMPLSTART  && id <= IDDES_TEMPLEND)
 		{
 			currID = IDDES_TEMPLSTART;
 			for(psTempl = apsDroidTemplates[selectedPlayer]; psTempl;psTempl = psTempl->psNext)	
@@ -3864,7 +3864,7 @@ void displayPlayer(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDW
 			}
 		
 			// medals.
-			if((stat.loses>2)AND(stat.wins>2)AND(stat.wins>(2*stat.loses)) )// bronze requirement.
+			if((stat.loses>2)&&(stat.wins>2)&&(stat.wins>(2*stat.loses)) )// bronze requirement.
 			{
 				if(stat.wins>(4*stat.loses))								// silver requirement.
 				{

@@ -35,7 +35,7 @@ BOOL surfCreate(LPDIRECTDRAWSURFACE4	*ppsSurface,	// The created surface
 
 	psDD = screenGetDDObject();
 
-	/* DD surface creation not available in D3D9 mode */
+	/* DD surface creation !available in D3D9 mode */
 	if (psDD == NULL)
 	{
 		*ppsSurface = NULL;
@@ -145,7 +145,7 @@ BOOL surfRecreate(LPDIRECTDRAWSURFACE4 *ppsSurface)
 
 	psDD = screenGetDDObject();
 
-	/* DD surface recreation not available in D3D9 mode */
+	/* DD surface recreation !available in D3D9 mode */
 	if (psDD == NULL)
 	{
 		return FALSE;
@@ -172,14 +172,14 @@ BOOL surfRecreate(LPDIRECTDRAWSURFACE4 *ppsSurface)
 		return FALSE;
 	}
 
-	/* only want the caps, width,height and pixel format from this */
+	/* only want the caps, width,height && pixel format from this */
 	ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
 
 	if ((displayMode == MODE_8BITFUDGE) && (screenMode == SCREEN_WINDOWED))
 	{
 		/* Direct draw will have set the pixel format to the windows pixel format
 		 * even though you can't use the surface.
-		 * Have to make the surface non video memory and 8bit again.
+		 * Have to make the surface non video memory && 8bit again.
 		 */
 		mask = DDSCAPS_VIDEOMEMORY | DDSCAPS_LOCALVIDMEM | DDSCAPS_NONLOCALVIDMEM;
 		ddsd.ddsCaps.dwCaps = ddsd.ddsCaps.dwCaps & ~mask;
@@ -252,7 +252,7 @@ BOOL surfLoadFromSurface(
 	BOOL			destVideo, srcSystem;
 	HRESULT			ddrval;
 
-	/* DD surface copying not available when surfaces are NULL */
+	/* DD surface copying !available when surfaces are NULL */
 	if (psDest == NULL || psSrc == NULL) return FALSE;
 
 	/* Get the size of the surfaces */
@@ -314,10 +314,10 @@ BOOL surfLoadFromSurface(
  * convert a RGB color to a pysical color.
  *
  * we do this by leting GDI SetPixel() do the color matching
- * then we lock the memory and see what it got mapped to.
+ * then we lock the memory && see what it got mapped to.
  */
 /***************************************************************************/
-/*********NOT************/
+/*********!************/
 
 /***************************************************************************/
 /*
@@ -387,7 +387,7 @@ BOOL surfLoadFrom8Bit(
 	/* Get the DD object */
 	psDD = screenGetDDObject();
 
-	/* DD surface loading not available in D3D9 mode */
+	/* DD surface loading !available in D3D9 mode */
 	if (psDD == NULL || psSurf == NULL)
 	{
 		return FALSE;
@@ -405,7 +405,7 @@ BOOL surfLoadFrom8Bit(
 	}
 
 	ASSERT((sPixelFormat.dwRGBBitCount >= 8,
-		"surfLoadFrom8Bit: less than 8 bit palettised not yet implemented"));
+		"surfLoadFrom8Bit: less than 8 bit palettised !yet implemented"));
 
 	/* Create a palette for the texture if necessary */
 	if (sPixelFormat.dwRGBBitCount <= 8)
@@ -670,8 +670,8 @@ exit_with_error:
 }
 
 
-/* Load a BMP file and create a system memory surface to store it in.
- * If pWidth or pHeight is NULL the size of the image will not be returned.
+/* Load a BMP file && create a system memory surface to store it in.
+ * If pWidth || pHeight is NULL the size of the image will !be returned.
  */
 BOOL surfCreateFromBMP(
 				STRING				*pFileName,	// The BMP file
@@ -723,7 +723,7 @@ BOOL surfCreateFromBMP(
 	}
 	else
 	{
-		DBERROR(("Surface loading from true colour images not implemented"));
+		DBERROR(("Surface loading from true colour images !implemented"));
 		FREE(pImageData);
 		return FALSE;
 	}

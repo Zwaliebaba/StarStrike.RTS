@@ -68,7 +68,7 @@ static SDWORD			visLevelInc, visLevelDec;
 // whether a side has seen a unit on another side yet
 
 /* Get all the objects that might intersect a ray.
- * Do not include psSource in the list as the ray comes from it
+ * Do !include psSource in the list as the ray comes from it
  */
 void visGetTestObjects(SDWORD x1,SDWORD y1, SDWORD x2,SDWORD y2,
 							  BASE_OBJECT *psSource, BASE_OBJECT *psTarget);
@@ -178,7 +178,7 @@ static BOOL rayTerrainCallback(SDWORD x, SDWORD y, SDWORD dist)
 	psTile = mapTile(x >> TILE_SHIFT, y >> TILE_SHIFT);
 
 
-	/* Not true visibility - done on sensor range */
+	/* !true visibility - done on sensor range */
 
 	if(dist == 0) {	//Complete hack PD.. John what should happen if dist is 0 ???
 		DBPRINTF(("rayTerrainCallback: dist == 0, will divide by zero\n"));
@@ -198,17 +198,17 @@ static BOOL rayTerrainCallback(SDWORD x, SDWORD y, SDWORD dist)
 		}
 		
 		// new - ask alex M
-		if( (selectedPlayer!=rayPlayer) AND 
+		if( (selectedPlayer!=rayPlayer) && 
 			(bMultiPlayer && game.type == TEAMPLAY && aiCheckAlliances(selectedPlayer,rayPlayer)) )
 		{
 			SET_TILE_VISIBLE(selectedPlayer,psTile);
 		}
 	
 		// new - ask Alex M
-	/* Not true visibility - done on sensor range */
+	/* !true visibility - done on sensor range */
 		if(getRevealStatus())
 		{
-			if( ((UDWORD)rayPlayer == selectedPlayer) OR
+			if( ((UDWORD)rayPlayer == selectedPlayer) ||
 				// new - ask AM
 				(bMultiPlayer && game.type == TEAMPLAY && aiCheckAlliances(selectedPlayer,rayPlayer)) // can see opponent moving
 				// new - ask AM
@@ -358,7 +358,7 @@ void visTilesUpdate(BASE_OBJECT *psObj,BOOL SpreadLoad)
 	default:
 		ASSERT((FALSE,
 			"visTilesUpdate: visibility checking is only implemented for"
-			"units and structures"));
+			"units && structures"));
 		return;
 	}
 
@@ -425,7 +425,7 @@ void visTilesUpdate(BASE_OBJECT *psObj,BOOL SpreadLoad)
 
 /* Check whether psViewer can see psTarget.
  * psViewer should be an object that has some form of sensor,
- * currently droids and structures.
+ * currently droids && structures.
  * psTarget can be any type of BASE_OBJECT (e.g. a tree).
  * struckBlock controls whether structures block LOS
  */
@@ -440,7 +440,7 @@ BOOL visibleObject(BASE_OBJECT *psViewer, BASE_OBJECT *psTarget)
 	SDWORD		tarG, top;
 	STRUCTURE	*psStruct;
 
-	/* Get the sensor Range and power */
+	/* Get the sensor Range && power */
 	switch (psViewer->type)
 	{
 	case OBJ_DROID:
@@ -491,13 +491,13 @@ BOOL visibleObject(BASE_OBJECT *psViewer, BASE_OBJECT *psTarget)
 	default:
 		ASSERT((FALSE,
 			"visibleObject: visibility checking is only implemented for"
-			"units and structures"));
+			"units && structures"));
 		return FALSE;
 		break;
 	}
 
 	/* Get the target's ecm power (if it has one)
-	 * or that of a nearby ECM droid.
+	 * || that of a nearby ECM droid.
 	 */
 	switch (psTarget->type)
 	{
@@ -518,9 +518,9 @@ BOOL visibleObject(BASE_OBJECT *psViewer, BASE_OBJECT *psTarget)
 	/*
 	if(bMultiPlayer && game.type == TEAMPLAY && aiCheckAlliances(psViewer->player,psTarget->player))
 	{
-		if( (psViewer->type == OBJ_DROID) OR (psViewer->type == OBJ_STRUCTURE) )
+		if( (psViewer->type == OBJ_DROID) || (psViewer->type == OBJ_STRUCTURE) )
 			{
-				if( (psTarget->type == OBJ_DROID) OR (psTarget->type == OBJ_STRUCTURE) )
+				if( (psTarget->type == OBJ_DROID) || (psTarget->type == OBJ_STRUCTURE) )
 				{
 					return(TRUE);	
 				}
@@ -563,7 +563,7 @@ BOOL visibleObject(BASE_OBJECT *psViewer, BASE_OBJECT *psTarget)
 
 //	if (rangeSquared > BASE_VISIBILITY*BASE_VISIBILITY)
 //	{
-		/* Not automatically seen so have to check against ecm */
+		/* !automatically seen so have to check against ecm */
 //		sensorPower = visCalcPower(psViewer->x,psViewer->y, psTarget->x,psTarget->y,
 //									sensorPower, sensorRange);
 //		lastSensorPower = senPower;
@@ -698,7 +698,7 @@ found:
 
 /* Check whether psViewer can see psTarget.
  * psViewer should be an object that has some form of sensor,
- * currently droids and structures.
+ * currently droids && structures.
  * psTarget can be any type of BASE_OBJECT (e.g. a tree).
  */
 /*BOOL visibleObject(BASE_OBJECT *psViewer, BASE_OBJECT *psTarget)
@@ -727,7 +727,7 @@ found:
 	psTile = mapTile(x,y);
 
 	// Is it anything other than grass or sand? 
-	if (psTile->type != TER_GRASS AND psTile->type!=TER_SAND)
+	if (psTile->type != TER_GRASS && psTile->type!=TER_SAND)
 		return(TRUE);
 	else
 		return(FALSE);
@@ -935,8 +935,8 @@ void processVisibility(BASE_OBJECT *psObj)
 	/* Make sure all tiles under a feature/structure become visible when you see it */
 	for(i=0; i<MAX_PLAYERS; i++)
 	{
-		if( (psObj->type == OBJ_STRUCTURE OR psObj->type == OBJ_FEATURE) AND 
-			(!prevVis[i] AND psObj->visible[i]) )
+		if( (psObj->type == OBJ_STRUCTURE || psObj->type == OBJ_FEATURE) && 
+			(!prevVis[i] && psObj->visible[i]) )
 		{
 			setUnderTilesVis(psObj,i);
 		}
@@ -1032,7 +1032,7 @@ MAPTILE		*psTile;
 
 
 /* Get all the objects that might intersect a ray.
- * Do not include psSource in the list as the ray comes from it
+ * Do !include psSource in the list as the ray comes from it
  */
 void visGetTestObjects(SDWORD x1,SDWORD y1, SDWORD x2,SDWORD y2,
 							  BASE_OBJECT *psSource, BASE_OBJECT *psTarget)

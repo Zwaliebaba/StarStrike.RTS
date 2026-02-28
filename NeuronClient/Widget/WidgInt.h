@@ -30,7 +30,7 @@ extern WIDGET *widgGetFromID(W_SCREEN *psScreen, UDWORD id);
 /* Get a string from the string heap */
 extern BOOL widgAllocString(STRING **ppStr);
 
-/* Get a string from the heap and copy in some data.
+/* Get a string from the heap && copy in some data.
  * The string to copy will be truncated if it is too long.
  */
 extern BOOL widgAllocCopyString(STRING **ppDest, STRING *pSrc);

@@ -2,10 +2,10 @@
  * DdrawCompat.h
  *
  * Stub type definitions replacing <ddraw.h> for the D3D9 migration.
- * Provides enough type and vtable compatibility for existing Framework
- * code to compile without linking ddraw.lib or requiring the real header.
+ * Provides enough type && vtable compatibility for existing Framework
+ * code to compile without linking ddraw.lib || requiring the real header.
  *
- * All DD interface pointers are always NULL at runtime — the Framework
+ * All DD interface pointers are always NULL at runtime ï¿½ the Framework
  * layer NULL-guards every vtable call, so no method is ever invoked.
  * The vtable stubs exist purely to satisfy the compiler.
  */
@@ -21,7 +21,7 @@
 #define RELEASE(x) if ((x) != NULL) {(void)(x)->lpVtbl->Release(x); (x) = NULL;}
 #endif
 
-#else /* No real ddraw.h — provide stub types */
+#else /* No real ddraw.h ï¿½ provide stub types */
 
 /* ================================================================== */
 /* Forward declarations                                                */
@@ -144,7 +144,7 @@ typedef struct _DDDEVICEIDENTIFIER_COMPAT
 /* ================================================================== */
 /* COM interface vtable stubs                                          */
 /* Only methods actually referenced in Framework code are defined.     */
-/* Vtables are never instantiated — interface pointers are always NULL.*/
+/* Vtables are never instantiated ï¿½ interface pointers are always NULL.*/
 /* ================================================================== */
 
 /* --- IDirectDraw (DD1) --- */
@@ -154,7 +154,7 @@ typedef struct IDirectDrawVtbl
 	HRESULT (WINAPI *QueryInterface)(IDirectDraw*, REFIID, void**);
 	ULONG   (WINAPI *AddRef)(IDirectDraw*);
 	ULONG   (WINAPI *Release)(IDirectDraw*);
-	/* IDirectDraw — unused stubs */
+	/* IDirectDraw ï¿½ unused stubs */
 	void *Compact, *CreateClipper, *CreatePalette, *CreateSurface;
 	void *DuplicateSurface, *EnumDisplayModes, *EnumSurfaces;
 	void *FlipToGDISurface, *GetCaps, *GetDisplayMode;
@@ -348,7 +348,7 @@ typedef BOOL (WINAPI *LPDDENUMCALLBACKEXA)(GUID*, LPSTR, LPSTR, LPVOID, HMONITOR
 typedef HRESULT (WINAPI *LPDIRECTDRAWENUMERATEEXA)(LPDDENUMCALLBACKEXA, LPVOID, DWORD);
 
 /* ================================================================== */
-/* COM Release macro — calls Release via vtable                       */
+/* COM Release macro ï¿½ calls Release via vtable                       */
 /* At runtime, pointers are always NULL so Release is never called.    */
 /* ================================================================== */
 

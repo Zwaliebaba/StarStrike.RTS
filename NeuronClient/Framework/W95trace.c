@@ -42,7 +42,7 @@ void OutputDebugStringW95( LPCTSTR lpOutputString, ...)
     OutputDebugStringA(achBuffer);
 #endif
 
-    /* bail if it's not Win95 */
+    /* bail if it's !Win95 */
     {
         OSVERSIONINFO VerInfo;
         VerInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -51,7 +51,7 @@ void OutputDebugStringW95( LPCTSTR lpOutputString, ...)
             return;
     }
 
-    /* make sure DBWIN is open and waiting */
+    /* make sure DBWIN is open && waiting */
     heventDBWIN = OpenEvent(EVENT_MODIFY_STATE, FALSE, "DBWIN_BUFFER_READY");
     if ( !heventDBWIN )
     {

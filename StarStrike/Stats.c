@@ -788,7 +788,7 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		psStats->rotate = (UBYTE)rotate;
 
 		//set the minElevation
-		if (minElevation > SBYTE_MAX OR minElevation < SBYTE_MIN)
+		if (minElevation > SBYTE_MAX || minElevation < SBYTE_MIN)
 		{
 			ASSERT((FALSE,"loadWeaponStats: minElevation is outside of limits for weapon %s",
 				getStatName(psStats)));
@@ -1366,7 +1366,7 @@ BOOL loadPropulsionStats(SBYTE *pPropulsionData, UDWORD bufferSize)
     /*since propulsion weight is a multiple of body weight we may need to 
     adjust the max component weight value*/
     //check we've loaded them both in
-    if (asBodyStats AND asPropulsionStats)
+    if (asBodyStats && asPropulsionStats)
     {
         //check against each body stat
         for (i = 0; i < numBodyStats; i++)
@@ -2262,8 +2262,8 @@ BOOL loadBodyPropulsionIMDs(SBYTE *pData, UDWORD bufferSize)
 	BOOL				found;
 	//check that the body and propulsion stats have already been read in
 
-	ASSERT((asBodyStats != NULL, "Body Stats have not been set up"));
-	ASSERT((asPropulsionStats != NULL, "Propulsion Stats have not been set up"));
+	ASSERT((asBodyStats != NULL, "Body Stats have !been set up"));
+	ASSERT((asPropulsionStats != NULL, "Propulsion Stats have !been set up"));
 
 	psBodyStat = asBodyStats;
 	psPropulsionStat = asPropulsionStats;
@@ -2298,7 +2298,7 @@ BOOL loadBodyPropulsionIMDs(SBYTE *pData, UDWORD bufferSize)
 		rightIMD[0] = '\0';
 
 		/*read the data into the storage - the data is delimited using comma's
-		not interested in the last number - needed for sscanf*/
+		!interested in the last number - needed for sscanf*/
 		sscanf(pData,"%[^','],%[^','],%[^','],%[^','],%*d",(char*)&bodyName, 
             (char*)&propulsionName, (char*)&leftIMD, (char*)&rightIMD);
 
@@ -2437,7 +2437,7 @@ BOOL loadWeaponSounds(SBYTE *pSoundData, UDWORD bufferSize)
 	
 	NumRecords = numCR((UBYTE *)pSoundData, bufferSize);
 
-	ASSERT((asWeaponStats != NULL, "loadWeaponSounds: Weapon stats not loaded"));
+	ASSERT((asWeaponStats != NULL, "loadWeaponSounds: Weapon stats !loaded"));
 
 	for (i=0; i < NumRecords; i++)
 	{
@@ -2476,7 +2476,7 @@ BOOL loadWeaponSounds(SBYTE *pSoundData, UDWORD bufferSize)
 		}
 		if (inc == (SDWORD)numWeaponStats)
 		{
-			DBERROR(("loadWeaponSounds: Weapon stat not found - %s", WeaponName));
+			DBERROR(("loadWeaponSounds: Weapon stat !found - %s", WeaponName));
 			Ok = FALSE;
 //			return FALSE;
 		}
@@ -2563,7 +2563,7 @@ BOOL loadPropulsionSounds(SBYTE *pPropSoundData, UDWORD bufferSize)
 	NumRecords = numCR((UBYTE *)pPropSoundData, bufferSize);
 
 	ASSERT((asPropulsionTypes != NULL, 
-		"loadPropulsionSounds: Propulsion type stats not loaded"));
+		"loadPropulsionSounds: Propulsion type stats !loaded"));
 
 	for (i=0; i < NumRecords; i++)
 	{
@@ -2699,7 +2699,7 @@ WEAPON_STATS *statsGetWeapon(UDWORD ref)
 			return &asWeaponStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetWeapon: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetWeapon: Reference number !found in list: %x", ref));
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -2716,7 +2716,7 @@ WEAPON_STATS *statsGetWeapon(UDWORD ref)
 			return &asArmourStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetArmour: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetArmour: Reference number !found in list: %x", ref));
 }*/
 
 BODY_STATS *statsGetBody(UDWORD ref)
@@ -2732,7 +2732,7 @@ BODY_STATS *statsGetBody(UDWORD ref)
 			return &asBodyStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetBody: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetBody: Reference number !found in list: %x", ref));
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -2749,7 +2749,7 @@ BRAIN_STATS *statsGetBrain(UDWORD ref)
 			return &asBrainStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetBrain: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetBrain: Reference number !found in list: %x", ref));
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -2766,7 +2766,7 @@ BRAIN_STATS *statsGetBrain(UDWORD ref)
 			return &asPowerStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetPower: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetPower: Reference number !found in list: %x", ref));
 }*/
 
 PROPULSION_STATS *statsGetPropulsion(UDWORD ref)
@@ -2783,7 +2783,7 @@ PROPULSION_STATS *statsGetPropulsion(UDWORD ref)
 			return &asPropulsionStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetPropulsion: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetPropulsion: Reference number !found in list: %x", ref));
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -2800,7 +2800,7 @@ SENSOR_STATS *statsGetSensor(UDWORD ref)
 			return &asSensorStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetSensor: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetSensor: Reference number !found in list: %x", ref));
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -2817,7 +2817,7 @@ ECM_STATS *statsGetECM(UDWORD ref)
 			return &asECMStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetECM: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetECM: Reference number !found in list: %x", ref));
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -2834,7 +2834,7 @@ REPAIR_STATS *statsGetRepair(UDWORD ref)
 			return &asRepairStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetRepair: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetRepair: Reference number !found in list: %x", ref));
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -2851,7 +2851,7 @@ REPAIR_STATS *statsGetRepair(UDWORD ref)
 			return &asProgramStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetProgram: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetProgram: Reference number !found in list: %x", ref));
 }*/
 
 CONSTRUCT_STATS *statsGetConstruct(UDWORD ref)
@@ -2867,7 +2867,7 @@ CONSTRUCT_STATS *statsGetConstruct(UDWORD ref)
 			return &asConstructStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetConstruct: Reference number not found in list: %x", ref));
+	ASSERT(( FALSE, "statsGetConstruct: Reference number !found in list: %x", ref));
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -3306,7 +3306,7 @@ STRING* getNameFromStat(BASE_STATS* pStat)
 	return(getName(pStat->pName));
 }
 
-/*return the name to display for the interface - valid for OBJECTS and STATS*/
+/*return the name to display for the interface - valid for OBJECTS && STATS*/
 STRING* getName(STRING *pNameID)
 {
 #ifdef STORE_RESOURCE_ID
@@ -3379,18 +3379,18 @@ BOOL setTechLevel(BASE_STATS *psStats, STRING *pLevel)
 	}
 
 	//store tech level in the appropriate stat
-	if ((psStats->ref >= REF_BODY_START AND psStats->ref <= (REF_WEAPON_START + 
-		REF_RANGE)) OR (psStats->ref>= REF_CONSTRUCT_START AND psStats->ref <= 
+	if ((psStats->ref >= REF_BODY_START && psStats->ref <= (REF_WEAPON_START + 
+		REF_RANGE)) || (psStats->ref>= REF_CONSTRUCT_START && psStats->ref <= 
 		(REF_CONSTRUCT_START + REF_RANGE)))
 	{
 		((COMP_BASE_STATS *)psStats)->techLevel = techLevel;
 	}
-	else if (psStats->ref >= REF_STRUCTURE_START AND psStats->ref <= (
+	else if (psStats->ref >= REF_STRUCTURE_START && psStats->ref <= (
 		REF_STRUCTURE_START + REF_RANGE))
 	{
 		((STRUCTURE_STATS *)psStats)->techLevel = techLevel;
 	}
-	else if (psStats->ref >= REF_RESEARCH_START AND psStats->ref <= (
+	else if (psStats->ref >= REF_RESEARCH_START && psStats->ref <= (
 		REF_RESEARCH_START + REF_RANGE))
 	{
 		((RESEARCH *)psStats)->techLevel = techLevel;
@@ -3583,8 +3583,8 @@ UBYTE	getWeaponEffect(STRING *pWeaponEffect)
 
 
 /*
-looks up the name to get the resource associated with it - or allocates space 
-and stores the name. Eventually ALL names will be 'resourced' for translation
+looks up the name to get the resource associated with it - || allocates space 
+&& stores the name. Eventually ALL names will be 'resourced' for translation
 */
 BOOL allocateName(STRING **ppStore, STRING *pName)
 {

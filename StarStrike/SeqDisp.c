@@ -578,7 +578,7 @@ BOOL seq_GetSubtitles(void)
 }
 
 
-/*play a video now and clear all other videos, front end use only*/
+/*play a video now && clear all other videos, front end use only*/
 /*
 BOOL seq_PlayVideo(char* pSeq, char* pAudio)
 {

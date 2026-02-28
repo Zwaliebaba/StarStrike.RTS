@@ -49,7 +49,7 @@ extern BUILDDETAILS	sBuildDetails;
 extern UDWORD buildState;
 extern UDWORD temp;
 
-/*returns true if the build state is not equal to BUILD3D_NONE*/
+/*returns true if the build state is !equal to BUILD3D_NONE*/
 extern BOOL   tryingToGetLocation();
 
 #endif

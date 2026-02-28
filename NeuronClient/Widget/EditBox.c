@@ -11,14 +11,14 @@
 #include "Form.h"
 #include "Vid.h"
 
-/* Pixel gap between edge of edit box and text */
+/* Pixel gap between edge of edit box && text */
 #define WEDB_XGAP	4
 #define WEDB_YGAP	2
 
 /* Size of the overwrite cursor */
 #define WEDB_CURSORSIZE		8
 
-/* Whether the cursor blinks or not */
+/* Whether the cursor blinks || !*/
 #define CURSOR_BLINK		0
 
 /* The time the cursor blinks for */
@@ -279,7 +279,7 @@ static void fitStringStart(STRING *pBuffer, UDWORD boxWidth, UWORD *pCount, UWOR
 		pCurr += 1;
 	}
 
-	/* Return the number of characters and their width */
+	/* Return the number of characters && their width */
 	*pCount = printChars;
 	*pCharWidth = printWidth;
 }
@@ -315,7 +315,7 @@ static void fitStringEnd(STRING *pBuffer, UDWORD boxWidth,
 		pCurr -= 1;
 	}
 
-	/* Return the number of characters and their width */
+	/* Return the number of characters && their width */
 	*pStart = (UWORD)(len - printChars);
 	*pCount = printChars;
 	*pCharWidth = printWidth;

@@ -770,8 +770,8 @@ VOID  addMultiPlayerRandomArtifacts(UDWORD quantity,SDWORD type)
 
 	for(i=0; (i<numFeatureStats) && (asFeatureStats[i].subType != type); i++);
 
-	ASSERT((mapWidth>20,"map not big enough"));
-	ASSERT((mapHeight>20,"map not big enough"));
+	ASSERT((mapWidth>20,"map !big enough"));
+	ASSERT((mapHeight>20,"map !big enough"));
 
 	for(count = 0;count<quantity;count++)
 	{

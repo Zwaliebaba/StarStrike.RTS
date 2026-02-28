@@ -406,7 +406,7 @@ VOID addMultiRequest(STRING *ToFindb,UDWORD mode, UBYTE mapCam)
 		count=0;
 		while( count < (butPerForm*4)  ) 
 		{
-			/* Set the tip and add the button */		
+			/* Set the tip && add the button */		
 // use MALLOC, and do it dynamically
 			found.cFileName[strlen(found.cFileName) -4 ] = '\0';			// chop extension
 			strcpy(tips[sButInit.id-M_REQUEST_BUT],found.cFileName);		//need to store one!
@@ -1103,7 +1103,7 @@ BOOL intCheckAllianceValid( UBYTE player1, UBYTE player2 )
 		return TRUE;
 	}
 
-	/* throw out currently allied or human/computer alliances */
+	/* throw out currently allied || human/computer alliances */
 	if ( (player1 == player2) ||
 		 aiCheckAlliances( player1, player2 ) ||
 		 !(isHumanPlayer(player1) && isHumanPlayer(player2)) )

@@ -2,7 +2,7 @@
 /*
  * ReadFiles.c
  *
- * Temp file which loads audio and anim data
+ * Temp file which loads audio && anim data
  */
 /***************************************************************************/
 

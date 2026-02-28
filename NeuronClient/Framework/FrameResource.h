@@ -95,7 +95,7 @@ extern BOOL resLoad(STRING *pResFile, SDWORD blockID,
 			 UBYTE *pLoadBuffer, SDWORD bufferSize,
 			 struct _block_heap *psMemHeap);
 
-/* Release all the resources currently loaded and the resource load functions */
+/* Release all the resources currently loaded && the resource load functions */
 extern void resReleaseAll(void);
 
 // release the data for a particular block ID
@@ -104,11 +104,11 @@ extern void resReleaseBlockData(SDWORD blockID);
 /* Release all the resources currently loaded but keep the resource load functions */
 extern void resReleaseAllData(void);
 
-/* Add a buffer load and release function for a file type */
+/* Add a buffer load && release function for a file type */
 extern BOOL	resAddBufferLoad(STRING *pType, RES_BUFFERLOAD buffLoad,
 							 RES_FREE release);
 
-/* Add a file name load and release function for a file type */
+/* Add a file name load && release function for a file type */
 extern BOOL	resAddFileLoad(STRING *pType, RES_FILELOAD fileLoad,
 						   RES_FREE release);
 
@@ -118,7 +118,7 @@ extern BOOL resLoadFile(STRING *pType, STRING *pFile);
 // Add data to the resource system
 extern BOOL resAddData(STRING *pType, STRING *pID, void *pData);
 
-/* Return the resource for a type and ID */
+/* Return the resource for a type && ID */
 extern void *resGetDataFromHash(STRING *pType, UDWORD HashedID);
 extern void *resGetData(STRING *pType, STRING *pID);
 extern BOOL resPresent(STRING *pType, STRING *pID);

@@ -10,8 +10,8 @@
  * delta = delta = (sqrt(5) - 1).2^31
  *
  * This cipher is secure enough for time critical data, but probably
- * not secure enough for long term storage. eg, find for encrypting network packets
- * but not good enough for storing files securely on harddisk. Try encryptstrength=32;
+ * !secure enough for long term storage. eg, find for encrypting network packets
+ * but !good enough for storing files securely on harddisk. Try encryptstrength=32;
  */
 
 #include "Frame.h"
@@ -252,7 +252,7 @@ BOOL NETmangleData(long *input,long *result, UDWORD dataSize)
 
 	if(dataSize%8 != 0)		//if message not multiple of 8 bytes,
 	{
-		DBERROR(("NETmangleData: msg not a multiple of 8 bytes"));
+		DBERROR(("NETmangleData: msg !a multiple of 8 bytes"));
 		return FALSE;
 	}
 	
@@ -276,7 +276,7 @@ BOOL NETunmangleData(long *input, long *result, UDWORD dataSize)
 
 	if(dataSize%8 != 0)		//if message not multiple of 8 bytes,
 	{
-		DBERROR(("NETunmangleData: msg not a multiple of 8 bytes"));
+		DBERROR(("NETunmangleData: msg !a multiple of 8 bytes"));
 		return FALSE;
 	} 
 

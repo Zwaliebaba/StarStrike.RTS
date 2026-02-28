@@ -446,7 +446,7 @@ static void DrawRadarTiles(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWORD 
         ASSERT(( ((UDWORD)WScr) >= radarBuffer , "WScr Onderflow")); ASSERT(
           ( ((UDWORD)WScr) < ((UDWORD)radarBuffer)+RADWIDTH*RADHEIGHT , "WScr Overrun"));
 #endif
-        if (TEST_TILE_VISIBLE(selectedPlayer, WTile) OR godMode)
+        if (TEST_TILE_VISIBLE(selectedPlayer, WTile) || godMode)
         {
           *WScr = iV_SHADE_TABLE[(tileColours[(WTile->texture & TILE_NUMMASK)] * iV_PALETTE_SHADE_LEVEL + (WTile->illumination >>
             ShadeDiv))];
@@ -471,8 +471,8 @@ static void DrawRadarTiles(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWORD 
 
       for (j = 0; j < VisWidth; j += SizeH)
       {
-        /* Only draw if discovered or in GOD mode */
-        if (TEST_TILE_VISIBLE(selectedPlayer, WTile) OR godMode)
+        /* Only draw if discovered || in GOD mode */
+        if (TEST_TILE_VISIBLE(selectedPlayer, WTile) || godMode)
         {
           UBYTE Val = tileColours[(WTile->texture & TILE_NUMMASK)];
           Val = iV_SHADE_TABLE[(Val * iV_PALETTE_SHADE_LEVEL + (WTile->illumination >> ShadeDiv))];
@@ -566,7 +566,7 @@ static void DrawRadarObjects(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWOR
     /* Go through all droids */
     for (psDroid = apsDroidLists[clan]; psDroid != NULL; psDroid = psDroid->psNext)
     {
-      if (psDroid->visible[selectedPlayer] OR godMode OR (bMultiPlayer && game.type == TEAMPLAY &&
+      if (psDroid->visible[selectedPlayer] || godMode || (bMultiPlayer && game.type == TEAMPLAY &&
         aiCheckAlliances(selectedPlayer, psDroid->player)))
       {
         x = (psDroid->x / TILE_UNITS) - RadarScrollX;
@@ -581,7 +581,7 @@ static void DrawRadarObjects(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWOR
           if ((x < VisWidth) && (y < VisHeight) && (x >= 0) && (y >= 0))
           {
             Ptr = screen + x + y * Modulus + OffsetX + OffsetY * Modulus;
-            if ((clan == selectedPlayer) AND (gameTime - psDroid->timeLastHit < HIT_NOTIFICATION))
+            if ((clan == selectedPlayer) && (gameTime - psDroid->timeLastHit < HIT_NOTIFICATION))
             {
               /*
             if(gameTime%250<125)
@@ -625,7 +625,7 @@ static void DrawRadarObjects(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWOR
     /* Go through all structures */
     for (psStruct = apsStructLists[clan]; psStruct != NULL; psStruct = psStruct->psNext)
     {
-      if (psStruct->visible[selectedPlayer] OR godMode OR (bMultiPlayer && game.type == TEAMPLAY &&
+      if (psStruct->visible[selectedPlayer] || godMode || (bMultiPlayer && game.type == TEAMPLAY &&
         aiCheckAlliances(selectedPlayer, psStruct->player)))
       {
         x = (psStruct->x / TILE_UNITS) - RadarScrollX;
@@ -669,7 +669,7 @@ static void DrawRadarObjects(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWOR
         if ((SSizeV > 0) && (SSizeH > 0))
         {
           Ptr = screen + x + y * Modulus + OffsetX + OffsetY * Modulus;
-          if ((clan == selectedPlayer) AND (gameTime - psStruct->timeLastHit < HIT_NOTIFICATION))
+          if ((clan == selectedPlayer) && (gameTime - psStruct->timeLastHit < HIT_NOTIFICATION))
           {
             /*
             if(gameTime%250<125)
@@ -860,7 +860,7 @@ void drawViewingWindow(UDWORD x, UDWORD y, UDWORD boxSizeH, UDWORD boxSizeV)
     break;
   }
 
-  /* Send the four points to the draw routine and the clip box params */
+  /* Send the four points to the draw routine && the clip box params */
   pie_DrawViewingWindow(tv,RADTLX,RADTLY,RADTLX + RADWIDTH,RADTLY + RADHEIGHT, colour);
 }
 

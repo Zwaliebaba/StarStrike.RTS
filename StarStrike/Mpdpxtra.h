@@ -24,16 +24,16 @@ typedef unsigned long MPPLAYERID;
 								progress details, etc.
 
 	Score Reporting			-	Allows games to report game statistics
-								and scores to be saved in a database which
+								&& scores to be saved in a database which
 								can then be queried to generate rankings,
-								ratings, and high score lists.
+								ratings, && high score lists.
 
 	Release Notes
 	----------------
 
 	1)	A new feature for DirectPlay in the DirectX 5.0 release is the ability
 		an applications process to create multiple DirectPlay objects. The
-		MPDPXTRA library will not work with applications that create more than
+		MPDPXTRA library will !work with applications that create more than
 		one DirectPlay object. The MPDPXTRA library is compatibles with all
 		pre-DirectX	5.0 applications as well as	DirectX 5.0 applications that
 		create only one DirectPlay object.
@@ -55,21 +55,21 @@ typedef unsigned long MPPLAYERID;
 		with your application. This file is used to dynamically load DPMPLAY.DLL
 		at run-time rather than statically linking it to your application. This
 		allows you to ship your game without including DPMPLAY.DLL.	Instead,
-		DPMPLAY.DLL will be installed and and automatically upgraded and maintained
+		DPMPLAY.DLL will be installed && && automatically upgraded && maintained
 		by Mplayer when users logon to the Mplayer network.
 
 	3)	At run-time, your application calls MPDPXTRA_Init() to initialize the library.
-		This function will attempt to locate and load DPMPLAY.DLL. The function may
-		fail if your application is not being run over the Mplayer network because the
-		loader does not know where DPMPLAY.DLL is located. When your application is
+		This function will attempt to locate && load DPMPLAY.DLL. The function may
+		fail if your application is !being run over the Mplayer network because the
+		loader does !know where DPMPLAY.DLL is located. When your application is
 		launched on the Mplayer network, however, the loader will properly locate it
-		in the Mplayer System Directory and load it. You may decide to gracefully
+		in the Mplayer System Directory && load it. You may decide to gracefully
 		accept a failed load of DPMPLAY.DLL. Subsequent calls to other functions in
-		the library will simply not do anything. When your game is running on the
+		the library will simply !do anything. When your game is running on the
 		Mplayer network, you still have the option of ignoring a failed	load although
-		this should never happen. If the load does fail, the library will not actual
+		this should never happen. If the load does fail, the library will !actual
 		perform any of its functions but players can still play your game. The game
-		will not be able to change the appearance of the lobby or successfully report
+		will !be able to change the appearance of the lobby || successfully report
 		scores.
 
 	4)	All MPDPXTRA library routines with the exception of MPDPXTRA_Init() should
@@ -106,7 +106,7 @@ typedef unsigned long MPPLAYERID;
 		Mplayer lobby so it is imperative that they be kept extremely small. These
 		types of data blocks can be used to send small pieces of information such
 		as the score of the game. Your game extension DLL will be able to receive
-		these data blocks and adjust the appearance of game's Mplayer lobby as well
+		these data blocks && adjust the appearance of game's Mplayer lobby as well
 		as the screen area inside the game room owned by the game extension DLL based
 		on the contents.
 
@@ -114,14 +114,14 @@ typedef unsigned long MPPLAYERID;
 
 		These data blocks are also opaque blocks of data that can be sent to your game
 		extension DLL. They are only sent to users who have either selected this game
-		session's icon in the game's Mplayer lobby or who are in the game session's
+		session's icon in the game's Mplayer lobby || who are in the game session's
 		room. Since these data blocks are sent to fewer people, they can be a bit
 		larger than MP_LOBBYDATA_SHORT_STATUS data blocks to allow for more detailed
 		status of a game. Once again, however, these data blocks should be kept as
-		small as possible and be sent as infrequently as possible. These data blocks
+		small as possible && be sent as infrequently as possible. These data blocks
 		can be used to send expanded status to users interested in this particular
 		game session. Your game extension DLL will be able to receive these data
-		blocks and adjust the appearance of game's Mplayer lobby as well as the screen
+		blocks && adjust the appearance of game's Mplayer lobby as well as the screen
 		area inside the game room owned by the game extension DLL based	on the
 		contents.
 		
@@ -129,19 +129,19 @@ typedef unsigned long MPPLAYERID;
 	------------------------------
 
 	1)	Using the Score Rreporting features is very simple. Currently, Score
-		Reporting consists of just two functions: MPDPXTRA_AddScoreResult and
+		Reporting consists of just two functions: MPDPXTRA_AddScoreResult &&
 		MPDPXTRA_SaveScoreResults.
 		
 	2)	MPDPXTRA_AddScoreResult allows you to accumulate scores on the local client
 		based on four pieces of information: a source player, a destination player,
-		a key, and a value. Multiple score results can be queued on the local client.
+		a key, && a value. Multiple score results can be queued on the local client.
 		Results that match all four parameters with a previous call	to
 		MPDPXTRA_AddScoreResult will replace that result.
 		
 	3)	MPDPXTRA_SaveScoreResults sends all of the accumulated results to the Mplayer
-		network where they are stored in a persistent database and saved for future
-		score ranking and rating display. Mplayer will work with developers to
-		generate algorithms that can process these results and display them accord-
+		network where they are stored in a persistent database && saved for future
+		score ranking && rating display. Mplayer will work with developers to
+		generate algorithms that can process these results && display them accord-
 		ingly.
 
 
@@ -273,7 +273,7 @@ typedef	int	MPDPXTRAERR;
 
 	Initializes the Mplayer DirectPlay Extras Library. This function must be called
 	before using any of the other functions available in the library. If called,
-	multiple time within a single process, the library will only be loaded once and
+	multiple time within a single process, the library will only be loaded once &&
 	a reference count will be incremented for each call after the first. Each call
 	to MPDPXTRA_Init must have a matching call to MPDPXTRA_Destroy which decrements
 	the reference count. The library will be unloaded when the refence count reaches
@@ -305,8 +305,8 @@ MPDPXTRAERR		MPDPXTRA_Init(void);
 
 	MPDPXTRA_Destroy
 
-	Decrements the reference count for the Mplayer DirectPlay Extras Library and
-	releases the library and all associate resources if it reaches zero.
+	Decrements the reference count for the Mplayer DirectPlay Extras Library &&
+	releases the library && all associate resources if it reaches zero.
 
 	Inputs:
 
@@ -345,14 +345,14 @@ MPDPXTRAERR		MPDPXTRA_DPIDToMPPLAYERID(DPID dpid,MPPLAYERID *mpPlayerID);
 	MPDPXTRA_PostLobbyData
  
 	Send an opaque chunk of data to clients in the lobby.  Their Game Extension DLLs
-	will then interpret the object and display relevant information about the running
+	will then interpret the object && display relevant information about the running
 	game instance.
 
 	The general purpose of this API is to allow a running game instance to report
-	significant events to the lobby, for the general edification and entertainment
+	significant events to the lobby, for the general edification && entertainment
 	of people outside the game.
 
-	The actual objects sent should be small, and infrequent.
+	The actual objects sent should be small, && infrequent.
 
 	Valid LobbyData objects ID's are:
 
@@ -371,7 +371,7 @@ MPDPXTRAERR		MPDPXTRA_DPIDToMPPLAYERID(DPID dpid,MPPLAYERID *mpPlayerID);
 						MP_LOBBYDATA_COMMENT		- A pointer to the string to replace the 
 													  lobby's room comment with.
 						MP_LOBBYDATA_SHORT_STATUS	- Opaque data for the game's extension DLL
-													  representing small and simple updates such as
+													  representing small && simple updates such as
 													  simple scores.
 						MP_LOBBYDATA_LONG_STATUS	- Opaque data for the game's extension DLL
 													  representing larger updates such as a game's 
@@ -497,14 +497,14 @@ MPDPXTRAERR		MPDPXTRA_SaveScoreResults(void);
 	Posts an opaque data block up to 256K bytes in size to the game server
 	so that it can be shared with others attached to the same game session.
 	The data can be retrieved from the server either synchronously via the blocking
-	function MPDPXTRA_FetchSharedGameData or asynchronously using the non-blocking
+	function MPDPXTRA_FetchSharedGameData || asynchronously using the non-blocking
 	function MPDPXTRA_SubscribeSharedGameData.
 
 	Note that this post function is non-blocking.
 
 	Inputs:
 
-		key -			Key value for the opaque data block between 0 and 0x7FFFFFFF.
+		key -			Key value for the opaque data block between 0 && 0x7FFFFFFF.
 						This key is game specific so developers are free to choose any
 						key they wish.
 		pData -			A pointer to opaque data block to be saved on the game server.
@@ -535,9 +535,9 @@ MPDPXTRAERR		MPDPXTRA_PostServerGameData(UINT key,void *pData,UINT dataLen);
 
 	Fetches an opaque data block up to 256K bytes in size from the game server
 	in a synchronous, blocking manner (i.e. the function won't return until
-	the complete block has been received or an error has occurred).
+	the complete block has been received || an error has occurred).
 
-	This function should really only be used for VERY small blocks (< 4K or so)
+	This function should really only be used for VERY small blocks (< 4K || so)
 	of data where the user won't be aware that data transfer is occurring. The
 	reason for this is that the game's user interface might block waiting for this
 	call. For large blocks, it is recommended that developers use the
@@ -546,12 +546,12 @@ MPDPXTRAERR		MPDPXTRA_PostServerGameData(UINT key,void *pData,UINT dataLen);
 	In order to get the size of the server game data block, 0 can be specified for
 	for the dataLen. The function will return an error of
 	MPDPXTRAERR_SERVER_GAME_DATA_SIZE_TOO_SMALL but the dataLen will be set to the
-	correct size. A buffer can then be allocated and the function can be called again
+	correct size. A buffer can then be allocated && the function can be called again
 	with the buffer passed as the pData variable.
 
 	Inputs:
 
-		key -			Key value for the opaque data block between 0 and 0x7FFFFFFF.
+		key -			Key value for the opaque data block between 0 && 0x7FFFFFFF.
 						This key is game specific so developers are free to choose any
 						key they wish.
 		pData -			A pointer to a buffer to be filled with the opaque server game
@@ -587,7 +587,7 @@ MPDPXTRAERR		MPDPXTRA_FetchServerGameData(UINT key,void *pData,UINT *pDataLen);
 
 	The first time this function is called, the server will be checked for the
 	specified key. If there is an opqaue data block associated with the specified
-	key stored on the server, an asynchronous transfer will begin and the callback
+	key stored on the server, an asynchronous transfer will begin && the callback
 	function will be called when the complete block as been received. Subsequent
 	updates to the opaque data block on the server via the MPDPXTRA_PostServerGameData
 	function will cause the subscribed block to be asynchronously transmitted to
@@ -595,12 +595,12 @@ MPDPXTRAERR		MPDPXTRA_FetchServerGameData(UINT key,void *pData,UINT *pDataLen);
 	complete block has been received by the subscriber.
 
 	It is possible to subscribe to a data block with the same key but with different
-	callback functions and different contexts. Each unique pair of callback function
-	pointer and context will be treated a a separate "subscriber."
+	callback functions && different contexts. Each unique pair of callback function
+	pointer && context will be treated a a separate "subscriber."
 
 	Inputs:
 
-		key -			Key value for the opaque data block between 0 and 0x7FFFFFFF.
+		key -			Key value for the opaque data block between 0 && 0x7FFFFFFF.
 						This key is game specific so developers are free to choose any
 						key they wish.
 		cbf -			A pointer to a callback function of type SERVER_GAME_DATA_CBF.
@@ -629,11 +629,11 @@ MPDPXTRAERR		MPDPXTRA_SubscribeServerGameData(UINT key,SERVER_GAME_DATA_CBF *cbf
 	MPDPXTRA_UnsubscribeServerGameData
 
 	Unsubscribes from updates of server game data blocks associated with the specified
-	key, callback function, and context.
+	key, callback function, && context.
 
 	Inputs:
 
-		key -			Key value for the opaque data block between 0 and 0x7FFFFFFF.
+		key -			Key value for the opaque data block between 0 && 0x7FFFFFFF.
 						This key is game specific so developers are free to choose any
 						key they wish.
 		cbf -			A pointer to a callback function of type SERVER_GAME_DATA_CBF.

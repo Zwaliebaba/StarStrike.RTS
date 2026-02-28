@@ -98,7 +98,7 @@ unsigned char	*xored;
 		{
 			/* We've got our man... */
 			cheatCodes[index].function();	// run it
-			/* And get out of here */
+			/* && get out of here */
 			return(TRUE);
 		}
 		index++;

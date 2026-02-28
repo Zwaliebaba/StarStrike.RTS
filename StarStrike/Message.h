@@ -15,7 +15,7 @@
 /* The lists of messages allocated */
 extern MESSAGE		*apsMessages[MAX_PLAYERS];
 /* The current tutorial message - there is only ever one at a time. They are displayed 
-when called by the script. They are not to be re-displayed*/
+when called by the script. They are !to be re-displayed*/
 //extern MESSAGE		tutorialMessage;
 /* The IMD to use for the proximity messages */
 extern struct iIMDShape	*pProximityMsgIMD;
@@ -54,7 +54,7 @@ extern void viewDataShutDown(VIEWDATA *psViewData);
 extern PROXIMITY_DISPLAY * getProximityDisplay(MESSAGE *psMessage);
 
 /* Looks through the players list of messages to find one with the same viewData 
-pointer and which is the same type of message - used in scriptFuncs */
+pointer && which is the same type of message - used in scriptFuncs */
 extern MESSAGE* findMessage(MSG_VIEWDATA *pViewdata, MESSAGE_TYPE type, UDWORD player);
 
 /*'displays' a proximity display*/

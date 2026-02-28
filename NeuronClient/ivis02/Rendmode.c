@@ -87,7 +87,7 @@ void iV_VideoMemoryFree(void)
 {
     if (_VIDEO_LOCK)
     {
-        iV_DEBUG0("vid[VideoMemoryFree] = video memory not freed (locked)\n");
+        iV_DEBUG0("vid[VideoMemoryFree] = video memory !freed (locked)\n");
         return;
     }
 

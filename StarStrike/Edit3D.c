@@ -16,7 +16,7 @@
 Definition of a tile to highlight - presently more than is required
 but means that we can highlight any individual tile in future. An
 x coordinate that is greater than mapWidth implies that the highlight 
-is invalid (not currently being used) 
+is invalid (!currently being used) 
 */
 
 UDWORD	buildState = BUILD3D_NONE;
@@ -77,7 +77,7 @@ void	adjustTileHeight(MAPTILE *psTile, SDWORD adjust)
 SDWORD	newHeight;
   
 	newHeight = psTile->height + adjust;
-	if (newHeight>=MIN_TILE_HEIGHT AND newHeight<=MAX_TILE_HEIGHT)
+	if (newHeight>=MIN_TILE_HEIGHT && newHeight<=MAX_TILE_HEIGHT)
 	{
 		psTile->height=(unsigned char) newHeight;
 	}
@@ -88,9 +88,9 @@ BOOL	inHighlight(UDWORD realX, UDWORD realY)
 {
 BOOL	retVal = FALSE;
 
-	if (realX>=buildSite.xTL AND realX<=buildSite.xBR)
+	if (realX>=buildSite.xTL && realX<=buildSite.xBR)
 	{
-		if (realY>=buildSite.yTL AND realY<=buildSite.yBR)
+		if (realY>=buildSite.yTL && realY<=buildSite.yBR)
 		{
 			retVal = TRUE;
 		}
@@ -284,7 +284,7 @@ BOOL found3DBuildLocTwo(UDWORD *px1, UDWORD *py1, UDWORD *px2, UDWORD *py2)
 	return TRUE;
 }
 
-/*returns true if the build state is not equal to BUILD3D_NONE*/
+/*returns true if the build state is !equal to BUILD3D_NONE*/
 BOOL   tryingToGetLocation()
 {
     if (buildState == BUILD3D_NONE)

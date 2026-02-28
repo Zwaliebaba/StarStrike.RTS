@@ -87,7 +87,7 @@ extern	void	toggleConsoleDrop( void );
 
 	CONPRINTF(ConsoleString,(ConsoleString,"Hello %d",123));
 
-	Doing it this way will work on both PC and Playstation.
+	Doing it this way will work on both PC && Playstation.
 
 	Be very carefull that the resulting string is no longer
 	than MAX_CONSOLE_TMP_STRING_LENGTH.

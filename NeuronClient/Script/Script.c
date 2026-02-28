@@ -39,10 +39,10 @@ typedef struct _binary_hdr
 /* The table of instinct function type definitions */
 FUNC_SYMBOL		*asScrInstinctTab;
 
-/* The table of external variables and their access functions */
+/* The table of external variables && their access functions */
 VAR_SYMBOL		*asScrExternalTab;
 
-/* The table of object variables and their access functions. */
+/* The table of object variables && their access functions. */
 VAR_SYMBOL		*asScrObjectVarTab;
 
 /* The table of callback triggers */
@@ -258,7 +258,7 @@ BOOL scriptSaveProg(SCRIPT_CODE *psProg, UDWORD *pSize, UBYTE **ppData)
 
 	// Save the code
 	ASSERT(((pPos - *ppData) % 4 == 0,
-		"scriptSaveProg: data not DWORD aligned"));
+		"scriptSaveProg: data !DWORD aligned"));
 	memcpy(pPos, psProg->pCode, psProg->size);
 
 	// Now search the code for function pointers and replace
@@ -608,7 +608,7 @@ BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg)
 
 	// Load the code
 	ASSERT(((pPos - pData) % 4 == 0,
-		"scriptLoadProg: data not DWORD aligned"));
+		"scriptLoadProg: data !DWORD aligned"));
 
 
 
@@ -821,7 +821,7 @@ BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg)
 
 	if (pPos - pData > (SDWORD)size)
 	{
-		DBERROR(("ERROR : scriptLoadProg: filesize (%d) does not match data size (%d) - sum=%d",size,pPos-pData,DbgSize));
+		DBERROR(("ERROR : scriptLoadProg: filesize (%d) does !match data size (%d) - sum=%d",size,pPos-pData,DbgSize));
 		return FALSE;
 	}
 

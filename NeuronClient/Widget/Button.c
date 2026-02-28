@@ -52,7 +52,7 @@ BOOL buttonCreate(W_BUTTON **ppsWidget, W_BUTINIT *psInit)
 		ASSERT((FALSE, "buttonCreate: Out of memory"));
 		return FALSE;
 	}
-	/* Allocate memory for the text and copy it if necessary */
+	/* Allocate memory for the text && copy it if necessary */
 	if (psInit->pText)
 	{
 #if W_USE_STRHEAP
@@ -74,7 +74,7 @@ BOOL buttonCreate(W_BUTTON **ppsWidget, W_BUTINIT *psInit)
 	{
 		(*ppsWidget)->pText = NULL;
 	}
-	/* Allocate the memory for the tip and copy it if necessary */
+	/* Allocate the memory for the tip && copy it if necessary */
 	if (psInit->pTip)
 	{
 #if W_USE_STRHEAP
@@ -208,7 +208,7 @@ void buttonClearFlash(W_BUTTON *psButton)
 void buttonSetState(W_BUTTON *psButton, UDWORD state)
 {
 	ASSERT((!((state & WBUT_LOCK) && (state & WBUT_CLICKLOCK)),
-		"widgSetButtonState: Cannot have WBUT_LOCK and WBUT_CLICKLOCK"));
+		"widgSetButtonState: Cannot have WBUT_LOCK && WBUT_CLICKLOCK"));
 
 	if (state & WBUT_DISABLE)
 	{
@@ -256,7 +256,7 @@ void buttonRun(W_BUTTON *psButton)
 /* Respond to a mouse click */
 void buttonClicked(W_BUTTON *psWidget, UDWORD key)
 {
-	/* Can't click a button if it is disabled or locked down */
+	/* Can't click a button if it is disabled || locked down */
 	if (!(psWidget->state & (WBUTS_GREY | WBUTS_LOCKED)))
 	{
 		// Check this is the correct key

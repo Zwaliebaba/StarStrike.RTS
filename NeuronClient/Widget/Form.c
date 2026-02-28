@@ -258,7 +258,7 @@ static BOOL formCreateTabbed(W_TABFORM **ppsWidget, W_FORMINIT *psInit)
 	}
 	if (psInit->majorPos != 0 && psInit->majorPos == psInit->minorPos)
 	{
-		ASSERT((FALSE, "formCreateTabbed: Cannot have major and minor tabs on same side"));
+		ASSERT((FALSE, "formCreateTabbed: Cannot have major && minor tabs on same side"));
 		return FALSE;
 	}
 	if (psInit->numMajor >= WFORM_MAXMAJOR)
@@ -293,7 +293,7 @@ static BOOL formCreateTabbed(W_TABFORM **ppsWidget, W_FORMINIT *psInit)
 	}
 	memset(*ppsWidget, 0, sizeof(W_TABFORM));
 
-	/* Allocate the memory for tool tips and copy them in */
+	/* Allocate the memory for tool tips && copy them in */
 	psMajor = (*ppsWidget)->asMajor;
 	for(major=0; major<psInit->numMajor; major++)
 	{
@@ -443,7 +443,7 @@ BOOL formCreate(W_FORM **ppsWidget, W_FORMINIT *psInit)
 	if ((psInit->style & WFORM_TABBED) &&
 		(psInit->style & (WFORM_INVISIBLE | WFORM_CLICKABLE)))
 	{
-		ASSERT((FALSE, "formCreate: Tabbed form cannot be invisible or clickable"));
+		ASSERT((FALSE, "formCreate: Tabbed form cannot be invisible || clickable"));
 		return FALSE;
 	}
 	if ((psInit->style & WFORM_INVISIBLE) &&
@@ -512,13 +512,13 @@ BOOL formAddWidget(W_FORM *psForm, WIDGET *psWidget, W_INIT *psInit)
 		psTabForm = (W_TABFORM *)psForm;
 		if (psInit->majorID >= psTabForm->numMajor)
 		{
-			ASSERT((FALSE, "formAddWidget: Major tab does not exist"));
+			ASSERT((FALSE, "formAddWidget: Major tab does !exist"));
 			return FALSE;
 		}
 		psMajor = psTabForm->asMajor + psInit->majorID;
 		if (psInit->minorID >= psMajor->numMinor)
 		{
-			ASSERT((FALSE, "formAddWidget: Minor tab does not exist"));
+			ASSERT((FALSE, "formAddWidget: Minor tab does !exist"));
 			return FALSE;
 		}
 		ppsList = &(psMajor->asMinor[psInit->minorID].psWidgets);
@@ -565,7 +565,7 @@ UDWORD formGetClickState(W_CLICKFORM *psForm)
 void formSetClickState(W_CLICKFORM *psForm, UDWORD state)
 {
 	ASSERT((!((state & WBUT_LOCK) && (state & WBUT_CLICKLOCK)),
-		"widgSetButtonState: Cannot have WBUT_LOCK and WBUT_CLICKLOCK"));
+		"widgSetButtonState: Cannot have WBUT_LOCK && WBUT_CLICKLOCK"));
 
 	if (state & WBUT_DISABLE)
 	{
@@ -641,7 +641,7 @@ WIDGET *formGetAllWidgets(W_FORMGETALL *psCtrl)
 
 	if (psCtrl->psGAWForm == NULL)
 	{
-		/* Not a tabbed form, return the list */
+		/* !a tabbed form, return the list */
 		psRetList = psCtrl->psGAWList;
 		psCtrl->psGAWList = NULL;
 	}
@@ -682,7 +682,7 @@ void widgSetTabs(W_SCREEN *psScreen, UDWORD id, UWORD major, UWORD minor)
 	if (major >= psForm->numMajor ||
 		minor >= psForm->asMajor[major].numMinor)
 	{
-		ASSERT((FALSE, "widgSetTabs: invalid major or minor id"));
+		ASSERT((FALSE, "widgSetTabs: invalid major || minor id"));
 		return;
 	}
 
@@ -1105,7 +1105,7 @@ void formRun(W_FORM *psWidget, W_CONTEXT *psContext)
 			{
 				/* No tab - clear the tool tip */
 				tipStop((WIDGET *)psWidget);
-				/* And clear the hilite */
+				/* && clear the hilite */
 				psTabForm->tabHiLite = (UWORD)(-1);
 			}
 		}
@@ -1140,7 +1140,7 @@ void formClicked(W_FORM *psWidget, UDWORD key)
 
 	if (psWidget->style & WFORM_CLICKABLE)
 	{
-		/* Can't click a button if it is disabled or locked down */
+		/* Can't click a button if it is disabled || locked down */
 		if (!(((W_CLICKFORM *)psWidget)->state & (WCLICK_GREY | WCLICK_LOCKED)))
 		{
 			// Check this is the correct key

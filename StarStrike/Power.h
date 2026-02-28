@@ -31,11 +31,11 @@ typedef struct _player_power
 {
 	//UDWORD		initialPower;	    HAVEN'T FOUND A USE FOR IT YET! AB 26/8/98	
 									    /* what the initial power level is - set 
-									    in script not sure if will need it, but 
+									    in script !sure if will need it, but 
 									    keeping for now*/
 	UDWORD		currentPower;		    /* the current amount of power avaialble 
 									    to the player*/
-	UDWORD		extractedPower;		    /* the power extracted but not converted */
+	UDWORD		extractedPower;		    /* the power extracted but !converted */
 	BASE_OBJECT *psLastPowered;	/*the last object that received power 
 									    before it ran out*/
 } PLAYER_POWER;
@@ -49,7 +49,7 @@ extern void clearPlayerPower(void);
 /*initialise the PlayerPower list */
 //extern initPlayerPower(void);
 
-/*reset the power levels when a power_gen or resource_extractor is destroyed */
+/*reset the power levels when a power_gen || resource_extractor is destroyed */
 extern BOOL resetPlayerPower(UDWORD player, STRUCTURE *psStruct);
 
 /*Free the space used for playerPower */
@@ -69,7 +69,7 @@ extern void addPower(UDWORD player, UDWORD quantity);
 //extern void updateExtractedPower(STRUCTURE	*psBuilding);
 extern UDWORD updateExtractedPower(STRUCTURE	*psBuilding);
 
-/* Update current power based on what was extracted during the last cycle and 
+/* Update current power based on what was extracted during the last cycle && 
    what Power Generators exist */
 extern void updatePlayerPower(UDWORD player);
 
@@ -98,7 +98,7 @@ extern BOOL accruePower(BASE_OBJECT *psObject);
 extern void updateLastPowered(BASE_OBJECT *psObject,UBYTE player);
 
 /*	Returns the next res. Ext. in the list from the one passed in. returns 1st one
-	in list if passed in is NULL and NULL if there's none?
+	in list if passed in is NULL && NULL if there's none?
 */
 extern STRUCTURE *getRExtractor(STRUCTURE *psStruct);
 

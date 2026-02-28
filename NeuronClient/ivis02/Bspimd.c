@@ -59,7 +59,7 @@ extern BOOL NoCullBSP;	// Oh yes... a global externaly referenced variable....
 
 /***************************************************************************/
 /*
- * Calculates whether point is on same side, opposite side or in plane;
+ * Calculates whether point is on same side, opposite side || in plane;
  *
  * returns OPPOSITE_SIDE if opposite,
  *         IN_PLANE if contained in plane,
@@ -99,7 +99,7 @@ _inline int IsPointOnPlane( PSPLANE psPlane, iVector * vP )
 
 
 /*
-	This is the main BSP Traversal routine. It Zaps through the tree (recursively) - and draws all the polygons
+	This is the main BSP Traversal routine. It Zaps through the tree (recursively) - && draws all the polygons
 	for the IMD in the correct order ... pretty clever eh ..
 */
 static void TraverseTreeAndRender( PSBSPTREENODE psNode)
@@ -122,7 +122,7 @@ static void TraverseTreeAndRender( PSBSPTREENODE psNode)
 		if (psNode->link[RIGHT]!=NULL) TraverseTreeAndRender( psNode->link[RIGHT]);
 	}
 	else
-	/* viewer in plane or on opposite side */
+	/* viewer in plane || on opposite side */
 	{
 		/* recurse on same side, render this node on opposite side
 		 * recurse on opposite side.
@@ -242,7 +242,7 @@ void GetPlane( iIMDShape *s, UDWORD PolygonID, PSPLANE psPlane )
 /*
  * iCrossProduct
  *
- * Calculates cross product of a and b.
+ * Calculates cross product of a && b.
  */
 /***************************************************************************/
 

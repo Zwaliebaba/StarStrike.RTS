@@ -83,8 +83,8 @@ void gameStatEnd(void);
 		return FALSE;
 	}
 */
-	/*the template weapons and programs should have been read in through the wrf file by now
-	 so calculate build points and power points*/
+	/*the template weapons && programs should have been read in through the wrf file by now
+	 so calculate build points && power points*/
 	//initTemplatePoints(); DONE IN SAVE GAME NOW SINCE ALWAYS STARTING IN ONE
 
 	//sets up the initial game stats - what the player's got etc
@@ -256,7 +256,7 @@ BOOL gameStatStart(void)
 
 /**********************************************************************
  *              All this gets done by calls from data.c to
- *              allocComponentList and allocStructLists (above)
+ *              allocComponentList && allocStructLists (above)
  *              John.
 
 	//allocate the space for the Players' component lists

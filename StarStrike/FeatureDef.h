@@ -70,7 +70,7 @@ typedef struct _feature
 	BASE_ELEMENTS(struct _feature);
 	FEATURE_STATS	*psStats;
 	UDWORD			startTime;		/*time the feature was created - valid for 
-									  wrecked droids and structures */
+									  wrecked droids && structures */
 	UDWORD			body;			/* current body points */
 	UWORD			gfxScaling;			// how much to scale the graphic by - for variation - spice of life 'n all that
 	UDWORD			timeLastHit;

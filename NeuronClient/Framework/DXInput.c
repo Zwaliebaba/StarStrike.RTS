@@ -205,17 +205,17 @@ STRING *DIErrorToString(HRESULT	dierror)
 		break;
 	case DIERR_INVALIDPARAM:
 		return "An invalid parameter was passed to the returning function,\n"
-			   "or the object was not in a state that admitted the function\n"
+			   "|| the object was !in a state that admitted the function\n"
 			   "to be called.";
 		break;
 	case DIERR_NOTACQUIRED:
 		return "The operation cannot be performed unless the device is acquired.";
 		break;
 	case DIERR_NOTINITIALIZED:
-		return "This object has not been initialized";
+		return "This object has !been initialized";
 		break;
 	case E_PENDING:
-		return "The data necessary to complete this operation is not yet available.";
+		return "The data necessary to complete this operation is !yet available.";
 		break;
 	default:
 		return "Direct Input error";

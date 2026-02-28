@@ -308,7 +308,7 @@ UDWORD	div;
 			iV_DrawText(text, x + width + 16, y + 12);
 
 			/* If we're beyond STAT_ROOKIE, then we're on rankings */
-			if(index>=STAT_GREEN AND index <= STAT_ACE)
+			if(index>=STAT_GREEN && index <= STAT_ACE)
 			{
 				iV_DrawTransImage(IntImages,(UWORD)(IMAGE_LEV_0 + (index - STAT_GREEN)),x-8,y+2);
 			}
@@ -317,7 +317,7 @@ UDWORD	div;
 		}
 		/* Move onto the next bar */
 		index++;
-		if(infoBars[index].topX == 0 AND infoBars[index].topY == 0)
+		if(infoBars[index].topX == 0 && infoBars[index].topY == 0)
 		{
 			bMoreBars = FALSE;
 		}
@@ -335,7 +335,7 @@ void	dispAdditionalInfo( void )
 	sprintf(text,strresGetString(psStringRes,STR_MR_ARTEFACTS_FOUND),missionData.artefactsFound);
 	iV_DrawText(text,(DISP_WIDTH - iV_GetTextWidth(text))/2,300+D_H);
 
-	/* Get the mission result time in a string - and write it out */
+	/* Get the mission result time in a string - && write it out */
 	getAsciiTime((char*)&text2,gameTime-missionData.missionStarted);
 	sprintf(text,strresGetString(psStringRes,STR_MR_MISSION_TIME),text2);
 	iV_DrawText(text,(DISP_WIDTH - iV_GetTextWidth(text))/2,320+D_H);	
@@ -384,7 +384,7 @@ DROID	*psDroid;
 	}
 
 	/* Now do the other stuff... */
-	/* Units killed and lost... */
+	/* Units killed && lost... */
 	maxi = max(missionData.unitsLost,missionData.unitsKilled);
 	if (maxi == 0)
 	{
@@ -465,7 +465,7 @@ SCORE_SAVEHEADER	*psHeader;		// Pointer to the header part of the file
 	/* Calculate memory required */
 	fileSize = ( sizeof(struct _score_save_header) + sizeof(struct mission_data) );
 
-	/* Try and allocate it - freed up in same function */
+	/* Try && allocate it - freed up in same function */
 	pFileData = (UBYTE *)MALLOC(fileSize);
 
 	/* Did we get it? */
@@ -501,21 +501,21 @@ SCORE_SAVEHEADER	*psHeader;		// Pointer to the header part of the file
 		return(FALSE);
 	}
 
-	/* Now, try and write it out */
+	/* Now, try && write it out */
 	if (fwrite(pFileData, 1, fileSize, pFile) != fileSize)
 	{
 		DBERROR(("Saving Score data : write failed for %s", pFileName));
 		return(FALSE);
 	}
 
-	/* Finally, try and close it */
+	/* Finally, try && close it */
 	if (fclose(pFile) != 0)
 	{
 		DBERROR(("Saving Score data : couldn't close %s", pFileName));
 		return(FALSE);
 	}
 
-	/* And free up the memory we used */
+	/* && free up the memory we used */
 	if (pFileData != NULL)
 	{
 		FREE(pFileData);

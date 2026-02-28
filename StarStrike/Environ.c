@@ -1,6 +1,6 @@
 /* 
 Environ.c - handles the enviroment stuff that's stored in tables
-used for the mist and water effects. These are preprocessed.
+used for the mist && water effects. These are preprocessed.
 */
 
 // -------------------------------------------------------------------------------
@@ -267,7 +267,7 @@ extern UDWORD map_MistValue(UDWORD x, UDWORD y)
 	oy = (y & (TILE_UNITS-1));
 
 	/* If this happens, then get quick height */
-	if(!x AND !y)
+	if(!x && !y)
 	{
 		return(map_TileMistValue(tileX,tileY));
 	}

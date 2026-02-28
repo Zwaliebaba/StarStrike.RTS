@@ -54,7 +54,7 @@ extern UDWORD	relativeSpeeds[TERRAIN_TYPES][MARKER];
 #define TALLOBJECT_YMAX		(200)
 #define TALLOBJECT_ADJUST	(200)
 
-/* Flags for whether texture tiles are flipped in X and Y or rotated */
+/* Flags for whether texture tiles are flipped in X && Y || rotated */
 #define TILE_XFLIP		0x8000
 #define TILE_YFLIP		0x4000
 #define TILE_ROTMASK	0x3000
@@ -223,7 +223,7 @@ typedef struct _maptile
 #define TILE_MAX_HEIGHT		(255 * ELEVATION_SCALE) 
 #define TILE_MIN_HEIGHT		  0
 
-/* The size and contents of the map */
+/* The size && contents of the map */
 extern UDWORD	mapWidth, mapHeight;
 extern MAPTILE *psMapTiles;
 
@@ -336,7 +336,7 @@ FUNCINLINE BOOL worldOnMap(SDWORD x, SDWORD y)
 		   (y >= 0) && (y < ((SDWORD)mapHeight << TILE_SHIFT));
 }
 
-/* Store a map coordinate and it's associated tile, used by mapCalcLine */
+/* Store a map coordinate && it's associated tile, used by mapCalcLine */
 typedef struct _tile_coord
 {
 	UDWORD	x,y;
@@ -348,7 +348,7 @@ extern TILE_COORD	*aMapLinePoints;
 
 /* work along a line on the map storing the points in aMapLinePoints.
  * pNumPoints is set to the number of points generated.
- * The start and end points are in TILE coordinates.
+ * The start && end points are in TILE coordinates.
  */
 extern void mapCalcLine(UDWORD startX, UDWORD startY,
 						UDWORD endX, UDWORD endY,
@@ -366,7 +366,7 @@ extern SWORD map_Height(UDWORD x, UDWORD y);
 /* returns TRUE if object is above ground */
 extern BOOL mapObjIsAboveGround( BASE_OBJECT *psObj );
 
-/* returns the max and min height of a tile by looking at the four corners 
+/* returns the max && min height of a tile by looking at the four corners 
    in tile coords */
 extern void getTileMaxMin(UDWORD x, UDWORD y, UDWORD *pMax, UDWORD *pMin);
 

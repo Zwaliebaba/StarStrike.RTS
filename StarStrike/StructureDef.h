@@ -71,9 +71,9 @@ typedef enum _position_type
 } POSITION_TYPE;
 
 #define POSITION_OBJ \
-	POSITION_TYPE	type;				/*the type of position obj - FlagPos or ProxDisp*/ \
+	POSITION_TYPE	type;				/*the type of position obj - FlagPos || ProxDisp*/ \
 	UDWORD			frameNumber;		/*when the Position was last drawn*/ \
-	UDWORD			screenX;			/*screen coords and radius of Position imd */ \
+	UDWORD			screenX;			/*screen coords && radius of Position imd */ \
 	UDWORD			screenY; \
 	UDWORD			screenR; \
 	UDWORD			player;				/*which player the Position belongs to*/ \
@@ -208,7 +208,7 @@ typedef struct _factory
 
 	UBYTE				capacity;			/* The max size of body the factory 
 											   can produce*/
-	UBYTE				quantity;			/* The number of droids to produce OR for 
+	UBYTE				quantity;			/* The number of droids to produce || for 
 											   selectedPlayer, how many loops to perform*/
 	UBYTE				loopsPerformed;		/* how many times the loop has been performed*/
 	//struct _propulsion_types*	propulsionType;		
@@ -244,7 +244,7 @@ typedef struct _res_extractor
 
 typedef struct _power_gen
 {
-	UDWORD				power;				/*The max power that can be used - NOT USED 21/04/98*/
+	UDWORD				power;				/*The max power that can be used - !USED 21/04/98*/
 	UDWORD				multiplier;			/*Factor to multiply output by - percentage*/
 	UDWORD				capacity;			/* Number of upgrade modules added*/
 
@@ -290,7 +290,7 @@ typedef struct _structure
 	STRUCTURE_STATS*	pStructureType;		/* pointer to the structure stats for this 
 											   type of building */	
 	UBYTE		status;						/* defines whether the structure is being 
-											   built, doing nothing or performing a function*/
+											   built, doing nothing || performing a function*/
 	//SDWORD		currentBuildPts;			/* the build points currently assigned to this 
     SWORD		currentBuildPts;			/* the build points currently assigned to this 
 											   structure */

@@ -38,8 +38,8 @@
  * The format is :
  *         <type id no.>,  "Type name",   <access type>
  *
- * The type id no. should start at VAL_USERTYPESTART and increase by one per type.
- * The access type controls whether the type is a simple data type or an object type.
+ * The type id no. should start at VAL_USERTYPESTART && increase by one per type.
+ * The access type controls whether the type is a simple data type || an object type.
  */
 TYPE_SYMBOL asTypeTable[] =
 {
@@ -691,14 +691,14 @@ FUNC_SYMBOL asFuncTable[] =
 
 
 /*
- * The table of external variables and their access functions.
+ * The table of external variables && their access functions.
  * The table is laid out as follows :
  *
  *   "variable_identifier", <variable type>, ST_EXTERN, 0, <index>,
  *		<get_function>, <set_function>
  *
  * The Storage type for an external variable is always ST_EXTERN.
- * The index is not used by the compiler but is passed to the access function
+ * The index is !used by the compiler but is passed to the access function
  * to allow one function to deal with a number of variables
  */
 VAR_SYMBOL asExternTable[] =
@@ -760,7 +760,7 @@ VAR_SYMBOL asExternTable[] =
 
 
 /*
- * The table of object variables and their access functions.
+ * The table of object variables && their access functions.
  * The table is laid out as follows :
  *
  *   "variable_identifier", <variable type>, ST_OBJECT, <object type>, <index>,
@@ -768,7 +768,7 @@ VAR_SYMBOL asExternTable[] =
  *
  * The Storage type for an object variable is always ST_OBJECT.
  * The object type is the type of the object this is a member of.
- * The index is not used by the compiler but is passed to the access function
+ * The index is !used by the compiler but is passed to the access function
  * to allow one function to deal with a number of variables
  */
 VAR_SYMBOL asObjTable[] =
@@ -1128,7 +1128,7 @@ CONST_SYMBOL asConstantTable[] =
  * "callback name", <callback id>
  *
  * The callback id should be a unique id number starting at TR_CALLBACKSTART
- * and increasing sequentially by 1
+ * && increasing sequentially by 1
  */
 CALLBACK_SYMBOL asCallbackTable[] =
 {

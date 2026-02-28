@@ -19,7 +19,7 @@ typedef enum _interp_type
 	VAL_TRIGGER,
 	VAL_EVENT,
 
-	/* Type used by the compiler for functions that do not return a value */
+	/* Type used by the compiler for functions that do !return a value */
 	VAL_VOID,
 
 	VAL_USERTYPESTART,		// user defined types should start with this id
@@ -28,7 +28,7 @@ typedef enum _interp_type
 // flag to specify a variable reference rather than simple value
 #define VAL_REF		0x00100000
 
-/* A value consists of its type and value */
+/* A value consists of its type && value */
 typedef struct _interp_val
 {
 	INTERP_TYPE		type;
@@ -123,7 +123,7 @@ typedef enum _op_code
 /* The type of function called by an OP_CALL */
 typedef BOOL (*SCRIPT_FUNC)(void);
 
-/* The type of function called to access an object or in-game variable */
+/* The type of function called to access an object || in-game variable */
 typedef BOOL (*SCRIPT_VARFUNC)(UDWORD index);
 
 /* The possible storage types for a variable */
@@ -188,7 +188,7 @@ typedef struct _trigger_data
 	UDWORD			time;		// How often to check the trigger
 } TRIGGER_DATA;
 
-/* A compiled script and its associated data */
+/* A compiled script && its associated data */
 typedef struct _script_code
 {
 	UDWORD			size;			// The size (in bytes) of the compiled code

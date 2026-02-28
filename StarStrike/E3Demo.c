@@ -1,6 +1,6 @@
 /*	
 	Temporary Warzone file for the E3 Demo.
-	Bounces the camera around and attempts to track
+	Bounces the camera around && attempts to track
 	interesting stuff.
 	Alex McLean, Pumpkin Studios, EIDOS Interactive.
 	Will be called from a DEBUG key-mapping.
@@ -113,7 +113,7 @@ UDWORD	i,numWith;
 					numWith++;
 				}
 			}
-			/* If they were all empty, then record this fact and only seek locations */
+			/* If they were all empty, then record this fact && only seek locations */
 			/* We need two sides for this to work! */
 			if(numWith<2)
 			{
@@ -136,8 +136,8 @@ UDWORD	i,numWith;
 				/* Choose a player at random */
 				otherPlayer = rand()%MAX_PLAYERS;
 
-				/* Have they got any structures? Make sure it's not their own we're checking! */
-				while(apsStructLists[otherPlayer]==NULL OR otherPlayer==firstPlayer)
+				/* Have they got any structures? Make sure it's !their own we're checking! */
+				while(apsStructLists[otherPlayer]==NULL || otherPlayer==firstPlayer)
 				{
 					/* Nope, so choose another one until we get one with droids */
 					otherPlayer = rand()%MAX_PLAYERS;
@@ -145,11 +145,11 @@ UDWORD	i,numWith;
 				psDroid = getDroidForDemo(firstPlayer);
 
 
-				/* Only do this if we've got a droid and an enemy building to attack! */
-				if(psDroid AND apsStructLists[otherPlayer])
+				/* Only do this if we've got a droid && an enemy building to attack! */
+				if(psDroid && apsStructLists[otherPlayer])
 				{
-					if( (orderState(psDroid,DORDER_NONE) == TRUE) OR 
-						((orderState(psDroid,DORDER_GUARD) == TRUE) AND (psDroid->action == DACTION_NONE)))
+					if( (orderState(psDroid,DORDER_NONE) == TRUE) || 
+						((orderState(psDroid,DORDER_GUARD) == TRUE) && (psDroid->action == DACTION_NONE)))
 					{
 						/* Make the droid attack the building - it'll indirectly route there too */
 						orderDroidLoc(psDroid,DORDER_SCOUT,
@@ -198,7 +198,7 @@ BOOL	demoGetStatus( void )
 }	
 
 // -------------------------------------------------------------------------
-/*	Attempts to find a new location for the tracking camera to go to, or
+/*	Attempts to find a new location for the tracking camera to go to, ||
 	a new object (target) for it to track. 
 */
 #define NUM_CHOICES 2
@@ -240,9 +240,9 @@ PROPULSION_STATS	*psPropStats;
 			}
 		}
 	}
-	/* If they were all empty, then record this fact and only seek locations */
+	/* If they were all empty, then record this fact && only seek locations */
 	/* We need two sides for this to work! */
-	if(numWith<2 OR !bHaveHuman)
+	if(numWith<2 || !bHaveHuman)
 	{
 		bSeekOnlyLocations = TRUE;
 	}
@@ -267,7 +267,7 @@ PROPULSION_STATS	*psPropStats;
 		/* Check which */
 		switch(type)
 		{
-			/* Go after a droid, or a droid location */
+			/* Go after a droid, || a droid location */
 		case DROID_SEEK:
 		case TAR_SEEK:
 			/* Choose a player at random */
@@ -283,23 +283,23 @@ PROPULSION_STATS	*psPropStats;
 			/* Choose a player at random */
 			otherPlayer = rand()%MAX_PLAYERS;
 
-			/* Have they got any structures? Make sure it's not their own we're checking! */
-			while(apsStructLists[otherPlayer]==NULL OR otherPlayer==player)
+			/* Have they got any structures? Make sure it's !their own we're checking! */
+			while(apsStructLists[otherPlayer]==NULL || otherPlayer==player)
 			{
 				/* Nope, so choose another one until we get one with droids */
 				otherPlayer = rand()%MAX_PLAYERS;
 			}
 
 			/* If there was a droid last time, deselect it */
-			if(psLastDroid AND !psLastDroid->died)
+			if(psLastDroid && !psLastDroid->died)
 			{
 				psLastDroid->selected = FALSE;
 			}
 
-			/* Jump to droid and track */
+			/* Jump to droid && track */
 			psDroid = getDroidForDemo(player);
-			/* Only do if we've got a droid and an enemy building to attack */
-			if(psDroid AND apsStructLists[otherPlayer])
+			/* Only do if we've got a droid && an enemy building to attack */
+			if(psDroid && apsStructLists[otherPlayer])
 			{
 				psDroid->selected = TRUE;
 			  	selectedPlayer = player;
@@ -377,7 +377,7 @@ STRUCTURE_STATS	*pStructureType;
 
 // -------------------------------------------------------------------------
 /*	The next two functions solve the flickering base plate problem - probably
-	won't be needed on the PSX. they're used both in demo mode and indirectly
+	won't be needed on the PSX. they're used both in demo mode && indirectly
 	when godMode is toggled ON/OFF
 */
 void	demoProcessTilesOut( void )
@@ -398,7 +398,7 @@ STRUCTURE_STATS		*pStructureType;
 				if(psStructure)
 				{
 					pStructureType = psStructure->pStructureType;
-					if(psStructure->player == selectedPlayer AND pStructureType->pBaseIMD)
+					if(psStructure->player == selectedPlayer && pStructureType->pBaseIMD)
 					{
 						SET_TILE_NODRAW(psTile);
 					}
@@ -428,7 +428,7 @@ UDWORD	droidIndex;
 	if(i)
 	{
 		droidIndex = rand()%i;
-		for(psDroid = apsDroidLists[player],i=0; psDroid AND i<droidIndex; i++,psDroid = psDroid->psNext)
+		for(psDroid = apsDroidLists[player],i=0; psDroid && i<droidIndex; i++,psDroid = psDroid->psNext)
 		{
 			/* Find the right one */
 		}
@@ -444,9 +444,9 @@ UDWORD	droidIndex;
 /* Hack! */
 BOOL	tooNearEdge( UDWORD x, UDWORD y )
 {
-	if( (x > ((visibleXTiles/2) * TILE_UNITS)) AND          
-		(x < ((mapWidth-(visibleXTiles/2)) * TILE_UNITS)) AND
-		(y > ((visibleYTiles/2) * TILE_UNITS)) AND          
+	if( (x > ((visibleXTiles/2) * TILE_UNITS)) &&          
+		(x < ((mapWidth-(visibleXTiles/2)) * TILE_UNITS)) &&
+		(y > ((visibleYTiles/2) * TILE_UNITS)) &&          
 		(y < ((mapHeight-(visibleYTiles/2)) * TILE_UNITS)) )
 	{
 		return(FALSE);

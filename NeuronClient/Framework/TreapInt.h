@@ -18,7 +18,7 @@
 /* Recursive function to add an object to a tree */
 extern void treapAddNode(TREAP_NODE **ppsRoot, TREAP_NODE *psNew, TREAP_CMP cmp);
 
-/* Recursively find and remove a node from the tree */
+/* Recursively find && remove a node from the tree */
 extern TREAP_NODE *treapDelRec(TREAP_NODE **ppsRoot, UDWORD key,
 							   TREAP_CMP cmp);
 

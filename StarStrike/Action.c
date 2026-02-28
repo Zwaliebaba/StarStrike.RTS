@@ -305,7 +305,7 @@ BOOL actionInsideMinRange(DROID *psDroid, BASE_OBJECT *psObj)
 
 	// find a new destination
 	//if (getDroidDestination(psStructStats, psDroid->orderX, psDroid->orderY,pX,pY))
-	if (psDroid->action == DACTION_MOVETOREARM OR psDroid->action == DACTION_MOVETOREPAIR)
+	if (psDroid->action == DACTION_MOVETOREARM || psDroid->action == DACTION_MOVETOREPAIR)
 	{
 		//use action target
 		if (getDroidDestination(psStats, psDroid->actionX, psDroid->actionY, pX, pY))
@@ -811,7 +811,7 @@ void actionUpdateVtolAttack( DROID *psDroid )
 		}
 	}
 
-	/* circle around target if hovering and not cyborg */
+	/* circle around target if hovering && !cyborg */
 	if ( psDroid->sMove.Status == MOVEHOVER &&
 		 //psDroid->droidType != DROID_CYBORG    )
          !cyborgDroid(psDroid))
@@ -831,7 +831,7 @@ void actionUpdateTransporter( DROID *psDroid )
 	}
 
     //check the target hasn't become one the same player ID - Electronic Warfare
-    if (psDroid->psActionTarget != NULL AND 
+    if (psDroid->psActionTarget != NULL && 
         psDroid->player == psDroid->psActionTarget->player)
     {
         psDroid->psActionTarget = NULL;
@@ -1191,7 +1191,7 @@ void actionUpdateDroid(DROID *psDroid)
 		break;
 	case DACTION_TRANSPORTWAITTOFLYIN:
         //if we're moving droids to safety and currently waiting to fly back in, see if time is up
-        if (psDroid->player == selectedPlayer AND getDroidsToSafetyFlag())
+        if (psDroid->player == selectedPlayer && getDroidsToSafetyFlag())
         {
 			if ((SDWORD)(mission.ETA - (gameTime - missionGetReinforcementTime())) <= 0)
 			{
@@ -1210,7 +1210,7 @@ void actionUpdateDroid(DROID *psDroid)
 			}
             else
             {
-                /*if we're currently moving units to safety and waiting to fly 
+                /*if we're currently moving units to safety && waiting to fly 
                 back in - check there is something to fly back for!*/
                 if (!missionDroidsRemaining(selectedPlayer))
                 {
@@ -1228,8 +1228,8 @@ void actionUpdateDroid(DROID *psDroid)
 			// Got to destination
 			psDroid->action = DACTION_NONE;
 			//if vtol and offworld and empty - 'magic' it back home!
-/*			alternatively - lets not - John.
-			if (vtolEmpty(psDroid) AND missionIsOffworld())
+/*			alternatively - lets !- John.
+			if (vtolEmpty(psDroid) && missionIsOffworld())
 			{
 				//check has reached LZ
 				xdiff = (SDWORD)psDroid->x - (SDWORD)psDroid->actionX;
@@ -1510,7 +1510,7 @@ void actionUpdateDroid(DROID *psDroid)
 		/* check vtol attack runs */
 //		actionUpdateVtolAttack( psDroid );
 
-		/* circle around target if hovering and not cyborg */
+		/* circle around target if hovering && !cyborg */
 		if (DROID_STOPPED(psDroid))
 		{
 			actionAddVtolAttackRun( psDroid );
@@ -2073,7 +2073,7 @@ void actionUpdateDroid(DROID *psDroid)
 			formationLeave(psDroid->sMove.psFormation, (BASE_OBJECT *)psDroid);
 			psDroid->sMove.psFormation = NULL;
 		}
-		/* moving from front to rear of repair facility or rearm pad */
+		/* moving from front to rear of repair facility || rearm pad */
 /*		xdiff = (SDWORD)psDroid->x - ((SDWORD)psDroid->psActionTarget->x + TILE_UNITS);
 		ydiff = (SDWORD)psDroid->y - (SDWORD)psDroid->psActionTarget->y;
 		if (xdiff*xdiff + ydiff*ydiff < (TILE_UNITS/2)*(TILE_UNITS/2))*/
@@ -2233,7 +2233,7 @@ void actionUpdateDroid(DROID *psDroid)
 		break;
 	case DACTION_FIRESUPPORT:
 		//can be either a droid or a structure now - AB 7/10/98
-		ASSERT(((psDroid->psTarget->type == OBJ_DROID OR
+		ASSERT(((psDroid->psTarget->type == OBJ_DROID ||
 			psDroid->psTarget->type == OBJ_STRUCTURE) &&
 				(psDroid->psTarget->player == psDroid->player),
 			"DACTION_FIRESUPPORT: incorrect target type"));
@@ -2515,7 +2515,7 @@ static void actionDroidBase(DROID *psDroid, DROID_ACTION_DATA *psAction)
 	ASSERT((PTRVALID(psDroid, sizeof(DROID)),
 		"actionUnitBase: Invalid Unit pointer"));
 	ASSERT((psDroid->type == OBJ_DROID,
-		"actionUnitBase: Unit pointer does not reference a unit"));
+		"actionUnitBase: Unit pointer does !reference a unit"));
 
 
 #ifdef DEBUG_GROUP0
@@ -2570,9 +2570,9 @@ static void actionDroidBase(DROID *psDroid, DROID_ACTION_DATA *psAction)
 		if (electronicDroid(psDroid))
 		{
 			//check for low or zero resistance - just zero resistance!
-			if (psAction->psObj->type == OBJ_STRUCTURE AND (
+			if (psAction->psObj->type == OBJ_STRUCTURE && (
 //				(((STRUCTURE *)psAction->psObj)->pStructureType->resistance == 0)))
-                /* OR (((STRUCTURE *)psAction->psObj)->resistance < 
+                /* || (((STRUCTURE *)psAction->psObj)->resistance < 
 				(SDWORD)structureResistance(((STRUCTURE *)psAction->psObj)->
 				pStructureType, psAction->psObj->player))))*/
 				//psObj)->resistance < (SDWORD)((STRUCTURE *)psAction->
@@ -2584,7 +2584,7 @@ static void actionDroidBase(DROID *psDroid, DROID_ACTION_DATA *psAction)
 				break;
 			}
             //in multiPlayer cannot electronically attack a tranporter
-            if (bMultiPlayer AND psAction->psObj->type == OBJ_DROID AND
+            if (bMultiPlayer && psAction->psObj->type == OBJ_DROID &&
                 ((DROID *)psAction->psObj)->droidType == DROID_TRANSPORTER)
             {
                 psDroid->action = DACTION_NONE;
@@ -2630,7 +2630,7 @@ static void actionDroidBase(DROID *psDroid, DROID_ACTION_DATA *psAction)
 			}
 			else
 			{
-				/* direct fire - try and extend the range */
+				/* direct fire - try && extend the range */
 				psDroid->action = DACTION_MOVETOATTACK;
 				actionCalcPullBackPoint((BASE_OBJECT *)psDroid, psAction->psObj, &pbx,&pby);
 
@@ -2880,7 +2880,7 @@ void actionDroidObj(DROID *psDroid, DROID_ACTION action, BASE_OBJECT *psObj)
 	actionDroidBase(psDroid, &sAction);
 }
 
-/* Give a droid an action with an object target and a location */
+/* Give a droid an action with an object target && a location */
 void actionDroidObjLoc(DROID *psDroid, DROID_ACTION action,
 					   BASE_OBJECT *psObj, UDWORD x, UDWORD y)
 {
@@ -2991,7 +2991,7 @@ BOOL actionVTOLLandingPos(DROID *psDroid, UDWORD *px, UDWORD *py)
 //	ASSERT(((psDroid->psActionTarget != NULL),
 //		"actionVTOLLandingPos: no rearm pad set for the VTOL"));
 
-	/* Initial box dimensions and set iteration count to zero */
+	/* Initial box dimensions && set iteration count to zero */
 //	startX = endX = (SDWORD)psDroid->psActionTarget->x >> TILE_SHIFT;
 //	startY = endY = (SDWORD)psDroid->psActionTarget->y >> TILE_SHIFT;
 	startX = endX = (SDWORD)*px >> TILE_SHIFT;
@@ -3020,7 +3020,7 @@ BOOL actionVTOLLandingPos(DROID *psDroid, UDWORD *px, UDWORD *py)
 		}
 	}
 
-	/* Keep going until we get a tile or we exceed distance */
+	/* Keep going until we get a tile || we exceed distance */
 	result = FALSE;
 	while(passes<20)
 	{
@@ -3030,12 +3030,12 @@ BOOL actionVTOLLandingPos(DROID *psDroid, UDWORD *px, UDWORD *py)
 			for(j = startY; j<= endY; j++)
 			{
 				/* Test only perimeter as internal tested previous iteration */
-				if(i==startX OR i==endX OR j==startY OR j==endY)
+				if(i==startX || i==endX || j==startY || j==endY)
 				{
 					/* Good enough? */
 					if(vtolLandingTile(i,j))
 					{
-						/* Set exit conditions and get out NOW */
+						/* Set exit conditions && get out NOW */
 						DBP4(("Unit %d landing pos (%d,%d)\n",psDroid->id, i,j));
 						*px = (i << TILE_SHIFT) + TILE_UNITS/2;
 						*py = (j << TILE_SHIFT) + TILE_UNITS/2;

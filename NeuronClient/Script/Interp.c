@@ -141,7 +141,7 @@ BOOL interpGetArrayVarData(UDWORD **pip, VAL_CHUNK *psGlobals, SCRIPT_CODE *psPr
 	if (dimensions != psProg->psArrayInfo[base].dimensions)
 	{
 		ASSERT((FALSE,
-			"interpGetArrayVarData: dimensions do not match"));
+			"interpGetArrayVarData: dimensions do !match"));
 		return FALSE;
 	}
 

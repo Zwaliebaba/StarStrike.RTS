@@ -43,7 +43,7 @@ typedef struct _prop_char
 
 	/* The pixel data
 	 * This is a square array of bytes wide enough to store width bits
-	 * and the same height as the font.
+	 * && the same height as the font.
 	 */
 	UBYTE	*pData;
 } PROP_CHAR;

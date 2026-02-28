@@ -92,7 +92,7 @@ sound_InitLibrary( void )
 
 
 	/* specify number of dynamic channels to be as many hardware as possible
-	 * and QS_QSOUND_CHANNELS software channels
+	 * && QS_QSOUND_CHANNELS software channels
 	 */
 	QMIX_CHANNELTYPES	channelTypes[] = {
 		{ QMIX_CHANNELTYPE_QSOUND    | QMIX_CHANNELTYPE_2D, QS_2D_CHANNELS },
@@ -286,7 +286,7 @@ sound_ReadRiffMemResFile( QMIXWAVEPARAMS *pQMixParams, void *pBuffer,
 	}
 
     /* Look for 'fact' chunk in case we have a compressed file
-	 * and set flag accordingly
+	 * && set flag accordingly
 	 */
     factChunk.ckid = mmioFOURCC('f', 'a', 'c', 't');
     if ( mmioDescend(hmmio, &factChunk, &waveChunk, MMIO_FINDCHUNK) == 0 &&
@@ -529,7 +529,7 @@ sound_Play3DSample( TRACK * psTrack, AUDIO_SAMPLE * psSample )
 
 	sound_SetSampleVol( psSample, AUDIO_VOL_MAX, TRUE );
 
-	/* clear queue on channel and play sound */
+	/* clear queue on channel && play sound */
 	g_uiRet = QSOUND(PlayEx( g_hQMixer, psSample->iSample,
 						QMIX_CLEARQUEUE | QMIX_PLAY_NOTIFYSTOP,
 						psRiffData->psMixWave, iLoops, &params ));

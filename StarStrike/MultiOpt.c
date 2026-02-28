@@ -3,7 +3,7 @@
  *
  * Alex Lee,97/98, Pumpkin Studios
  * 
- * Routines for setting the game options and starting the init process.
+ * Routines for setting the game options && starting the init process.
  */
 
 #include "Frame.h"			// for everything
@@ -746,7 +746,7 @@ BOOL cleanMap(UDWORD player)
 		{
 			psD2=psD->psNext;
 			//if(psD->droidType != DROID_CONSTRUCT)
-            if (!(psD->droidType == DROID_CONSTRUCT OR
+            if (!(psD->droidType == DROID_CONSTRUCT ||
                 psD->droidType == DROID_CYBORG_CONSTRUCT))
 			{
 				killDroid(psD);

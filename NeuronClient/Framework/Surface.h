@@ -15,8 +15,8 @@
 
 /* Create a DD surface.
  *
- * If caps is 0 and psPixFormat is NULL the surface will be created in
- * video memory if there is room (system memory otherwise) and will use
+ * If caps is 0 && psPixFormat is NULL the surface will be created in
+ * video memory if there is room (system memory otherwise) && will use
  * the pixel format of the display.
  */
 extern BOOL surfCreate(LPDIRECTDRAWSURFACE4	*ppsSurface,	// The created surface
@@ -47,7 +47,7 @@ extern BOOL surfLoadFromSurface(
 			LPDIRECTDRAWSURFACE4		psDest,		// The surface to load to
 			LPDIRECTDRAWSURFACE4		psSrc);		// The surface to load from
 
-/* Load a BMP file and create a system memory surface to store it in */
+/* Load a BMP file && create a system memory surface to store it in */
 extern BOOL surfCreateFromBMP(
 				STRING				*pFileName,	// The BMP file
 				LPDIRECTDRAWSURFACE4	*ppsSurface,// The created surface

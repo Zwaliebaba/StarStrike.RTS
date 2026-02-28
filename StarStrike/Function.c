@@ -695,11 +695,11 @@ BOOL loadDroidBodyUpgradeFunction(SBYTE *pData)
 	//allocate storage for the name
 	storeName((FUNCTION *)psFunction, functionName);
 
-	if (modifier > UWORD_MAX OR armourKinetic > UWORD_MAX OR 
-		armourHeat > UWORD_MAX OR body > UWORD_MAX)
+	if (modifier > UWORD_MAX || armourKinetic > UWORD_MAX || 
+		armourHeat > UWORD_MAX || body > UWORD_MAX)
 	{
 		ASSERT((FALSE, 
-			"loadUnitBodyUpgradeFunction: one or more modifiers too great"));
+			"loadUnitBodyUpgradeFunction: one || more modifiers too great"));
 		return FALSE;
 	}
 
@@ -760,10 +760,10 @@ BOOL loadDroidSensorUpgradeFunction(SBYTE *pData)
 	//allocate storage for the name
 	storeName((FUNCTION *)psFunction, functionName);
 
-	if (modifier > UWORD_MAX OR range > UWORD_MAX)
+	if (modifier > UWORD_MAX || range > UWORD_MAX)
 	{
 		ASSERT((FALSE, 
-			"loadUnitSensorUpgradeFunction: one or more modifiers too great"));
+			"loadUnitSensorUpgradeFunction: one || more modifiers too great"));
 		return FALSE;
 	}
 
@@ -818,12 +818,12 @@ BOOL loadWeaponUpgradeFunction(SBYTE *pData)
 	}
 
 	//check none of the %increases are over UBYTE max
-	if (firePause > UBYTE_MAX OR 
-		shortHit > UWORD_MAX OR 
-		longHit > UWORD_MAX OR 
-		damage > UWORD_MAX OR 
-		radiusDamage > UWORD_MAX OR 
-		incenDamage > UWORD_MAX OR 
+	if (firePause > UBYTE_MAX || 
+		shortHit > UWORD_MAX || 
+		longHit > UWORD_MAX || 
+		damage > UWORD_MAX || 
+		radiusDamage > UWORD_MAX || 
+		incenDamage > UWORD_MAX || 
 		radiusHit > UWORD_MAX)
 	{
 		DBERROR(("A percentage increase for Weapon Upgrade function is too large"));
@@ -878,8 +878,8 @@ BOOL loadStructureUpgradeFunction(SBYTE *pData)
 	storeName((FUNCTION *)psFunction, functionName);
 
 	//check none of the %increases are over UWORD max
-	if (armour > UWORD_MAX OR 
-		body > UWORD_MAX OR 
+	if (armour > UWORD_MAX || 
+		body > UWORD_MAX || 
 		resistance > UWORD_MAX)
 	{
 		DBERROR(("A percentage increase for Structure Upgrade function is too large"));
@@ -927,7 +927,7 @@ BOOL loadWallDefenceUpgradeFunction(SBYTE *pData)
 	storeName((FUNCTION *)psFunction, functionName);
 
 	//check none of the %increases are over UWORD max
-	if (armour > UWORD_MAX OR 
+	if (armour > UWORD_MAX || 
 		body > UWORD_MAX)
 	{
 		DBERROR(("A percentage increase for WallDefence Upgrade function is too large"));
@@ -1940,7 +1940,7 @@ void droidBodyUpgrade(FUNCTION *pFunction, DROID *psDroid)
 		pStructureType->resistance *((RESISTANCE_UPGRADE_FUNCTION *)pFunction)->
 		resistancePoints) / 100;
 
-	/*I'm not convinced this function is ever going to get used but if it does then
+	/*I'm !convinced this function is ever going to get used but if it does then
 	we will have to keep a copy of the baseResistancePoints per Structure like we do
 	with the body points, but I don't want to increase the size of STRUCTURE if we
 	don't need to! AB 01/07/98

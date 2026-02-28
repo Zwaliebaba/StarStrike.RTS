@@ -9,7 +9,7 @@
 
 /* Grab box printf's */
 //#define DEBUG_GROUP2
-/* Selection flip and rotate printf's */
+/* Selection flip && rotate printf's */
 //#define DEBUG_GROUP3
 #include "Frame.h"
 #include "FrameInt.h"
@@ -30,7 +30,7 @@ BOOL			showTerrain = FALSE;
 /* Which tile is to be used for painting */
 static UDWORD	currTile=0;
 
-/* The default mapping between terrain type and texture type */
+/* The default mapping between terrain type && texture type */
 //static TERRAIN_TYPE		*aDefaultType;
 
 /* The possible states of the mouse */
@@ -68,7 +68,7 @@ static void flipBoxX(PASTE_BOX *psBox);
 /* Flip a paste box on the Y axis */
 static void flipBoxY(PASTE_BOX *psBox);
 /* Rotate a paste box
- * If the box isn't square, width and height get swapped
+ * If the box isn't square, width && height get swapped
  */
 static void rotBox(PASTE_BOX *psBox);
 
@@ -150,7 +150,7 @@ BOOL ed2dInitialise(void)
 	/* Set the mouse mode */
 	mState = MS_GAME;
 
-	/* Initialise the paste and undo buffers */
+	/* Initialise the paste && undo buffers */
 	memset(&sPasteBox, 0, sizeof(PASTE_BOX));
 	memset(&sUndoBox, 0, sizeof(PASTE_BOX));
 
@@ -230,7 +230,7 @@ BOOL ed2dProcessInput(void)
 		mapY ++;
 	}
 
-	/* Undo a cut or paste */
+	/* Undo a cut || paste */
 	if ((keyDown(KEY_LCTRL) || keyDown(KEY_RCTRL)) &&
 		keyPressed(KEY_Z))
 	{
@@ -384,7 +384,7 @@ BOOL ed2dProcessInput(void)
 		if (mouseDown(MOUSE_LMB) && mState == MS_PASTESTART &&
 			dragSX != tileX && dragSY != tileY)
 		{
-			/* Free any old undo and paste buffer */
+			/* Free any old undo && paste buffer */
 			if (sPasteBox.psTiles != NULL)
 			{
 				FREE(sPasteBox.psTiles);
@@ -394,7 +394,7 @@ BOOL ed2dProcessInput(void)
 				FREE(sUndoBox.psTiles);
 			}
 
-			/* Get the paste and undo boxes */
+			/* Get the paste && undo boxes */
 			if (!getBox(&sPasteBox, selSX,selSY, selEX - selSX + 1, selEY - selSY + 1))
 			{
 				mState = MS_GAME;
@@ -452,7 +452,7 @@ BOOL ed2dProcessInput(void)
 		/* Calculate the current position for the selection box */
 		if (mouseDown(MOUSE_LMB))
 		{
-			/* Clip to the top and left of the screen */
+			/* Clip to the top && left of the screen */
 			if (tileX > sPasteBox.width >> 1)
 			{
 				selSX = tileX - (sPasteBox.width >> 1);
@@ -469,7 +469,7 @@ BOOL ed2dProcessInput(void)
 			{
 				selSY = 0;
 			}
-			/* Clip to the bottom and right of the screen */
+			/* Clip to the bottom && right of the screen */
 			if (selSX + sPasteBox.width >= mapWidth)
 			{
 				selSX = mapWidth - sPasteBox.width;
@@ -497,7 +497,7 @@ BOOL ed2dProcessInput(void)
 		showTerrain = !showTerrain;
 	}
 
-	/* Do rotates, flips and copies on the current grab/paste box */
+	/* Do rotates, flips && copies on the current grab/paste box */
 	if (mState == MS_GRABBED)
 	{
 		/* Flip on X axis */
@@ -797,7 +797,7 @@ static void putBox(PASTE_BOX *psBox, UDWORD x, UDWORD y)
 	ASSERT((x+psBox->width <= mapWidth, "putBox: box off map"));
 	ASSERT((y+psBox->height <= mapHeight, "putBox: box off map"));
 
-	/* Store the terrain type and texture info into the map */
+	/* Store the terrain type && texture info into the map */
 	psCurr = psBox->psTiles;
 	for(my = y; my < y + psBox->height; my ++)
 	{
@@ -909,7 +909,7 @@ static void flipBoxY(PASTE_BOX *psBox)
 
 
 /* Rotate a paste box
- * If the box isn't square, width and height get swapped
+ * If the box isn't square, width && height get swapped
  */
 static void rotBox(PASTE_BOX *psBox)
 {

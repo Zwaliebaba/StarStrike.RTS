@@ -11,7 +11,7 @@
 /* defines
  */
 
-/* flags key not used in hash function */
+/* flags key !used in hash function */
 #define	UNUSED_KEY	-747
 
 /***************************************************************************/

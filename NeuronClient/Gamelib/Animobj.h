@@ -2,7 +2,7 @@
 /*
  * Animobj.h
  *
- * Animation object types and function headers
+ * Animation object types && function headers
  *
  * Gareth Jones 14/11/97
  */

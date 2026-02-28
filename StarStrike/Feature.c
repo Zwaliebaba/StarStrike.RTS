@@ -654,7 +654,7 @@ BOOL featureDamage(FEATURE *psFeature, UDWORD damage, UDWORD weaponClass,
 	else
 	{
 		/* Do one point of damage to body */
-		DBP1(("        not penetrated - 1 point damage\n"));
+		DBP1(("        !penetrated - 1 point damage\n"));
 		if (psFeature->body == 1)
 		{
 			destroyFeature(psFeature);
@@ -850,7 +850,7 @@ FEATURE * buildFeature(FEATURE_STATS *psStats, UDWORD x, UDWORD y,BOOL FromSave)
 					SET_TILE_TALLSTRUCTURE(psTile);
 				}
 
-				if (psStats->subType == FEAT_GEN_ARTE OR psStats->subType == FEAT_OIL_DRUM OR psStats->subType == FEAT_BUILD_WRECK)// they're there - just can see me
+				if (psStats->subType == FEAT_GEN_ARTE || psStats->subType == FEAT_OIL_DRUM || psStats->subType == FEAT_BUILD_WRECK)// they're there - just can see me
 				{
 					SET_TILE_NOTBLOCKING(psTile);
 				}
@@ -957,7 +957,7 @@ void removeFeature(FEATURE *psDel)
 	 //psor		mapTile(mapX+width, mapY+breadth)->psObject = NULL;
 			psTile = mapTile(mapX+width, mapY+breadth);
 		  //	psTile->tileInfoBits = (UBYTE)(psTile->tileInfoBits & BITS_STRUCTURE_MASK);
-			/* Don't need to worry about clearing structure bits - they should not be there! */
+			/* Don't need to worry about clearing structure bits - they should !be there! */
 			SET_TILE_EMPTY(psTile);
 			CLEAR_TILE_NODRAW(psTile);
 			CLEAR_TILE_TALLSTRUCTURE(psTile);
@@ -1016,7 +1016,7 @@ void removeFeature(FEATURE *psDel)
 	}
 }
 
-/* Remove a Feature and free it's memory */
+/* Remove a Feature && free it's memory */
 void destroyFeature(FEATURE *psDel)
 {
 	UDWORD			widthScatter,breadthScatter,heightScatter, i, explosionSize;
@@ -1031,8 +1031,8 @@ void destroyFeature(FEATURE *psDel)
 		"destroyFeature: invalid feature pointer\n") );
 	
 //---------------------------------------------------------------------------------------
- 	/* Only add if visible and damageable*/
-	if(psDel->visible[selectedPlayer] AND psDel->psStats->damageable)
+ 	/* Only add if visible && damageable*/
+	if(psDel->visible[selectedPlayer] && psDel->psStats->damageable)
 	{
 		/* Set off a destruction effect */
 		/* First Explosions */
@@ -1040,11 +1040,11 @@ void destroyFeature(FEATURE *psDel)
 		breadthScatter = TILE_UNITS/2;
 		heightScatter = TILE_UNITS/4;
 		//set which explosion to use based on size of feature
-		if (psDel->psStats->baseWidth < 2 AND psDel->psStats->baseBreadth < 2)
+		if (psDel->psStats->baseWidth < 2 && psDel->psStats->baseBreadth < 2)
 		{
 			explosionSize = EXPLOSION_TYPE_SMALL;
 		}
-		else if (psDel->psStats->baseWidth < 3 AND psDel->psStats->baseBreadth < 3)
+		else if (psDel->psStats->baseWidth < 3 && psDel->psStats->baseBreadth < 3)
 		{
 			explosionSize = EXPLOSION_TYPE_MEDIUM;
 		}
@@ -1179,7 +1179,7 @@ FEATURE	* checkForWreckage(DROID *psDroid)
 			if(TILE_HAS_FEATURE(mapTile(x,y)))
 			{
 				psFeature = getTileFeature(x, y);
-				if(psFeature AND psFeature->psStats->subType == FEAT_BUILD_WRECK)
+				if(psFeature && psFeature->psStats->subType == FEAT_BUILD_WRECK)
 				{
 					return psFeature;
 				}
@@ -1192,7 +1192,7 @@ FEATURE	* checkForWreckage(DROID *psDroid)
 			if(TILE_HAS_FEATURE(mapTile(x,y)))
 			{
 				psFeature = getTileFeature(x, y);
-				if(psFeature AND psFeature->psStats->subType == FEAT_BUILD_WRECK)
+				if(psFeature && psFeature->psStats->subType == FEAT_BUILD_WRECK)
 				{
 					return psFeature;
 				}
@@ -1205,7 +1205,7 @@ FEATURE	* checkForWreckage(DROID *psDroid)
 			if(TILE_HAS_FEATURE(mapTile(x,y)))
 			{
 				psFeature = getTileFeature(x, y);
-				if(psFeature AND psFeature->psStats->subType == FEAT_BUILD_WRECK)
+				if(psFeature && psFeature->psStats->subType == FEAT_BUILD_WRECK)
 				{
 					return psFeature;
 				}
@@ -1219,7 +1219,7 @@ FEATURE	* checkForWreckage(DROID *psDroid)
 			if(TILE_HAS_FEATURE(mapTile(x,y)))
 			{
 				psFeature = getTileFeature(x, y);
-				if(psFeature AND psFeature->psStats->subType == FEAT_BUILD_WRECK)
+				if(psFeature && psFeature->psStats->subType == FEAT_BUILD_WRECK)
 				{
 					return psFeature;
 				}

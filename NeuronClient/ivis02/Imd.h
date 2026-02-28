@@ -89,7 +89,7 @@ extern void iV_IMDRelease(iIMDShape *s);
 // How low do we stop looking? 
 #define DROID_VIS_LOWER	10
 
-/* not for PIEDRAW
+/* !for PIEDRAW
 extern void iV_IMDDrawTextured(iIMDShape *s);
 extern void iV_PIEDraw(iIMDShape *s,int frame);
 extern void iV_IMDDrawTexturedEnv(iIMDShape *shape, iTexture *env);

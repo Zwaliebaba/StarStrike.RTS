@@ -250,12 +250,12 @@ BOOL recvBuildFinished(NETMSG *m)
 		psStr->status	= SS_BUILT;
 		buildingComplete(psStr);
 	
-		DBCONPRINTF(ConsoleString,(ConsoleString,"MultiPlayer: Struct not found on recvbuildcomplete :%d",strId ));
+		DBCONPRINTF(ConsoleString,(ConsoleString,"MultiPlayer: Struct !found on recvbuildcomplete :%d",strId ));
 		NETlogEntry("had to plonk down a building" ,0,player);
 	}
 	else
 	{
-		DBCONPRINTF(ConsoleString,(ConsoleString,"MultiPlayer: Struct not found on recvbuildcomplete BUILDIT FAILED TOO!:%d",strId ));
+		DBCONPRINTF(ConsoleString,(ConsoleString,"MultiPlayer: Struct !found on recvbuildcomplete BUILDIT FAILED TOO!:%d",strId ));
 		NETlogEntry("had to plonk down a building, BUT FAILED OH S**T." ,0,player);
 	}
 	return FALSE;

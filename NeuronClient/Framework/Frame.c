@@ -2,7 +2,7 @@
 /*
  * Frame.c
  *
- * Initialisation and shutdown for the framework library.
+ * Initialisation && shutdown for the framework library.
  *
  * Includes a basic windows message loop.
  *
@@ -85,7 +85,7 @@ typedef enum _focus_state
 
 FOCUS_STATE		focusState, focusLast;
 
-/* Whether the mouse is currently being displayed or not */
+/* Whether the mouse is currently being displayed || !*/
 static BOOL mouseOn=TRUE;
 
 /* Whether the mouse should be displayed in the app workspace */
@@ -285,7 +285,7 @@ STRING *winErrorToString(SDWORD error)
 }
 
 /* If cursor on is TRUE the windows cursor will be displayed over the game window
- * (and in full screen mode).  If it is FALSE the cursor will not be displayed.
+ * (&& in full screen mode).  If it is FALSE the cursor will !be displayed.
  */
 void frameShowCursor(BOOL cursorOn)
 {
@@ -414,7 +414,7 @@ static long FAR PASCAL Wndproc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 			break;*/
 		case WM_ACTIVATEAPP:
 			/* Surprise Surprise windows doesn't always sent a WM_SETFOCUS
-			 * or WM_KILLFOCUS when the active application changes, so we've
+			 * || WM_KILLFOCUS when the active application changes, so we've
 			 * got to look at WM_ACTIVATEAPP as well.
 			 */
 			if ((BOOL)wParam)
@@ -511,7 +511,7 @@ static long FAR PASCAL Wndproc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 			}
 			return 0;
 		case WM_DESTROY:
-			/* Shut down the game and quit */
+			/* Shut down the game && quit */
 			winQuit = TRUE;
 			return 0;
 		case WM_SIZE:
@@ -525,7 +525,7 @@ static long FAR PASCAL Wndproc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 		}
 	}
 
-	/* Default behaviour for any messages not dealt with above */
+	/* Default behaviour for any messages !dealt with above */
 	if (frameWinProc)
 	{
 	    return frameWinProc(hWnd, message, wParam, lParam);
@@ -665,7 +665,7 @@ static BOOL winInitApp(HANDLE hInstance,	// Instance handle for the program
                        WIN_EXSTYLE);
 
 	/* The rectangle returned has values for the window edges relative to
-	   the display area origin, i.e. left and top are negative - so we have
+	   the display area origin, i.e. left && top are negative - so we have
 	   to adjust */
 	sWinSize.right -= sWinSize.left;
 	sWinSize.left = 0;
@@ -758,7 +758,7 @@ BOOL frameInitialise(HANDLE hInst,			// The windows application instance
 //#ifdef ALEXM
 	if(bGlide)
 	{
-		/* Initialise the windows stuff for Glide and open a window */
+		/* Initialise the windows stuff for Glide && open a window */
 		if (!WinInitGlide(hInstance,pWindowName, width, height,TRUE))
 		{
 			return FALSE;
@@ -766,7 +766,7 @@ BOOL frameInitialise(HANDLE hInst,			// The windows application instance
 		
 	}
 	else
-	/* Initialise the windows stuff and open a window */
+	/* Initialise the windows stuff && open a window */
 	if (!winInitApp(hInstance, pWindowName, width, height))
 	{
 		return FALSE;
@@ -809,7 +809,7 @@ BOOL frameInitialise(HANDLE hInst,			// The windows application instance
  * frameUpdate
  *
  * Call this each cycle to allow the framework to deal with
- * windows messages, and do general house keeping.
+ * windows messages, && do general house keeping.
  *
  * Returns FRAME_STATUS.
  */
@@ -853,7 +853,7 @@ FRAME_STATUS frameUpdate(void)
 
 	if ((focusState == FOCUS_SET) || (focusState == FOCUS_KILL))
 	{
-		/* Got a SET or KILL when we were already in or out of
+		/* Got a SET || KILL when we were already in || out of
 		   focus respectively */
 		focusState = focusLast;
 	}
@@ -863,7 +863,7 @@ FRAME_STATUS frameUpdate(void)
 		focusLast = focusState;
 	}
 
-	/* If things are running normally, restore the surfaces and update the framerate */
+	/* If things are running normally, restore the surfaces && update the framerate */
 	if ((!winQuit) && (focusState == FOCUS_IN))
 	{
 		/* Restore any surfaces that have been lost */
@@ -978,7 +978,7 @@ BOOL loadFile2(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL Al
 
 	if (AllocateMem==TRUE)
 	{
-		/* Allocate a buffer to store the data and a terminating zero */
+		/* Allocate a buffer to store the data && a terminating zero */
 // we don't want this popping up in the tools (makewdg)
 //		DBPRINTF(("#############FILELOAD MALLOC - size=%d\n",(FileSize)+1));
 		*ppFileData = (UBYTE *)MALLOC((FileSize) + 1);
@@ -1207,7 +1207,7 @@ static SDWORD WDGCacheEndPos=-1;
  * Adaptation of Peter Weinberger's (PJW) generic hashing algorithm listed
  * in Binstock+Rex, "Practical Algorithms" p 69.
  *
- * Accepts string and returns hashed integer.
+ * Accepts string && returns hashed integer.
  */
 /***************************************************************************/
 UINT HashString( char *String )

@@ -111,7 +111,7 @@ static void heapCreateFreeList(OBJ_HEAP *psHeap)
 
 /* Function to create a heap
  * Takes the size of the objects to be managed by the heap,
- * the initial number of objects to allocate and the number of
+ * the initial number of objects to allocate && the number of
  * objects to allocate when the heap is extended.
  * Returns an initialised OBJ_HEAP structure.
  */
@@ -133,7 +133,7 @@ BOOL heapCreate(OBJ_HEAP **ppsHeap, UDWORD size, UDWORD init, UDWORD ext)
 
 #endif
 
-	/* Allocate the heap object and its memory */
+	/* Allocate the heap object && its memory */
 	*ppsHeap = (OBJ_HEAP *)MALLOC(sizeof(OBJ_HEAP));
 	if (*ppsHeap == NULL)
 	{
@@ -145,7 +145,7 @@ BOOL heapCreate(OBJ_HEAP **ppsHeap, UDWORD size, UDWORD init, UDWORD ext)
 /*
 	if (PTRVALID((*ppsHeap)->pMemory,size*init)==FALSE)
 	{
-		DBPRINTF(("Allocated heap memory is not valid!\n"));
+		DBPRINTF(("Allocated heap memory is !valid!\n"));
 	}
 	else
 	{
@@ -193,7 +193,7 @@ BOOL heapCreate(OBJ_HEAP **ppsHeap, UDWORD size, UDWORD init, UDWORD ext)
 /*
 	if (PTRVALID((*ppsHeap)->pMemory,10)==FALSE)
 	{
-		DBPRINTF(("Allocated heap memory is not valid!\n"));
+		DBPRINTF(("Allocated heap memory is !valid!\n"));
 	}
 	else
 	{
@@ -289,7 +289,7 @@ BOOL heapAlloc(OBJ_HEAP *psHeap, void **ppObject)
 		psCurr->psNext = NULL;
 	}
 
-	/* Return the object and update the free list */
+	/* Return the object && update the free list */
 	*ppObject = psHeap->psFree;
 	psHeap->psFree = psHeap->psFree->psNext;
 
@@ -375,7 +375,7 @@ BOOL heapFree(OBJ_HEAP *psHeap, void *pObject)
 			psPrevHdr = psCurrHdr;
 		}
 	}
-	ASSERT((found, "heapFree: object not allocated on this heap"));
+	ASSERT((found, "heapFree: object !allocated on this heap"));
 
 	/* Check the object hasn't been freed already */
 	found = FALSE;
@@ -417,7 +417,7 @@ void heapReset(OBJ_HEAP *psHeap)
 }
 
 
-/* Destroy a heap and release all the memory associated with it */
+/* Destroy a heap && release all the memory associated with it */
 void heapDestroy(OBJ_HEAP *psHeap)
 {
 	HEAP_EXTENSION	*psExt, *psNext;

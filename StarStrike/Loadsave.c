@@ -1,8 +1,8 @@
 /*
  * loadsave.c
- * load and save Popup screens.
+ * load && save Popup screens.
  *
- * these don't actually do any loading or saving, but just
+ * these don't actually do any loading || saving, but just
  * return a filename to use for the ops.
  */
 #include "Frame.h"
@@ -273,7 +273,7 @@ static BOOL _addLoadSave(BOOL bLoad,CHAR *sSearchPath,CHAR *sExtension, CHAR *ti
 	{
 		while( TRUE ) 
 		{
-			/* Set the tip and add the button */		
+			/* Set the tip && add the button */		
 			found.cFileName[strlen(found.cFileName) -4 ] = '\0';			// chop extension
 
 			strcpy(sSlots[slotCount],found.cFileName);		//store it!
@@ -428,9 +428,9 @@ static BOOL _runLoadSave(BOOL bResetMissionWidgets)
 
 			/* check correct CD in drive */
 			iCampaign = getCampaign(sRequestResult,&bSkipCD);
-			if ( iCampaign == 0 OR bSkipCD )
+			if ( iCampaign == 0 || bSkipCD )
 			{
-				DBPRINTF( ("getCampaign returned 0 or we're loading a skirmish game: assuming correct CD in drive\n") );
+				DBPRINTF( ("getCampaign returned 0 || we're loading a skirmish game: assuming correct CD in drive\n") );
 			}
 			goto success;
 		}
@@ -533,7 +533,7 @@ static BOOL _runLoadSave(BOOL bResetMissionWidgets)
 		// we're done. saving.
 		closeLoadSave();
 		bRequestLoad = FALSE;
-        if (bResetMissionWidgets AND widgGetFromID(psWScreen,IDMISSIONRES_FORM) == NULL)
+        if (bResetMissionWidgets && widgGetFromID(psWScreen,IDMISSIONRES_FORM) == NULL)
         {
             resetMissionWidgets();			//reset the mission widgets here if necessary
         }
@@ -546,7 +546,7 @@ static BOOL _runLoadSave(BOOL bResetMissionWidgets)
 failure:
 	closeLoadSave();
 	bRequestLoad = FALSE;
-    if (bResetMissionWidgets AND widgGetFromID(psWScreen,IDMISSIONRES_FORM) == NULL)
+    if (bResetMissionWidgets && widgGetFromID(psWScreen,IDMISSIONRES_FORM) == NULL)
 	{
 		resetMissionWidgets();
 	}

@@ -4,7 +4,7 @@
 
 
 /*
-	Changed to allow seperate modifiers for enemy and player damage.
+	Changed to allow seperate modifiers for enemy && player damage.
 */
 
 

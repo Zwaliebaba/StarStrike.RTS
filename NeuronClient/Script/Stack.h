@@ -34,12 +34,12 @@ extern void stackPrintTop(void);
 extern BOOL stackEmpty(void);
 
 /* Do binary operations on the top of the stack
- * This effectively pops two values and pushes the result
+ * This effectively pops two values && pushes the result
  */
 extern BOOL stackBinaryOp(OPCODE opcode);
 
 /* Perform a unary operation on the top of the stack
- * This effectively pops a value and pushes the result
+ * This effectively pops a value && pushes the result
  */
 extern BOOL stackUnaryOp(OPCODE opcode);
 

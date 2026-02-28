@@ -84,7 +84,7 @@ BOOL	moveDoMessage;
 
 #define	FORMATIONS_DISABLE		0
 
-/* max and min vtol heights above terrain */
+/* max && min vtol heights above terrain */
 #define	VTOL_HEIGHT_MIN				250
 #define	VTOL_HEIGHT_LEVEL			300
 #define	VTOL_HEIGHT_MAX				350
@@ -107,7 +107,7 @@ BOOL	moveDoMessage;
 // Accuracy for the boundary vector
 #define BOUND_ACC		1000
 
-/* Width and length of the droid collision box */
+/* Width && length of the droid collision box */
 #define HITBOX_WIDTH	128
 #define HITBOX_LENGTH	(HITBOX_WIDTH * 3)
 /* Angle covered by hit box at far end */
@@ -240,7 +240,7 @@ BOOL	moveDoMessage;
 #define VTOL_SKID_DECEL			600
 
 
-/* The current base speed for this frame and averages for the last few seconds */
+/* The current base speed for this frame && averages for the last few seconds */
 FRACT	baseSpeed;
 #define	BASE_FRAMES			10
 UDWORD	baseTimes[BASE_FRAMES];
@@ -372,7 +372,7 @@ BOOL _moveDroidToBase(DROID	*psDroid, UDWORD x, UDWORD y, BOOL bFormation)
 	fpathSetDirectRoute(psDroid, (SDWORD)x, (SDWORD)y);
 #else
     //in multiPlayer make Transporter move like the vtols
-	if ( psDroid->droidType == DROID_TRANSPORTER AND game.maxPlayers == 0)
+	if ( psDroid->droidType == DROID_TRANSPORTER && game.maxPlayers == 0)
 	{
 		fpathSetDirectRoute((BASE_OBJECT *)psDroid, (SDWORD)x, (SDWORD)y);
 		psDroid->sMove.Status = MOVENAVIGATE;
@@ -380,7 +380,7 @@ BOOL _moveDroidToBase(DROID	*psDroid, UDWORD x, UDWORD y, BOOL bFormation)
 		psDroid->sMove.psFormation = NULL;
 		return TRUE;
 	}
-	else if (vtolDroid(psDroid) OR (game.maxPlayers > 0 AND psDroid->
+	else if (vtolDroid(psDroid) || (game.maxPlayers > 0 && psDroid->
         droidType == DROID_TRANSPORTER))
 	{
 		fpathSetDirectRoute((BASE_OBJECT *)psDroid, (SDWORD)x, (SDWORD)y);
@@ -808,7 +808,7 @@ void moveReallyStopDroid(DROID *psDroid)
 
 #define PITCH_LIMIT 150
 
-/* Get pitch and roll from direction and tile data - NOT VERY PSX FRIENDLY */
+/* Get pitch && roll from direction && tile data - !VERY PSX FRIENDLY */
 void updateDroidOrientation(DROID *psDroid)
 {
 	SDWORD hx0, hx1, hy0, hy1, w;
@@ -822,7 +822,7 @@ void updateDroidOrientation(DROID *psDroid)
 
 
 	//if(psDroid->droidType == DROID_PERSON OR psDroid->droidType == DROID_CYBORG OR
-    if(psDroid->droidType == DROID_PERSON OR cyborgDroid(psDroid) OR
+    if(psDroid->droidType == DROID_PERSON || cyborgDroid(psDroid) ||
         psDroid->droidType == DROID_TRANSPORTER)
 	{
 		/* These guys always stand upright */
@@ -886,7 +886,7 @@ void updateDroidOrientation(DROID *psDroid)
 
 
 
-/* Calculate the normalised vector between a droid and a point */
+/* Calculate the normalised vector between a droid && a point */
 /*void moveCalcVector(DROID *psDroid, UDWORD x, UDWORD y, FRACT *pVX, FRACT *pVY)
 {
 	SDWORD	dx,dy, mag;
@@ -933,7 +933,7 @@ static void angleToVector(SDWORD angle, FRACT *pX, FRACT *pY)
 }
 
 
-/* Calculate the change in direction given a target angle and turn rate */
+/* Calculate the change in direction given a target angle && turn rate */
 static void moveCalcTurn(FRACT *pCurr, FRACT target, UDWORD rate)
 {
 	FRACT	diff, change;
@@ -2735,7 +2735,7 @@ void moveGetObstVector5(DROID *psDroid, FRACT *pX, FRACT *pY)
 	dirY     = MKF(0);
 	fDistTot = MKF(0);
 
-	/* if not flying check ground objects */
+	/* if !flying check ground objects */
 	if ( psPropStats->propulsionType != LIFT )
 	{
 		droidGetNaybors(psDroid);
@@ -3259,7 +3259,7 @@ void moveCombineNormalAndPerpSpeeds( DROID *psDroid, FRACT fNormalSpeed,
 	/* set current direction */
 	psDroid->direction = (UWORD)iDroidDir;
 
-	/* set normal speed and direction if perpendicular speed is zero */
+	/* set normal speed && direction if perpendicular speed is zero */
 	if (fPerpSpeed == MKF(0))
 	{
 		psDroid->sMove.speed = fNormalSpeed;
@@ -3443,7 +3443,7 @@ void moveUpdateDroidPos( DROID *psDroid, FRACT dx, FRACT dy )
 //#endif
 }
 
-/* Update a tracked droids position and speed given target values */
+/* Update a tracked droids position && speed given target values */
 void moveUpdateGroundModel(DROID *psDroid, SDWORD speed, SDWORD direction)
 {
 	FRACT				fPerpSpeed, fNormalSpeed, dx, dy, fSpeed, bx,by;
@@ -3546,7 +3546,7 @@ if(psDroid == driveGetDriven())	printf("%d\n",speed);
 	updateDroidOrientation(psDroid);
 }
 
-/* Update a persons position and speed given target values */
+/* Update a persons position && speed given target values */
 void moveUpdatePersonModel(DROID *psDroid, SDWORD speed, SDWORD direction)
 {
 	FRACT			fPerpSpeed, fNormalSpeed, dx, dy, fSpeed;
@@ -3633,7 +3633,7 @@ void moveUpdatePersonModel(DROID *psDroid, SDWORD speed, SDWORD direction)
 	psDroid->z = map_Height(psDroid->x, psDroid->y);//jps 21july96
 	psDroid->sMove.fz = MAKEFRACT(psDroid->z);
 
-	/* update anim if moving and not on fire */
+	/* update anim if moving && !on fire */
 	if ( psDroid->droidType == DROID_PERSON && speed != 0 &&
 		 psDroid->order != DORDER_RUNBURN )
 	{
@@ -4021,7 +4021,7 @@ moveUpdateCyborgModel( DROID *psDroid, SDWORD moveSpeed, SDWORD moveDir, UBYTE o
 			}
 		}
 
-		/* add jumping or landing anim */
+		/* add jumping || landing anim */
 		if ( (oldStatus == MOVEPOINTTOPOINT) &&
 				  (psDroid->sMove.Status == MOVEINACTIVE) )
 		{
@@ -4097,10 +4097,10 @@ BOOL moveCheckDroidMovingAndVisible( AUDIO_SAMPLE *psSample )
 			"moveCheckUnitMovingAndVisible: unit pointer invalid\n") );
 	}
 
-	/* check for dead, not moving or invisible to player */
+	/* check for dead, !moving || invisible to player */
 	if ( psDroid->died || moveDroidStopped( psDroid, 0 ) ||
 		 (psDroid->droidType == DROID_TRANSPORTER && psDroid->order == DORDER_NONE) ||
-		 !(psDroid->visible[selectedPlayer] OR godMode)                                )
+		 !(psDroid->visible[selectedPlayer] || godMode)                                )
 	{
 		psDroid->iAudioID = NO_SOUND;
 		return FALSE;
@@ -4121,12 +4121,12 @@ void movePlayDroidMoveAudio( DROID *psDroid )
 		"movePlayUnitMoveAudio: unit pointer invalid\n") );
 
 	if ( (psDroid != NULL) &&
-		 (psDroid->visible[selectedPlayer] OR godMode) )
+		 (psDroid->visible[selectedPlayer] || godMode) )
 	{
 		iPropType = asPropulsionStats[(psDroid)->asBits[COMP_PROPULSION].nStat].propulsionType;
 		psPropType = &asPropulsionTypes[iPropType];
 
-		/* play specific wheeled and transporter or stats-specified noises */
+		/* play specific wheeled && transporter || stats-specified noises */
 		if ( iPropType == WHEELED && psDroid->droidType != DROID_CONSTRUCT )
 		{
 			iAudioID = ID_SOUND_TREAD;
@@ -4243,7 +4243,7 @@ void movePlayAudio( DROID *psDroid, BOOL bStarted, BOOL bStoppedBefore, SDWORD i
 	}
 
 	if ( (iAudioID != NO_SOUND) &&
-		 (psDroid->visible[selectedPlayer] OR godMode) )
+		 (psDroid->visible[selectedPlayer] || godMode) )
 	{
 		if ( audio_PlayObjDynamicTrack( psDroid, iAudioID,
 				pAudioCallback ) )
@@ -4684,7 +4684,7 @@ void moveUpdateDroid(DROID *psDroid)
 		}
 		break;
 	case MOVEHOVER:
-		/* change vtols to attack run mode if target found - but not if no ammo*/
+		/* change vtols to attack run mode if target found - but !if no ammo*/
 		/*if ( psDroid->droidType != DROID_CYBORG && psDroid->psTarget != NULL &&
 			!vtolEmpty(psDroid))
 		{
@@ -4697,7 +4697,7 @@ void moveUpdateDroid(DROID *psDroid)
 		moveSpeed = moveCalcDroidSpeed(psDroid);
 		moveDir = MAKEINT(tangle);*/
 
-		/* descend if no orders or actions or cyborg at target */
+		/* descend if no orders || actions || cyborg at target */
 /*		if ( (psDroid->droidType == DROID_CYBORG) ||
 			 ((psDroid->action == DACTION_NONE) && (psDroid->order == DORDER_NONE)) ||
 			 ((psDroid->action == DACTION_NONE) && (psDroid->order == DORDER_TRANSPORTIN)) ||
@@ -4833,7 +4833,7 @@ void moveUpdateDroid(DROID *psDroid)
 	}
 
 
-	if( (psDroid->inFire AND psDroid->type != DROID_PERSON) AND psDroid->visible[selectedPlayer])
+	if( (psDroid->inFire && psDroid->type != DROID_PERSON) && psDroid->visible[selectedPlayer])
 	{
 		pos.x = psDroid->x + (18-rand()%36);
 		pos.z = psDroid->y + (18-rand()%36);

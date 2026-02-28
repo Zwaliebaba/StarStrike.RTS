@@ -61,8 +61,8 @@ void widgSetTipColour(W_SCREEN *psScreen, UBYTE red, UBYTE green, UBYTE blue)
 /*
  * Setup a tool tip.
  * The tip module will then wait until the correct points to
- * display and then remove the tool tip.
- * i.e. The tip will not be displayed immediately.
+ * display && then remove the tool tip.
+ * i.e. The tip will !be displayed immediately.
  * Calling this while another tip is being displayed will restart
  * the tip system.
  * psSource is the widget that started the tip.
@@ -112,7 +112,7 @@ void tipStop(WIDGET *psSource)
 #define RIGHTBORDER		(0)
 #define BOTTOMBORDER	(0)
 
-/* Update and possibly display the tip */
+/* Update && possibly display the tip */
 void tipDisplay(void)
 {
 	SDWORD		newMX,newMY;

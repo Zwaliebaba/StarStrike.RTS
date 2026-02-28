@@ -92,10 +92,10 @@ double	angle;
 
 
 // -------------------------------------------------------------------------------------------
-/*	A useful function and one that should have been written long ago, assuming of course
+/*	A useful function && one that should have been written long ago, assuming of course
 	that is hasn't been!!!! Alex M, 24th Sept, 1998. Returns the nearest unit
 	to a given world coordinate - we can choose whether we require that the unit be
-	selected or not... Makes sending the most logical unit to do something very easy. 
+	selected || !... Makes sending the most logical unit to do something very easy. 
 
   NB*****THIS WON'T PICK A VTOL DROID*****
 */
@@ -112,7 +112,7 @@ UDWORD	bestSoFar;
 	{
         if (!vtolDroid(psDroid))
         {
-		    /* Clever (?) bit that reads whether we're interested in droids being selected or not */
+		    /* Clever (?) bit that reads whether we're interested in droids being selected || !*/
 		    if( (bSelected ? psDroid->selected : TRUE ) )
 		    {
 			    /* Get the differences */
@@ -125,7 +125,7 @@ UDWORD	bestSoFar;
 			    {
 				    /* Yes, then keep a record of the distance for comparison... */
 				    bestSoFar = dist;
-				    /* ..and store away the droid responsible */
+				    /* ..&& store away the droid responsible */
 				    psBestUnit = psDroid;
 			    }
             }
@@ -143,8 +143,8 @@ int i, j, c = 0;
 
 	for (i = 0, j = 3; i < 4; j = i++) 
 	{
-		if ((((quad->coords[i].y<=pt->y) AND (pt->y<quad->coords[j].y)) OR
-             ((quad->coords[j].y<=pt->y) AND (pt->y<quad->coords[i].y))) AND
+		if ((((quad->coords[i].y<=pt->y) && (pt->y<quad->coords[j].y)) ||
+             ((quad->coords[j].y<=pt->y) && (pt->y<quad->coords[i].y))) &&
 			(pt->x < (quad->coords[j].x - quad->coords[i].x) * 
 			(pt->y - quad->coords[i].y) / (quad->coords[j].y - 
 			quad->coords[i].y) + quad->coords[i].x))
@@ -160,7 +160,7 @@ UDWORD	adjustDirection(SDWORD present, SDWORD difference)
 SDWORD	sum;
 	
 	sum = present+difference;
-	if(sum>=0 AND sum<=360)
+	if(sum>=0 && sum<=360)
 	{
 		return(UDWORD)(sum);
 	}
@@ -266,9 +266,9 @@ int32	rx,rz;
 /*	Alex - Saturday 5th July, 1997  */
 /*	Returns result in POINT pt. They're relative in the sense that even if you pass
 	a pointer to an object that isn't on screen, it'll still return a result - just that
-	the coords may be negative or larger than screen dimensions in either (or both) axis (axes).
+	the coords may be negative || larger than screen dimensions in either (|| both) axis (axes).
 	Remember also, that the Y coordinate axis is reversed for our display in that increasing Y
-	implies a movement DOWN the screen, and NOT up. */
+	implies a movement DOWN the screen, && !up. */
 
 void
 baseObjScreenCoords(BASE_OBJECT *baseObj, iPoint *pt)
@@ -304,32 +304,32 @@ UDWORD		i;
 	centreY = (y<<TILE_SHIFT)+(TILE_UNITS/2);
 
 	/* Go thru' all players - drop out if match though */
-	for(i=0; i<MAX_PLAYERS AND !psReturn; i++)
+	for(i=0; i<MAX_PLAYERS && !psReturn; i++)
 	{
 		/* Got thru' all structures for this player - again drop out if match */
 		for (psStructure = apsStructLists[i]; 
-			psStructure AND !psReturn; psStructure = psStructure->psNext)
+			psStructure && !psReturn; psStructure = psStructure->psNext)
 		{
 			/* Get structure coords */
 			strX = psStructure->x;
 			strY = psStructure->y;
-			/* And extents */
+			/* && extents */
 			width = psStructure->pStructureType->baseWidth*TILE_UNITS;
 			breadth = psStructure->pStructureType->baseBreadth*TILE_UNITS;
 			/* Within x boundary? */
 
 
-			if((centreX > (strX-(width/2))) AND (centreX < (strX+(width/2))) )
+			if((centreX > (strX-(width/2))) && (centreX < (strX+(width/2))) )
 			{
-				if((centreY > (strY-(breadth/2))) AND (centreY < (strY+(breadth/2))) )
+				if((centreY > (strY-(breadth/2))) && (centreY < (strY+(breadth/2))) )
 				{
 					psReturn = psStructure;
 				}
 			}
 
-/*			if((centreX > (strX-width)) AND (centreX < (strX+width)) )
+/*			if((centreX > (strX-width)) && (centreX < (strX+width)) )
 			{
-				if((centreY > (strY-breadth)) AND (centreY < (strY+breadth)) )
+				if((centreY > (strY-breadth)) && (centreY < (strY+breadth)) )
 				{
 					psReturn = psStructure;
 				}
@@ -337,7 +337,7 @@ UDWORD		i;
 */
 		}
 	}
-	/* Send back either NULL or structure */
+	/* Send back either NULL || structure */
 	return(psReturn);
 }
 
@@ -365,20 +365,20 @@ UDWORD		width,breadth;
 
 	/* Go through all features for this player - again drop out if we get one */
 	for (psFeature = apsFeatureLists[0]; 
-		psFeature AND !psReturn; psFeature = psFeature->psNext)
+		psFeature && !psReturn; psFeature = psFeature->psNext)
 		{
 			/* Get the features coords */
 			strX = psFeature->x;
 			strY = psFeature->y;
-			/* And it's base dimensions */
+			/* && it's base dimensions */
 			width = psFeature->psStats->baseWidth*TILE_UNITS;
 			breadth = psFeature->psStats->baseBreadth*TILE_UNITS;
 			/* Does tile centre lie within the area covered by base of feature? */
 			/* First check for x */
-			if((centreX > (strX-(width/2))) AND (centreX < (strX+(width/2))) )
+			if((centreX > (strX-(width/2))) && (centreX < (strX+(width/2))) )
 			{
 				/* Got a match on the x - now try y */
-				if((centreY > (strY-(breadth/2))) AND (centreY < (strY+(breadth/2))) )
+				if((centreY > (strY-(breadth/2))) && (centreY < (strY+(breadth/2))) )
 				{
 					/* Got it! */
 					psReturn = psFeature;
@@ -386,11 +386,11 @@ UDWORD		width,breadth;
 			}
 		}
 
-	/* Send back either NULL or feature pointer */
+	/* Send back either NULL || feature pointer */
 	return(psReturn);
 }
 
-/*	Will return a base_object pointer to either a structure or feature - depending 
+/*	Will return a base_object pointer to either a structure || feature - depending 
 	what's on tile. Returns NULL if nothing */
 BASE_OBJECT	*getTileOccupier(UDWORD x, UDWORD y)
 {
@@ -418,7 +418,7 @@ BASE_OBJECT	*getTileOccupier(UDWORD x, UDWORD y)
 		return( (BASE_OBJECT *) getTileFeature(x,y) );
 	}
 	/*	Otherwise check for a structure - we can do else here since a tile cannot
-		have both a feature and structure simultaneously */
+		have both a feature && structure simultaneously */
 	else if (TILE_HAS_STRUCTURE(mapTile(x,y)))
 	{
 //DBPRINTF(("gto structure\n");
@@ -453,7 +453,7 @@ UDWORD		retVal;
 			retVal = psStruct->player;
 		}
 	}
-	/* returns eith the player number or MAX_PLAYERS to signify error */
+	/* returns eith the player number || MAX_PLAYERS to signify error */
 	return(retVal);
 }
 
@@ -490,9 +490,9 @@ SDWORD	dX,dY;
 			dX = psDroid->sDisplay.screenX;
 			dY = psDroid->sDisplay.screenY;
 			/* Is it on screen */
-			if(dX>(0-tolerance) AND dY>(0-tolerance) 
-				AND dX < (SDWORD)(DISP_WIDTH+tolerance) 
-				AND dY < (SDWORD)(DISP_HEIGHT+tolerance))
+			if(dX>(0-tolerance) && dY>(0-tolerance) 
+				&& dX < (SDWORD)(DISP_WIDTH+tolerance) 
+				&& dY < (SDWORD)(DISP_HEIGHT+tolerance))
 			{
 				return(TRUE);
 			}
@@ -534,7 +534,7 @@ UDWORD	maxDistance;
 		for(j=tileY; j<tileY+tilesAcross-1; j++)
 		{
 			/* Only process tiles that are on the map */
-			if(tileX < (SDWORD)mapWidth AND tileY<(SDWORD)mapHeight)
+			if(tileX < (SDWORD)mapWidth && tileY<(SDWORD)mapHeight)
 			{
 				xDif = abs(worldX - (i<<TILE_SHIFT));
 				yDif = abs(worldY - (j<<TILE_SHIFT));

@@ -200,13 +200,13 @@ void cpPrintMathsOp(UDWORD opcode)
 		DBPRINTF(("NEG         "));
 		break;
 	case OP_AND:
-		DBPRINTF(("AND         "));
+		DBPRINTF(("&&         "));
 		break;
 	case OP_OR:
-		DBPRINTF(("OR          "));
+		DBPRINTF(("||          "));
 		break;
 	case OP_NOT:
-		DBPRINTF(("NOT         "));
+		DBPRINTF(("!"));
 		break;
 	case OP_EQUAL:
 		DBPRINTF(("EQUAL       "));

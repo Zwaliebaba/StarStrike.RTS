@@ -1,7 +1,7 @@
 /* 
  *multigifts. h
  *
- * multiplayer game, gifts and deathmatch relevant funcs.
+ * multiplayer game, gifts && deathmatch relevant funcs.
  */
 
 #include "Netplay.h"

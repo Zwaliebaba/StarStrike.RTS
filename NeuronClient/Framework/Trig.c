@@ -17,7 +17,7 @@
 
 #define PI 3.141592654
 
-/* Number of steps between -1 and 1 for the inverse tables */
+/* Number of steps between -1 && 1 for the inverse tables */
 #define TRIG_ACCURACY	4096
 #define TRIG_ACCMASK	0x0fff
 
@@ -34,7 +34,7 @@
 static FRACT	*aSin;
 static FRACT	*aCos;
 static FRACT	*aInvCos;
-/* Square root table - not needed on PSX cos there is a fast hardware sqrt */
+/* Square root table - !needed on PSX cos there is a fast hardware sqrt */
 static FRACT	*aSqrt;
 static FRACT	*aInvSin;
 
