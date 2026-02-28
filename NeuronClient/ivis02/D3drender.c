@@ -98,10 +98,32 @@ InitD3D( HWND hWnd, BOOL bFullscreen )
 	g_D3D9.pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
 	if (!g_D3D9.pD3D9) return FALSE;
 
+	/* Determine best back buffer format — prefer 32-bit, fall back to 16-bit */
+	{
+		D3DFORMAT fmtBB = D3DFMT_X8R8G8B8;
+		D3DDISPLAYMODE currentMode;
+		IDirect3D9_GetAdapterDisplayMode(g_D3D9.pD3D9, D3DADAPTER_DEFAULT, &currentMode);
+
+		if (FAILED(IDirect3D9_CheckDeviceType(g_D3D9.pD3D9, D3DADAPTER_DEFAULT,
+				D3DDEVTYPE_HAL, currentMode.Format, D3DFMT_X8R8G8B8, !bFullscreen)))
+		{
+			if (FAILED(IDirect3D9_CheckDeviceType(g_D3D9.pD3D9, D3DADAPTER_DEFAULT,
+					D3DDEVTYPE_HAL, currentMode.Format, D3DFMT_R5G6B5, !bFullscreen)))
+			{
+				fmtBB = currentMode.Format;
+			}
+			else
+			{
+				fmtBB = D3DFMT_R5G6B5;
+			}
+		}
+		g_D3D9.backBufferFmt = fmtBB;
+	}
+
 	ZeroMemory(&g_D3D9.presentParams, sizeof(g_D3D9.presentParams));
 	g_D3D9.presentParams.BackBufferWidth            = (UINT)pie_GetVideoBufferWidth();
 	g_D3D9.presentParams.BackBufferHeight           = (UINT)pie_GetVideoBufferHeight();
-	g_D3D9.presentParams.BackBufferFormat           = D3DFMT_X8R8G8B8;
+	g_D3D9.presentParams.BackBufferFormat           = g_D3D9.backBufferFmt;
 	g_D3D9.presentParams.BackBufferCount            = 1;
 	g_D3D9.presentParams.SwapEffect                 = D3DSWAPEFFECT_DISCARD;
 	g_D3D9.presentParams.hDeviceWindow              = hWnd;
@@ -142,7 +164,6 @@ InitD3D( HWND hWnd, BOOL bFullscreen )
 
 	IDirect3DDevice9_GetDeviceCaps(g_D3D9.pDevice, &g_D3D9.caps);
 	g_D3D9.bZBufferOn = TRUE;
-	g_D3D9.backBufferFmt = g_D3D9.presentParams.BackBufferFormat;
 
 	dtm_Initialise();
 	D3D9_SetDefaultRenderStates();
@@ -172,6 +193,50 @@ ShutDownD3D( void )
 		IDirect3D9_Release( g_D3D9.pD3D9 );
 		g_D3D9.pD3D9 = NULL;
 	}
+}
+
+/***************************************************************************/
+
+void
+D3D9_UpdateViewport(UINT width, UINT height)
+{
+	D3DVIEWPORT9 vp;
+	vp.X      = 0;
+	vp.Y      = 0;
+	vp.Width  = width;
+	vp.Height = height;
+	vp.MinZ   = 0.0f;
+	vp.MaxZ   = 1.0f;
+	IDirect3DDevice9_SetViewport(g_D3D9.pDevice, &vp);
+}
+
+/***************************************************************************/
+
+BOOL
+D3D9_ChangeResolution(UINT width, UINT height, BOOL bFullscreen)
+{
+	HRESULT hr;
+
+	if (!g_D3D9.pDevice) return FALSE;
+
+	dtm_ReleaseTextures();
+
+	g_D3D9.presentParams.BackBufferWidth  = width;
+	g_D3D9.presentParams.BackBufferHeight = height;
+	g_D3D9.presentParams.Windowed         = !bFullscreen;
+
+	hr = IDirect3DDevice9_Reset(g_D3D9.pDevice, &g_D3D9.presentParams);
+	if (FAILED(hr)) return FALSE;
+
+	dtm_ReloadAllTextures();
+	D3D9_SetDefaultRenderStates();
+
+	pie_SetVideoBufferWidth(width);
+	pie_SetVideoBufferHeight(height);
+
+	D3D9_UpdateViewport(width, height);
+
+	return TRUE;
 }
 
 /***************************************************************************/

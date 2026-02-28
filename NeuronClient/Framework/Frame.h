@@ -16,7 +16,7 @@
 #include "Debug.h"
 #include "Mem.h"
 #include "Screen.h"
-#include "ddraw.h"
+#include "DdrawCompat.h"
 #include "Dderror.h"
 #include "Input.h"
 #include "Surface.h"

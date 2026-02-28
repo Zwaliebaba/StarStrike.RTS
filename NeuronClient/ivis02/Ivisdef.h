@@ -24,7 +24,7 @@
 #define BSPIMD	// now defined for all versions (optional BSP handled on all formats)
 	#define iV_DDX
 
-#define iV_SCANTABLE_MAX	1024
+#define iV_SCANTABLE_MAX	2160
 
 // texture animation defines
 #define iV_IMD_ANIM_LOOP	0

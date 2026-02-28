@@ -59,6 +59,8 @@ extern void D3DTestCooperativeLevel( BOOL bGotFocus );
 extern void D3DSetClipWindow(SDWORD xMin, SDWORD yMin, SDWORD xMax, SDWORD yMax);
 
 extern void D3D9_SetDefaultRenderStates(void);
+extern void D3D9_UpdateViewport(UINT width, UINT height);
+extern BOOL D3D9_ChangeResolution(UINT width, UINT height, BOOL bFullscreen);
 
 /***************************************************************************/
 

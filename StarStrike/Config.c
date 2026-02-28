@@ -524,19 +524,27 @@ BOOL loadRenderMode()
 			pie_SetVideoBufferHeight(864);
 			break;
 		case 1280:
-			pie_SetVideoBufferWidth(1280);
-			pie_SetVideoBufferHeight(1024);
-			break;
+				pie_SetVideoBufferWidth(1280);
+				pie_SetVideoBufferHeight(1024);
+				break;
+			case 1920:
+				pie_SetVideoBufferWidth(1920);
+				pie_SetVideoBufferHeight(1080);
+				break;
+			case 2560:
+				pie_SetVideoBufferWidth(2560);
+				pie_SetVideoBufferHeight(1440);
+				break;
+			}
 		}
-	}
 
-	// now load the desired res..
-	// note that we only do this if we havent changed renderer..
-	if(getWarzoneKeyNumeric("resolution",&val))		
-	{	
-		switch(val)
-		{
-		case 640:
+		// now load the desired res..
+		// note that we only do this if we havent changed renderer..
+		if(getWarzoneKeyNumeric("resolution",&val))		
+		{	
+			switch(val)
+			{
+			case 640:
 			pie_SetVideoBufferWidth(640);
 			pie_SetVideoBufferHeight(480);
 			break;
@@ -559,6 +567,14 @@ BOOL loadRenderMode()
 		case 1280:
 			pie_SetVideoBufferWidth(1280);
 			pie_SetVideoBufferHeight(1024);
+			break;
+		case 1920:
+			pie_SetVideoBufferWidth(1920);
+			pie_SetVideoBufferHeight(1080);
+			break;
+		case 2560:
+			pie_SetVideoBufferWidth(2560);
+			pie_SetVideoBufferHeight(1440);
 			break;
 		}
 	}

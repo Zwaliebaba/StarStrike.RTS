@@ -185,6 +185,21 @@ BOOL ParseCommandLine( LPSTR psCmdLine, BOOL bGlideDllPresent)
 			pie_SetVideoBufferWidth(1280);
 			pie_SetVideoBufferHeight(1024);
 		}
+		else if( stricmp( tokenType,"-1280x720") == 0)
+		{
+			pie_SetVideoBufferWidth(1280);
+			pie_SetVideoBufferHeight(720);
+		}
+		else if( stricmp( tokenType,"-1920") == 0 || stricmp( tokenType,"-1920x1080") == 0)
+		{
+			pie_SetVideoBufferWidth(1920);
+			pie_SetVideoBufferHeight(1080);
+		}
+		else if( stricmp( tokenType,"-2560x1440") == 0)
+		{
+			pie_SetVideoBufferWidth(2560);
+			pie_SetVideoBufferHeight(1440);
+		}
 		else if( stricmp( tokenType,"-noTranslucent") == 0)
 		{
 			war_SetTranslucent(FALSE);
