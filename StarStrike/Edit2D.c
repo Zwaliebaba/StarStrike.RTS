@@ -97,7 +97,7 @@ static void rotBox(PASTE_BOX *psBox);
 	}
 
 	// Go through the file line by line - one mapping per line
-	pCurr = (STRING *)pFileData;
+	pCurr = (char *)pFileData;
 	for (line=0; line < maxTexTile; line++)
 	{
 		sscanf(pCurr, "%d %s", &texNum, aType);
@@ -130,7 +130,7 @@ static void rotBox(PASTE_BOX *psBox);
 			pCurr ++;
 		} while (*pCurr != '\n');
 
-		if (pCurr - (STRING *)pFileData > (SDWORD)fileSize)
+		if (pCurr - (char *)pFileData > (SDWORD)fileSize)
 		{
 			DBERROR(("Unexpected EOF in typemap.txt"));
 			FREE(pFileData);

@@ -112,10 +112,10 @@ UWORD fontGetCharIndex(UWORD code)
 }
 
 
-/* Return the pixel width of a string */
-UDWORD fontPixelWidth(STRING *pString)
+/* Return the pixel width of a char */
+UDWORD fontPixelWidth(char *pString)
 {
-	STRING	*pCurr;
+	char *pCurr;
 	UDWORD	width;
 
 	ASSERT((PTRVALID(psCurrFont, sizeof(PROP_FONT)),
@@ -132,10 +132,10 @@ UDWORD fontPixelWidth(STRING *pString)
 
 
 /* Print text in the current font at location x,y */
-void fontPrint(SDWORD x, SDWORD y, STRING *pFormat, ...)
+void fontPrint(SDWORD x, SDWORD y, char *pFormat, ...)
 {
 	HRESULT		ddrval;
-	STRING		aTxtBuff[1024];
+	char		aTxtBuff[1024];
 	va_list		pArgs;
 	DDSURFACEDESC2	sDDSD;
 	UDWORD		endX;
@@ -172,7 +172,7 @@ void fontPrint(SDWORD x, SDWORD y, STRING *pFormat, ...)
 	}
 	if (pSrc != (UBYTE *)aTxtBuff)
 	{
-		/* Chop off the start of the string */
+		/* Chop off the start of the char */
 		pDest = (UBYTE *)aTxtBuff;
 		while (*pSrc != '\0')
 		{
@@ -191,7 +191,7 @@ void fontPrint(SDWORD x, SDWORD y, STRING *pFormat, ...)
 	}
 	if (*pSrc != '\0')
 	{
-		/* Went off the right of the screen, clip the string */
+		/* Went off the right of the screen, clip the char */
 		*pSrc = '\0';
 	}
 
@@ -211,7 +211,7 @@ void fontPrint(SDWORD x, SDWORD y, STRING *pFormat, ...)
 		/* Go through each scan line of the text */
 		for(py = 0; py < psCurrFont->height; py ++)
 		{
-			/* Scan along the string */
+			/* Scan along the char */
 			pDest = (UBYTE *)sDDSD.lpSurface + (y + py) * sDDSD.lPitch + x;
 			for(pSrc = (UBYTE *)aTxtBuff; *pSrc != '\0'; pSrc++)
 			{
@@ -244,7 +244,7 @@ void fontPrint(SDWORD x, SDWORD y, STRING *pFormat, ...)
 		/* Go through each scan line of the text */
 		for(py = 0; py < psCurrFont->height; py ++)
 		{
-			/* Scan along the string */
+			/* Scan along the char */
 			p16Dest = (UWORD *)((UBYTE *)sDDSD.lpSurface + (y + py) * sDDSD.lPitch
 								+ (x<<1));
 			for(pSrc = (UBYTE *)aTxtBuff; *pSrc != '\0'; pSrc++)

@@ -190,9 +190,9 @@ void eventShutDown(void)
 
 
 // get the trigger id string
-STRING *eventGetTriggerID(SCRIPT_CODE *psCode, SDWORD trigger)
+char *eventGetTriggerID(SCRIPT_CODE *psCode, SDWORD trigger)
 {
-	STRING			*pID, *pTrigType;
+	char *pID, *pTrigType;
 	static STRING	aIDNum[255];
 	SDWORD			i;
 	TRIGGER_TYPE	type;
@@ -254,9 +254,9 @@ STRING *eventGetTriggerID(SCRIPT_CODE *psCode, SDWORD trigger)
 }
 
 // get the event id string
-STRING *eventGetEventID(SCRIPT_CODE *psCode, SDWORD event)
+char *eventGetEventID(SCRIPT_CODE *psCode, SDWORD event)
 {
-	STRING			*pID;
+	char *pID;
 	static STRING	aIDNum[255];
 	SDWORD			i;
 
@@ -285,7 +285,7 @@ void eventPrintTriggerInfo(ACTIVE_TRIGGER *psTrigger)
 {
 	SCRIPT_CODE *psCode = psTrigger->psContext->psCode;
 	BOOL		debugInfo = psCode->psDebug != NULL;
-	STRING		*pTrigLab, *pEventLab;
+	char *pTrigLab, *pEventLab;
 
 	// find the debug info for the trigger
 	pTrigLab = eventGetTriggerID(psCode, psTrigger->trigger);

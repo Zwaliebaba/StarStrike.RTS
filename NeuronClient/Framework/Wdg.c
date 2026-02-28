@@ -958,7 +958,7 @@ MemAllocationMode can be ...
 	WDG_RETURNCACHE		// new  - just returns as much of the file as we can in the cache
 
 */
-//BOOL loadFileFromWDG(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL AllocateMem)
+//BOOL loadFileFromWDG(char *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL AllocateMem)
 BOOL loadFileFromWDGCache(WDG_FINDFILE *psFindFile, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE MemAllocationMode)
 {
 	WDGINFO *CurrentWRF;
@@ -1130,7 +1130,7 @@ BOOL loadFileFromWDGCache(WDG_FINDFILE *psFindFile, UBYTE **ppFileData, UDWORD *
 
 }
 
-BOOL loadFileFromWDG(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE AllocateMem)
+BOOL loadFileFromWDG(char *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE AllocateMem)
 {
 	WDG_FINDFILE	sFindFile;
 

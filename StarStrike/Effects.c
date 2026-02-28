@@ -2914,7 +2914,7 @@ BOOL	bOnFire;
 }
 // -----------------------------------------------------------------------------------
 /* This will save out the effects data */
-BOOL	writeFXData( STRING *pFileName )
+BOOL	writeFXData( char *pFileName )
 {
 UBYTE			*pFileData;		// Pointer to the necessary allocated memory
 EFFECT			*pFXData;

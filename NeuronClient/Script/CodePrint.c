@@ -151,7 +151,7 @@ void cpPrintPackedVal(UDWORD *ip)
 		DBPRINTF(("FLOAT   : %f", (float)data ));
 		break;*/
 	case VAL_STRING:
-		DBPRINTF(("STRING  : %s", (STRING *)data ));
+		DBPRINTF(("STRING  : %s", (char *)data ));
 		break;
 	case VAL_TRIGGER:
 		DBPRINTF(("TRIGGER : %d", (SDWORD)data ));

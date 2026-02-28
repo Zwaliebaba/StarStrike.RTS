@@ -196,7 +196,7 @@ BOOL DInpGetMouseState(SDWORD *pX, SDWORD *pY, SDWORD *pButtons)
 }
 
 // convert a direct input error to a string
-STRING *DIErrorToString(HRESULT	dierror)
+char *DIErrorToString(HRESULT	dierror)
 {
 	switch (dierror)
 	{

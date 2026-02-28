@@ -1047,7 +1047,7 @@ void formRun(W_FORM *psWidget, W_CONTEXT *psContext)
 {
 	SDWORD		mx,my;
 	TAB_POS		sTabPos;
-	STRING		*pTip;
+	char *pTip;
 	W_TABFORM	*psTabForm;
 
 	if(psWidget->style & WFORM_CLICKABLE) {

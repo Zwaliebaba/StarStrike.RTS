@@ -24,7 +24,7 @@ UDWORD		numFunctions;
 
 /*Returns the Function type based on the string - used for reading in data */
 static UDWORD functionType(char* pType);
-static BOOL storeName(FUNCTION* pFunction, STRING* pNameToStore);
+static BOOL storeName(FUNCTION* pFunction, char * pNameToStore);
 static BOOL loadUpgradeFunction(SBYTE *pData, UBYTE type);
 
 
@@ -260,9 +260,9 @@ BOOL loadFunctionStats(SBYTE *pFunctionData, UDWORD bufferSize)
 }
 
 // Allocate storage for the name
-BOOL storeName(FUNCTION* pFunction, STRING* pNameToStore)
+BOOL storeName(FUNCTION* pFunction, char * pNameToStore)
 {
-	pFunction->pName = (STRING *)MALLOC(strlen(pNameToStore)+1);
+	pFunction->pName = (char *)MALLOC(strlen(pNameToStore)+1);
 	if (pFunction->pName == NULL)
 	{
 		DBERROR(("Function Name - Out of memory"));
@@ -1505,7 +1505,7 @@ BOOL loadWallFunction(SBYTE *pData)
 
 	//store the structure name - cannot set the stat pointer here because structures 
 	//haven't been loaded in yet!
-	/*psFunction->pStructName = (STRING *)MALLOC(strlen(structureName)+1);
+	/*psFunction->pStructName = (char *)MALLOC(strlen(structureName)+1);
 	if (psFunction->pStructName == NULL)
 	{
 		DBERROR(("Function Name - Out of memory"));

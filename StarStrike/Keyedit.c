@@ -56,7 +56,7 @@ static KEY_MAPPING	*selectedKeyMap;
 // protos
 
 BOOL		runKeyMapEditor		(void);
-static BOOL keyMapToString		(STRING *pStr, KEY_MAPPING *psMapping);
+static BOOL keyMapToString		(char *pStr, KEY_MAPPING *psMapping);
 VOID		displayKeyMap		(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 BOOL		startKeyMapEditor	(BOOL first);
 BOOL		saveKeyMap			(void);
@@ -240,17 +240,17 @@ BOOL runKeyMapEditor(void)
 
 // ////////////////////////////////////////////////////////////////////////////
 // returns key to press given a mapping.
-static BOOL keyMapToString(STRING *pStr, KEY_MAPPING *psMapping)
+static BOOL keyMapToString(char *pStr, KEY_MAPPING *psMapping)
 {
 	BOOL	onlySub = TRUE;
 	STRING	asciiSub[20],asciiMeta[20];
 
 	if(psMapping->metaKeyCode!=KEY_IGNORE)
 	{
-		keyScanToString(psMapping->metaKeyCode,(STRING *)&asciiMeta,20);
+		keyScanToString(psMapping->metaKeyCode,(char *)&asciiMeta,20);
 		onlySub = FALSE;
 	}
-	keyScanToString(psMapping->subKeyCode,(STRING *)&asciiSub,20);
+	keyScanToString(psMapping->subKeyCode,(char *)&asciiSub,20);
 
 	if(onlySub)
 	{

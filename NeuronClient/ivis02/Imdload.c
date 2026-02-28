@@ -5,8 +5,7 @@
  * updated to load version 4 files
  * 
  * changes at version 4;
- *		pcx name as string
- *		pcx filepath
+ *		pcx name as char *		pcx filepath
  *		cut down vertex list
  *
  */

@@ -1407,7 +1407,7 @@ void screenSetTextColour(UBYTE red, UBYTE green, UBYTE blue)
 /* Output text to the display screen at location x,y.
  * The remaining arguments are as printf.
  */
-void screenTextOut(UDWORD x, UDWORD y, STRING *pFormat, ...)
+void screenTextOut(UDWORD x, UDWORD y, char *pFormat, ...)
 {
 	HRESULT		ddrval;
 	STRING		aTxtBuff[1024];
@@ -1437,7 +1437,7 @@ void screenTextOut(UDWORD x, UDWORD y, STRING *pFormat, ...)
 	/* Clip the string to the size of the screen */
 	if (x < 0)
 	{
-		/* Chop off the start of the string */
+		/* Chop off the start of the char */
 		pSrc = (UBYTE *)aTxtBuff - (x/FONT_WIDTH) + 1;
 		x = FONT_WIDTH - ( (-(SDWORD)x) % FONT_WIDTH );
 		pDest = (UBYTE *)aTxtBuff;
@@ -1450,7 +1450,7 @@ void screenTextOut(UDWORD x, UDWORD y, STRING *pFormat, ...)
 	strLen = strlen(aTxtBuff);
 	if (x + strLen * FONT_WIDTH >= screenWidth)
 	{
-		/* Chop off the end of the string */
+		/* Chop off the end of the char */
 		aTxtBuff[strLen - 1 -
 				 ((x + strLen * FONT_WIDTH) - screenWidth) / FONT_WIDTH] = '\0';
 	}

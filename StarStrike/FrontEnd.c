@@ -142,9 +142,9 @@ VOID		removeBottomForm		(VOID);
 VOID		addBackdrop				(VOID);
 VOID		removeBackdrop			(VOID);
 
-VOID		addTextButton			(UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt,BOOL bAlignLeft,BOOL bGrey);
-VOID 		addText					(int FontID,UDWORD FormID,UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt, UDWORD attachID,BOOL *State);
-VOID		addSideText				(UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt);
+VOID		addTextButton			(UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt,BOOL bAlignLeft,BOOL bGrey);
+VOID 		addText					(int FontID,UDWORD FormID,UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt, UDWORD attachID,BOOL *State);
+VOID		addSideText				(UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt);
 VOID		addFESlider				(UDWORD id, UDWORD parent, UDWORD x,UDWORD y,UDWORD stops,UDWORD pos,UDWORD attachID);
 
 VOID		displayLogo				(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
@@ -1666,7 +1666,7 @@ VOID removeTopForm( VOID )
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-VOID addTextButton(UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt,BOOL bAlign,BOOL bGrey)
+VOID addTextButton(UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt,BOOL bAlign,BOOL bGrey)
 {
 	W_BUTINIT		sButInit;
 	memset(&sButInit, 0, sizeof(W_BUTINIT));
@@ -1727,7 +1727,7 @@ VOID addFESlider(UDWORD id, UDWORD parent, UDWORD x,UDWORD y,UDWORD stops,UDWORD
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-VOID addSideText(UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt)
+VOID addSideText(UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt)
 {
 	W_LABINIT	sLabInit;
 	memset(&sLabInit, 0, sizeof(W_LABINIT));
@@ -1745,7 +1745,7 @@ VOID addSideText(UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt)
 }
 
 
-VOID addText(int FontID,UDWORD FormID,UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt, UDWORD attachID,BOOL *State)
+VOID addText(int FontID,UDWORD FormID,UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt, UDWORD attachID,BOOL *State)
 {
 	W_LABINIT	sLabInit;
 

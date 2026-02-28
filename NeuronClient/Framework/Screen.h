@@ -92,7 +92,7 @@ extern void screenSetTextColour(UBYTE red, UBYTE green, UBYTE blue);
 /* Output text to the display screen at location x,y.
  * The remaining arguments are as printf.
  */
-extern void screenTextOut(UDWORD x, UDWORD y, STRING *pFormat, ...);
+extern void screenTextOut(UDWORD x, UDWORD y, char *pFormat, ...);
 
 /* Blit the source rectangle of the surface
  * to the back buffer at the given location.

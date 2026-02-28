@@ -8,10 +8,10 @@
 #define __INCLUDED_MULTIMENU__
 
 // requester
-extern VOID		addMultiRequest(STRING *ToFind, UDWORD id,UBYTE mapCam);
+extern VOID		addMultiRequest(char *ToFind, UDWORD id,UBYTE mapCam);
 extern BOOL		multiRequestUp;
 extern W_SCREEN *psRScreen;			// requester stuff.
-extern BOOL		runMultiRequester(UDWORD id,UDWORD *contextmode, STRING *chosen,UDWORD *chosenValue);
+extern BOOL		runMultiRequester(UDWORD id,UDWORD *contextmode, char *chosen,UDWORD *chosenValue);
 extern void		displayRequestOption(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 
 // multimenu

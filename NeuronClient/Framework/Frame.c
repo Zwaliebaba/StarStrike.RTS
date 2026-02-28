@@ -257,10 +257,10 @@ HANDLE	frameGetWinHandle(void)
 }
 
 // string buffer for windows error string
-static STRING winErrorString[255];
+static char winErrorString[255];
 
 // Return a string for a windows error code
-STRING *winErrorToString(SDWORD error)
+char *winErrorToString(SDWORD error)
 {
 	LPVOID lpMsgBuf;
  
@@ -602,14 +602,14 @@ static BOOL WinInitGlide(HANDLE hInstance, char *name, int width, int height, BO
 }
 
 static BOOL winInitApp(HANDLE hInstance,	// Instance handle for the program
-				STRING *pWindowName,	// The text to put on the window title bar
+				char *pWindowName,	// The text to put on the window title bar
 				UDWORD width,			// The window width
 				UDWORD height)			// The window height
 {
     WNDCLASS    wc;
     BOOL        rc;
 	RECT		sWinSize;
-	STRING		*pMsgBuf;
+	char *pMsgBuf;
 
 	/* Create the default cursor for the app - a simple arrow */
 	hInternalCursor = CreateCursor(
@@ -706,7 +706,7 @@ static BOOL winInitApp(HANDLE hInstance,	// Instance handle for the program
  * Initialise the framework library. - PC version
  */
 BOOL frameInitialise(HANDLE hInst,			// The windows application instance
-					 STRING *pWindowName,	// The text to appear in the window title bar
+					 char *pWindowName,	// The text to appear in the window title bar
 					 UDWORD	width,			// The display width
 					 UDWORD height,			// The display height
 					 UDWORD bitDepth,		// The display bit depth
@@ -919,7 +919,7 @@ void frameShutDown(void)
 }
 
 
-BOOL loadFile(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize)
+BOOL loadFile(char *pFileName, UBYTE **ppFileData, UDWORD *pFileSize)
 {
 	return(loadFile2(pFileName,ppFileData,pFileSize,TRUE));
 }
@@ -928,7 +928,7 @@ BOOL loadFile(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize)
 /* Load the file with name pointed to by pFileName into a memory buffer. */
 // if allocate mem is true then the memory is allocated ... else it is already in ppFileData, and the max size is in pFileSize ... this is adjusted to the actual loaded file size
 //   
-BOOL loadFile2(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL AllocateMem )
+BOOL loadFile2(char *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL AllocateMem )
 {
 	FILE	*pFileHandle;
 	UDWORD FileSize;
@@ -1018,7 +1018,7 @@ BOOL loadFile2(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL Al
 
 
 // load a file from disk into a fixed memory buffer
-BOOL loadFileToBuffer(STRING *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, UDWORD *pSize)
+BOOL loadFileToBuffer(char *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, UDWORD *pSize)
 {
 	HANDLE	hFile;
 	DWORD	bytesRead;
@@ -1080,7 +1080,7 @@ BOOL loadFileToBuffer(STRING *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, 
 }
 
 // as above but returns quietly if no file found
-BOOL loadFileToBufferNoError(STRING *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, UDWORD *pSize)
+BOOL loadFileToBufferNoError(char *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, UDWORD *pSize)
 {
 	HANDLE	hFile;
 	DWORD	bytesRead;
@@ -1137,7 +1137,7 @@ BOOL loadFileToBufferNoError(STRING *pFileName, UBYTE *pFileBuffer, UDWORD buffe
 
 
 /* Save the data in the buffer into the given file */
-BOOL saveFile(STRING *pFileName, UBYTE *pFileData, UDWORD fileSize)
+BOOL saveFile(char *pFileName, UBYTE *pFileData, UDWORD fileSize)
 {
 	FILE	*pFile;
 

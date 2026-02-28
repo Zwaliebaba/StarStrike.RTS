@@ -120,7 +120,7 @@ static BOOL		giftsUp[MAX_PLAYERS] = {TRUE};		//gift buttons for player are up.
 // enumerates maps in the gamedesc file.
 // returns only maps that are valid the right 'type'
 
-BOOL enumerateMultiMaps(STRING *found, UDWORD *players,BOOL first, UBYTE camToUse)
+BOOL enumerateMultiMaps(char *found, UDWORD *players,BOOL first, UBYTE camToUse)
 {	
 	static LEVEL_DATASET *lev;
 	UBYTE cam;
@@ -269,7 +269,7 @@ void displayCamTypeBut(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset,
 // ////////////////////////////////////////////////////////////////////////////
 // ////////////////////////////////////////////////////////////////////////////
 
-VOID addMultiRequest(STRING *ToFindb,UDWORD mode, UBYTE mapCam)
+VOID addMultiRequest(char *ToFindb,UDWORD mode, UBYTE mapCam)
 {
 	W_FORMINIT		sFormInit;
 	W_BUTINIT		sButInit;
@@ -555,7 +555,7 @@ void closeMultiRequester()
 	return;
 }
 
-BOOL runMultiRequester(UDWORD id,UDWORD *mode, STRING *chosen,UDWORD *chosenValue)
+BOOL runMultiRequester(UDWORD id,UDWORD *mode, char *chosen,UDWORD *chosenValue)
 {
 	if( id==M_REQUEST_CLOSE)							// close
 	{

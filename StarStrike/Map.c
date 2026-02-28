@@ -1110,7 +1110,7 @@ UDWORD GetHeightOfMap(void)
 
 // -----------------------------------------------------------------------------------
 /* This will save out the visibility data */
-BOOL	writeVisibilityData( STRING *pFileName )
+BOOL	writeVisibilityData( char *pFileName )
 {
 UBYTE			*pFileData;		// Pointer to the necessary allocated memory
 UBYTE			*pVisData;		// Pointer to the start of the map data

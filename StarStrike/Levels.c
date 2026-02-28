@@ -49,7 +49,7 @@ LEVEL_DATASET	*psCurrLevel;
 LEVEL_DATASET	sSingleWRF;
 
 // return values from the lexer
-STRING *pLevToken;
+char *pLevToken;
 SDWORD levVal;
 SDWORD levelLoadType;
 // modes for the parser
@@ -118,7 +118,7 @@ void levShutDown(void)
 
 
 // error report function for the level parser
-void levError(STRING *pError)
+void levError(char *pError)
 {
 	char	*pText;
 	int		line;
@@ -133,7 +133,7 @@ void levError(STRING *pError)
 }
 
 // find the level dataset
-BOOL levFindDataSet(STRING *pName, LEVEL_DATASET **ppsDataSet)
+BOOL levFindDataSet(char *pName, LEVEL_DATASET **ppsDataSet)
 {
 	LEVEL_DATASET	*psNewLevel;
 
@@ -537,7 +537,7 @@ BOOL levReleaseAll(void)
 }
 
 // load up a single wrf file
-BOOL levLoadSingleWRF(STRING *pName)
+BOOL levLoadSingleWRF(char *pName)
 {
 	// free the old data
 	levReleaseAll();
@@ -577,7 +577,7 @@ BOOL levLoadSingleWRF(STRING *pName)
 
 
 // load up the base data set for a level (used by savegames)
-BOOL levLoadBaseData(STRING *pName)
+BOOL levLoadBaseData(char *pName)
 {
 	LEVEL_DATASET	*psNewLevel, *psBaseData;
 	SDWORD			i;
@@ -647,7 +647,7 @@ UBYTE	*getLevelName( void )
 
 
 // load up the data for a level
-BOOL levLoadData(STRING *pName, STRING *pSaveName, SDWORD saveType)
+BOOL levLoadData(char *pName, char *pSaveName, SDWORD saveType)
 {
 	LEVEL_DATASET	*psNewLevel, *psBaseData, *psChangeLevel;
 	SDWORD			i;

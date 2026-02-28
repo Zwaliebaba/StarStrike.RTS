@@ -14,7 +14,7 @@
 typedef struct AUDIO_ID
 {
 	SDWORD	iID;
-	STRING	*pWavStr;
+	char *pWavStr;
 }
 AUDIO_ID;
 
@@ -487,7 +487,7 @@ ID_SOUND_LAS_SAT_COUNTDOWN,             "LasStrk.wav",
 /***************************************************************************/
 
 BOOL
-audioID_GetIDFromStr( STRING *pWavStr, SDWORD *piID )
+audioID_GetIDFromStr( char *pWavStr, SDWORD *piID )
 {
 	SDWORD		i;
 

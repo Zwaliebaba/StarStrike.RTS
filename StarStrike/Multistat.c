@@ -36,8 +36,8 @@ FORCE		Force;														// the selected force.
 
 // ////////////////////////////////////////////////////////////////////////////
 //  Player Stat defs.
-BOOL		saveMultiStats			(STRING *sFName, STRING *sPlayerName, PLAYERSTATS *plStats);
-BOOL		loadMultiStats			(STRING *sPlayerName, PLAYERSTATS *plStats);
+BOOL		saveMultiStats			(char *sFName, char *sPlayerName, PLAYERSTATS *plStats);
+BOOL		loadMultiStats			(char *sPlayerName, PLAYERSTATS *plStats);
 PLAYERSTATS getMultiStats			(UDWORD	player, BOOL bLocal);
 BOOL		setMultiStats			(DWORD playerDPID, PLAYERSTATS plStats,BOOL bLocal);
 
@@ -481,7 +481,7 @@ BOOL setMultiStats(DWORD dp, PLAYERSTATS plStats, BOOL bLocal)
 
 // ////////////////////////////////////////////////////////////////////////////
 // Load Player Stats
-BOOL loadMultiStats(STRING *sPlayerName,PLAYERSTATS *playerStats)
+BOOL loadMultiStats(char *sPlayerName,PLAYERSTATS *playerStats)
 {
 	STRING				fileName[255]="";
 	DWORD				size;
@@ -543,7 +543,7 @@ BOOL loadMultiStats(STRING *sPlayerName,PLAYERSTATS *playerStats)
 
 // ////////////////////////////////////////////////////////////////////////////
 // Save Player Stats
-BOOL saveMultiStats(STRING *sFileName, STRING *sPlayerName,PLAYERSTATS *playerStats)
+BOOL saveMultiStats(char *sFileName, char *sPlayerName,PLAYERSTATS *playerStats)
 {
 	STRING				fileName[255]="";
 	SAVEDPLAYERSTATS	codedst,st;

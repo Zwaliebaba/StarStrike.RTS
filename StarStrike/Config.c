@@ -35,12 +35,12 @@
 // ////////////////////////////////////////////////////////////////////////////
 BOOL openWarzoneKey			(VOID);
 BOOL closeWarzoneKey		(VOID);
-BOOL getWarzoneKeyNumeric	(STRING *pName,DWORD  *val);
-BOOL getWarzoneKeyString	(STRING *pName,STRING *pString);
-BOOL getWarzoneKeyBinary	(STRING *pName,UCHAR  *pData,UDWORD *pSize);
-BOOL setWarzoneKeyNumeric	(STRING *pName,DWORD val);
-BOOL setWarzoneKeyString	(STRING *pName,STRING *pString);
-BOOL setWarzoneKeyBinary	(STRING *pName, VOID *pData, UDWORD size);
+BOOL getWarzoneKeyNumeric	(char *pName,DWORD  *val);
+BOOL getWarzoneKeyString	(char *pName,char *pString);
+BOOL getWarzoneKeyBinary	(char *pName,UCHAR  *pData,UDWORD *pSize);
+BOOL setWarzoneKeyNumeric	(char *pName,DWORD val);
+BOOL setWarzoneKeyString	(char *pName,char *pString);
+BOOL setWarzoneKeyBinary	(char *pName, VOID *pData, UDWORD size);
 BOOL loadRenderMode			(VOID);
 BOOL loadConfig				(BOOL bResourceAvailable);
 BOOL saveConfig				(VOID);
@@ -282,12 +282,12 @@ BOOL loadConfig(BOOL bResourceAvailable)
 		{
 			if(getWarzoneKeyString("playerName",(char*)&sBuf))		
 			{
-				strcpy((STRING*)sPlayer,sBuf);
+				strcpy((char *)sPlayer,sBuf);
 			}
 			else
 			{
-				strcpy((STRING*)sPlayer,strresGetString(psStringRes, STR_PLAYER_NAME));
-				setWarzoneKeyString("playerName",(STRING*)sPlayer);
+				strcpy((char *)sPlayer,strresGetString(psStringRes, STR_PLAYER_NAME));
+				setWarzoneKeyString("playerName",(char *)sPlayer);
 			}
 		}
 	}
@@ -675,7 +675,7 @@ BOOL saveConfig()
 		setWarzoneKeyNumeric(	"alliance",	game.alliance);			// allow alliances
 		setWarzoneKeyNumeric(	"modemId",	ingame.modem);			// modem to use.
 		setWarzoneKeyString(	"forceName",sForceName);			// force
-		setWarzoneKeyString(	"playerName",(STRING*)sPlayer);		// player name
+		setWarzoneKeyString(	"playerName",(char *)sPlayer);		// player name
 		setWarzoneKeyString(	"phrase0",	ingame.phrases[0] );	// phrases
 		setWarzoneKeyString(	"phrase1",	ingame.phrases[1] );	
 		setWarzoneKeyString(	"phrase2",	ingame.phrases[2] );	
@@ -724,7 +724,7 @@ BOOL closeWarzoneKey()
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL getWarzoneKeyNumeric	(STRING *pName,DWORD *val)
+BOOL getWarzoneKeyNumeric	(char *pName,DWORD *val)
 {
 	UCHAR	result[16];			// buffer
 	DWORD	resultsize=16;		// buffersize
@@ -748,7 +748,7 @@ BOOL getWarzoneKeyNumeric	(STRING *pName,DWORD *val)
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL getWarzoneKeyString	(STRING *pName,STRING *pString)
+BOOL getWarzoneKeyString	(char *pName,char *pString)
 {
 	UCHAR	result[255];		// buffer
 	DWORD	resultsize=255;		// buffersize
@@ -772,7 +772,7 @@ BOOL getWarzoneKeyString	(STRING *pName,STRING *pString)
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL getWarzoneKeyBinary	(STRING *pName,UCHAR *pData,UDWORD *pSize)
+BOOL getWarzoneKeyBinary	(char *pName,UCHAR *pData,UDWORD *pSize)
 {
 	UCHAR	result[2048];		// buffer
 	DWORD	resultsize=2048;	// buffersize
@@ -802,7 +802,7 @@ BOOL getWarzoneKeyBinary	(STRING *pName,UCHAR *pData,UDWORD *pSize)
 
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL setWarzoneKeyNumeric(STRING *pName,DWORD val)
+BOOL setWarzoneKeyNumeric(char *pName,DWORD val)
 {
 
 	RegSetValueEx(ghWarzoneKey, pName ,0,REG_DWORD ,(UBYTE*) &val, sizeof(val) );
@@ -810,14 +810,14 @@ BOOL setWarzoneKeyNumeric(STRING *pName,DWORD val)
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL setWarzoneKeyString(STRING *pName, STRING *pString)
+BOOL setWarzoneKeyString(char *pName, char *pString)
 {
 	RegSetValueEx(ghWarzoneKey, pName ,0, REG_SZ, (UBYTE*)pString, strlen(pString) );
 	return TRUE;
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL setWarzoneKeyBinary(STRING *pName, VOID *pData, UDWORD size)
+BOOL setWarzoneKeyBinary(char *pName, VOID *pData, UDWORD size)
 {
 	RegSetValueEx(ghWarzoneKey, pName ,0, REG_BINARY, pData, size );
 	return TRUE;

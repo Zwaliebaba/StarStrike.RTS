@@ -78,7 +78,7 @@ typedef struct
 } CACHE;
 
 BOOL WDG_SetCurrentWDG(char *filename);
-BOOL loadFileFromWDG(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE MemAllocationMode);
+BOOL loadFileFromWDG(char *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE MemAllocationMode);
 struct _wdg_findfile;
 BOOL loadFileFromWDGCache(struct _wdg_findfile *psFindFile, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE MemAllocationMode);
 BOOL LoadWRFCatalog(WDGINFO *CurrentWRF, FILE *pFileHandle);

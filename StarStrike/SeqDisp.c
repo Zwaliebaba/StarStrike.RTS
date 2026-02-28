@@ -397,7 +397,7 @@ BOOL seq_ClearTextForVideo(void)
 	return TRUE;
 }
 
-BOOL	seq_AddTextFromFile(STRING *pTextName, BOOL bJustify)
+BOOL	seq_AddTextFromFile(char *pTextName, BOOL bJustify)
 {
 	UBYTE *pTextBuffer, *pCurrentLine, *pText;
 	UDWORD fileSize;
@@ -469,7 +469,7 @@ void seq_ClearSeqList(void)
 }
 
 //add a sequence to the list to be played
-void seq_AddSeqToList(STRING *pSeqName, STRING *pAudioName, STRING *pTextName, BOOL bLoop, UDWORD PSXSeqNumber)
+void seq_AddSeqToList(char *pSeqName, char *pAudioName, char *pTextName, BOOL bLoop, UDWORD PSXSeqNumber)
 {
 	SDWORD strLen;
 	currentSeq++;

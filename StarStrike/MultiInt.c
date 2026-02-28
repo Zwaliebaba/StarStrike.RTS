@@ -118,7 +118,7 @@ extern int FEFont;
 // widget functions
 BOOL		addMultiBut					(W_SCREEN *screen, UDWORD formid,UDWORD id,UDWORD x, UDWORD y, UDWORD width, UDWORD height,UDWORD tipres,UDWORD norm, UDWORD hi,BOOL showmouseover);
 BOOL		addMultiEditBox				(UDWORD formid,UDWORD id,UDWORD x, UDWORD y, UDWORD tip, STRING tipres[128],UDWORD icon,UDWORD iconid);
-static VOID addBlueForm					(UDWORD parent,UDWORD id,STRING *txt,UDWORD x,UDWORD y,UDWORD w,UDWORD h);
+static VOID addBlueForm					(UDWORD parent,UDWORD id,char *txt,UDWORD x,UDWORD y,UDWORD w,UDWORD h);
 
 // Drawing Functions
 VOID		displayChatEdit				(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
@@ -1030,11 +1030,11 @@ void runGameFind(void )
 //			loadMultiStats(sPlayer,&nullStats);
 //			if(NETgetGameFlagsUnjoined(gameNumber,1) == DMATCH)
 //			{
-//				joinArena(gameNumber,(STRING*)sPlayer);		
+//				joinArena(gameNumber,(char *)sPlayer);		
 //			}
 //			else
 //			{
-				joinCampaign(gameNumber,(STRING*)sPlayer);	
+				joinCampaign(gameNumber,(char *)sPlayer);	
 //			}	
 
 			changeTitleMode(MULTIOPTION);
@@ -1088,7 +1088,7 @@ void startGameFind(void)
 
 // ////////////////////////////////////////////////////////////////////////////
 
-static void addBlueForm(UDWORD parent,UDWORD id,STRING *txt,UDWORD x,UDWORD y,UDWORD w,UDWORD h)
+static void addBlueForm(UDWORD parent,UDWORD id,char *txt,UDWORD x,UDWORD y,UDWORD w,UDWORD h)
 {
 	W_FORMINIT	sFormInit;
 	W_LABINIT	sLabInit;
@@ -1200,7 +1200,7 @@ static void addGameOptions(BOOL bRedo)
 	}
 
 	//just display the game options.
-	addMultiEditBox(MULTIOP_OPTIONS,MULTIOP_PNAME,MCOL0,MROW1, STR_MUL_PLAYERIC,(STRING*) sPlayer,IMAGE_EDIT_PLAYER,MULTIOP_PNAME_ICON);
+	addMultiEditBox(MULTIOP_OPTIONS,MULTIOP_PNAME,MCOL0,MROW1, STR_MUL_PLAYERIC,(char *) sPlayer,IMAGE_EDIT_PLAYER,MULTIOP_PNAME_ICON);
 	addMultiEditBox(MULTIOP_OPTIONS,MULTIOP_FNAME,MCOL0,MROW4, STR_MUL_FORCEIC, sForceName,IMAGE_EDIT_FORCE,MULTIOP_FNAME_ICON);
 
 
@@ -2287,7 +2287,7 @@ static void processMultiopWidgets(UDWORD id)
 		break;
 	
 	case MULTIOP_PNAME:			
-		strcpy((STRING*)sPlayer,widgGetString(psWScreen, MULTIOP_PNAME));
+		strcpy((char *)sPlayer,widgGetString(psWScreen, MULTIOP_PNAME));
 
 		// chop to 15 chars..
 		while(strlen(sPlayer) > 15)	// clip name.
@@ -2299,13 +2299,13 @@ static void processMultiopWidgets(UDWORD id)
 		widgSetString(psWScreen, MULTIOP_PNAME,sPlayer);
 
 
-		removeWildcards((STRING*)sPlayer);
+		removeWildcards((char *)sPlayer);
 
 		sprintf(tmp,"-> %s",sPlayer);
 		sendTextMessage(tmp,TRUE);
 
-		NETchangePlayerName(NetPlay.dpidPlayer, (STRING*)sPlayer);			// update if joined.
-		loadMultiStats((STRING*)sPlayer,&playerStats);
+		NETchangePlayerName(NetPlay.dpidPlayer, (char *)sPlayer);			// update if joined.
+		loadMultiStats((char *)sPlayer,&playerStats);
 		setMultiStats(NetPlay.dpidPlayer,playerStats,FALSE);
 		setMultiStats(NetPlay.dpidPlayer,playerStats,TRUE);
 		break;
@@ -2322,21 +2322,21 @@ static void processMultiopWidgets(UDWORD id)
 		{
 			strcpy(sForceName,widgGetString(psWScreen, MULTIOP_FNAME));
 		}
-		strcpy((STRING*)game.name,widgGetString(psWScreen, MULTIOP_GNAME));	// game name
-		strcpy((STRING*)sPlayer,widgGetString(psWScreen, MULTIOP_PNAME));	// pname
-		strcpy((STRING*)game.map,widgGetString(psWScreen, MULTIOP_MAP));		// add the name	
+		strcpy((char *)game.name,widgGetString(psWScreen, MULTIOP_GNAME));	// game name
+		strcpy((char *)sPlayer,widgGetString(psWScreen, MULTIOP_PNAME));	// pname
+		strcpy((char *)game.map,widgGetString(psWScreen, MULTIOP_MAP));		// add the name	
 	
-		removeWildcards((STRING*)sPlayer);
+		removeWildcards((char *)sPlayer);
 		removeWildcards(sForceName);
 		
 //		if (game.type == DMATCH)
 //		{
-//			hostArena((STRING*)game.name,(STRING*)sPlayer);		
+//			hostArena((char *)game.name,(char *)sPlayer);		
 //			bHosted = TRUE;
 //		}
 //		else
 //		{
-			hostCampaign((STRING*)game.name,(STRING*)sPlayer);
+			hostCampaign((char *)game.name,(char *)sPlayer);
 			bHosted = TRUE;
 //		}
 
@@ -2726,14 +2726,14 @@ void runMultiOptions(VOID)
 			switch(id)
 			{
 			case MULTIOP_PNAME:
-				strcpy((STRING*)sPlayer,sTemp);
+				strcpy((char *)sPlayer,sTemp);
 				widgSetString(psWScreen,MULTIOP_PNAME,sTemp);	
 
 				sprintf(sTemp," -> %s",sPlayer);
 				sendTextMessage(sTemp,TRUE);
 
-				NETchangePlayerName(NetPlay.dpidPlayer, (STRING*)sPlayer);
-				loadMultiStats((STRING*)sPlayer,&playerStats);
+				NETchangePlayerName(NetPlay.dpidPlayer, (char *)sPlayer);
+				loadMultiStats((char *)sPlayer,&playerStats);
 				setMultiStats(NetPlay.dpidPlayer,playerStats,FALSE);
 				setMultiStats(NetPlay.dpidPlayer,playerStats,TRUE);
 				break;
@@ -2853,7 +2853,7 @@ BOOL startMultiOptions(BOOL bReenter)
 			game.maxPlayers = 4;
 		}
 
-		strncpy((CHAR *)game.version,(STRING*)buildTime,8);		// note buildtime.
+		strncpy((CHAR *)game.version,(char *)buildTime,8);		// note buildtime.
 
 		ingame.localOptionsReceived = FALSE;
 		if(ingame.numStructureLimits)
@@ -2873,7 +2873,7 @@ BOOL startMultiOptions(BOOL bReenter)
 			game.packetsPerSec	= INETPACKETS;		
 		}
 
-		loadMultiStats((STRING*)sPlayer,&nullStats);
+		loadMultiStats((char *)sPlayer,&nullStats);
 
 	}
 

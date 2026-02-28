@@ -112,7 +112,7 @@ BOOL activateGroupAndMove(UDWORD playerNumber, UDWORD groupNumber);
 void droidSetBits(DROID_TEMPLATE *pTemplate,DROID *psDroid);
 BOOL	pickATile2(UDWORD *x, UDWORD *y, UDWORD numIterations);
 UDWORD	getBound(UDWORD level);
-STRING	*getDroidNameForRank(UDWORD rank);
+char *getDroidNameForRank(UDWORD rank);
 
 
 /*time to move to a new location (when building foundation) */
@@ -1029,7 +1029,7 @@ void droidGetNaybors(DROID *psDroid)
 void displayNaybors(void)
 {
 	UDWORD	count, y;
-	STRING	*pType = NULL;
+	char *pType = NULL;
 
 	y = 100;
 	for(count=0; count<numNaybors; count++)
@@ -2512,7 +2512,7 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 	UDWORD				size, inc, templateID;
 	BOOL				bDefaultTemplateFound = FALSE;
 #ifdef STORE_RESOURCE_ID
-	STRING				*pDroidName = droidName;
+	char *pDroidName = droidName;
 #endif
 #ifdef RESOURCE_NAMES
 	UDWORD				id;
@@ -4787,7 +4787,7 @@ BOOL calcDroidMuzzleLocation(DROID *psDroid, iVector *muzzle)
 /* IF YOU USE THIS FUNCTION - NOTE THAT selectedPlayer's TEMPLATES ARE !USED!!!!
    gets a template from its name - relies on the name being unique (|| it will 
    return the first one it finds!! */
-DROID_TEMPLATE * getTemplateFromName(STRING *pName)
+DROID_TEMPLATE * getTemplateFromName(char *pName)
 {
 	UDWORD			player;
 	DROID_TEMPLATE	*psCurr;
@@ -4950,7 +4950,7 @@ UDWORD	getDroidLevel(DROID *psDroid)
 
 
 
-STRING	*getDroidNameForRank(UDWORD rank)
+char *getDroidNameForRank(UDWORD rank)
 {
 switch(rank)
 {
@@ -4975,7 +4975,7 @@ switch(rank)
 	}
 }
 
-STRING	*getDroidLevelName(DROID *psDroid)
+char *getDroidLevelName(DROID *psDroid)
 {
 //#ifdef WIN32
 	return(getDroidNameForRank(getDroidLevel(psDroid)));
@@ -5157,7 +5157,7 @@ UDWORD	calcDroidSystemPoints(DROID *psDroid)
 
 // Get the name of a droid from it's DROID structure.
 //
-STRING *droidGetName(DROID *psDroid)
+char *droidGetName(DROID *psDroid)
 {
 	return (psDroid->aName);
 }
@@ -5168,7 +5168,7 @@ STRING *droidGetName(DROID *psDroid)
 //
 // - only possible on the PC where you can adjust the names, 
 //
-void droidSetName(DROID *psDroid,STRING *pName)
+void droidSetName(DROID *psDroid,char *pName)
 {
 	strncpy(psDroid->aName,pName, DROID_MAXNAME);
 	psDroid->aName[DROID_MAXNAME-1] = 0;
@@ -5747,7 +5747,7 @@ void setUpBuildModule(DROID *psDroid)
 
 
 // not written yet - needs merging with code in Dr Jones' Design.c
-void BuildNameFromDroid(DROID *psDroid, STRING *ConstructedName)
+void BuildNameFromDroid(DROID *psDroid, char *ConstructedName)
 {
 	UNUSEDPARAMETER(psDroid);	
 	UNUSEDPARAMETER(ConstructedName);	
@@ -5760,7 +5760,7 @@ static STRING ConstructedName[MAXCONNAME+1]="Body Mk XXIV";	// dummy name
 
 
 
-STRING *getDroidName(DROID *psDroid)
+char *getDroidName(DROID *psDroid)
 {
 	DROID_TEMPLATE sTemplate;
 
@@ -5773,17 +5773,17 @@ STRING *getDroidName(DROID *psDroid)
 
 /*return the name to display for the interface - we don't know if this is 
 a string ID || something the user types in*/
-STRING* getTemplateName(DROID_TEMPLATE *psTemplate)
+char * getTemplateName(DROID_TEMPLATE *psTemplate)
 {
-	//STRING *pNameID=psTemplate->pName;
-	STRING *pNameID = psTemplate->aName;
+	//char *pNameID=psTemplate->pName;
+	char *pNameID = psTemplate->aName;
 #ifdef STORE_RESOURCE_ID
 	UDWORD			id;
-	STRING			*pName = NULL;
+	char *pName = NULL;
 	static STRING	Unknown[]="Name Unknown";
 
 	/*see if the name has a resource associated with it by trying to get 
-	the ID for the string*/
+	the ID for the char */
 	if (strresGetIDNum(psStringRes, pNameID, &id))
 	{
 		//get the string from the id
@@ -5818,7 +5818,7 @@ BOOL	droidIsDamaged(DROID *psDroid)
 	}
 }
 
-BOOL getDroidResourceName(STRING *pName)
+BOOL getDroidResourceName(char *pName)
 {
 	UDWORD		id;
 

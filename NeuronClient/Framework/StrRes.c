@@ -36,14 +36,14 @@ static BOOL strresAllocBlock(STR_BLOCK **ppsBlock, UDWORD size)
 		return FALSE;
 	}
 
-	(*ppsBlock)->apStrings = MALLOC(sizeof(STRING *) * size);
+	(*ppsBlock)->apStrings = MALLOC(sizeof(char *) * size);
 	if (!(*ppsBlock)->apStrings)
 	{
 		DBERROR(("strresAllocBlock: Out of memory - 2"));
 		FREE(*ppsBlock);
 		return FALSE;
 	}
-	memset((*ppsBlock)->apStrings, 0, sizeof(STRING *) * size);
+	memset((*ppsBlock)->apStrings, 0, sizeof(char *) * size);
 
 #ifdef DEBUG
 	(*ppsBlock)->aUsage = MALLOC(sizeof(UDWORD) * size);
@@ -194,8 +194,8 @@ BOOL strresLoadFixedID(STR_RES *psRes, STR_ID *psID, UDWORD numID)
 }
 
 
-/* Return the ID number for an ID string */
-BOOL strresGetIDNum(STR_RES *psRes, STRING *pIDStr, UDWORD *pIDNum)
+/* Return the ID number for an ID char */
+BOOL strresGetIDNum(STR_RES *psRes, char *pIDStr, UDWORD *pIDNum)
 {
 	STR_ID	*psID;
 
@@ -222,7 +222,7 @@ BOOL strresGetIDNum(STR_RES *psRes, STRING *pIDStr, UDWORD *pIDNum)
 
 
 /* Return the ID stored ID string that matches the string passed in */
-BOOL strresGetIDString(STR_RES *psRes, STRING *pIDStr, STRING **ppStoredID)
+BOOL strresGetIDString(STR_RES *psRes, char *pIDStr, char **ppStoredID)
 {
 	STR_ID	*psID;
 
@@ -242,11 +242,11 @@ BOOL strresGetIDString(STR_RES *psRes, STRING *pIDStr, STRING **ppStoredID)
 }
 
 
-/* Store a string */
-BOOL strresStoreString(STR_RES *psRes, STRING *pID, STRING *pString)
+/* Store a char */
+BOOL strresStoreString(STR_RES *psRes, char *pID, char *pString)
 {
 	STR_ID		*psID;
-	STRING		*pNew;
+	char *pNew;
 	STR_BLOCK	*psBlock;
 	UDWORD		id;
 
@@ -317,7 +317,7 @@ BOOL strresStoreString(STR_RES *psRes, STRING *pID, STRING *pString)
 
 
 /* Get the string from an ID number */
-STRING *strresGetString(STR_RES *psRes, UDWORD id)
+char *strresGetString(STR_RES *psRes, UDWORD id)
 {
 	STR_BLOCK	*psBlock;
 
@@ -367,8 +367,8 @@ BOOL strresLoad(STR_RES *psRes, UBYTE *pData, UDWORD size)
 }
 
 
-/* Return the the length of a STRING */
-UDWORD stringLen(STRING *pStr)
+/* Return the the length of a char */
+UDWORD stringLen(char *pStr)
 {
 	UDWORD	count=0;
 
@@ -380,8 +380,8 @@ UDWORD stringLen(STRING *pStr)
 	return count;
 }
 
-/* Copy a STRING */
-void stringCpy(STRING *pDest, STRING *pSrc)
+/* Copy a char */
+void stringCpy(char *pDest, char *pSrc)
 {
 	do
 	{
@@ -390,8 +390,8 @@ void stringCpy(STRING *pDest, STRING *pSrc)
 }
 
 
-/* Get the ID number for a string*/
-UDWORD strresGetIDfromString(STR_RES *psRes, STRING *pString)
+/* Get the ID number for a char */
+UDWORD strresGetIDfromString(STR_RES *psRes, char *pString)
 {
 	STR_BLOCK	*psBlock, *psNext = NULL;
 	UDWORD		i;

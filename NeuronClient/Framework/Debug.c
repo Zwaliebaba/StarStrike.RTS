@@ -71,7 +71,7 @@ void dbg_printf(SBYTE *pFormat, ...)
 	/* Initialise the argument list */
 	va_start(pArgs, pFormat);
 
-	/* Print out the string */
+	/* Print out the char */
 	(void)vsprintf(aBuffer, pFormat, pArgs);
 
 	/* Output it */
@@ -157,7 +157,7 @@ void dbg_MessageBox(SBYTE *pFormat, ...)
 	/* Initialise the argument list */
 	va_start(pArgs, pFormat);
 
-	/* Print out the string */
+	/* Print out the char */
 	(void)vsprintf(aBuffer, pFormat, pArgs);
 
 	/* Ensure the box can be seen */
@@ -232,7 +232,7 @@ void dbg_ErrorBox(SBYTE *pFormat, ...)
 		sprintf(aBuffer, "File: %s\nLine: %d\n\n", aErrorFile, ErrorLine);
 	}
 
-	/* Print out the string */
+	/* Print out the char */
 	(void)vsprintf(aBuffer + strlen(aBuffer), pFormat, pArgs);
 
 	/* Ensure the box can be seen */

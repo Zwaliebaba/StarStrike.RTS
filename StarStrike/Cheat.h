@@ -2,6 +2,6 @@
 #define _cheat_h
 extern	void	setCheatCodeStatus(BOOL val);
 extern	BOOL	getCheatCodeStatus( void );
-extern	BOOL	attemptCheatCode(STRING	*pName);
+extern	BOOL	attemptCheatCode(char *pName);
 unsigned char	*xorString(unsigned char *string);
 #endif

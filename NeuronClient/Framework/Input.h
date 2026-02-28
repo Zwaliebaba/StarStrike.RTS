@@ -127,8 +127,8 @@ typedef enum _key_code
 #define KEY_MAXSCAN  512
 
 
-/* Converts the key code into an ascii string */
-extern void keyScanToString(KEY_CODE code, STRING *ascii, UDWORD maxStringSize);
+/* Converts the key code into an ascii char */
+extern void keyScanToString(KEY_CODE code, char *ascii, UDWORD maxStringSize);
 
 /* Initialise the input module */
 extern void inputInitialise(void);

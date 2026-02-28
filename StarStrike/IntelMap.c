@@ -1616,7 +1616,7 @@ void setCurrentMsg(void)
 }*/
 
 /* scroll the text message from right to left - aka tickertape messages */
-/*void scrollMessage(STRING *pText, UDWORD startX, UDWORD endX, UDWORD y, UDWORD gap)
+/*void scrollMessage(char *pText, UDWORD startX, UDWORD endX, UDWORD y, UDWORD gap)
 {
 	UDWORD			frames, inc, strLen;
 	SDWORD			position, startChar, currentLength;

@@ -49,7 +49,7 @@ extern BOOL surfLoadFromSurface(
 
 /* Load a BMP file && create a system memory surface to store it in */
 extern BOOL surfCreateFromBMP(
-				STRING				*pFileName,	// The BMP file
+				char *pFileName,	// The BMP file
 				LPDIRECTDRAWSURFACE4	*ppsSurface,// The created surface
 				UDWORD				*pWidth,	// The width of the image
 				UDWORD				*pHeight);	// The height of the image

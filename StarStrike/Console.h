@@ -44,7 +44,7 @@ struct _console_message *psNext;
 extern char ConsoleString[MAX_CONSOLE_TMP_STRING_LENGTH];
 
 extern void	consolePrintf				( SBYTE *layout, ... );
-extern BOOL	addConsoleMessage			( STRING *messageText, CONSOLE_TEXT_JUSTIFICATION jusType );
+extern BOOL	addConsoleMessage			( char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType );
 extern void	updateConsoleMessages		( void );
 extern void	initConsoleMessages			( void );
 extern void	setConsoleMessageDuration	( UDWORD time );

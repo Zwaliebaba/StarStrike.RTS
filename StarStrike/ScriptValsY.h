@@ -1,7 +1,7 @@
 typedef union {
 	BOOL			bval;
 	INTERP_TYPE		tval;
-	STRING			*sval;
+	char *sval;
 	UDWORD			vindex;
 	SDWORD			ival;
 	VAR_INIT		sInit;

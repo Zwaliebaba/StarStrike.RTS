@@ -2230,7 +2230,7 @@ BOOL scrPlaySoundPos(void)
 /* add a text message to the top of the screen for the selected player*/
 BOOL scrShowConsoleText(void)
 {
-  STRING* pText;
+  char * pText;
   SDWORD player;
 
   if (!stackPopParams(2, ST_TEXTSTRING, &pText, VAL_INT, &player)) { return FALSE; }
@@ -2254,7 +2254,7 @@ BOOL scrShowConsoleText(void)
 /* add a text message to the top of the screen for the selected player*/
 BOOL scrAddConsoleText(void)
 {
-  STRING* pText;
+  char * pText;
   SDWORD player;
 
   if (!stackPopParams(2, ST_TEXTSTRING, &pText, VAL_INT, &player)) { return FALSE; }
@@ -2280,7 +2280,7 @@ BOOL scrAddConsoleText(void)
 /* add a text message to the top of the screen for the selected player - without clearing whats there*/
 BOOL scrTagConsoleText(void)
 {
-  STRING* pText;
+  char * pText;
   SDWORD player;
 
   if (!stackPopParams(2, ST_TEXTSTRING, &pText, VAL_INT, &player)) { return FALSE; }
@@ -2341,7 +2341,7 @@ BOOL scrTutorialEnd(void)
 //function to play a full-screen video in the middle of the game for the selected player
 BOOL scrPlayVideo(void)
 {
-  STRING *pVideo, *pText;
+  char *pVideo, *pText;
 
   if (!stackPopParams(2, ST_TEXTSTRING, &pVideo, ST_TEXTSTRING, &pText)) { return FALSE; }
 
@@ -2718,7 +2718,7 @@ BOOL scrSetGroupRetreatLeadership(void)
 //start a Mission - the missionType is ignored now - gets it from the level data ***********
 BOOL scrStartMission(void)
 {
-  STRING* pGame;
+  char * pGame;
   SDWORD missionType;
   LEVEL_DATASET* psNewLevel;
 

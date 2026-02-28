@@ -47,7 +47,7 @@ extern void editBoxFree(W_EDITBOX *psWidget);
 extern void editBoxInitialise(W_EDITBOX *psWidget);
 
 /* Set the current string for the edit box */
-extern void editBoxSetString(W_EDITBOX *psWidget, STRING *pText);
+extern void editBoxSetString(W_EDITBOX *psWidget, char *pText);
 
 /* Respond to loss of focus */
 extern void editBoxFocusLost(W_EDITBOX *psWidget);

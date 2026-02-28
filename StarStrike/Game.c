@@ -1183,90 +1183,90 @@ static BOOL LoadGameFromWDG;
 BOOL gameLoad(UBYTE *pFileData, UDWORD filesize);
 static BOOL gameLoadV7(UBYTE *pFileData, UDWORD filesize);
 static BOOL gameLoadV(UBYTE *pFileData, UDWORD filesize, UDWORD version);
-static BOOL writeGameFile(STRING *pFileName, SDWORD saveType);
-static BOOL writeMapFile(STRING *pFileName);
+static BOOL writeGameFile(char *pFileName, SDWORD saveType);
+static BOOL writeMapFile(char *pFileName);
 
 static BOOL loadSaveDroidInitV2(UBYTE *pFileData, UDWORD filesize,UDWORD quantity);
 
 static BOOL loadSaveDroidInit(UBYTE *pFileData, UDWORD filesize);
-static DROID_TEMPLATE *FindDroidTemplate(STRING *name,UDWORD player);
+static DROID_TEMPLATE *FindDroidTemplate(char *name,UDWORD player);
 
 static BOOL loadSaveDroid(UBYTE *pFileData, UDWORD filesize, DROID **ppsCurrentDroidLists);
 static BOOL loadSaveDroidV11(UBYTE *pFileData, UDWORD filesize, UDWORD numDroids, UDWORD version, DROID **ppsCurrentDroidLists);
 static BOOL loadSaveDroidV19(UBYTE *pFileData, UDWORD filesize, UDWORD numDroids, UDWORD version, DROID **ppsCurrentDroidLists);
 static BOOL loadSaveDroidV(UBYTE *pFileData, UDWORD filesize, UDWORD numDroids, UDWORD version, DROID **ppsCurrentDroidLists);
 static BOOL loadDroidSetPointers(void);
-static BOOL writeDroidFile(STRING *pFileName, DROID **ppsCurrentDroidLists);
+static BOOL writeDroidFile(char *pFileName, DROID **ppsCurrentDroidLists);
 
 static BOOL loadSaveStructure(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveStructureV7(UBYTE *pFileData, UDWORD filesize, UDWORD numStructures);
 static BOOL loadSaveStructureV19(UBYTE *pFileData, UDWORD filesize, UDWORD numStructures, UDWORD version);
 static BOOL loadSaveStructureV(UBYTE *pFileData, UDWORD filesize, UDWORD numStructures, UDWORD version);
 static BOOL loadStructSetPointers(void);
-static BOOL writeStructFile(STRING *pFileName);
+static BOOL writeStructFile(char *pFileName);
 
 static BOOL loadSaveTemplate(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveTemplateV7(UBYTE *pFileData, UDWORD filesize, UDWORD numTemplates);
 static BOOL loadSaveTemplateV14(UBYTE *pFileData, UDWORD filesize, UDWORD numTemplates);
 static BOOL loadSaveTemplateV(UBYTE *pFileData, UDWORD filesize, UDWORD numTemplates);
-static BOOL writeTemplateFile(STRING *pFileName);
+static BOOL writeTemplateFile(char *pFileName);
 
 static BOOL loadSaveFeature(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveFeatureV14(UBYTE *pFileData, UDWORD filesize, UDWORD numFeatures, UDWORD version);
 static BOOL loadSaveFeatureV(UBYTE *pFileData, UDWORD filesize, UDWORD numFeatures, UDWORD version);
-static BOOL writeFeatureFile(STRING *pFileName);
+static BOOL writeFeatureFile(char *pFileName);
 
 BOOL loadTerrainTypeMap(UBYTE *pFileData, UDWORD filesize);		// now used in gamepsx.c aswell
-static BOOL writeTerrainTypeMapFile(STRING *pFileName);
+static BOOL writeTerrainTypeMapFile(char *pFileName);
 
 static BOOL loadSaveCompList(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveCompListV9(UBYTE *pFileData, UDWORD filesize, UDWORD numRecords, UDWORD version);
 static BOOL loadSaveCompListV(UBYTE *pFileData, UDWORD filesize, UDWORD numRecords, UDWORD version);
-static BOOL writeCompListFile(STRING *pFileName);
+static BOOL writeCompListFile(char *pFileName);
 
 static BOOL loadSaveStructTypeList(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveStructTypeListV7(UBYTE *pFileData, UDWORD filesize, UDWORD numRecords);
 static BOOL loadSaveStructTypeListV(UBYTE *pFileData, UDWORD filesize, UDWORD numRecords);
-static BOOL writeStructTypeListFile(STRING *pFileName);
+static BOOL writeStructTypeListFile(char *pFileName);
 
 static BOOL loadSaveResearch(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveResearchV8(UBYTE *pFileData, UDWORD filesize, UDWORD numRecords);
 static BOOL loadSaveResearchV(UBYTE *pFileData, UDWORD filesize, UDWORD numRecords);
-static BOOL writeResearchFile(STRING *pFileName);
+static BOOL writeResearchFile(char *pFileName);
 
 static BOOL loadSaveMessage(UBYTE *pFileData, UDWORD filesize, SWORD levelType);
 static BOOL loadSaveMessageV(UBYTE *pFileData, UDWORD filesize, UDWORD numMessages, UDWORD version, SWORD levelType);
-static BOOL writeMessageFile(STRING *pFileName);
+static BOOL writeMessageFile(char *pFileName);
 
 #ifdef SAVE_PROXIMITY
 static BOOL loadSaveProximity(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveProximityV(UBYTE *pFileData, UDWORD filesize, UDWORD numMessages, UDWORD version);
-static BOOL writeProximityFile(STRING *pFileName);
+static BOOL writeProximityFile(char *pFileName);
 #endif
 
 static BOOL loadSaveFlag(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveFlagV(UBYTE *pFileData, UDWORD filesize, UDWORD numFlags, UDWORD version);
-static BOOL writeFlagFile(STRING *pFileName);
+static BOOL writeFlagFile(char *pFileName);
 
 static BOOL loadSaveProduction(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveProductionV(UBYTE *pFileData, UDWORD filesize, UDWORD version);
-static BOOL writeProductionFile(STRING *pFileName);
+static BOOL writeProductionFile(char *pFileName);
 
 static BOOL loadSaveStructLimits(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveStructLimitsV19(UBYTE *pFileData, UDWORD filesize, UDWORD numLimits);
 static BOOL loadSaveStructLimitsV(UBYTE *pFileData, UDWORD filesize, UDWORD numLimits);
-static BOOL writeStructLimitsFile(STRING *pFileName);
+static BOOL writeStructLimitsFile(char *pFileName);
 
 static BOOL loadSaveCommandLists(UBYTE *pFileData, UDWORD filesize);
 static BOOL loadSaveCommandListsV(UBYTE *pFileData, UDWORD filesize, UDWORD numDroids);
-static BOOL writeCommandLists(STRING *pFileName);
+static BOOL writeCommandLists(char *pFileName);
 
-static BOOL writeScriptState(STRING *pFileName);
+static BOOL writeScriptState(char *pFileName);
 
-static BOOL getNameFromComp(UDWORD compType, STRING *pDest, UDWORD compIndex);
+static BOOL getNameFromComp(UDWORD compType, char *pDest, UDWORD compIndex);
 
 //adjust the name depending on type of save game and whether resourceNames are used
-static BOOL getSaveObjectName(STRING *pName);
+static BOOL getSaveObjectName(char *pName);
 
 /* set the global scroll values to use for the save game */
 static void setMapScroll();
@@ -1291,7 +1291,7 @@ so can be called in levLoadData when starting a game from a load save game*/
 //
 
 // -----------------------------------------------------------------------------------------
-BOOL loadGameInit(STRING *pGameToLoad,BOOL GameIsLevelStart )
+BOOL loadGameInit(char *pGameToLoad,BOOL GameIsLevelStart )
 {
 	UBYTE			*pFileData = NULL;
 	UDWORD			fileSize;
@@ -1337,7 +1337,7 @@ error:
 //
 // if it is a level loaded up from CD then UserSaveGame will by false
 // UserSaveGame ... Extra stuff to load after scripts
-BOOL loadMissionExtras(STRING *pGameToLoad, SWORD levelType)
+BOOL loadMissionExtras(char *pGameToLoad, SWORD levelType)
 {
 	STRING			aFileName[256];
 
@@ -1416,7 +1416,7 @@ BOOL loadMissionExtras(STRING *pGameToLoad, SWORD levelType)
 
 // -----------------------------------------------------------------------------------------
 // UserSaveGame ... this is true when you are loading a players save game
-BOOL loadGame(STRING *pGameToLoad, BOOL keepObjects, BOOL freeMem, BOOL UserSaveGame)
+BOOL loadGame(char *pGameToLoad, BOOL keepObjects, BOOL freeMem, BOOL UserSaveGame)
 {
 	STRING			aFileName[256];
 	//OPENFILENAME		sOFN;
@@ -2806,7 +2806,7 @@ error:
 // -----------------------------------------------------------------------------------------
 #ifdef ALLOWSAVE
 // Modified by AlexL , now takes a filename, with no popup....
-BOOL saveGame(STRING *aFileName, SDWORD saveType)
+BOOL saveGame(char *aFileName, SDWORD saveType)
 {
 	UDWORD			fileExtension;
 	BLOCK_HEAP		*psHeap;
@@ -3148,7 +3148,7 @@ error:
 }
 
 // -----------------------------------------------------------------------------------------
-BOOL writeMapFile(STRING *pFileName)
+BOOL writeMapFile(char *pFileName)
 {
 	UBYTE			*pFileData = NULL;
 	UDWORD			fileSize;
@@ -3332,7 +3332,7 @@ BOOL getCampaignV(UBYTE *pFileData, UDWORD filesize, UDWORD version)
 // -----------------------------------------------------------------------------------------
 // Returns the campaign number  --- apparently this is does alot less than it look like
     /// it now does even less than it looks like on the psx ... cause its pc only
-UDWORD getCampaign(STRING *pGameToLoad, BOOL *bSkipCDCheck)
+UDWORD getCampaign(char *pGameToLoad, BOOL *bSkipCDCheck)
 {
 	UBYTE			*pFileData = NULL;
 	UDWORD			fileSize;
@@ -3880,7 +3880,7 @@ BOOL gameLoadV(UBYTE *pFileData, UDWORD filesize, UDWORD version)
 /*
 Writes the game specifics to a file
 */
-BOOL writeGameFile(STRING *pFileName, SDWORD saveType)
+BOOL writeGameFile(char *pFileName, SDWORD saveType)
 {
 	UBYTE				*pFileData = NULL;
 	UDWORD				fileSize, inc;
@@ -4228,7 +4228,7 @@ BOOL loadSaveDroidInitV2(UBYTE *pFileData, UDWORD filesize,UDWORD quantity)
 
 
 // -----------------------------------------------------------------------------------------
-DROID_TEMPLATE *FindDroidTemplate(STRING *name,UDWORD player)
+DROID_TEMPLATE *FindDroidTemplate(char *name,UDWORD player)
 {
 	UDWORD			TempPlayer;
 	DROID_TEMPLATE *Template;
@@ -5672,7 +5672,7 @@ BOOL buildSaveDroidFromDroid(SAVE_DROID* psSaveDroid, DROID* psCurr, DROID_SAVE_
 /*
 Writes the linked list of droids for each player to a file
 */
-BOOL writeDroidFile(STRING *pFileName, DROID **ppsCurrentDroidLists)
+BOOL writeDroidFile(char *pFileName, DROID **ppsCurrentDroidLists)
 {
 	UBYTE				*pFileData = NULL;
 	UDWORD				fileSize, player, totalDroids=0;
@@ -6061,7 +6061,7 @@ BOOL loadSaveStructureV7(UBYTE *pFileData, UDWORD filesize, UDWORD numStructures
 
 // -----------------------------------------------------------------------------------------
 //return id of a research topic based on the name
-UDWORD getResearchIdFromName(STRING *pName)
+UDWORD getResearchIdFromName(char *pName)
 {
 	UDWORD inc;
 
@@ -6914,7 +6914,7 @@ BOOL loadSaveStructureV(UBYTE *pFileData, UDWORD filesize, UDWORD numStructures,
 /*
 Writes the linked list of structure for each player to a file
 */
-BOOL writeStructFile(STRING *pFileName)
+BOOL writeStructFile(char *pFileName)
 {
 	UBYTE				*pFileData = NULL;
 	UDWORD				fileSize, player, i, totalStructs=0;
@@ -7630,7 +7630,7 @@ BOOL loadSaveFeatureV(UBYTE *pFileData, UDWORD filesize, UDWORD numFeatures, UDW
 /*
 Writes the linked list of features to a file
 */
-BOOL writeFeatureFile(STRING *pFileName)
+BOOL writeFeatureFile(char *pFileName)
 {
 	UBYTE				*pFileData = NULL;
 	UDWORD				fileSize, i, totalFeatures=0;
@@ -8229,7 +8229,7 @@ error:
 /*
 Writes the linked list of templates for each player to a file
 */
-BOOL writeTemplateFile(STRING *pFileName)
+BOOL writeTemplateFile(char *pFileName)
 {
 	UBYTE				*pFileData = NULL;
 	UDWORD				fileSize, player, totalTemplates=0;
@@ -8415,7 +8415,7 @@ BOOL loadTerrainTypeMap(UBYTE *pFileData, UDWORD filesize)
 
 // -----------------------------------------------------------------------------------------
 // Write out the terrain type map
-static BOOL writeTerrainTypeMapFile(STRING *pFileName)
+static BOOL writeTerrainTypeMapFile(char *pFileName)
 {
 	TILETYPE_SAVEHEADER		*psHeader;
 	UBYTE					*pFileData;
@@ -8624,7 +8624,7 @@ BOOL loadSaveCompListV(UBYTE *pFileData, UDWORD filesize, UDWORD numRecords, UDW
 
 // -----------------------------------------------------------------------------------------
 // Write out the current state of the Comp lists per player
-static BOOL writeCompListFile(STRING *pFileName)
+static BOOL writeCompListFile(char *pFileName)
 {
 	COMPLIST_SAVEHEADER		*psHeader;
 	UBYTE					*pFileData;
@@ -8936,7 +8936,7 @@ BOOL loadSaveStructTypeListV(UBYTE *pFileData, UDWORD filesize, UDWORD numRecord
 
 // -----------------------------------------------------------------------------------------
 // Write out the current state of the Struct Type List per player
-static BOOL writeStructTypeListFile(STRING *pFileName)
+static BOOL writeStructTypeListFile(char *pFileName)
 {
 	STRUCTLIST_SAVEHEADER	*psHeader;
 	SAVE_STRUCTLIST			*psSaveStructList;
@@ -9189,7 +9189,7 @@ BOOL loadSaveResearchV(UBYTE *pFileData, UDWORD filesize, UDWORD numRecords)
 
 // -----------------------------------------------------------------------------------------
 // Write out the current state of the Research per player
-static BOOL writeResearchFile(STRING *pFileName)
+static BOOL writeResearchFile(char *pFileName)
 {
 	RESEARCH_SAVEHEADER		*psHeader;
 	SAVE_RESEARCH			*psSaveResearch;
@@ -9382,7 +9382,7 @@ BOOL loadSaveMessageV(UBYTE *pFileData, UDWORD filesize, UDWORD numMessages, UDW
 }
 // -----------------------------------------------------------------------------------------
 // Write out the current messages per player
-static BOOL writeMessageFile(STRING *pFileName)
+static BOOL writeMessageFile(char *pFileName)
 {
 	MESSAGE_SAVEHEADER		*psHeader;
 	SAVE_MESSAGE			*psSaveMessage;
@@ -9554,7 +9554,7 @@ BOOL loadSaveProximityV(UBYTE *pFileData, UDWORD filesize, UDWORD numProximitys,
 }
 // -----------------------------------------------------------------------------------------
 // Write out the current proximitys per player
-static BOOL writeProximityFile(STRING *pFileName)
+static BOOL writeProximityFile(char *pFileName)
 {
 	PROXIMITY_SAVEHEADER		*psHeader;
 	SAVE_PROXIMITY			*psSaveProximity;
@@ -9788,7 +9788,7 @@ BOOL loadSaveFlagV(UBYTE *pFileData, UDWORD filesize, UDWORD numflags, UDWORD ve
 
 // -----------------------------------------------------------------------------------------
 // Write out the current flags per player
-static BOOL writeFlagFile(STRING *pFileName)
+static BOOL writeFlagFile(char *pFileName)
 {
 	FLAG_SAVEHEADER		*psHeader;
 	SAVE_FLAG			*psSaveflag;
@@ -10015,7 +10015,7 @@ BOOL loadSaveProductionV(UBYTE *pFileData, UDWORD filesize, UDWORD version)
 
 // -----------------------------------------------------------------------------------------
 // Write out the current production figures for factories
-static BOOL writeProductionFile(STRING *pFileName)
+static BOOL writeProductionFile(char *pFileName)
 {
 	PRODUCTION_SAVEHEADER	*psHeader;
 	SAVE_PRODUCTION			*psSaveProduction;
@@ -10263,7 +10263,7 @@ BOOL loadSaveStructLimitsV(UBYTE *pFileData, UDWORD filesize, UDWORD numLimits)
 /*
 Writes the list of structure limits to a file
 */
-BOOL writeStructLimitsFile(STRING *pFileName)
+BOOL writeStructLimitsFile(char *pFileName)
 {
 	UBYTE						*pFileData = NULL;
 	UDWORD						fileSize, totalLimits=0, i, player;
@@ -10404,7 +10404,7 @@ BOOL loadSaveCommandListsV(UBYTE *pFileData, UDWORD filesize, UDWORD numDroids)
 /*
 Writes the command lists to a file
 */
-BOOL writeCommandLists(STRING *pFileName)
+BOOL writeCommandLists(char *pFileName)
 {
 	UBYTE						*pFileData = NULL;
 	DROID						*psDroid;
@@ -10504,7 +10504,7 @@ error:
 
 // -----------------------------------------------------------------------------------------
 // write the event state to a file on disk
-static BOOL	writeScriptState(STRING *pFileName)
+static BOOL	writeScriptState(char *pFileName)
 {
 	UBYTE	*pBuffer;
 	UDWORD	fileSize;
@@ -10526,7 +10526,7 @@ static BOOL	writeScriptState(STRING *pFileName)
 
 // -----------------------------------------------------------------------------------------
 // load the script state given a .gam name
-BOOL loadScriptState(STRING *pFileName)
+BOOL loadScriptState(char *pFileName)
 {
 	UBYTE	*pFileData;
 	UDWORD	fileSize;
@@ -10589,7 +10589,7 @@ void setMapScroll()
 
 
 // -----------------------------------------------------------------------------------------
-BOOL getSaveObjectName(STRING *pName)
+BOOL getSaveObjectName(char *pName)
 {
 #ifdef RESOURCE_NAMES
 	
@@ -10626,14 +10626,14 @@ UDWORD getSaveGameType(void)
 }
 
 // -----------------------------------------------------------------------------------------
-SDWORD getCompFromNamePreV7(UDWORD compType, STRING *pName)
+SDWORD getCompFromNamePreV7(UDWORD compType, char *pName)
 {
 
 #ifndef RESOURCE_NAMES
 
 	BASE_STATS	*psStats = NULL;
 	UDWORD		numStats = 0, count, statSize = 0, id;
-	STRING		*pTranslatedName;
+	char *pTranslatedName;
 
 	switch (compType)
 	{
@@ -10721,14 +10721,14 @@ SDWORD getCompFromNamePreV7(UDWORD compType, STRING *pName)
 }
 
 // -----------------------------------------------------------------------------------------
-SDWORD getStatFromNamePreV7(BOOL isFeature, STRING *pName)
+SDWORD getStatFromNamePreV7(BOOL isFeature, char *pName)
 {
 
 #ifndef RESOURCE_NAMES
 
 	BASE_STATS	*psStats;
 	UDWORD		numStats = 0, count, statSize, id;
-	STRING		*pTranslatedName;
+	char *pTranslatedName;
 
 	if (isFeature)
 	{
@@ -10780,7 +10780,7 @@ SDWORD getStatFromNamePreV7(BOOL isFeature, STRING *pName)
 
 // -----------------------------------------------------------------------------------------
 //copies a Stat name into a destination string for a given stat type and index
-static BOOL getNameFromComp(UDWORD compType, STRING *pDest, UDWORD compIndex)
+static BOOL getNameFromComp(UDWORD compType, char *pDest, UDWORD compIndex)
 {
 	BASE_STATS	*psStats;
 

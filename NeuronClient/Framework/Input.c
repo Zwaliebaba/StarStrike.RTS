@@ -70,7 +70,7 @@ static KEY_STATE aMouseState[3];
 static UDWORD	pInputBuffer[INPUT_MAXSTR];
 static UDWORD	*pStartBuffer, *pEndBuffer;
 
-void keyScanToString(KEY_CODE code, STRING *ascii, UDWORD maxStringSize)
+void keyScanToString(KEY_CODE code, char *ascii, UDWORD maxStringSize)
 {
 	if(code == KEY_MAXSCAN)
 	{

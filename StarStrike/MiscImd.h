@@ -50,7 +50,7 @@ extern iIMDShape	*shockImd;
 typedef struct	_misc_imd
 {
 iIMDShape	*pImd;
-STRING		*pName;
+char *pName;
 } MISC_IMD;
 
 

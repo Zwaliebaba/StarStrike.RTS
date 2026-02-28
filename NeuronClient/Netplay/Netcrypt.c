@@ -23,7 +23,7 @@
 
 // ////////////////////////////////////////////////////////////////////////
 // Prototypes
-UDWORD	NEThashFile			(STRING *pFileName);
+UDWORD	NEThashFile			(char *pFileName);
 UDWORD	NEThashBuffer		(UBYTE *pData, UDWORD size);
 
 BOOL	NETsetKey			(UDWORD c1,UDWORD c2,UDWORD c3, UDWORD c4);
@@ -35,7 +35,7 @@ BOOL	NETunmangleData		( long *input, long *result, UDWORD dataSize);
 
 // ////////////////////////////////////////////////////////////////////////
 // make a hash value from an exe name.
-UDWORD	NEThashFile(STRING *pFileName)
+UDWORD	NEThashFile(char *pFileName)
 {
 	UDWORD	hashval,c,*val;
 	FILE	*pFileHandle;

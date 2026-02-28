@@ -78,7 +78,7 @@ FEATURE		*IdToFeature(UDWORD id,UDWORD player);
 DROID_TEMPLATE *IdToTemplate(UDWORD tempId,UDWORD player);
 DROID_TEMPLATE *NameToTemplate(CHAR *sName,UDWORD player);
 
-STRING *getPlayerName		(UDWORD player);
+char *getPlayerName		(UDWORD player);
 BOOL	isHumanPlayer		(UDWORD player);				// determine if human
 BOOL	myResponsibility	(UDWORD player);				// this pc has comms responsibility 
 BOOL	responsibleFor		(UDWORD player,UDWORD player2);	// has player responsibility for player2
@@ -431,7 +431,7 @@ BASE_OBJECT *IdToPointer(UDWORD id,UDWORD player)
 
 // ////////////////////////////////////////////////////////////////////////////
 // return a players name.
-STRING *getPlayerName(UDWORD player)
+char *getPlayerName(UDWORD player)
 {
 	UDWORD i;
 //	STRING tempString[2];
@@ -473,7 +473,7 @@ STRING *getPlayerName(UDWORD player)
 				return tempString;
 			}
 
-			return (STRING*)&NetPlay.players[i].name;
+			return (char *)&NetPlay.players[i].name;
 		}
 	}
 

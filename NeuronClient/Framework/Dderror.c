@@ -24,7 +24,7 @@
  * Stub — DD/D3D3 error codes are no longer generated.
  * Returns a generic string for any HRESULT.
  */
-STRING *DDErrorToString(HRESULT error)
+char *DDErrorToString(HRESULT error)
 {
     static char buf[64];
     if (error == 0) return "No error.\0";

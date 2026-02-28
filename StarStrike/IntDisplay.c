@@ -3370,7 +3370,7 @@ void StatGetResearchImage(BASE_STATS *psStat, SDWORD *Image, iIMDShape **Shape,
 
 // Find a token in the specified token list and return it's ID.
 //
-/*SWORD GetTokenID(TOKENID *Tok,STRING *Token)
+/*SWORD GetTokenID(TOKENID *Tok,char *Token)
 {
 	while(Tok->Token!=NULL) {
 		if(strcmp(Tok->Token,Token) == 0) {
@@ -3386,7 +3386,7 @@ void StatGetResearchImage(BASE_STATS *psStat, SDWORD *Image, iIMDShape **Shape,
 
 // Find a token in the specified token list and return it's Index.
 //
-/*SWORD FindTokenID(TOKENID *Tok,STRING *Token)
+/*SWORD FindTokenID(TOKENID *Tok,char *Token)
 {
 	SWORD Index = 0;
 	while(Tok->Token!=NULL) {

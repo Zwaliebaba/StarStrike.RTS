@@ -485,7 +485,7 @@ INGAME_AUDIO;
 
 /***************************************************************************/
 
-extern BOOL	audioID_GetIDFromStr( STRING *pWavStr, SDWORD *piID );
+extern BOOL	audioID_GetIDFromStr( char *pWavStr, SDWORD *piID );
 
 /***************************************************************************/
 

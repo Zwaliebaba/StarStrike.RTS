@@ -34,7 +34,7 @@
 
 //extern W_SCREEN *psWScreen;
 extern CURSORSNAP InterfaceSnap;
-extern void addText(int FontID,UDWORD FormID,UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt, UDWORD attachID,BOOL *State);
+extern void addText(int FontID,UDWORD FormID,UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt, UDWORD attachID,BOOL *State);
 
 //status bools.(for hci.h)
 BOOL	ClosingInGameOp	= FALSE;

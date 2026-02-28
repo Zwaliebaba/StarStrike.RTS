@@ -13,7 +13,7 @@
 /***************************************************************************/
 
 void *
-anim_GetShapeFunc( STRING * pStr )
+anim_GetShapeFunc( char * pStr )
 {
 	return resGetData( "IMD", pStr );
 }

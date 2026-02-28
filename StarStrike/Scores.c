@@ -67,7 +67,7 @@ STAT_BAR	infoBars[]=
 };
 
 // --------------------------------------------------------------------
-void	constructTime(STRING *psText, UDWORD hours, UDWORD minutes, UDWORD seconds);
+void	constructTime(char *psText, UDWORD hours, UDWORD minutes, UDWORD seconds);
 void	drawDroidBars( void );
 void	drawUnitBars( void );
 void	drawStatBars( void );
@@ -160,7 +160,7 @@ void	scoreDataToScreen(void)
 
 // --------------------------------------------------------------------
 /* Builds an ascii string for the passed in components 04:02:23 for example */
-void	constructTime(STRING *psText, UDWORD hours, UDWORD minutes, UDWORD seconds)
+void	constructTime(char *psText, UDWORD hours, UDWORD minutes, UDWORD seconds)
 {
 UDWORD	index;
 UDWORD	div;
@@ -212,7 +212,7 @@ UDWORD	div;
 }
 // --------------------------------------------------------------------
 /* Builds an ascii string for the passed in time */
-void	getAsciiTime( STRING *psText, UDWORD time )
+void	getAsciiTime( char *psText, UDWORD time )
 {
 UDWORD	hours,minutes,seconds;
 
@@ -454,7 +454,7 @@ DROID	*psDroid;
 }
 // -----------------------------------------------------------------------------------
 /* This will save out the score data */
-BOOL	writeScoreData( STRING *pFileName )
+BOOL	writeScoreData( char *pFileName )
 {
 UBYTE			*pFileData;		// Pointer to the necessary allocated memory
 MISSION_DATA	*pScoreData;

@@ -202,7 +202,7 @@ static UDWORD	lastMaxUnitMessage;
 //#ifdef DEMO
 //BOOL demoStructs(void);
 //BOOL createStructureStat(STRUCTURE_STATS *psBuilding, STRUCTURE_STATS *psNewStructure,
-//						 UDWORD ref, STRING *pName, UDWORD type);
+//						 UDWORD ref, char *pName, UDWORD type);
 //void printAvailStructs(void);
 //#endif
 
@@ -495,7 +495,7 @@ char *getStructName(STRUCTURE_STATS	 *psStruct)
 }	
 
 /*returns the structure strength based on the string name passed in */
-UBYTE	getStructStrength(STRING *pStrength)
+UBYTE	getStructStrength(char *pStrength)
 {
 	if (!strcmp(pStrength, "SOFT"))
 	{
@@ -844,7 +844,7 @@ BOOL loadStructureStats(SBYTE *pStructData, UDWORD bufferSize)
 //#endif
 
 		//allocate storage for the name
- 		/*psStructure->pName = (STRING *)MALLOC((strlen(StructureName))+1);
+ 		/*psStructure->pName = (char *)MALLOC((strlen(StructureName))+1);
 		if (psStructure->pName == NULL)
 		{
 			DBERROR(("Structure Stats Name - Out of memory"));
@@ -6459,7 +6459,7 @@ SWORD buildFoundation(STRUCTURE_STATS *psStructStats, UDWORD x, UDWORD y)
 
 /* gets a structure stat from its name - relies on the name being unique (|| it will 
    return the first one it finds!! */
-SDWORD getStructStatFromName(STRING *pName)
+SDWORD getStructStatFromName(char *pName)
 {
 	UDWORD				inc;
 	STRUCTURE_STATS		*psStat;
@@ -6734,7 +6734,7 @@ void setFlagPositionInc(void *pFunctionality, UDWORD player, UBYTE factoryType)
 	FACTORY			*psFactory;
 	REPAIR_FACILITY *psRepair;
 #ifdef DEBUG
-	STRING			*pType;
+	char *pType;
 #endif
 
 	ASSERT((player < MAX_PLAYERS, "setFlagPositionInc: invalid player number"));
@@ -9735,7 +9735,7 @@ BOOL demoStructs(void)
 }
 
 BOOL createStructureStat(STRUCTURE_STATS *psBuilding, STRUCTURE_STATS *psNewStructure,
-						 UDWORD ref, STRING *pName, UDWORD type)
+						 UDWORD ref, char *pName, UDWORD type)
 {
 	UDWORD		i;
 
@@ -9745,7 +9745,7 @@ BOOL createStructureStat(STRUCTURE_STATS *psBuilding, STRUCTURE_STATS *psNewStru
 	psNewStructure->type = type;
 
 	//allocate storage for the name
-	psNewStructure->pName = (STRING *) MALLOC(MAX_NAME_SIZE);
+	psNewStructure->pName = (char *) MALLOC(MAX_NAME_SIZE);
 	if (psNewStructure->pName == NULL)
 	{
 		DBERROR(("Structure Stats Name - Out of memory"));

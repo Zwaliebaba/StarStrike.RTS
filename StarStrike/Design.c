@@ -1420,10 +1420,10 @@ DROID_TEMPLATE *MatchTemplate(DROID_TEMPLATE *SourceTemplate,UDWORD player)
 
 
 
-STRING *GetDefaultTemplateName(DROID_TEMPLATE *psTemplate)
+char *GetDefaultTemplateName(DROID_TEMPLATE *psTemplate)
 {
 	COMP_BASE_STATS		*psStats;
-	STRING				*pStr;
+	char *pStr;
 	/*
 		First we check for the special cases of the Transporter & Cyborgs
 	*/
@@ -1593,7 +1593,7 @@ static BOOL _intSetSystemForm(COMP_BASE_STATS *psStats)
 	sFormInit.y = DES_BARFORMY;
 	sFormInit.width = DES_BARFORMWIDTH;	//COMPBUTWIDTH;
 	sFormInit.height = DES_BARFORMHEIGHT;	//COMPBUTHEIGHT;
-	sFormInit.pTip = getStatName(psStats);	/* set form tip to stats string */
+	sFormInit.pTip = getStatName(psStats);	/* set form tip to stats char */
 	sFormInit.pUserData = psStats;			/* store component stats */
 	sFormInit.pDisplay = intDisplayStatForm;
 	if (!widgAddForm(psWScreen, &sFormInit))
@@ -2023,7 +2023,7 @@ static BOOL intSetPropulsionForm(PROPULSION_STATS *psStats)
 	sFormInit.y = DES_BARFORMY;
 	sFormInit.width = DES_BARFORMWIDTH;	//DES_COMPBUTWIDTH;
 	sFormInit.height = DES_BARFORMHEIGHT;	//DES_COMPBUTHEIGHT;
-	sFormInit.pTip = getStatName(psStats);	/* set form tip to stats string */
+	sFormInit.pTip = getStatName(psStats);	/* set form tip to stats char */
 	sFormInit.pDisplay = intDisplayStatForm;
 	if (!widgAddForm(psWScreen, &sFormInit))
 	{
@@ -2940,7 +2940,7 @@ static void intSetSystemStats(COMP_BASE_STATS *psStats)
 //			  ((UBYTE *)psStats < (UBYTE *)asCommandDroids + sizeof(asCommandDroids))),
 		"intSetSystemStats: Invalid stats pointer"));
 
-	/* set form tip to stats string */
+	/* set form tip to stats char */
 	widgSetTip( psWScreen, IDDES_SYSTEMFORM, getStatName(psStats) );
 
 	/* set form stats for later display in intDisplayStatForm */
@@ -3352,7 +3352,7 @@ static void intSetBodyStats(BODY_STATS *psStats)
 			(psStats->ref < REF_BODY_START + REF_RANGE),
 		"intSetBodyStats: stats ref is out of range"));
 
-	/* set form tip to stats string */
+	/* set form tip to stats char */
 	widgSetTip( psWScreen, IDDES_BODYFORM, getStatName(psStats) );
 
 	/* armour */
@@ -3665,7 +3665,7 @@ static void intSetPropulsionStats(PROPULSION_STATS *psStats)
 			(psStats->ref < REF_PROPULSION_START + REF_RANGE),
 		"intSetPropulsionStats: stats ref is out of range"));
 
-	/* set form tip to stats string */
+	/* set form tip to stats char */
 	widgSetTip( psWScreen, IDDES_PROPFORM, getStatName(psStats) );
 
 	/* set form stats for later display in intDisplayStatForm */
@@ -4013,7 +4013,7 @@ BOOL desTemplateNameCustomised( DROID_TEMPLATE *psTemplate )
 }
 
 /* checks whether to update name || has user already changed it */
-void desUpdateDesignName( DROID_TEMPLATE *psTemplate, STRING *szCurrName )
+void desUpdateDesignName( DROID_TEMPLATE *psTemplate, char *szCurrName )
 {
 
 }

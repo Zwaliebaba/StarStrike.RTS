@@ -29,11 +29,11 @@ enum _token_type
 } LTOKEN_TYPE;
 
 // return values from the lexer
-extern STRING *pLevToken;
+extern char *pLevToken;
 extern SDWORD levVal;
 
 // error report function for the level parser
-extern void levError(STRING *pError);
+extern void levError(char *pError);
 
 // the lexer function
 extern int lev_lex(void);

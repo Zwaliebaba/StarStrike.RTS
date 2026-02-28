@@ -81,7 +81,7 @@ extern BOOL scriptSaveProg(SCRIPT_CODE *psProg, UDWORD *pSize, UBYTE **ppData);
 extern BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg);
 
 /* Lookup a script variable */
-extern BOOL scriptGetVarIndex(SCRIPT_CODE *psCode, STRING *pID, UDWORD *pIndex);
+extern BOOL scriptGetVarIndex(SCRIPT_CODE *psCode, char *pID, UDWORD *pIndex);
 
 /* Run a compiled script */
 extern BOOL interpRunScript(SCRIPT_CONTEXT *psContext, INTERP_RUNTYPE runType,

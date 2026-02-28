@@ -99,9 +99,9 @@ UDWORD					aDefaultECM[MAX_PLAYERS];
 UDWORD					aDefaultRepair[MAX_PLAYERS];
 
 //set the iconID based on the name read in in the stats
-static UWORD setIconID(STRING *pIconName, STRING *pName);
+static UWORD setIconID(char *pIconName, char *pName);
 
-static COMP_BASE_STATS * getComponentDetails(STRING *pName, STRING *pCompName);
+static COMP_BASE_STATS * getComponentDetails(char *pName, char *pCompName);
 static void replaceComponent(COMP_BASE_STATS *pNewComponent, COMP_BASE_STATS *pOldComponent,
 					  UBYTE player);
 static BOOL checkResearchName(RESEARCH *psRes, UDWORD numStats);
@@ -2274,7 +2274,7 @@ RESEARCH * getResearchForMsg(VIEWDATA *pViewData)
 
 
 //set the iconID based on the name read in in the stats
-static UWORD setIconID(STRING *pIconName, STRING *pName)
+static UWORD setIconID(char *pIconName, char *pName)
 {
 	//compare the names with those created in 'Framer'
 	if (!strcmp(pIconName, "IMAGE_ROCKET"))
@@ -2524,7 +2524,7 @@ SDWORD	mapIconToRID(UDWORD iconID)
 
 
 /* returns a pointer to a component based on the name - used to load in the research */
-COMP_BASE_STATS * getComponentDetails(STRING *pName, STRING *pCompName)
+COMP_BASE_STATS * getComponentDetails(char *pName, char *pCompName)
 {
 	UDWORD				stat, size, quantity, address, inc;
 	COMP_BASE_STATS		*pArtefact;
@@ -2621,7 +2621,7 @@ COMP_BASE_STATS * getComponentDetails(STRING *pName, STRING *pCompName)
 }
 
 //return a pointer to a research topic based on the name
-RESEARCH * getResearch(STRING *pName, BOOL resName)
+RESEARCH * getResearch(char *pName, BOOL resName)
 {
 	UDWORD inc;
 

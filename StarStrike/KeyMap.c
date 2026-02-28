@@ -20,7 +20,7 @@
 // ----------------------------------------------------------------------------------
 /* Function Prototypes */
 KEY_MAPPING	*keyAddMapping		( KEY_STATUS status, KEY_CODE metaCode, KEY_CODE subcode, 
-								 KEY_ACTION action, void (*pKeyMapFunc)(void), STRING *name );
+								 KEY_ACTION action, void (*pKeyMapFunc)(void), char *name );
 BOOL	keyRemoveMapping		( KEY_CODE metaCode, KEY_CODE subCode );
 BOOL	keyRemoveMappingPt		( KEY_MAPPING *psToRemove );
 KEY_MAPPING *keyFindMapping		( KEY_CODE metaCode, KEY_CODE subCode );
@@ -34,11 +34,11 @@ void	keyAllMappingsActive	( void );
 void	keySetMappingStatus		( KEY_MAPPING *psMapping, BOOL state );
 void	processDebugMappings	( BOOL val );
 BOOL	getDebugMappingStatus	( void );
-BOOL	keyReAssignMappingName(STRING *pName, KEY_CODE newMetaCode, KEY_CODE newSubCode);
+BOOL	keyReAssignMappingName(char *pName, KEY_CODE newMetaCode, KEY_CODE newSubCode);
 							
 BOOL	keyReAssignMapping( KEY_CODE origMetaCode, KEY_CODE origSubCode, 
 							KEY_CODE newMetaCode, KEY_CODE newSubCode );
-KEY_MAPPING	*getKeyMapFromName(STRING *pName);
+KEY_MAPPING	*getKeyMapFromName(char *pName);
 
 extern BOOL	bAllowDebugMode;
 
@@ -469,9 +469,9 @@ if(bAllowDebugMode)
 
 // ----------------------------------------------------------------------------------
 /* Adds a new mapping to the list */
-//BOOL	keyAddMapping(KEY_CODE metaCode, KEY_CODE subCode, KEY_ACTION action,void *function, STRING *name)
+//BOOL	keyAddMapping(KEY_CODE metaCode, KEY_CODE subCode, KEY_ACTION action,void *function, char *name)
 KEY_MAPPING *keyAddMapping(KEY_STATUS status,KEY_CODE metaCode, KEY_CODE subCode, KEY_ACTION action,
-					  void (*pKeyMapFunc)(void), STRING *name)
+					  void (*pKeyMapFunc)(void), char *name)
 {
 KEY_MAPPING	*newMapping;
 BLOCK_HEAP  *psHeap;
@@ -487,7 +487,7 @@ BLOCK_HEAP  *psHeap;
 	/* Plus one for the terminator */
 
 
-	newMapping->pName = (STRING*)MALLOC(strlen(name)+1);
+	newMapping->pName = (char *)MALLOC(strlen(name)+1);
 	ASSERT(((int)newMapping->pName,"Couldn't allocate the memory for the string in a mapping"));
 
 	memSetBlockHeap(psHeap);
@@ -608,7 +608,7 @@ KEY_MAPPING	*psPrev,*psCurr;
 			/* It was */
 			keyMappings = psCurr->psNext;
 		}
-		/* Free up the memory, first for the string  */
+		/* Free up the memory, first for the char */
 		if (psCurr->pName)	FREE(psCurr->pName);		// only free it if it was allocated in the first place (ffs)
 		/* && then for the mapping itself */
 		FREE(psCurr);
@@ -810,11 +810,11 @@ BOOL	onlySub;
 	onlySub = TRUE;
 	if(psMapping->metaKeyCode!=KEY_IGNORE)
 	{
-		keyScanToString(psMapping->metaKeyCode,(STRING *)&asciiMeta,20);
+		keyScanToString(psMapping->metaKeyCode,(char *)&asciiMeta,20);
 		onlySub = FALSE;
 	}
 	
-	keyScanToString(psMapping->subKeyCode,(STRING *)&asciiSub,20);
+	keyScanToString(psMapping->subKeyCode,(char *)&asciiSub,20);
 	if(onlySub)
 	{
    		CONPRINTF(ConsoleString,(ConsoleString,"%s - %s",asciiSub,psMapping->pName));
@@ -995,7 +995,7 @@ BOOL		bFound;
 }
 
 /*
-BOOL	keyReAssignMappingName(STRING *pName, KEY_CODE newMetaCode, KEY_CODE newSubCode)
+BOOL	keyReAssignMappingName(char *pName, KEY_CODE newMetaCode, KEY_CODE newSubCode)
 							   )
 {
 KEY_MAPPING	*psMapping;
@@ -1026,7 +1026,7 @@ BOOL	bReplaced;
 }
 */
 // ----------------------------------------------------------------------------------
-KEY_MAPPING	*getKeyMapFromName(STRING *pName)
+KEY_MAPPING	*getKeyMapFromName(char *pName)
 {
 KEY_MAPPING	*psMapping;
 		for(psMapping = keyMappings; psMapping;	psMapping = psMapping->psNext)
@@ -1039,7 +1039,7 @@ KEY_MAPPING	*psMapping;
 	return(NULL);
 }
 // ----------------------------------------------------------------------------------
-BOOL	keyReAssignMappingName(STRING *pName,KEY_CODE newMetaCode, KEY_CODE newSubCode)
+BOOL	keyReAssignMappingName(char *pName,KEY_CODE newMetaCode, KEY_CODE newSubCode)
 {
 KEY_MAPPING	*psMapping;
 

@@ -10,7 +10,7 @@ static	BOOL	bAllowCheatCodes = TRUE;
 
 typedef struct _cheat_entry
 {
-STRING	*pName;
+char *pName;
 void (*function)(void);	// pointer to void* function
 } CHEAT_ENTRY;
 
@@ -82,7 +82,7 @@ BOOL	getCheatCodeStatus( void )
 	return(bAllowCheatCodes);
 }
 
-BOOL	attemptCheatCode( STRING *pName )
+BOOL	attemptCheatCode( char *pName )
 {
 UDWORD	index;
 STRING	errorString[255];

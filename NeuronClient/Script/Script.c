@@ -398,7 +398,7 @@ BOOL scriptSaveProg(SCRIPT_CODE *psProg, UDWORD *pSize, UBYTE **ppData)
 			}
 			else
 			{
-				strcpy((STRING *)pPos, psProg->psVarDebug[i].pIdent);
+				strcpy((char *)pPos, psProg->psVarDebug[i].pIdent);
 				pPos += (strlen(psProg->psVarDebug[i].pIdent) + 1);
 				DbgISize+= (strlen(psProg->psVarDebug[i].pIdent) + 1);
 //				DBPRINTF(("%d) storage=%d size=%d [%s]\n",i,psProg->psVarDebug[i].storage,strlen(psProg->psVarDebug[i].pIdent)+1+sizeof(STORAGE_TYPE),psProg->psVarDebug[i].pIdent));
@@ -424,7 +424,7 @@ BOOL scriptSaveProg(SCRIPT_CODE *psProg, UDWORD *pSize, UBYTE **ppData)
 			}
 			else
 			{
-				strcpy((STRING *)pPos, psProg->psArrayDebug[i].pIdent);
+				strcpy((char *)pPos, psProg->psArrayDebug[i].pIdent);
 				pPos += (strlen(psProg->psArrayDebug[i].pIdent) + 1);
 				DbgISize+= (strlen(psProg->psArrayDebug[i].pIdent) + 1);
 //				DBPRINTF(("%d) storage=%d size=%d [%s]\n",i,psProg->psVarDebug[i].storage,strlen(psProg->psVarDebug[i].pIdent)+1+sizeof(STORAGE_TYPE),psProg->psVarDebug[i].pIdent));
@@ -748,9 +748,9 @@ BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg)
 			else
 			{
 
-				StringSize=strlen((STRING *)pPos)+1;
+				StringSize=strlen((char *)pPos)+1;
 
-//				DBPRINTF(("String %d) size=%d [%s]\n",i,StringSize+sizeof(STORAGE_TYPE),(STRING *)pPos));
+//				DBPRINTF(("String %d) size=%d [%s]\n",i,StringSize+sizeof(STORAGE_TYPE),(char *)pPos));
 
 				psProg->psVarDebug[i].pIdent = MALLOC(StringSize);
 				if (!psProg->psVarDebug[i].pIdent)
@@ -758,7 +758,7 @@ BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg)
 					DBERROR(("scriptLoadProg: out of memory"));
 					return FALSE;
 				}
-				strcpy(psProg->psVarDebug[i].pIdent, (STRING *)pPos);
+				strcpy(psProg->psVarDebug[i].pIdent, (char *)pPos);
 			}
 			pPos += StringSize;
 			DbgSize+= StringSize;
@@ -789,9 +789,9 @@ BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg)
 			else
 			{
 
-				StringSize=strlen((STRING *)pPos)+1;
+				StringSize=strlen((char *)pPos)+1;
 
-//				DBPRINTF(("String %d) size=%d [%s]\n",i,StringSize+sizeof(STORAGE_TYPE),(STRING *)pPos));
+//				DBPRINTF(("String %d) size=%d [%s]\n",i,StringSize+sizeof(STORAGE_TYPE),(char *)pPos));
 
 				psProg->psArrayDebug[i].pIdent = MALLOC(StringSize);
 				if (!psProg->psArrayDebug[i].pIdent)
@@ -799,7 +799,7 @@ BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg)
 					DBERROR(("scriptLoadProg: out of memory"));
 					return FALSE;
 				}
-				strcpy(psProg->psArrayDebug[i].pIdent, (STRING *)pPos);
+				strcpy(psProg->psArrayDebug[i].pIdent, (char *)pPos);
 			}
 			pPos += StringSize;
 			DbgSize+= StringSize;
@@ -892,7 +892,7 @@ void scriptFreeCode(SCRIPT_CODE *psCode)
 
 
 /* Lookup a script variable */
-BOOL scriptGetVarIndex(SCRIPT_CODE *psCode, STRING *pID, UDWORD *pIndex)
+BOOL scriptGetVarIndex(SCRIPT_CODE *psCode, char *pID, UDWORD *pIndex)
 {
 	UDWORD	index;
 

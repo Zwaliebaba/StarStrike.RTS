@@ -77,7 +77,7 @@ char ConsoleString[MAX_CONSOLE_TMP_STRING_LENGTH];
 /* MODULE CONSOLE PROTOTYPES */
 void	consolePrintf				( SBYTE *layout, ... );
 void	setConsoleSizePos			( UDWORD x, UDWORD y, UDWORD width );
-BOOL	addConsoleMessage			( STRING *messageText, CONSOLE_TEXT_JUSTIFICATION jusType );
+BOOL	addConsoleMessage			( char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType );
 void	updateConsoleMessages		( void );
 void	displayConsoleMessages		( void );
 void	initConsoleMessages			( void );
@@ -182,7 +182,7 @@ void	toggleConsoleDrop( void )
 
 
 /* Adds a string to the console. */
-static BOOL _addConsoleMessage(STRING *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
+static BOOL _addConsoleMessage(char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
 {
 UDWORD			textLength;
 CONSOLE_MESSAGE	*psMessage;
@@ -276,7 +276,7 @@ CONSOLE_MESSAGE	*psMessage;
 }
 
 
-BOOL addConsoleMessage(STRING *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
+BOOL addConsoleMessage(char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
 {
 	return _addConsoleMessage(messageText,jusType);
 }
@@ -483,7 +483,7 @@ UDWORD	exceed;
 		psMessage && numProcessed<consoleVisibleLines && MesY<(DISP_HEIGHT-linePitch); 
 		psMessage = psMessage->psNext)
 	{
- 		/* Draw the text string */
+ 		/* Draw the text char */
 		MesY = pie_DrawFormattedText(psMessage->text,
 									mainConsole.topX,MesY,
 									mainConsole.width,
@@ -591,7 +591,7 @@ UDWORD	MesY;
 	/* Render what we found */
 	for(i=count-1; i>0; i--)
 	{
-		/* Draw the text string */
+		/* Draw the text char */
 		MesY = pie_DrawFormattedText(consoleStorage[history[i]].text,
 									mainConsole.topX,MesY,
 									mainConsole.width,
@@ -628,7 +628,7 @@ UDWORD	MesY;
 			count = 0;
 			while(!bQuit && consoleStorage[thisIndex].id && count<8)
 			{
- 				/* Draw the text string */
+ 				/* Draw the text char */
 				MesY = pie_DrawFormattedText(consoleStorage[thisIndex].text,
 											mainConsole.topX,MesY,
 											mainConsole.width,

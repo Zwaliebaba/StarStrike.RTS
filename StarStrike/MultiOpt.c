@@ -55,10 +55,10 @@ VOID		sendOptions			(DPID dest,UDWORD player);
 VOID		recvOptions			(NETMSG *pMsg);
 static BOOL dMatchInit			(VOID);
 static BOOL campInit			(VOID);
-BOOL		hostCampaign		(STRING *sGame,		STRING *sPlayer);
-BOOL		joinCampaign		(UDWORD gameNumber, STRING *playername);
-//BOOL		hostArena			(STRING *sGame,		STRING *sPlayer);
-//BOOL		joinArena			(UDWORD gameNumber, STRING *playername);
+BOOL		hostCampaign		(char *sGame,		char *sPlayer);
+BOOL		joinCampaign		(UDWORD gameNumber, char *playername);
+//BOOL		hostArena			(char *sGame,		char *sPlayer);
+//BOOL		joinArena			(UDWORD gameNumber, char *playername);
 BOOL		LobbyLaunched		(VOID);
 VOID		playerResponding	(VOID);
 BOOL		multiInitialise		(VOID);		//only once.
@@ -256,7 +256,7 @@ void recvOptions(NETMSG *pMsg)
 
 // ////////////////////////////////////////////////////////////////////////////
 // Host Campaign.
-BOOL hostCampaign(STRING *sGame, STRING *sPlayer)
+BOOL hostCampaign(char *sGame, char *sPlayer)
 {
 	PLAYERSTATS playerStats;
 	UDWORD		pl,numpl,i,j;
@@ -322,7 +322,7 @@ BOOL hostCampaign(STRING *sGame, STRING *sPlayer)
 // ////////////////////////////////////////////////////////////////////////////
 // Join Campaign 
 
-BOOL joinCampaign(UDWORD gameNumber, STRING *sPlayer)
+BOOL joinCampaign(UDWORD gameNumber, char *sPlayer)
 {
 	PLAYERSTATS	playerStats;
 
@@ -348,7 +348,7 @@ BOOL joinCampaign(UDWORD gameNumber, STRING *sPlayer)
 // ////////////////////////////////////////////////////////////////////////////
 // HostArena
 /*
-BOOL hostArena(STRING *sGame, STRING *sPlayer)
+BOOL hostArena(char *sGame, char *sPlayer)
 {
 	PLAYERSTATS playerStats;
 	UDWORD		numpl,i,j,pl;
@@ -408,7 +408,7 @@ BOOL hostArena(STRING *sGame, STRING *sPlayer)
 
 // ////////////////////////////////////////////////////////////////////////////
 // JoinArena.
-BOOL joinArena(UDWORD gameNumber, STRING *playerName)
+BOOL joinArena(UDWORD gameNumber, char *playerName)
 {
 	PLAYERSTATS	playerStats;
 
@@ -454,8 +454,8 @@ BOOL LobbyLaunched(VOID)
 	setMultiStats(NetPlay.dpidPlayer,pl,TRUE);
 
 	// setup text boxes on multiplay screen.
-	strcpy((STRING*) sPlayer,	NetPlay.players[i].name); 
-	strcpy((STRING*) game.name, NetPlay.games[0].name);
+	strcpy((char *) sPlayer,	NetPlay.players[i].name); 
+	strcpy((char *) game.name, NetPlay.games[0].name);
 
 	return TRUE;
 }

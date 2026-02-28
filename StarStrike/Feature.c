@@ -1132,7 +1132,7 @@ void destroyFeature(FEATURE *psDel)
 	removeFeature(psDel);
 }
 
-SDWORD getFeatureStatFromName( STRING *pName )
+SDWORD getFeatureStatFromName( char *pName )
 {
 	UDWORD			inc;
 	FEATURE_STATS	*psStat;

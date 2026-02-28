@@ -378,9 +378,9 @@ BOOL scrGroupObjGet(UDWORD index)
 }
 
 // get the name from a stat pointer
-STRING	*scrGetStatName(INTERP_TYPE type, UDWORD data)
+char *scrGetStatName(INTERP_TYPE type, UDWORD data)
 {
-	STRING	*pName = NULL;
+	char *pName = NULL;
 
 	switch (type)
 	{
@@ -462,7 +462,7 @@ STRING	*scrGetStatName(INTERP_TYPE type, UDWORD data)
 BOOL scrValDefSave(INTERP_TYPE type, UDWORD data, UBYTE *pBuffer, UDWORD *pSize)
 {
 	VIEWDATA	*psIntMessage;
-	STRING		*pName;
+	char *pName;
 	RESEARCH	*psResearch;
 	UBYTE		*pPos;
 	DROID		*psCDroid;
@@ -562,7 +562,7 @@ BOOL scrValDefSave(INTERP_TYPE type, UDWORD data, UBYTE *pBuffer, UDWORD *pSize)
 			}
 			else
 			{
-				*((UDWORD*)pBuffer) = strresGetIDfromString(psStringRes, (STRING *)data);
+				*((UDWORD*)pBuffer) = strresGetIDfromString(psStringRes, (char *)data);
 			}
 		}
 		*pSize = sizeof(UDWORD);
@@ -572,9 +572,9 @@ BOOL scrValDefSave(INTERP_TYPE type, UDWORD data, UBYTE *pBuffer, UDWORD *pSize)
 		{
 			if (pBuffer)
 			{
-				strcpy((char *)pBuffer, (STRING *)data);
+				strcpy((char *)pBuffer, (char *)data);
 			}
-			*pSize = strlen((STRING *)data)+1;
+			*pSize = strlen((char *)data)+1;
 		}
 		else
 		{
@@ -695,7 +695,7 @@ BOOL scrValDefLoad(SDWORD version, INTERP_TYPE type, UBYTE *pBuffer, UDWORD size
 		}
 		else
 		{
-			*pData = (UDWORD)getViewData((STRING *)pBuffer);
+			*pData = (UDWORD)getViewData((char *)pBuffer);
 			if (*pData == 0)
 			{
 				return FALSE;
@@ -849,7 +849,7 @@ BOOL scrValDefLoad(SDWORD version, INTERP_TYPE type, UBYTE *pBuffer, UDWORD size
 			{
 				DBERROR(("scrValDefLoad: couldn't find level dataset %s", pBuffer));
 			}
-			*((STRING **)pData) = psLevel->pName;
+			*((char **)pData) = psLevel->pName;
 		}
 		break;
 	case ST_RESEARCH:

@@ -117,8 +117,7 @@ void	dbg_MONO_ClearScreen(void)
 /*
 *
 *	NAME
-*		Debug_MONO_PrintString -- print a formatted string
-*
+*		Debug_MONO_PrintString -- print a formatted char *
 *	SYNOPSIS
 *		Debug_MONO_PrintString(leftedge, topedge, string);
 *
@@ -191,10 +190,10 @@ void	dbg_MONO_PrintString(SDWORD	 ub_leftedge,
 						bool_percent = FALSE;
 					}
 
-					/* expand the percent string */
+					/* expand the percent char */
 					ub_attribute = DBug_ExpandString(&aub_expandedstring[0], &aub_percentstring[0], ub_attribute, val_arglist, ub_numprinted);
 
-					/* print the string */
+					/* print the char */
 					DBug_DumpString(ub_leftedge, ub_topedge, &aub_expandedstring[0], ub_attribute);
 					ub_leftedge += (UBYTE)strlen(&aub_expandedstring[0]);
 					ub_numprinted += (UBYTE)strlen(&aub_expandedstring[0]);
@@ -219,7 +218,7 @@ void	dbg_MONO_PrintString(SDWORD	 ub_leftedge,
 					/* no, the percent flag isn't set; set it */
 					bool_percent = TRUE;
 
-					/* start a new percent string */
+					/* start a new percent char */
 					ub_percentstringindex = 0;
 					aub_percentstring[ub_percentstringindex++] = aub_currentcharacter[0];
 					aub_percentstring[ub_percentstringindex] = '\0';
@@ -230,7 +229,7 @@ void	dbg_MONO_PrintString(SDWORD	 ub_leftedge,
 				/* no, the character isn't a %; is the percent flag set? */
 				if (bool_percent == TRUE)
 				{
-					/* yes, the percent flag is set; put the character in the percent string */
+					/* yes, the percent flag is set; put the character in the percent char */
 					aub_percentstring[ub_percentstringindex++] = aub_currentcharacter[0];
 					aub_percentstring[ub_percentstringindex] = '\0';
 
@@ -240,7 +239,7 @@ void	dbg_MONO_PrintString(SDWORD	 ub_leftedge,
 						/* yes, the character is a special format character */
 						ub_attribute = DBug_ExpandString(&aub_expandedstring[0], &aub_percentstring[0], ub_attribute, val_arglist, ub_numprinted);
 
-						/* print the string */
+						/* print the char */
 						DBug_DumpString(ub_leftedge, ub_topedge, &aub_expandedstring[0], ub_attribute);
 						ub_leftedge += (UBYTE)strlen(&aub_expandedstring[0]);
 						ub_numprinted += (UBYTE)strlen(&aub_expandedstring[0]);
@@ -302,7 +301,7 @@ void	dbg_MONO_PrintString(SDWORD	 ub_leftedge,
 		/* there is an unxepanded string; expand it */
 		ub_attribute = DBug_ExpandString(&aub_expandedstring[0], &aub_percentstring[0], ub_attribute, val_arglist, ub_numprinted);
 
-		/* print the string */
+		/* print the char */
 		DBug_DumpString(ub_leftedge, ub_topedge, &aub_expandedstring[0], ub_attribute);
 	}
 
@@ -409,7 +408,7 @@ static UBYTE	DBug_ExpandString(UBYTE		*pub_stringbuffer,
 
 
 		case	'p':	/* displays a pointer */
-		case	's':	/* string */
+		case	's':	/* char */
 		case	'x':	/* unsigned hexadecimal (lower case) */
 		case	'X':	/* unsigned hexadecimal (upper case) */
 
@@ -464,7 +463,7 @@ static UBYTE	DBug_CheckFormatChar(UBYTE	ub_percentchar)
 		case	'G':	/* uses %E || %F, whichever is shorter */
 		case	'o':	/* unsigned octal */
 		case	'p':	/* displays a pointer */
-		case	's':	/* string */
+		case	's':	/* char */
 		case	'u':	/* unsigned decimal integers */
 		case	'x':	/* unsigned hexadecimal (lower case) */
 		case	'X':	/* unsigned hexadecimal (upper case) */

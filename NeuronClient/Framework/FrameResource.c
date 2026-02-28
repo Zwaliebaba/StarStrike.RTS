@@ -164,13 +164,13 @@ void resShutDown(void)
 
 
 // set the base resource directory
-void resSetBaseDir(STRING *pResDir)
+void resSetBaseDir(char *pResDir)
 {
 	strncpy(aResDir, pResDir, FILE_MAXCHAR - 1);
 }
 
 /* Parse the res file */
-BOOL resLoad(STRING *pResFile, SDWORD blockID,
+BOOL resLoad(char *pResFile, SDWORD blockID,
 			 UBYTE *pLoadBuffer, SDWORD bufferSize,
 			 BLOCK_HEAP *psMemHeap)
 {
@@ -256,7 +256,7 @@ BOOL resLoad(STRING *pResFile, SDWORD blockID,
 
 
 /* Allocate a RES_TYPE structure */
-static BOOL resAlloc(STRING *pType, RES_TYPE **ppsFunc)
+static BOOL resAlloc(char *pType, RES_TYPE **ppsFunc)
 {
 	RES_TYPE	*psT;
 
@@ -292,7 +292,7 @@ static BOOL resAlloc(STRING *pType, RES_TYPE **ppsFunc)
 
 
 /* Add a buffer load function for a file type */
-BOOL resAddBufferLoad(STRING *pType, RES_BUFFERLOAD buffLoad,
+BOOL resAddBufferLoad(char *pType, RES_BUFFERLOAD buffLoad,
 					  RES_FREE release)
 {
 	RES_TYPE	*psT;
@@ -314,7 +314,7 @@ BOOL resAddBufferLoad(STRING *pType, RES_BUFFERLOAD buffLoad,
 
 
 /* Add a file name load function for a file type */
-BOOL resAddFileLoad(STRING *pType, RES_FILELOAD fileLoad,
+BOOL resAddFileLoad(char *pType, RES_FILELOAD fileLoad,
 					RES_FREE release)
 {
 	RES_TYPE	*psT;
@@ -336,7 +336,7 @@ BOOL resAddFileLoad(STRING *pType, RES_FILELOAD fileLoad,
 
 
 // Make a string lower case
-void resToLower(STRING *pStr)
+void resToLower(char *pStr)
 {
 	while (*pStr != 0)
 	{
@@ -382,7 +382,7 @@ void SetLastHashName(UDWORD HashName)
 
 
 // load a file from disk into a fixed memory buffer
-BOOL resLoadFromDisk(STRING *pFileName, UBYTE **ppBuffer, UDWORD *pSize)
+BOOL resLoadFromDisk(char *pFileName, UBYTE **ppBuffer, UDWORD *pSize)
 {
 	HANDLE	hFile;
 	DWORD	bytesRead;
@@ -576,7 +576,7 @@ void AddBinaryResourceType(char *ResourceType)
 }
 
 
-void resDataInit(RES_DATA* psRes, STRING *DebugName, UDWORD DataIDHash, void *pData, UDWORD BlockID)
+void resDataInit(RES_DATA* psRes, char *DebugName, UDWORD DataIDHash, void *pData, UDWORD BlockID)
 {
 
 	psRes->pData = pData;
@@ -594,7 +594,7 @@ void resDataInit(RES_DATA* psRes, STRING *DebugName, UDWORD DataIDHash, void *pD
 #ifndef FINALBUILD		// dont want this in final psx version
 
 /* Call the load function for a file */
-BOOL resLoadFile(STRING *pType, STRING *pFile)
+BOOL resLoadFile(char *pType, char *pFile)
 {
 	RES_TYPE	*psT;
 //	UBYTE		*pBuffer;
@@ -754,7 +754,7 @@ BOOL resLoadFile(STRING *pType, STRING *pFile)
 
 
 /* Return the resource for a type && hashedname */
-void *resGetDataFromHash(STRING *pType, UDWORD HashedID)
+void *resGetDataFromHash(char *pType, UDWORD HashedID)
 {
 	RES_TYPE	*psT;
 	RES_DATA	*psRes;
@@ -807,7 +807,7 @@ void *resGetDataFromHash(STRING *pType, UDWORD HashedID)
 
 
 /* Return the resource for a type && ID */
-void *resGetData(STRING *pType, STRING *pID)
+void *resGetData(char *pType, char *pID)
 {
 	RES_TYPE	*psT;
 	RES_DATA	*psRes;
@@ -859,7 +859,7 @@ void *resGetData(STRING *pType, STRING *pID)
 }
 
 
-BOOL resGetHashfromData(STRING *pType, void *pData, UDWORD *pHash)
+BOOL resGetHashfromData(char *pType, void *pData, UDWORD *pHash)
 {
 	RES_TYPE	*psT;
 	RES_DATA	*psRes;
@@ -909,7 +909,7 @@ BOOL resGetHashfromData(STRING *pType, void *pData, UDWORD *pHash)
 // return the ID string for a piece of data
 // This now no longer works ... this is used for the savegame code ... sorry jeremey
 // now use resGetHashfromData()  instead
-BOOL resGetIDfromData(STRING *pType, void *pData, STRING **ppID)
+BOOL resGetIDfromData(char *pType, void *pData, char **ppID)
 {
 #ifdef NORESHASH //WIN32
 	RES_TYPE	*psT;
@@ -956,7 +956,7 @@ BOOL resGetIDfromData(STRING *pType, void *pData, STRING **ppID)
 #endif
 
 /* Simply returns true if a resource is present */
-BOOL resPresent(STRING *pType, STRING *pID)
+BOOL resPresent(char *pType, char *pID)
 {
 	RES_TYPE	*psT;
 	RES_DATA	*psRes;

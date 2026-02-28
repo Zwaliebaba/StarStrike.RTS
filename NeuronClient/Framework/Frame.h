@@ -35,7 +35,7 @@
 
 /* Initialise the frame work library */
 extern BOOL frameInitialise(HANDLE hInstance,		// The windows application instance
-					 STRING *pWindowName,	// The text to appear in the window title bar
+					 char *pWindowName,	// The text to appear in the window title bar
 					 UDWORD	width,			// The display width
 					 UDWORD height,			// The display height
 					 UDWORD bitDepth,		// The display bit depth
@@ -103,7 +103,7 @@ extern SDWORD frameGetNumDDDevices(void);
 extern char* frameGetDDDeviceName(SDWORD);
 
 // Return a string for a windows error code
-extern STRING *winErrorToString(SDWORD error);
+extern char *winErrorToString(SDWORD error);
 
 /* The default window procedure for the library.
  * This is initially set to the standard DefWindowProc, but can be changed
@@ -116,22 +116,22 @@ extern void frameSetWindowProc(DEFWINPROCTYPE winProc);
 
 
 /* Load the file with name pointed to by pFileName into a memory buffer. */
-extern BOOL loadFile(STRING *pFileName,		// The filename
+extern BOOL loadFile(char *pFileName,		// The filename
 					 UBYTE **ppFileData,	// A buffer containing the file contents
 					 UDWORD *pFileSize);	// The size of this buffer
 
 /* Load the file with name pointed to by pFileName into a memory buffer. */
 // if allocate mem is true then the memory is allocated ... else it is already in ppFileData, and the max size is in pFileSize ... this is adjusted to the actual loaded file size
 //   
-BOOL loadFile2(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL AllocateMem );
+BOOL loadFile2(char *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, BOOL AllocateMem );
 
 /* Save the data in the buffer into the given file */
-extern BOOL saveFile(STRING *pFileName, UBYTE *pFileData, UDWORD fileSize);
+extern BOOL saveFile(char *pFileName, UBYTE *pFileData, UDWORD fileSize);
 
 // load a file from disk into a fixed memory buffer
-extern BOOL loadFileToBuffer(STRING *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, UDWORD *pSize);
+extern BOOL loadFileToBuffer(char *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, UDWORD *pSize);
 // as above but returns quietly if no file found
-extern BOOL loadFileToBufferNoError(STRING *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, UDWORD *pSize);
+extern BOOL loadFileToBufferNoError(char *pFileName, UBYTE *pFileBuffer, UDWORD bufferSize, UDWORD *pSize);
 
 extern SDWORD ftol(float f);
 extern BOOL	bRunningUnderGlide;

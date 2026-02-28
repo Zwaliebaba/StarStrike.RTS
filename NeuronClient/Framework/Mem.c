@@ -139,7 +139,7 @@ SDWORD	memBlockCmp(UDWORD	key1, UDWORD key2)
  * A buffer is also allocated at the top && bottom of the memory to check for
  * overwrites.
  */
-void *memMalloc(STRING *pFileName, SDWORD LineNumber, size_t Size)
+void *memMalloc(char *pFileName, SDWORD LineNumber, size_t Size)
 {
 	void		*pMemBase;
 	MEM_NODE	*psNode;
@@ -166,7 +166,7 @@ void *memMalloc(STRING *pFileName, SDWORD LineNumber, size_t Size)
 
 	/* Got the main bit of memory - set up the node entry */
 	psNode = (MEM_NODE *)pMemBase;
-	psNode->pFile = (STRING *)RMALLOC( strlen(pFileName)+1 );
+	psNode->pFile = (char *)RMALLOC( strlen(pFileName)+1 );
 	if (!psNode->pFile)
 	{
 		RFREE(pMemBase);
@@ -242,7 +242,7 @@ void *memMallocRelease(size_t Size)
  * All memory is reset to FREE_BYTE before freeing to avoid using
  * freed memory.
  */
-void memFree(STRING *pFileName, SDWORD LineNumber, void *pMemToFree)
+void memFree(char *pFileName, SDWORD LineNumber, void *pMemToFree)
 {
 	MEM_NODE	sNode, *psDeleted;
 	SDWORD		i, InvalidBottom, InvalidTop;
@@ -490,7 +490,7 @@ void memMemoryDump(MEM_NODE *Node)
  * If pFileName is !NULL send the report to the specified file.
  * If pFileName is NULL the report goes to DBPRINTF
  */
-void memMemoryReport(STRING *pFileName)
+void memMemoryReport(char *pFileName)
 {
 #if DEBUG_MALLOC
 	SDWORD		TotMem;
@@ -529,7 +529,7 @@ void memMemoryReport(STRING *pFileName)
 
 
 /* Display the memory treap */
-void memDisplayTreap(STRING *pFileName)
+void memDisplayTreap(char *pFileName)
 {
 #if DEBUG_MALLOC
 	if (pFileName)

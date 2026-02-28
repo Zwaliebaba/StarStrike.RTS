@@ -297,11 +297,11 @@ static STRING pCloseText[] = "X";
 static STRING pCloseTip[] = "Close";
 
 /* Player button strings */
-static STRING	*apPlayerText[] =
+static char *apPlayerText[] =
 {
 	"0", "1", "2", "3", "4", "5", "6", "7",
 };
-static STRING	*apPlayerTip[] =
+static char *apPlayerTip[] =
 {
 	"Select Player 0",
 	"Select Player 1",
@@ -2018,7 +2018,7 @@ DBPRINTF(("INT_QUIT 1\n"));
 /*static void intGetMapSize(void)
 {
 	SDWORD	editWidth, editHeight;
-	STRING	*pStr;
+	char *pStr;
 	STRING	aText[WIDG_MAXSTR];
 	UDWORD	i, tmp, bitCount;
 	BOOL	widthChanged=FALSE, heightChanged=FALSE;

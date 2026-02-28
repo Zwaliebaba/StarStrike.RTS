@@ -576,7 +576,7 @@ VIEWDATA *loadViewData(SBYTE *pViewMsgData, UDWORD bufferSize)
 		psViewData->numText=(UBYTE)numText;
 
 		//allocate storage for the name
- 		psViewData->pName = (STRING *)MALLOC((strlen(name))+1);
+ 		psViewData->pName = (char *)MALLOC((strlen(name))+1);
 		if (psViewData->pName == NULL)
 		{
 			DBERROR(("ViewData Name - Out of memory"));
@@ -587,8 +587,8 @@ VIEWDATA *loadViewData(SBYTE *pViewMsgData, UDWORD bufferSize)
 		//allocate space for text strings
 		if (psViewData->numText)
 		{
-			psViewData->ppTextMsg = (STRING **) MALLOC(psViewData->numText * 
-				sizeof(STRING *));
+			psViewData->ppTextMsg = (char **) MALLOC(psViewData->numText * 
+				sizeof(char *));
 		}
 
 		//read in the data for the text strings
@@ -654,7 +654,7 @@ VIEWDATA *loadViewData(SBYTE *pViewMsgData, UDWORD bufferSize)
 			if (strcmp(audioName, "0"))
 			{
 				//allocate space
-				psViewRes->pAudio = (STRING *) MALLOC(strlen(audioName) + 1);
+				psViewRes->pAudio = (char *) MALLOC(strlen(audioName) + 1);
 				if (psViewRes->pAudio == NULL)
 				{
 					DBERROR(("loadViewData - Out of memory"));
@@ -739,8 +739,8 @@ VIEWDATA *loadViewData(SBYTE *pViewMsgData, UDWORD bufferSize)
 				//allocate space for text strings
 				if (psViewReplay->pSeqList[dataInc].numText)
 				{
-					psViewReplay->pSeqList[dataInc].ppTextMsg = (STRING **) MALLOC(
-						psViewReplay->pSeqList[dataInc].numText * sizeof(STRING *));
+					psViewReplay->pSeqList[dataInc].ppTextMsg = (char **) MALLOC(
+						psViewReplay->pSeqList[dataInc].numText * sizeof(char *));
 				}
 				//read in the data for the text strings
 				for (seqInc = 0; seqInc < psViewReplay->pSeqList[dataInc].numText; 
@@ -771,7 +771,7 @@ VIEWDATA *loadViewData(SBYTE *pViewMsgData, UDWORD bufferSize)
 				if (strcmp(audioName, "0"))
 				{
 					//allocate space
-					psViewReplay->pSeqList[dataInc].pAudio = (STRING *) MALLOC(
+					psViewReplay->pSeqList[dataInc].pAudio = (char *) MALLOC(
 						strlen(audioName) + 1);
 					if (psViewReplay->pSeqList[dataInc].pAudio == NULL)
 					{
@@ -871,7 +871,7 @@ VIEWDATA *loadViewData(SBYTE *pViewMsgData, UDWORD bufferSize)
 }
 
 /*get the view data identified by the name */
-VIEWDATA * getViewData(STRING *pName)
+VIEWDATA * getViewData(char *pName)
 {
 	//VIEWDATA		*psViewData;// = asViewData;
 	VIEWDATA_LIST	*psList;

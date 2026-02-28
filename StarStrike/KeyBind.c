@@ -81,7 +81,7 @@ int fogCol = 0;//start in nicks mode
 
 /* Support functions to minimise code size */
 void	kfsf_SelectAllSameProp	( PROPULSION_TYPE propType );
-void	kfsf_SelectAllSameName	( STRING *droidName );
+void	kfsf_SelectAllSameName	( char *droidName );
 void	kfsf_SetSelectedDroidsState( SECONDARY_ORDER sec, SECONDARY_STATE State );
 /*	
 	KeyBind.c
@@ -2124,7 +2124,7 @@ DROID	*psDroid;
 	*/
 }
 // --------------------------------------------------------------------------
-void	kfsf_SelectAllSameName( STRING *droidName )
+void	kfsf_SelectAllSameName( char *droidName )
 {
     UNUSEDPARAMETER(droidName);
 

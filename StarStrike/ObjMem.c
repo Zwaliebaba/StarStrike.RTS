@@ -99,7 +99,7 @@ void initMorgue(void)
 void embalm(BASE_OBJECT *psDead)
 {
 	MORGUE	*psSlot;
-	STRING	*pName;
+	char *pName;
 
 	psSlot = asMorgue + morgueEnd;
 

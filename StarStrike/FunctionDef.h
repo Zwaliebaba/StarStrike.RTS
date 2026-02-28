@@ -53,7 +53,7 @@ enum FUNCTION_TYPES
 
 #define FUNCTION_STATS \
 	UDWORD		ref;			/* Unique ID of the item */ \
-	STRING*		pName;			/* Text name of the component */ \
+	char *		pName;			/* Text name of the component */ \
 	UBYTE		type			/* The type of Function */
 /*Common struct for all functions*/
 typedef struct _function
@@ -94,7 +94,7 @@ typedef struct _wall_function
 {
 	//common stats
 	FUNCTION_STATS;
-	STRING						*pStructName;		//storage space for the name so can work out
+	char *pStructName;		//storage space for the name so can work out
 													//which stat when structs are loaded in
 	struct _structure_stats		*pCornerStat;		//pointer to which stat to use as a corner wall
 } WALL_FUNCTION;
