@@ -79,7 +79,6 @@ typedef struct _renderState
 	BOOL				textured;
 	UBYTE				lightLevel;
 #endif
-	UBYTE				DDrawDriverName[256];
 	UBYTE				D3DDriverName[256];
 } RENDER_STATE;
 
@@ -213,23 +212,6 @@ REND_ENGINE pie_GetRenderEngine(void)
 BOOL	pie_Hardware(void)
 {
 	return rendStates.bHardware;
-}
-
-/***************************************************************************/
-/***************************************************************************/
-void pie_SetDirectDrawDeviceName(char* pDDDeviceName)
-{
-	ASSERT((strlen(pDDDeviceName) < 255,"DirectDraw device string exceeds max string length."));
-	if (strlen(pDDDeviceName) >= 255)
-	{
-		pDDDeviceName[255] = 0;
-	}
-	strcpy((char*)(rendStates.DDrawDriverName),pDDDeviceName);
-}
-
-char* pie_GetDirectDrawDeviceName(void)
-{
-	return (char*)(rendStates.DDrawDriverName);
 }
 
 /***************************************************************************/

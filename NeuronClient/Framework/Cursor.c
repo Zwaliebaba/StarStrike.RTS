@@ -215,6 +215,14 @@ static DWORD WINAPI cursorThreadUpdate(LPVOID param)
 	while (!cursorExitThread)
 	{
 		DInpGetMouseState(&mx,&my,&buttons);
+
+		/* DD cursor blitting removed — psFront is NULL in D3D9 mode */
+		if (psFront == NULL)
+		{
+			SleepEx(15, FALSE);
+			continue;
+		}
+
 		sSaveRect.left = 0;
 		sSaveRect.top = 0;
 		sSaveRect.right = CURSOR_SAVEWIDTH;

@@ -23,7 +23,6 @@ target_link_libraries (StarStrike
         NeuronClient
         # DirectX SDK libraries
         ${CMAKE_SOURCE_DIR}/DX9/Lib/d3d9.lib
-        ${CMAKE_SOURCE_DIR}/DX9/Lib/ddraw.lib
         ${CMAKE_SOURCE_DIR}/DX9/Lib/dplayx.lib
         ${CMAKE_SOURCE_DIR}/DX9/Lib/dxguid.lib
         ${CMAKE_SOURCE_DIR}/DX9/Lib/dsound.lib

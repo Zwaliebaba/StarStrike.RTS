@@ -848,6 +848,7 @@ void blitTile(RECT *psDestRect, RECT *psSrcRect, UDWORD texture)
 	SDWORD					x,y, xDir,yDir, srcInc,destInc;
 
 	psBack = screenGetSurface();
+	if (psBack == NULL) return;
 //	surfCreate(&psBack, 640,480, DDSCAPS_SYSTEMMEMORY, NULL);
 
 	/* Store the source rect as four points */
@@ -1120,6 +1121,7 @@ void dispTerrain(UDWORD x, UDWORD y, TYPE_OF_TERRAIN type)
 	RECT					sDestRect;
 
 	psBack = screenGetSurface();
+	if (psBack == NULL) return;
 
 	sDestRect.left = x + TILE_SIZE2D/4;
 	sDestRect.top = y + TILE_SIZE2D/4;
@@ -1181,6 +1183,7 @@ static void display2DMap(void)
 		"displayMap: y coord off map"));
 
 	psBack = screenGetSurface();
+	if (psBack == NULL) return;
 
 	memset(&sDDBltFx, 0, sizeof(DDBLTFX));
 	sDDBltFx.dwSize = sizeof(DDBLTFX);

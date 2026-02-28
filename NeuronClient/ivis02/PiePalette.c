@@ -315,12 +315,6 @@ iColour*	pie_GetGamePal(void)
 	return 	psGamePal;
 }
 
-PALETTEENTRY*	pie_GetWinPal(void)
-{
-	ASSERT((bPaletteInitialised,"pie_GetWinPal, palette not initialised"));
-	return 	psWinPal;
-}
-
 
 /*
 

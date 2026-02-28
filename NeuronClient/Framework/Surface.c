@@ -35,8 +35,12 @@ BOOL surfCreate(LPDIRECTDRAWSURFACE4	*ppsSurface,	// The created surface
 
 	psDD = screenGetDDObject();
 
-	ASSERT((psDD != NULL,
-		"surfCreate: NULL DD object - framework not initialised?"));
+	/* DD surface creation not available in D3D9 mode */
+	if (psDD == NULL)
+	{
+		*ppsSurface = NULL;
+		return FALSE;
+	}
 
 	if ((screenMode == SCREEN_WINDOWED) && (displayMode == MODE_8BITFUDGE))
 	{
@@ -141,6 +145,12 @@ BOOL surfRecreate(LPDIRECTDRAWSURFACE4 *ppsSurface)
 
 	psDD = screenGetDDObject();
 
+	/* DD surface recreation not available in D3D9 mode */
+	if (psDD == NULL)
+	{
+		return FALSE;
+	}
+
 	/* Find the surface entry */
 	for(psCurr = psSurfaces; (psCurr != NULL) && (psCurr->psSurface != *ppsSurface);
 		psCurr = psCurr->psNext)
@@ -242,6 +252,9 @@ BOOL surfLoadFromSurface(
 	BOOL			destVideo, srcSystem;
 	HRESULT			ddrval;
 
+	/* DD surface copying not available when surfaces are NULL */
+	if (psDest == NULL || psSrc == NULL) return FALSE;
+
 	/* Get the size of the surfaces */
 	memset(&ddsdDest, 0, sizeof(DDSURFACEDESC2));
 	ddsdDest.dwSize = sizeof(DDSURFACEDESC2);
@@ -319,11 +332,13 @@ BOOL surfLoadFromSurface(
 HRESULT
 DDSetColorKey(IDirectDrawSurface4 *pdds, COLORREF rgb)
 {
-    DDCOLORKEY          ddck;
+	DDCOLORKEY          ddck;
 
-    ddck.dwColorSpaceLowValue  = rgb;
-    ddck.dwColorSpaceHighValue = ddck.dwColorSpaceLowValue;
-    return pdds->lpVtbl->SetColorKey(pdds, DDCKEY_SRCBLT, &ddck);
+	if (pdds == NULL) return E_FAIL;
+
+	ddck.dwColorSpaceLowValue  = rgb;
+	ddck.dwColorSpaceHighValue = ddck.dwColorSpaceLowValue;
+	return pdds->lpVtbl->SetColorKey(pdds, DDCKEY_SRCBLT, &ddck);
 }
 
 /***************************************************************************/
@@ -372,8 +387,11 @@ BOOL surfLoadFrom8Bit(
 	/* Get the DD object */
 	psDD = screenGetDDObject();
 
-	ASSERT((psDD != NULL,
-		"surfLoadFrom8Bit: NULL DD object - framework not initialised?"));
+	/* DD surface loading not available in D3D9 mode */
+	if (psDD == NULL || psSurf == NULL)
+	{
+		return FALSE;
+	}
 
 	/* Get the pixel format for the surface */
 	memset(&sPixelFormat, 0, sizeof(DDPIXELFORMAT));

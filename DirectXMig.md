@@ -2,7 +2,7 @@
 
 **Project:** StarStrike RTS
 **Author:** Principal Graphics Engineer Review
-**Status:** Draft for Validation
+**Status:** In Progress — Renderer Layer (ivis02) Complete, Framework Layer Pending
 **Target API:** Direct3D 9.0c (`d3d9.h` / `d3d9.lib`)
 **Language:** C11 (no C++ migration; COM via C macros)
 **Strategy:** Full rendering layer rewrite with preserved public API surface
@@ -28,6 +28,7 @@
 15. [C-in-COM Wrapping Strategy](#15-c-in-com-wrapping-strategy)
 16. [File Impact Matrix](#16-file-impact-matrix)
 17. [Open Questions and Critical Missing Items](#17-open-questions-and-critical-missing-items)
+18. [Implementation Status](#18-implementation-status)
 
 ---
 
@@ -1098,18 +1099,18 @@ If frame time regresses, the path forward is batching draw calls into `IDirect3D
 
 ## 14. Risk Register
 
-| ID | Risk | Severity | Probability | Mitigation |
-|---|---|---|---|---|
-| R-01 | `WINSTR.LIB` cannot render to CPU buffer without a DirectDraw surface | **Critical** | Medium | Confirm in Phase 1 by calling `seq_RenderOneFrameToBuffer()` before removing DirectDraw. If it fails, plan to replace with FFmpeg or Bink. |
-| R-02 | `sz` component of `PIEVERTEX` is not in `[0.0, 1.0]` range for D3D9 depth buffer | **High** | Medium | Instrument `pie_ROTATE_PROJECT()` to log min/max sz values in a test level. Apply rescaling in `pievert_to_d3d9()`. |
-| R-03 | `D3DRS_COLORKEYENABLE` does not exist in D3D9 — color keying behavior changes | **High** | Certain | Preload all keyed textures with alpha=0 for keyed texels in Phase 2. Test each keyed texture category explicitly. |
-| R-04 | Some GPUs do not support `D3DFMT_R5G6B5` as a back buffer format | **Medium** | Low | Add `D3DFMT_X8R8G8B8` (32-bit) fallback in `D3DPRESENT_PARAMETERS`. Prefer 32-bit on modern hardware; 16-bit is a legacy path. |
-| R-05 | Widescreen projection appears stretched or clipped due to aspect ratio change | **Medium** | High | Test Option A projection first; instrument with a reference grid rendering. Option B (FOV correction) is the fix if needed. |
-| R-06 | `D3DPOOL_MANAGED` textures survive `Reset()` but `D3DPOOL_DEFAULT` (video texture) does not | **Medium** | Certain | The video texture (Phase 7) uses `D3DPOOL_DEFAULT`. Release and recreate it in the device-lost recovery path. |
-| R-07 | 8-bit texture palette indices are not correctly mapped to game palette at runtime (wrong shade) | **Medium** | Medium | Cross-reference `pal_Init()` palette order with `pie_GetGamePal()`. Add a visual palette verification tool. |
-| R-08 | Scantable (`rendSurface.scantable`) overflow at resolutions > 480 lines (`iV_SCANTABLE_MAX` limit) | **Medium** | High | Check `iV_SCANTABLE_MAX` definition in `Ivisdef.h`. If `< 1080`, increase it or eliminate the scantable (2D blitting via D3D9 does not need it). |
-| R-09 | `D3DCREATE_SOFTWARE_VERTEXPROCESSING` limits shader-level vertex throughput on modern GPUs | **Low** | Certain | Acceptable for D3D9 fixed-function. Change to `D3DCREATE_HARDWARE_VERTEXPROCESSING` as a performance upgrade if shader-based rendering is added later. |
-| R-10 | `tu`/`tv` texture coordinate scaling in `PIEVERTEX` uses a different normalization than D3D9 expects | **Medium** | Medium | Confirm PIEVERTEX UV units. D3D9 expects `[0.0, 1.0]`. If current UVs are `[0, 255]` or `[0, textureWidth]`, apply the appropriate divisor in `pievert_to_d3d9()`. |
+| ID | Risk | Severity | Probability | Status | Mitigation |
+|---|---|---|---|---|---|
+| R-01 | `WINSTR.LIB` cannot render to CPU buffer without a DirectDraw surface | **Critical** | Medium | 🔶 **Open** | Requires runtime test — Sequence files not in main tree. See Q1. |
+| R-02 | `sz` component of `PIEVERTEX` is not in `[0.0, 1.0]` range for D3D9 depth buffer | **High** | Medium | ✅ **Mitigated** | `sz` is stretched int `[256, 32000]`, already normalized via `* INV_MAX_Z` (= 1/32000) in `D3drender.c:279`. See Q2. |
+| R-03 | `D3DRS_COLORKEYENABLE` does not exist in D3D9 — color keying behavior changes | **High** | Certain | ✅ **Mitigated** | Alpha-test implemented in `D3DSetColourKeying()`. Textures load with alpha=0 for keyed texels. |
+| R-04 | Some GPUs do not support `D3DFMT_R5G6B5` as a back buffer format | **Medium** | Low | 🔶 **Open** | `D3DFMT_X8R8G8B8` fallback should be added in `InitD3D()`. |
+| R-05 | Widescreen projection appears stretched or clipped due to aspect ratio change | **Medium** | High | ⏳ **Deferred** | Phase 6 not started. Option A (scale xcentre/ycentre only) is the initial approach. |
+| R-06 | `D3DPOOL_MANAGED` textures survive `Reset()` but `D3DPOOL_DEFAULT` (video texture) does not | **Medium** | Certain | ⏳ **Deferred** | Applies only when Phase 7 video texture is implemented. |
+| R-07 | 8-bit texture palette indices are not correctly mapped to game palette at runtime (wrong shade) | **Medium** | Medium | 🔶 **Open** | Requires runtime visual verification. |
+| R-08 | Scantable (`rendSurface.scantable`) overflow at resolutions > 1024 lines | **Medium** | High | ✅ **Confirmed** | `iV_SCANTABLE_MAX = 1024` (from `Ivisdef.h:27`). Will overflow at 1080p. Used by `Rendfunc.c`, `TextDraw.c` (software paths). Must increase to `2160` or eliminate. See Q4. |
+| R-09 | `D3DCREATE_SOFTWARE_VERTEXPROCESSING` limits shader-level vertex throughput on modern GPUs | **Low** | Certain | ✅ **Accepted** | Acceptable for D3D9 fixed-function. Upgrade to `HARDWARE_VERTEXPROCESSING` later. |
+| R-10 | `tu`/`tv` texture coordinate scaling in `PIEVERTEX` uses a different normalization than D3D9 expects | **Medium** | Medium | ✅ **Mitigated** | UVs are integer texel coords `[0, 256]`, normalized via `* INV_TEX_SIZE` (= 1/256) in `D3drender.c:281-282`. See Q3. |
 
 ---
 
@@ -1215,52 +1216,129 @@ The following table summarizes the change category for every file in `NeuronClie
 
 ## 17. Open Questions and Critical Missing Items
 
-The following items must be resolved before or during the migration. They represent areas where the plan makes assumptions that need to be validated against the actual codebase or external dependencies.
+The following items were identified as unknowns during the planning phase. Each has now been investigated against the actual codebase. Resolved items are marked ✅; items still requiring runtime validation are marked 🔶.
 
 ### Q1. Can `WINSTR.LIB` render without a DirectDraw surface? (Risk R-01)
-**Priority: Critical — resolve in Phase 1**
+**Priority: Critical**
+**Status:** 🔶 **Cannot be resolved statically — requires runtime test**
 
-Call `seq_SetSequenceForBuffer()` and `seq_RenderOneFrameToBuffer()` with a plain `malloc()`-allocated buffer *before* removing DirectDraw. If this path is functional, the video migration in Phase 7 is straightforward. If it crashes or returns errors, the entire video subsystem needs replacement with a third-party library.
+`Sequence.c` / `Sequence.h` are not present in the main working tree (only in a `.claude/worktrees/` branch). The `WINSTR.LIB` binary has no source. The question of whether `seq_RenderOneFrameToBuffer()` works without a live `LPDIRECTDRAWSURFACE4` can only be answered by calling it at runtime with a plain `malloc()` buffer.
+
+**Action:** When Sequence files are restored to the main tree, execute the test described in Phase 7 §11.1 before committing to the CPU-buffer approach.
 
 ### Q2. What is the exact format and range of `sz` in `PIEVERTEX`? (Risk R-02)
-**Priority: High — resolve in Phase 3**
+**Priority: High**
+**Status:** ✅ **Resolved — `sz` is a stretched integer Z in range `[256, ~32000]`, normalized by `* INV_MAX_Z` to `[0.0, 1.0]`**
 
-`pie_ROTATE_PROJECT()` in `PieMatrix.c` produces the `sz` value. Its range determines the scaling factor in `pievert_to_d3d9()`. D3D9 depth buffer range is `[0.0, 1.0]`. If `sz` is already normalized, no scaling is needed. If `sz` is in fixed-point world-space depth, a scale-and-bias transform is required.
+The Z pipeline is:
+
+1. **World-space rotation** in `Piedraw.c:490` produces `rz` in 12.12 fixed-point (units: world distance × 4096).
+2. **Stretch** at `Piedraw.c:494`: `pPixels->d3dz = D3DVAL((rz >> STRETCHED_Z_SHIFT))` — right-shift by 10 compresses the fixed-point to a stretched integer. Typical range: `[MIN_STRETCHED_Z=256, ~32000]`.
+3. **PIEVERTEX assignment** at `Piedraw.c:553`: `pieVrts[n].sz = MAKEINT(scrPoints[*index].d3dz)` — stores the stretched integer in `PIEVERTEX.sz` (`SDWORD`).
+4. **D3D9 normalization** at `D3drender.c:279`: `d3dVrts[i].sz = (float)pVrts[i].sz * (float)INV_MAX_Z` where `INV_MAX_Z = 1/32000 = 0.00003125`. This produces `[0.0, ~1.0]` — correct for the D3D9 depth buffer.
+5. **RHW** at `D3drender.c:280`: `d3dVrts[i].rhw = 1.0f / pVrts[i].sz` — reciprocal of stretched Z.
+6. **2D interface elements** use `INTERFACE_DEPTH = MAX_Z - 1 = 31999`, placing them at the far end of the depth buffer (behind 3D geometry).
+
+**Key constants** (from `Piedef.h`):
+- `STRETCHED_Z_SHIFT = 10`
+- `MAX_Z = 32000.0f`
+- `INV_MAX_Z = 0.00003125f` (= 1/32000)
+- `MIN_STRETCHED_Z = 256` (near clip; values below this are culled)
+- `INTERFACE_DEPTH = 31999.0f` (far plane for UI)
+
+**Conclusion:** The existing conversion `sz * INV_MAX_Z` is already correct for D3D9. The `pievert_to_d3d9()` function described in Phase 3 §7.2 should use `pDst->sz = (float)pSrc->sz * INV_MAX_Z` — which is exactly what `D3D_PIEPolygon()` in `D3drender.c:279` already does. **Risk R-02 is mitigated.**
 
 ### Q3. What are the `tu`/`tv` units in `PIEVERTEX`? (Risk R-10)
-**Priority: High — resolve in Phase 3**
+**Priority: High**
+**Status:** ✅ **Resolved — `tu`/`tv` are integer texel coordinates in `[0, 256]`, normalized by `* INV_TEX_SIZE` to `[0.0, 1.0]`**
 
-`UWORD tu, tv` could be:
-- `[0, 255]` — fraction of texture width/height in 8.8 fixed-point
-- `[0, textureWidth]` — texel coordinates
-- `[0.0, 1.0]` encoded as fixed-point
+- `PIEVERTEX.tu` and `PIEVERTEX.tv` are `UWORD` (unsigned 16-bit) holding integer texel coordinates. Values range from `0` to `256` (the texture atlas is 256×256 texels).
+- `INV_TEX_SIZE = 0.00390625f` (= 1/256) defined in `Piedef.h:65`.
+- Normalization happens at the draw boundary in `D3drender.c:281-282`:
+  ```c
+  d3dVrts[i].tu = (float)pVrts[i].tu * (float)INV_TEX_SIZE + g_fTextureOffset;
+  d3dVrts[i].tv = (float)pVrts[i].tv * (float)INV_TEX_SIZE + g_fTextureOffset;
+  ```
+  `g_fTextureOffset` is a sub-texel bias (typically `0.0f` or a small epsilon).
+- The same pattern is used in `Piedraw.c:1432-1433` and `Piefunc.c:365-366`.
+- Texture animation (`iTexAnim`) works by adding integer offsets to `tu`/`tv` to index different frames within the 256×256 tile sheet (`Piedraw.c:1129-1134`). This is pure UV arithmetic — **no DD surface flipping** is involved.
 
-The correct divisor in `pievert_to_d3d9()` depends on this. Check how UV values are assigned in `Piedraw.c` or `Imd.c` when building a `PIEVERTEX`.
+**Conclusion:** The `pievert_to_d3d9()` conversion should use `pDst->tu = (float)pSrc->tu * INV_TEX_SIZE`. This is already implemented. **Risk R-10 is mitigated.**
 
 ### Q4. What is `iV_SCANTABLE_MAX`? (Risk R-08)
-**Priority: Medium — resolve in Phase 2**
+**Priority: Medium**
+**Status:** ✅ **Resolved — `iV_SCANTABLE_MAX = 1024`. Will overflow at 1080p.**
 
-Check `Ivisdef.h` for the definition of `iV_SCANTABLE_MAX`. If it is `480` or less, the scantable will overflow at 1080p. The scantable is used for line rendering and 2D blitting in the software path — with D3D9, this table may be entirely unused for the hardware rendering path. Confirm whether any D3D path code indexes it.
+From `Ivisdef.h:27`:
+```c
+#define iV_SCANTABLE_MAX    1024
+```
+
+The scantable is declared in the `iSurface` struct (`Ivisdef.h:73`):
+```c
+int32 scantable[iV_SCANTABLE_MAX];  // currently uses 4k per structure (!)
+```
+
+**Usage analysis** — the scantable is indexed by Y-coordinate in:
+- `Rendfunc.c:230,697` — software line/box rendering (indexed by `i` = scanline Y)
+- `TextDraw.c:862,888,1091` — software text rendering (indexed by `y + h`)
+- `D3dmode.c:48` — initialization: `rendSurface.scantable[i] = i * WIDTH_D3D`
+- `Rendmode.c:184` — initialization: `s->scantable[i] = i * width`
+
+At 1080p, `y` values will reach up to `1079`, which exceeds `iV_SCANTABLE_MAX = 1024` → **buffer overrun**.
+
+**Mitigation options:**
+1. Increase `iV_SCANTABLE_MAX` to `2160` (supports up to 4K) — simple but adds 8.4 KB per `iSurface` instance.
+2. Replace scantable lookups with `y * width` multiplication at usage sites — eliminates the array entirely.
+3. Confirm whether `Rendfunc.c` and `TextDraw.c` software paths are actually reachable when `pie_Hardware() == TRUE` (ENGINE_D3D). If they are dead code in the D3D path, the overflow is theoretical.
+
+**Action required in Phase 6** when supporting resolutions above 1024 lines.
 
 ### Q5. Does `getdxver.cpp` (the only `.cpp` file) conflict with the C-only build?
 **Priority: Low**
+**Status:** ✅ **Resolved — no conflict. File is not compiled.**
 
-`getdxver.cpp` is present in the legacy project files. If it is included in the CMake build, it may cause linker issues with name mangling. Identify whether it is active in the CMake build and either exclude it or add `extern "C"` guards.
+`getdxver.cpp` exists at `NeuronClient/ivis02/getdxver.cpp` but is **not referenced in any `CMakeLists.txt`**. It is a legacy Microsoft sample (copyright 1995-1997) that detects DirectX version at runtime. It includes `<ddraw.h>`, `<dinput.h>`, and `<d3drm.h>`.
+
+Since it is not in the build, it causes no compilation or linker issues. It can be deleted as dead code or left in place — it is harmless.
 
 ### Q6. How does the `Framework` layer pass `HWND` to the rendering system?
-**Priority: Medium — resolve in Phase 1**
+**Priority: Medium**
+**Status:** ✅ **Resolved — call chain is `D3dmode.c` → `screenGetHWnd()` → `Screen.c:hWndMain`**
 
-`D3D9_InitDevice()` requires the window handle `HWND`. Currently the D3D3 path receives this via `screenGetMode()` / DirectDraw cooperative level. Confirm the call chain from `WinMain` / `Ivi.c` through `D3dmode.c` to locate where the `HWND` is currently obtained. The D3D9 init path needs the same `HWND`.
+The HWND flow is:
+1. `D3dmode.c:52` calls `InitD3D(screenGetHWnd(), (g_ScreenMode == SCREEN_FULLSCREEN))`.
+2. `screenGetHWnd()` is defined in `Screen.c:952` and returns `hWndMain`.
+3. `hWndMain` is set in `Screen.c:995` by `screenInitialise()` which receives the window handle from `WinMain`.
+4. `InitD3D()` in `D3drender.c:91` receives the HWND and passes it to `D3DPRESENT_PARAMETERS.hDeviceWindow` at line 107.
+
+**This call chain is already functional in the D3D9 migration.** No change needed — `screenGetHWnd()` is API-agnostic (returns a plain `HWND` from a global variable). It does not depend on DirectDraw and will survive the Framework `Screen.c` migration.
 
 ### Q7. Are any textures animated via DirectDraw surface flipping?
 **Priority: Medium**
+**Status:** ✅ **Resolved — No. Texture animation is UV-based (tile sheet), not surface flipping.**
 
-`iTexAnim` is referenced in `iIMDPoly` and `PIED3DPOLY`. Texture animation in D3D3 era engines was sometimes implemented by swapping the active DD surface. If this is the case, the animation system needs a corresponding update to swap `IDirect3DTexture9*` pointers instead.
+`iTexAnim` in `Piedraw.c` implements animation by offsetting `tu`/`tv` coordinates to select different frames within a 256×256 texture tile sheet:
+
+```c
+// Piedraw.c:1121-1129
+framesPerLine = 256 / poly->pTexAnim->textureWidth;
+vFrame = 0;
+while (frame >= framesPerLine) {
+    frame -= framesPerLine;
+    vFrame += poly->pTexAnim->textureHeight;
+}
+uFrame = frame * poly->pTexAnim->textureWidth;
+// Then: poly->pVrts[j].tu += uFrame; poly->pVrts[j].tv += vFrame;
+```
+
+This is pure integer UV arithmetic. **No DD surface swapping, no texture pointer changes.** The animation system is completely API-agnostic and requires no migration work.
 
 ### Q8. Does the `Widget` system directly access any `LPDIRECTDRAWSURFACE4`?
-**Priority: Low — check in Phase 1**
+**Priority: Low**
+**Status:** ✅ **Resolved — No. Zero DirectDraw references in Widget code.**
 
-The `Widget` layer sits above the renderer and should only call the public renderer API in `Piefunc.c` / `PieBlitFunc.c`. Verify no widget code has a direct DD surface dependency (e.g., for screenshot or off-screen rendering).
+A grep of all `.c` and `.h` files in `NeuronClient/Widget/` for `LPDIRECTDRAW`, `LPDIRECTDRAWSURFACE`, `ddraw.h`, `screenGetSurface`, and `screenGetBackBuffer` returns **zero matches**. The Widget layer communicates exclusively through the public renderer API (`Piefunc.c` / `PieBlitFunc.c`). No migration work is needed for Widgets.
 
 ---
 
@@ -1301,6 +1379,154 @@ All paths relative to repository root `C:\Users\zwali\source\repos\StarStrike.RT
 - Build root: `CMakeLists.txt`
 - Client build: `NeuronClient/CMakeLists.txt`
 - Executable build: `StarStrike/CMakeLists.txt`
+
+---
+
+## 18. Implementation Status
+
+*Last updated after Framework layer migration and `ddraw.lib` removal — all changes compile cleanly.*
+
+### 18.1 Phase Completion Summary
+
+| Phase | Description | Status | Notes |
+|---|---|---|---|
+| **Phase 1** | D3D9 device + frame loop | ✅ **Complete** | `D3drender.c/h` fully rewritten. `D3D9GLOBALS`, `BeginSceneD3D`/`EndSceneD3D` with device-lost handling. |
+| **Phase 2** | Texture system | ✅ **Complete** | `Dx6TexMan.c` uses `IDirect3DDevice9_CreateTexture` + `LockRect`. `Texd3d.h` defines `TEXPAGE_D3D` with `IDirect3DTexture9*`. Radar surface migrated. |
+| **Phase 3** | Fixed-point math conversion | ✅ **Implicit** | `D3DVAL` compat macro added to `Piedef.h`. `PIE_D3D9_VERTEX` type used at draw boundary. Full `pievert_to_d3d9()` function deferred — vertex conversion is inline in draw paths. |
+| **Phase 4** | Vertex format + draw calls | ✅ **Complete** | `PIE_D3D9_VERTEX` and `PIE_FVF_D3D9` defined in `Piedef.h`. All draw paths in `D3drender.c`, `Piedraw.c`, `Piefunc.c` use `IDirect3DDevice9_DrawPrimitiveUP`. |
+| **Phase 5** | State management | ✅ **Complete** | `D3D9_SetDefaultRenderStates()` in `D3drender.c`. Translucency mode mapping via `D3DRS_SRCBLEND`/`D3DRS_DESTBLEND`. Alpha-test replaces color keying. Fog via `D3DRS_FOG*`. Viewport via `D3DVIEWPORT9`. |
+| **Phase 6** | Resolution + widescreen | ⏳ **Not started** | Framework migration complete — no longer blocked. Can proceed with dynamic resolution support. |
+| **Phase 7** | Video playback | ⏳ **Not started** | `NeuronClient/Sequence/` files not present in main working tree. |
+| **Phase 8** | Build system | ✅ **Complete** | `d3d9.lib` linked. `ddraw.lib` **removed**. `d3dx.lib` removed. `<d3d.h>` and `<d3drm.h>` removed from all files. |
+| **Phase 9** | Validation + testing | ⏳ **Not started** | Framework migration complete — runtime testing can begin. |
+
+### 18.2 Renderer Layer (`NeuronClient/ivis02/`) — File Status
+
+**Zero D3D3/DirectDraw symbols remain in the renderer layer** (confirmed via grep — no `LPDIRECTDRAW*`, `LPDIRECT3D3`, `LPDIRECT3DDEVICE3`, `LPDIRECT3DTEXTURE2`, `DDPIXELFORMAT`, `DDSURFACEDESC`, `D3DTLVERTEX`, `D3DRENDERSTATE_*`, `D3DTBLEND_*`, `#include <ddraw.h>`, or `#include <d3d.h>` in any `.c`/`.h` file under `ivis02/`).
+
+| File | Planned Change | Actual Status | Details |
+|---|---|---|---|
+| `D3drender.h` | Full rewrite | ✅ **Done** | `D3D9GLOBALS` struct, all function signatures use D3D9 types. Includes `<d3d9.h>`. |
+| `D3drender.c` | Full rewrite | ✅ **Done** | `D3D9_InitDevice`, `BeginSceneD3D`/`EndSceneD3D` with Present + device-lost. `D3D9_SetDefaultRenderStates`. `D3DDrawPoly`/`D3D_PIEPolygon` via `DrawPrimitiveUP`. Translucency mode mapping. Fog, depth, alpha-test state setters. Viewport + resolution change via `Reset`. |
+| `D3dmode.h` | Full rewrite | ✅ **Done** | DD surface dependencies removed. |
+| `D3dmode.c` | Full rewrite | ✅ **Done** | `_mode_D3D_*` functions replaced. |
+| `Dx6TexMan.h` | Full rewrite | ✅ **Done** | Clean API — `dtm_LoadTexSurface`, `dtm_LoadRadarSurface`, `dx6_SetBilinear`. |
+| `Dx6TexMan.c` | Full rewrite | ✅ **Done** | `IDirect3DDevice9_CreateTexture` with `D3DPOOL_MANAGED`. Palette-to-ARGB conversion at load time. Radar texture. Bilinear via `SetSamplerState`. |
+| `Texd3d.h` | Full rewrite | ✅ **Done** | `TEXPAGE_D3D` uses `IDirect3DTexture9*`. Includes `<d3d9.h>`. |
+| `Texd3d.c` | Full rewrite | ✅ **Done** | DD surface ops replaced with D3D9 texture ops. |
+| `Piedef.h` | Minor | ✅ **Done** | `PIE_D3D9_VERTEX`, `PIE_FVF_D3D9`, `D3DVAL` compat macro added. `PIED3DPOLY.pVrts` uses `PIE_D3D9_VERTEX*`. |
+| `PiePalette.h` | Partial | ✅ **Done** | `pie_GetWinPal()` removed. `PALETTEENTRY*` remains (Windows GDI type, not DD). |
+| `PiePalette.c` | Partial | ✅ **Done** | `pie_GetWinPal()` removed. `pal_Make16BitPalette()` rewritten — hardcoded R5G6B5 format, `DDPIXELFORMAT` eliminated. `palette16Bit[]` still populated for `TextDraw.c` text rendering. |
+| `PieState.h` | Moderate | ✅ **Done** | `pie_SetDirectDrawDeviceName`/`pie_GetDirectDrawDeviceName` removed. Dead engine enum values kept for branch compilation. |
+| `PieState.c` | Moderate | ✅ **Done** | `DDrawDriverName[256]` and associated functions removed. Render state setters use D3D9 enums via `D3drender.c`. |
+| `Piedraw.c` | Minor | ✅ **Done** | Uses `PIE_D3D9_VERTEX` and D3D9 draw path. |
+| `Piefunc.h` | Minor | ✅ **Done** | `pie_RenderImageToSurface` signature updated — `LPDIRECTDRAWSURFACE4` removed. |
+| `Piefunc.c` | Minor | ✅ **Done** | `pie_RenderImageToSurface` stubbed (dead path). Uses `PIE_D3D9_VERTEX`. |
+| `PieBlitFunc.h` | Minor | ✅ **Done** | No DD types. |
+| `PieBlitFunc.c` | Minor | ✅ **Done** | `bufferTo16Bit()` uses hardcoded R5G6B5. |
+| `TextDraw.h` | Minor | ✅ **Done** | `pie_DrawTextToSurface` signature updated — `LPDIRECTDRAWSURFACE4` removed. |
+| `TextDraw.c` | Minor | ✅ **Done** | `#include <ddraw.h>` removed. `pie_DrawTextToSurface` stubbed (no callers). |
+| `PieMode.c` | Minor | ✅ **Done** | Calls `_close_D3D`, `_renderBegin_D3D`, `_renderEnd_D3D` which target D3D9 functions. |
+| `Rendmode.h` | Minor | ✅ **Done** | `REND_D3D_RGB/HAL/REF` constants kept for legacy branch compilation. |
+| `PieMatrix.h/.c` | None | ✅ **No change needed** | Fixed-point math unchanged. |
+| `PieClip.h/.c` | None | ✅ **No change needed** | Clipping unchanged. |
+| `PieTexture.h/.c` | Moderate | ✅ **Done** | Calls `DTM9_*` functions. |
+| `BitImage.h/.c` | None | ✅ **No change needed** | CPU-side image data. |
+| `Imd.h/.c` | None | ✅ **No change needed** | Model loading. |
+
+### 18.3 Framework Layer (`NeuronClient/Framework/`) — Migration Complete
+
+The Framework layer has been fully decoupled from DirectDraw at the linker level. DD init is stubbed, all DD vtable calls are NULL-guarded, and `ddraw.lib` has been removed from the build. `<ddraw.h>` remains included in 4 Framework files for type definitions only (no linker dependency).
+
+| File | Status | Details |
+|---|---|---|
+| `Screen.c` | ✅ **Migrated** | `screenInitialise()` stubs DD init — sets `psDD`/`psFront`/`psBack` to NULL, hardcodes R5G6B5 pixel format. `screenFlip()` maintains flip sync state only — D3D9 Present handled by renderer. All DD vtable calls (`Lock`/`Unlock`/`Blt`/`Flip`) NULL-guarded with early return. `screenShutDown()` cleans up sync objects. |
+| `Screen.h` | ✅ **Functional** | `screenGetDDObject()` returns NULL. `screenGetSurface()` returns NULL. `screenGetBackBufferPixelFormat()` returns hardcoded R5G6B5 struct. All callers guarded. |
+| `Font.c` | ✅ **Guarded** | `fontPrint()` and `fontPrintChar()` return early when `psBack == NULL`. |
+| `Cursor.c` | ✅ **Guarded** | Cursor thread skips DD blitting when `psFront == NULL` (sleeps instead). |
+| `Surface.c` | ✅ **Guarded** | `surfCreate()`, `surfRecreate()`, `surfLoadFrom8Bit()`, `surfLoadFromSurface()`, `DDSetColorKey()` all return early when DD objects are NULL. |
+| `Dderror.c` | ✅ **Stubbed** | `DDErrorToString()` replaced with generic HRESULT-to-hex stub. `<ddraw.h>`, `<d3d.h>`, `<d3drm.h>` removed. |
+| `Image.c` | ✅ **Cleaned** | `#include <ddraw.h>` removed (unused). |
+| `Input.c` | ✅ **Cleaned** | `#include <ddraw.h>` removed (unused). |
+| `Frame.h` | 🔶 **Type dependency** | Includes `"ddraw.h"` for type definitions used by `Screen.h`. |
+
+**Remaining `<ddraw.h>` includes (type definitions only — no linker dependency):**
+- `Screen.c`, `Screen.h`, `Cursor.c`, `Frame.h` — 4 files total
+
+**Game-side callers updated:**
+
+| Caller | Function | Status |
+|---|---|---|
+| `StarStrike/Disp2D.c` (3 calls) | `screenGetSurface()` | ✅ NULL-guarded — returns early when `psBack == NULL` |
+| `StarStrike/MultiInt.c` (1 call) | `screenGetBackBufferPixelFormat()` | ✅ Works — returns hardcoded R5G6B5 struct (`dwRGBBitCount == 16`) |
+| `StarStrike/SeqDisp.c` (11 calls) | `screenGetSurface()`, `screenGetBackBufferPixelFormat()` | 🔶 Video playback — deferred to Phase 7. NULL surface causes graceful failure. |
+
+### 18.4 Build System Status
+
+| Item | Status | Detail |
+|---|---|---|
+| `d3d9.lib` | ✅ Linked | In `StarStrike/CMakeLists.txt` |
+| `ddraw.lib` | ✅ **Removed** | No linker dependency on DirectDraw |
+| `d3dx.lib` | ✅ Removed | Was D3DX for D3D3 |
+| `d3dx9.lib` | ⏳ Not added | Optional — not needed for current migration |
+| `dxguid.lib` | ✅ Linked | Provides D3D9 GUIDs |
+| `dplayx.lib` | ✅ Linked | DirectPlay — separate from DD/D3D migration |
+| `<d3d9.h>` | ✅ Used | In `D3drender.h`, `Texd3d.h`, `Piedef.h` |
+| `<ddraw.h>` | ✅ Removed from renderer | Remains in 4 Framework files for type definitions only |
+| `<d3d.h>` | ✅ **Removed** | Zero includes remaining |
+| `<d3drm.h>` | ✅ **Removed** | Zero includes remaining |
+| Build result | ✅ **Clean** | `cmake --build .` succeeds with zero errors, zero `ddraw.lib` linker dependency |
+
+### 18.5 Dead Code Cleaned Up
+
+| Item | Location | Action Taken |
+|---|---|---|
+| `pie_GetWinPal()` | `PiePalette.c` / `PiePalette.h` | ✅ **Removed** — function and declaration deleted |
+| `pie_SetDirectDrawDeviceName()` | `PieState.c` / `PieState.h` | ✅ **Removed** — function, declaration, and `DDrawDriverName[256]` deleted |
+| `pie_GetDirectDrawDeviceName()` | `PieState.c` / `PieState.h` | ✅ **Removed** — function and declaration deleted |
+| `DDErrorToString()` full switch | `Dderror.c` | ✅ **Stubbed** — 330-line switch replaced with generic hex formatter |
+| `#include <ddraw.h>` in `Image.c` | `Image.c` | ✅ **Removed** — no DD types used |
+| `#include <ddraw.h>` in `Input.c` | `Input.c` | ✅ **Removed** — no DD types used |
+| `#include <d3d.h>` in `Dderror.c` | `Dderror.c` | ✅ **Removed** |
+| `#include <d3drm.h>` in `Dderror.c` | `Dderror.c` | ✅ **Removed** |
+
+**Remaining dead code (low priority — compiles harmlessly):**
+
+| Item | Location | Reason Kept |
+|---|---|---|
+| `pie_DrawTextToSurface()` | `TextDraw.c` | Stubbed — no callers. Harmless. |
+| `pie_RenderImageToSurface()` | `Piefunc.c` | Stubbed — no callers. Harmless. |
+| `pie_D3DRenderForFlip()` | `PieBlitFunc.c` | Always no-ops. Harmless. |
+| `ENGINE_4101_REMOVED` / `ENGINE_SR_REMOVED` / `ENGINE_GLIDE_REMOVED` | `PieState.h` | ~60 game-side `if (ENGINE_GLIDE)` branches reference these. Dead at runtime but required for compilation. |
+| `REND_D3D_RGB` / `REND_D3D_HAL` / `REND_D3D_REF` | `Rendmode.h` | Legacy mode constants — kept for branch compilation. |
+| `psWinPal` global | `PiePalette.c` | Used by `pal_AddNewPalette()` for `screenSetPalette()` (itself a no-op). |
+
+### 18.6 Remaining Work — Next Steps
+
+**Priority 1 — Resolution + widescreen (Phase 6, now unblocked):**
+- Framework migration is complete — Phase 6 can proceed
+- Update `rendSurface` for dynamic resolution (xcentre/ycentre scaling)
+- Increase `iV_SCANTABLE_MAX` from 1024 to 2160 (Risk R-08)
+- Add D3D9 display mode enumeration
+- Add `D3DFMT_X8R8G8B8` fallback for back buffer format (Risk R-04)
+
+**Priority 2 — Video playback (Phase 7):**
+- Locate or recreate `Sequence.c`/`Sequence.h` in main working tree
+- Test `WINSTR.LIB` CPU buffer path (Risk R-01)
+- Implement D3D9 dynamic texture upload for video frames
+- Update `SeqDisp.c` callers of `screenGetSurface()` (11 call sites)
+
+**Priority 3 — Validation (Phase 9):**
+- Runtime test at 640×480 baseline
+- Device-lost recovery test (Alt-Tab)
+- Resolution matrix testing
+- Visual regression comparison
+
+**Priority 4 — Cosmetic cleanup (optional):**
+- Rename `REND_ENGINE::ENGINE_D3D` → `ENGINE_D3D9` across all files
+- Rename `TEXPAGE_D3D` → `TEXPAGE_D3D9`
+- Remove ~60 dead `if (ENGINE_GLIDE)` branches in game-side code
+- Replace `<ddraw.h>` in Framework files with stub header (eliminate SDK dependency)
 
 ---
 

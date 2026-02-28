@@ -144,6 +144,7 @@ void fontPrint(SDWORD x, SDWORD y, STRING *pFormat, ...)
 	UDWORD		px,py, bit;
 	PROP_CHAR	*psChar;
 
+	if (psBack == NULL) return;
 
 	va_start(pArgs, pFormat);
 	vsprintf(aTxtBuff, pFormat, pArgs);
@@ -308,6 +309,7 @@ void fontPrintChar(SDWORD x,SDWORD y, PROP_CHAR *psChar, UDWORD height)
 		"fontPrintChar: Invalid character data pointer"));
 
 	/* See if the character is on screen */
+	if (psBack == NULL) return;
 	if (x + psChar->width < 0 || x >= (SDWORD)screenWidth)
 	{
 		return;

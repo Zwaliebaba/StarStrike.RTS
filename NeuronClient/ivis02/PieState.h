@@ -120,8 +120,6 @@ extern REND_ENGINE pie_GetRenderEngine(void);
 extern BOOL	pie_Hardware(void);
 extern void pie_SetDepthBufferStatus(DEPTH_MODE depthMode);
 extern void pie_SetGammaValue(float val);
-extern void pie_SetDirectDrawDeviceName(char* pDDDeviceName);
-extern char* pie_GetDirectDrawDeviceName(void);
 extern void pie_SetDirect3DDeviceName(char* pD3DDeviceName);
 extern char* pie_GetDirect3DDeviceName(void);
 //renderer capability
