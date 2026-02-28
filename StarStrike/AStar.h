@@ -1,9 +1,9 @@
+#pragma once
+
 /*
  * AStar.h
  *
  */
-#ifndef _AStar_h
-#define _AStar_h
 
 
 // the buffer to store a route in
@@ -55,4 +55,3 @@ extern SDWORD fpathAStarRoute(SDWORD routeMode, ASTAR_ROUTE *psRoutePoints,
 // Check los between two tiles
 extern BOOL fpathTileLOS(SDWORD x1,SDWORD y1, SDWORD x2,SDWORD y2);
 
-#endif

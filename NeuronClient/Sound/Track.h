@@ -1,7 +1,7 @@
+#pragma once
+
 /***************************************************************************/
 
-#ifndef _TRACK_H_
-#define _TRACK_H_
 
 /***************************************************************************/
 /* defines */
@@ -75,7 +75,7 @@ typedef struct TRACK
 	BOOL		bMemBuffer;				/* memory buffer flag       */
 	BOOL		bCompressed;			/* compression data flag    */
 	void *		pMem;					/* pointer to audio data    */
-	STRING		*pName;					// resource name of the track
+	char *pName;					// resource name of the track
 	UDWORD		resID;					// hashed name of the WAV
 }
 TRACK;
@@ -134,6 +134,5 @@ void	sound_SetTrackTimeLastFinished( SDWORD iTrack, UDWORD iTime );
 
 /***************************************************************************/
 
-#endif	// _TRACK_H_
 
 /***************************************************************************/

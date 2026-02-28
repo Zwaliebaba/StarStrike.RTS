@@ -219,7 +219,7 @@ extern FEATURE			*IdToFeature(UDWORD id,UDWORD player);
 extern DROID_TEMPLATE	*IdToTemplate(UDWORD tempId,UDWORD player);
 extern DROID_TEMPLATE	*NameToTemplate(CHAR *sName,UDWORD player);
 
-extern STRING *getPlayerName	(UDWORD player);
+extern char *getPlayerName	(UDWORD player);
 extern BOOL isHumanPlayer		(UDWORD player);				//to tell if the player is a computer or not.
 extern BOOL myResponsibility	(UDWORD player);
 extern BOOL responsibleFor		(UDWORD player, UDWORD playerinquestion);
@@ -280,10 +280,10 @@ extern BOOL lobbyInitialise		(VOID);							// for Init.c
 extern BOOL multiShutdown		(VOID);	
 extern BOOL sendLeavingMsg		(VOID);
 
-extern BOOL hostCampaign		(STRING *sGame, STRING *sPlayer);
-extern BOOL joinCampaign		(UDWORD gameNumber, STRING *playername);
-//extern BOOL hostArena			(STRING *sGame, STRING *sPlayer);
-//extern BOOL joinArena			(UDWORD gameNumber, STRING *playername);
+extern BOOL hostCampaign		(char *sGame, char *sPlayer);
+extern BOOL joinCampaign		(UDWORD gameNumber, char *playername);
+//extern BOOL hostArena			(char *sGame, char *sPlayer);
+//extern BOOL joinArena			(UDWORD gameNumber, char *playername);
 extern VOID	playerResponding	(VOID);
 extern BOOL multiGameInit		(VOID);
 extern BOOL multiGameShutdown	(VOID);

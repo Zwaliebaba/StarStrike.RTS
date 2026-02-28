@@ -1,17 +1,10 @@
+#pragma once
+
 /*
  * Font.h
  *
  * Definitions for the font system.
  */
-#ifndef _font_h
-#define _font_h
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
 
 /*************************************************************************************
  *
@@ -43,7 +36,7 @@ typedef struct _prop_char
 
 	/* The pixel data
 	 * This is a square array of bytes wide enough to store width bits
-	 * and the same height as the font.
+	 * && the same height as the font.
 	 */
 	UBYTE	*pData;
 } PROP_CHAR;
@@ -88,13 +81,13 @@ extern void fontSetColour(UBYTE red, UBYTE green, UBYTE blue);
 extern void fontSetCacheColour(UDWORD colour);
 
 /* Print text in the current font at location x,y */
-extern void fontPrint(SDWORD x, SDWORD y, STRING *pFormat, ...);
+extern void fontPrint(SDWORD x, SDWORD y, char *pFormat, ...);
 
 /* Directly print a single font character from the PROP_CHAR struct */
 extern void fontPrintChar(SDWORD x,SDWORD y, PROP_CHAR *psChar, UDWORD height);
 
-/* Return the pixel width of a string */
-extern UDWORD fontPixelWidth(STRING *pString);
+/* Return the pixel width of a char */
+extern UDWORD fontPixelWidth(char *pString);
 
 /* Return the index into the PROP_CHAR array for a character code.
  * If the code isn't printable, return 0 (space).
@@ -109,5 +102,3 @@ extern BOOL fontLoad(UBYTE *pFileData, UDWORD fileSize, PROP_FONT **ppsFont);
 
 /* Release all the memory used by a font */
 extern void fontFree(PROP_FONT *psFont);
-
-#endif

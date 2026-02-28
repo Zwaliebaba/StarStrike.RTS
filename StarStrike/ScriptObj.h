@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ScriptObj.h
  *
  * Object access functions for the script library
  *
  */
-#ifndef _scriptobj_h
-#define _scriptobh_h
 
 
 // id's for object variables
@@ -62,6 +62,4 @@ extern BOOL scrValDefSave(INTERP_TYPE type, UDWORD data, UBYTE *pBuffer, UDWORD 
 // default value load routine
 extern BOOL scrValDefLoad(SDWORD version, INTERP_TYPE type, UBYTE *pBuffer, UDWORD size, UDWORD *pData);
 
-
-#endif
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Formation.h
  *
  * Control units moving in formation.
  *
  */
-#ifndef _formation_h
-#define _formation_h
 
 #include "FormationDef.h"
 
@@ -51,6 +51,5 @@ extern SDWORD formationObjRadius(BASE_OBJECT *psObj);
 
 extern SDWORD formationGetSpeed( FORMATION *psFormation );
 
-#endif
 
 

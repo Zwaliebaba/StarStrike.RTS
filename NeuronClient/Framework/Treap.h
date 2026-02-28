@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Treap.h
  *
@@ -9,15 +11,13 @@
  *      12 bytes for the root
  *      20 bytes per node
  */
-#ifndef _treap_h
-#define _treap_h
 
 #include "Types.h"
 #include "Debug.h"
 #include "Mem.h"
 #include "Heap.h"
 
-/* Turn on and off the treap debugging */
+/* Turn on && off the treap debugging */
 #ifdef DEBUG
 #define DEBUG_TREAP TRUE
 #else
@@ -45,7 +45,7 @@ typedef SDWORD (*TREAP_CMP)(UDWORD key1, UDWORD key2);
 
 /* The debug info */
 #define TREAP_NODE_DEBUG \
-	STRING				*pFile;	/* file the node was created in */ \
+	char *pFile;	/* file the node was created in */ \
 	SDWORD				line	/* line the node was created at */
 
 typedef struct _treap_node
@@ -66,7 +66,7 @@ typedef struct _treap
 	TREAP_NODE		*psRoot;	// root of the tree
 
 #if DEBUG_TREAP
-	STRING			*pFile;		// file the treap was created in
+	char *pFile;		// file the treap was created in
 	SDWORD			line;		// line the treap was created at
 #endif
 } TREAP;
@@ -74,11 +74,11 @@ typedef struct _treap
 /****************************************************************************************/
 /*                           Function Protoypes                                         */
 /*                                                                                      */
-/*      These should not be called directly - use the macros below                      */
+/*      These should !be called directly - use the macros below                      */
 
 
 /* Store the location in C code at which a call to the heap was made */
-extern void treapSetCallPos(STRING *pFileName, SDWORD lineNumber);
+extern void treapSetCallPos(char *pFileName, SDWORD lineNumber);
 
 /* Function type for object equality */
 //typedef BOOL (*TREAP_EQUAL)(void *pObj1, void *pObj2);
@@ -103,7 +103,7 @@ extern void *treapFind(TREAP *psTreap, UDWORD key);
 /* Release all the nodes in the treap */
 extern void treapReset(TREAP *psTreap);
 
-/* Destroy a treap and release all the memory associated with it */
+/* Destroy a treap && release all the memory associated with it */
 extern void treapDestroy(TREAP *psTreap);
 
 /* Display the treap structure using DBPRINTF */
@@ -181,5 +181,3 @@ extern SDWORD treapStringCmp(UDWORD key1, UDWORD key2);
 
 #endif
 
-
-#endif

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Group.h
  *
  * Link droids together into a group for AI etc.
  *
  */
-#ifndef _group_h
-#define _group_h
 
 #include "Order.h"
 #include "Orderdef.h"
@@ -66,6 +66,5 @@ extern void orderGroupObj(DROID_GROUP *psGroup, DROID_ORDER order, BASE_OBJECT *
 /* set the secondary state for a group of droids */
 extern void grpSetSecondary(DROID_GROUP *psGroup, SECONDARY_ORDER sec, SECONDARY_STATE state);
 
-#endif
 
 

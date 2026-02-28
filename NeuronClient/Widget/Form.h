@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Form.h
  *
  * Definitions for the form functions.
  *
  */
-#ifndef _form_h
-#define _form_h
 
 /* The widget heaps */
 extern OBJ_HEAP	*psFormHeap;
@@ -20,7 +20,7 @@ extern OBJ_HEAP	*psTFormHeap;
 	UWORD		Ax0,Ay0,Ax1,Ay1; 	/* Working coords for animations. */ \
 	UDWORD		animCount; 			/* Animation counter. */ \
 	UDWORD		startTime;			/* Animation start time */ \
-	SDWORD		aColours[WCOL_MAX];		/* Colours for the form and its widgets. signed since aColours -1 means use bitmap. */ \
+	SDWORD		aColours[WCOL_MAX];		/* Colours for the form && its widgets. signed since aColours -1 means use bitmap. */ \
 	WIDGET		*psLastHiLite;	/* The last widget to be hilited */ \
 								/* This is used to track when the mouse moves */ \
 								/* off something */ \
@@ -39,7 +39,7 @@ typedef struct _w_minortab
 {
 	/* Graphics data for the tab will go here */
 	WIDGET		*psWidgets;			// Widgets on the tab
-	STRING		*pTip;				// Tool tip
+	char *pTip;				// Tool tip
 } W_MINORTAB;
 
 /* Information for a major tab */
@@ -49,7 +49,7 @@ typedef struct _w_majortab
 	UWORD			lastMinor;					// Store which was the last selected minor tab
 	UWORD			numMinor;
 	W_MINORTAB		asMinor[WFORM_MAXMINOR];	// Minor tab information
-	STRING			*pTip;
+	char *pTip;
 } W_MAJORTAB;
 
 /* The tabbed form data structure */
@@ -99,7 +99,7 @@ typedef struct _w_clickform
 	FORM_BASE;
 
 	UDWORD		state;					// Button state of the form
-	STRING		*pTip;					// Tip for the form
+	char *pTip;					// Tip for the form
 	SWORD HilightAudioID;				// Audio ID for form clicked sound
 	SWORD ClickedAudioID;				// Audio ID for form hilighted sound
 	WIDGET_AUDIOCALLBACK AudioCallback;	// Pointer to audio callback function
@@ -168,6 +168,4 @@ extern void formHiLiteLost(W_FORM *psWidget, W_CONTEXT *psContext);
 extern void formDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 extern void formDisplayClickable(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 extern void formDisplayTabbed(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
-
-#endif
 

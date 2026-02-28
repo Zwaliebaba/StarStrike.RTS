@@ -1,13 +1,13 @@
-/***************************************************************************/
-
-#ifndef _D3DMODE_H_
-#define _D3DMODE_H_
+#pragma once
 
 /***************************************************************************/
 
-iBool	_mode_D3D_RGB( void );
-iBool	_mode_D3D_HAL( void );
-iBool	_mode_D3D_REF( void );
+
+/***************************************************************************/
+
+BOOL	_mode_D3D_RGB( void );
+BOOL	_mode_D3D_HAL( void );
+BOOL	_mode_D3D_REF( void );
 void	_close_D3D( void );
 void	_renderBegin_D3D( void );
 void	_renderEnd_D3D( void );
@@ -30,6 +30,5 @@ void	TransBoxFill_D3D(UDWORD x0, UDWORD y0, UDWORD x1, UDWORD y1);
 
 /**********************************************************************/
 
-#endif	/* _IVID3D_H_ */
 
 /***************************************************************************/

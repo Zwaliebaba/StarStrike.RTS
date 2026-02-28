@@ -1,9 +1,9 @@
-#ifndef _effects_h
-#define _effects_h
+#pragma once
+
 /*	
 	All singing, all dancing new effects code. Does all the stuff
-	that explosion.c and most of particle.c used to do as well as
-	all the construction dust clouds, body parts and all other
+	that explosion.c && most of particle.c used to do as well as
+	all the construction dust clouds, body parts && all other
 	temporary world 'effects 
 	Alex McLean, Pumpkin Studios, EIDOS Interactive, 1998.
 */
@@ -27,7 +27,7 @@ EFFECT_FIRE,
 EFFECT_FIREWORK
 }EFFECT_GROUP;
 
-/* Might not even need this */
+/* Might !even need this */
 typedef enum
 {
 EXPLOSION_TYPE_SMALL,
@@ -84,7 +84,7 @@ FIREWORK_TYPE_LAUNCHER,
 
 }EFFECT_TYPE;
 
-/* Is the slot currently being used and is it active? */
+/* Is the slot currently being used && is it active? */
 typedef enum
 {
 ES_INACTIVE,
@@ -228,10 +228,9 @@ extern void	initPerimeterSmoke			( iIMDShape *pImd, UDWORD x, UDWORD y, UDWORD z
 #define SKY_SHIMMY_BASE	((DEG(1)*SKY_MULT)/2)
 #define SKY_SHIMMY (SKY_SHIMMY_BASE - (rand()%(2*SKY_SHIMMY_BASE)))
 extern BOOL	readFXData( UBYTE *pFileData, UDWORD fileSize );
-extern BOOL	writeFXData( STRING *pFileName );
+extern BOOL	writeFXData( char *pFileName );
 extern	void	effectSetSize(UDWORD size);
 extern void	effectSetLandLightSpec(LAND_LIGHT_SPEC spec);
 
 
 
-#endif

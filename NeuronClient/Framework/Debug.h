@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************************
  *
  *	File : Debug.h
@@ -7,8 +9,8 @@
  *	Function:	Provides a large number of macros for debugging output.
  *
  *	Comments:	The basic macros : DBPRINTF, DBMB, DBMONOPRINTF, etc are turned on if
- *				either DEBUG is defined or a MSVC Debug build is specified.  They are
- *				turned off by default and if NODEBUG is defined or a MSVC Release build
+ *				either DEBUG is defined || a MSVC Debug build is specified.  They are
+ *				turned off by default && if NODEBUG is defined || a MSVC Release build
  *				is specified.  Debugging can be forced to be included on a Release build
  *				by defining FORCEDEBUG.
  *
@@ -37,8 +39,6 @@
  *
  ***************************************************************************************
  */
-#ifndef _debug_h
-#define _debug_h
 
 //#define ALWAYS_ASSERT	// Define this to always process ASSERT even on release builds.
 
@@ -48,11 +48,7 @@
 
 #include <stdio.h>
 
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
-
-/* Turn on basic debugging if a MSVC debug build and NODEBUG has not been defined */
+/* Turn on basic debugging if a MSVC debug build && NODEBUG has !been defined */
 #ifdef _DEBUG
 #ifndef NODEBUG
 #ifndef DEBUG
@@ -61,7 +57,7 @@
 #endif
 #endif
 
-/* Turn off debugging if a MSVC release build and FORCEDEBUG has not been defined.
+/* Turn off debugging if a MSVC release build && FORCEDEBUG has !been defined.
    Turn on debugging if FORCEDEBUG has been defined. */
 #ifdef _NDEBUG
 #ifndef FORCEDEBUG
@@ -73,7 +69,7 @@
 #endif
 #endif
 
-/* Allow mono debugging to be turned on and off seperately */
+/* Allow mono debugging to be turned on && off seperately */
 #undef MONODEBUG
 #ifdef FORCEMONODEBUG
 #define MONODEBUG
@@ -191,7 +187,7 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
  *
  * DBMB
  *
- * Displays a message box containing a string and waits until OK is clicked on the
+ * Displays a message box containing a string && waits until OK is clicked on the
  * message box.
  * Arguments are as for DBPRINTF.
  */
@@ -215,7 +211,7 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
  * DBERROR
  *
  * Error message macro - use this if the error should be reported even in
- * production code (i.e. out of memory errors, file not found etc.)
+ * production code (i.e. out of memory errors, file !found etc.)
  *
  * Arguments as for printf
  */
@@ -266,7 +262,7 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
 
 /****************************************************************************************
  *
- * Conditional debugging macro's that can be selectively turned on or off on a file
+ * Conditional debugging macro's that can be selectively turned on || off on a file
  * by file basis.
  *
  */
@@ -469,7 +465,5 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
 #define DBMONOCR7(x,y,w,h)
 #define DBMONOCR8(x,y,w,h)
 #define DBMONOCR9(x,y,w,h)
-
-#endif
 
 #endif

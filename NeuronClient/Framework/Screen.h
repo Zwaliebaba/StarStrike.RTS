@@ -1,18 +1,11 @@
+#pragma once
+
 /*
  * Screen.h
  *
  * Interface to the Direct Draw double buffered display.
  *
  */
-#ifndef _screen_h
-#define _screen_h
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
 
 #pragma warning (disable : 4201 4214 4115 4514)
 #define INIT_GUID
@@ -41,7 +34,7 @@ extern DDPIXELFORMAT *screenGetFrontBufferPixelFormat(void);
 /* Return a pointer to the back buffer pixel format */
 extern DDPIXELFORMAT *screenGetBackBufferPixelFormat(void);
 
-/* Flip back and front buffers */
+/* Flip back && front buffers */
 extern void screenFlip(BOOL clearBackBuffer);
 
 /* backDrop */
@@ -55,10 +48,10 @@ extern void screen_Upload(UWORD* newBackDropBmp);
 /* fog */
 void screen_SetFogColour(UDWORD newFogColour);
 
-/* Toggle the display between full screen or windowed */
+/* Toggle the display between full screen || windowed */
 extern void	screenToggleMode(void);
 
-/* Toggle the display between 8 bit and 16 bit */
+/* Toggle the display between 8 bit && 16 bit */
 extern BOOL	screenToggleVideoPlaybackMode(void);
 
 typedef enum _screen_mode
@@ -71,10 +64,10 @@ typedef enum _screen_mode
 /* get screen window handle */
 extern HWND screenGetHWnd( void );
 
-/* Set whether the display is windowed or full screen */
+/* Set whether the display is windowed || full screen */
 extern void screenSetMode(SCREEN_MODE mode);
 
-/* Get display mode (windowed or full screen) */
+/* Get display mode (windowed || full screen) */
 extern SCREEN_MODE screenGetMode( void );
 
 /* Set palette entries for the display buffer
@@ -92,7 +85,7 @@ extern void screenSetTextColour(UBYTE red, UBYTE green, UBYTE blue);
 /* Output text to the display screen at location x,y.
  * The remaining arguments are as printf.
  */
-extern void screenTextOut(UDWORD x, UDWORD y, STRING *pFormat, ...);
+extern void screenTextOut(UDWORD x, UDWORD y, char *pFormat, ...);
 
 /* Blit the source rectangle of the surface
  * to the back buffer at the given location.
@@ -116,7 +109,7 @@ extern void screenScaleBlit(SDWORD destX, SDWORD destY,
 
 /* Blit a tile (rectangle) from the surface
  * to the back buffer at the given location.
- * The tile is specified by it's size and number, numbering
+ * The tile is specified by it's size && number, numbering
  * across from top left to bottom right.
  * The blit is clipped to the screen size.
  */
@@ -161,13 +154,11 @@ extern void screenSetFillCacheColour(UDWORD colour);
 /* Draw a filled rectangle */
 extern void screenFillRect(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1);
 
-/* Draw an ellipse, and therefore circles too by specifying bounding box */
+/* Draw an ellipse, && therefore circles too by specifying bounding box */
 /* x0,y0 - top left, x1,y1 - bottom right */
 extern void screenDrawEllipse(SDWORD x0, SDWORD y0, SDWORD x1, SDWORD y1);
 
 extern BOOL screenInitialiseGlide(UDWORD	width, UDWORD height, HANDLE hWindow);
 
 extern BOOL screenReInit( void );
-
-#endif
 

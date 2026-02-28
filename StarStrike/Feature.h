@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Feature.h
  *
  * Definitions for the feature structures.
  *
  */
-#ifndef _feature_h
-#define _feature_h
 
 #include "ObjectDef.h"
 #define ONEMIN			(1000 * 60)
@@ -41,11 +41,11 @@ extern void featureUpdate(FEATURE *psFeat);
 // free up a feature with no visual effects
 extern void removeFeature(FEATURE *psDel);
 
-/* Remove a Feature and free it's memory */
+/* Remove a Feature && free it's memory */
 extern void destroyFeature(FEATURE *psDel);
 
 /* get a feature stat id from its name */
-extern SDWORD getFeatureStatFromName( STRING *pName );
+extern SDWORD getFeatureStatFromName( char *pName );
 
 /*looks around the given droid to see if there is any building 
 wreckage to clear*/
@@ -54,5 +54,4 @@ extern FEATURE	* checkForWreckage(DROID *psDroid);
 extern BOOL featureDamage(FEATURE *psFeature, UDWORD damage, UDWORD weaponClass, 
                           UDWORD weaponSubClass);
 
-#endif
 

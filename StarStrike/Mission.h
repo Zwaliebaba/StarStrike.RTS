@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Mission.h
  *
  * Mission defines for the game
  *
  */
-#ifndef _mission_h
-#define _mission_h
 
 #include "Map.h"
 #include "Power.h"
@@ -35,8 +35,8 @@ extern void releaseMission(void);
 /*on the PC - sets the countdown played flag*/
 extern void setMissionCountDown(void);
 
-//extern BOOL startMission(MISSION_TYPE missionType, STRING *pGame);
-extern BOOL startMission(UDWORD missionType, STRING *pGame);
+//extern BOOL startMission(MISSION_TYPE missionType, char *pGame);
+extern BOOL startMission(UDWORD missionType, char *pGame);
 extern void endMission(void);
 // initialise the mission stuff for a save game
 extern BOOL startMissionSave(SDWORD missionType);
@@ -99,13 +99,13 @@ extern void resetMissionPauseState(void);
 extern UWORD getLandingX( SDWORD iPlayer );
 //returns the y coord for where the Transporter can land
 extern UWORD getLandingY( SDWORD iPlayer );
-/*checks that the timer has been set and that a Transporter exists before 
+/*checks that the timer has been set && that a Transporter exists before 
 adding the timer button*/
 extern void addTransporterTimerInterface(void);
 extern void intRemoveTransporterTimer(void);
 /*update routine for mission details */
 extern void missionTimerUpdate(void);
-/*checks the time has been set and then adds the timer if not already on 
+/*checks the time has been set && then adds the timer if !already on 
 the display*/
 extern void addMissionTimerInterface(void);
 extern void intRemoveMissionTimer(void);
@@ -114,8 +114,8 @@ extern void intRemoveMissionTimer(void);
 extern void setPlayCountDown(UBYTE set);
 extern BOOL getPlayCountDown(void);
 
-/*	checks the x,y passed in are not within the boundary of the Landing Zone
-	x and y in tile coords */
+/*	checks the x,y passed in are !within the boundary of the Landing Zone
+	x && y in tile coords */
 extern BOOL withinLandingZone(UDWORD x, UDWORD y);
 //sets the coords for the Transporter to land
 extern void setLandingZone(UBYTE x1, UBYTE y1, UBYTE x2, UBYTE y2);
@@ -153,7 +153,7 @@ extern void setDroidsToSafetyFlag(BOOL set);
 extern BOOL getDroidsToSafetyFlag(void);
 //checks to see if the player has any droids (except Transporters left)
 extern BOOL missionDroidsRemaining(UDWORD player);
-/*called when a Transporter gets to the edge of the world and the droids are 
+/*called when a Transporter gets to the edge of the world && the droids are 
 being flown to safety. The droids inside the Transporter are placed into the 
 mission list for later use*/
 extern void moveDroidsToSafety(DROID *psTransporter);
@@ -187,5 +187,4 @@ extern void setMissionCheatTime(BOOL bCheating);
 #define		MISSIONRES_TITLE_W		600	
 #define		MISSIONRES_TITLE_H		40
 
-#endif
 

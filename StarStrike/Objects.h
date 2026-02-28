@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Objects.h
  *
  * A header file that groups together all the object header files
  *
  */
-#ifndef _objects_h
-#define _objects_h
 
 #include "ObjectDef.h"
 #include "Droid.h"
@@ -26,9 +26,8 @@ extern BOOL objInitialise(void);
 extern BOOL objShutdown(void);
 
 /*goes thru' the list passed in reversing the order so the first entry becomes 
-the last and the last entry becomes the first!*/
+the last && the last entry becomes the first!*/
 extern void reverseObjectList(BASE_OBJECT **ppsList);
 
-#endif
 
 

@@ -1,17 +1,17 @@
+#pragma once
+
 /*
  * StatsDef.h
  *
  * Structure definitions for the stats system
  *
  */
-#ifndef _statsdef_h
-#define _statsdef_h
 
 
 /* Elements common to all stats structures */
 #define STATS_BASE \
 	UDWORD			ref;			/* Unique ID of the item */ \
-	STRING			*pName			/* pointer to the text id name (i.e. short language-independant name) */ 
+	char *pName			/* pointer to the text id name (i.e. short language-independant name) */ 
 
 /* Stats common to all stats structs */
 typedef struct _base_stats
@@ -81,7 +81,7 @@ typedef struct _comp_base_stats
 	COMPONENT_STATS;
 } COMP_BASE_STATS;
 
-/* LOC used for holding locations for Sensors and ECM's*/
+/* LOC used for holding locations for Sensors && ECM's*/
 typedef enum _loc
 {
 	LOC_DEFAULT,
@@ -326,7 +326,7 @@ typedef struct _repair_stats
 } PROGRAM_STATS;*/
 
 /*these are defined in Access database - if you change them in there,
-  then change them here! (and the rest of the code)
+  then change them here! (&& the rest of the code)
   They are made up values for now - defined when Jim does it!*/
 /*typedef enum _program_orders
 {
@@ -438,7 +438,7 @@ typedef struct _propulsion_types
 /*#ifdef HASH_NAMES
 	UDWORD	NameHash;
 #else
-	STRING	*pName;				// Text name of the component
+	char *pName;				// Text name of the component
 #endif*/
 	UWORD				powerRatioMult;		// Multiplier for the calculated power ratio of 
 											// the droid
@@ -461,7 +461,7 @@ typedef struct _terrain_table
 
 typedef struct _special_ability
 {
-	STRING *pName;				// Text name of the component
+	char *pName;				// Text name of the component
 } SPECIAL_ABILITY;
 
 typedef UWORD WEAPON_MODIFIER;
@@ -511,4 +511,3 @@ typedef struct _body_upgrade
 	UWORD           armourValue[NUM_WEAPON_CLASS];
 } BODY_UPGRADE;
 
-#endif

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Fpath.h
  *
  * Interface to the routing functions
  *
  */
-#ifndef _fpath_h
-#define _fpath_h
 
 // limit the number of iterations for astar
 #define FPATH_MAX_ROUTE_INIT	400
@@ -110,6 +110,5 @@ FPATH_INLINE BOOL fpathBlockingTile(SDWORD x, SDWORD y)
 
 
 
-#endif
 
 

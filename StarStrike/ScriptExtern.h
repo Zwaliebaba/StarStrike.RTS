@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ScriptExtern.h
  *
  * All game variable access functions for the scripts
  *
  */
-#ifndef _scriptextern_h
-#define _scriptextern_h
 
 // current game level
 extern SDWORD	scrGameLevel;
@@ -48,5 +48,4 @@ extern BOOL scrGenExternGet(UDWORD index);
 // General function to set some basic game values
 extern BOOL scrGenExternSet(UDWORD index);
 
-#endif
 

@@ -1,10 +1,10 @@
+#pragma once
+
 //
 // orderdef.h 
 //
 // order releated structures.
 
-#ifndef _orderdef_h
-#define _orderdef_h
 
 // data for barbarians retreating
 typedef struct _run_data
@@ -30,4 +30,3 @@ typedef struct _droid_order_data
 extern RUN_DATA	asRunData[MAX_PLAYERS];	// retreat positions for the players
 extern void orderDroidBase(DROID *psDroid, DROID_ORDER_DATA *psOrder);
 
-#endif

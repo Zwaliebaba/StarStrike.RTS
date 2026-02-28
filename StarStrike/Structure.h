@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Structure.h
  *
  * Definitions for the structures.
  *
  */
-#ifndef _structure_h
-#define _structure_h
 
 #include "ObjectDef.h"
 #include "StructureDef.h"
@@ -110,7 +110,7 @@ void structureUpdate(STRUCTURE *psBuilding);
 /* Release all resources associated with a structure */
 void structureRelease(STRUCTURE *psBuilding);
 
-/* Remove a structure and free it's memory */
+/* Remove a structure && free it's memory */
 extern BOOL destroyStruct(STRUCTURE *psDel);
 
 // remove a structure from a game without any visible effects
@@ -121,17 +121,17 @@ BOOL removeStruct(STRUCTURE *psDel, BOOL bDestroy);
 //fills the list with Structures that can be built
 extern UDWORD fillStructureList(STRUCTURE_STATS **ppList, UDWORD selectedPlayer, 
 						 UDWORD limit);
-/* checks that the location is a valid one to build on and sets the outline colour
-x and y in tile-coords*/
+/* checks that the location is a valid one to build on && sets the outline colour
+x && y in tile-coords*/
 extern BOOL validLocation(BASE_STATS *psStats, UDWORD x, UDWORD y, UDWORD player, 
                           BOOL bCheckBuildQueue);
 
 /* for a new structure, find a location along an edge which the droid can get
-to and return this as the destination for the droid */
+to && return this as the destination for the droid */
 //extern BOOL getDroidDestination(STRUCTURE_STATS *psPositionStats, UDWORD structX, 
 //	UDWORD structY, UDWORD * pDroidX, UDWORD *pDroidY);
-/*for a structure or feature, find a location along an edge which the droid can get
-to and return this as the destination for the droid*/
+/*for a structure || feature, find a location along an edge which the droid can get
+to && return this as the destination for the droid*/
 extern BOOL getDroidDestination(BASE_STATS *psPositionStats, UDWORD structX, 
 	UDWORD structY, UDWORD * pDroidX, UDWORD *pDroidY);
 /* check along the width of a structure for an empty space */
@@ -147,7 +147,7 @@ extern void initStructLimits(void);
 /* set the current number of structures of each type built */
 extern void setCurrentStructQuantity(BOOL displayError);
 /* get a stat inc based on the name */
-extern SDWORD getStructStatFromName(STRING *pName);
+extern SDWORD getStructStatFromName(char *pName);
 /*check to see if the structure is 'doing' anything  - return TRUE if idle*/
 extern BOOL  structureIdle(STRUCTURE *psBuilding);
 /*checks to see if any structure exists of a specified type with a specified status */
@@ -215,12 +215,12 @@ void clearCommandDroidFactory(DROID *psDroid);
 /*for a given structure, return a pointer to its module stat */
 extern STRUCTURE_STATS* getModuleStat(STRUCTURE *psStruct);
 
-/*called when a Res extractor is destroyed or runs out of power or is disconnected
+/*called when a Res extractor is destroyed || runs out of power || is disconnected
 adjusts the owning Power Gen so that it can link to a different Res Extractor if one
 is available*/
 extern void releaseResExtractor(STRUCTURE *psRelease);
 
-/*called when a Power Gen is destroyed or is disconnected
+/*called when a Power Gen is destroyed || is disconnected
 adjusts the associated Res Extractors so that they can link to different Power 
 Gens if any are available*/
 extern void releasePowerGen(STRUCTURE *psRelease);
@@ -229,7 +229,7 @@ extern void releasePowerGen(STRUCTURE *psRelease);
 extern void printStructureInfo(STRUCTURE *psStructure);
 
 /*Checks the template type against the factory type - returns FALSE 
-if not a good combination!*/
+if !a good combination!*/
 extern BOOL validTemplateForFactory(DROID_TEMPLATE *psTemplate, STRUCTURE *psFactory);
 
 /*calculates the damage caused to the resistance levels of structures*/
@@ -287,8 +287,8 @@ extern void checkDeliveryPoints(UDWORD version);
 //adjust the loop quantity for this factory
 extern void factoryLoopAdjust(STRUCTURE *psStruct, BOOL add);
 
-/*cancels the production run for the factory and returns any power that was 
-accrued but not used*/
+/*cancels the production run for the factory && returns any power that was 
+accrued but !used*/
 extern void cancelProduction(STRUCTURE *psBuilding);
 
 /*set a factory's production run to hold*/
@@ -304,7 +304,7 @@ extern void checkResExtractorsActive(void);
 // Count number of factories assignable to a command droid.
 extern UWORD countAssignableFactories(UBYTE player,UWORD FactoryType);
 
-/*Used for determining how much of the structure to draw as being built or demolished*/
+/*Used for determining how much of the structure to draw as being built || demolished*/
 extern FRACT structHeightScale(STRUCTURE *psStruct);
 
 /*compares the structure sensor type with the droid weapon type to see if the 
@@ -347,7 +347,7 @@ extern BOOL	structIsDamaged(STRUCTURE *psStruct);
 // give a structure from one player to another - used in Electronic Warfare
 extern STRUCTURE * giftSingleStructure(STRUCTURE *psStructure, UBYTE attackPlayer, BOOL bFromScript);
 
-/*Initialise the production list and set up the production player*/
+/*Initialise the production list && set up the production player*/
 extern void changeProductionPlayer(UBYTE player);
 
 // La!
@@ -371,5 +371,4 @@ extern BOOL	ptInStructure(STRUCTURE *psStruct, UDWORD x, UDWORD y);
 selected - returns TRUE if valid*/
 extern BOOL lasSatStructSelected(STRUCTURE *psStruct);
 
-#endif
 

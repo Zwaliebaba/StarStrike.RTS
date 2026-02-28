@@ -1,7 +1,6 @@
-#ifndef _cheat_h
-#define _cheat_h
+#pragma once
+
 extern	void	setCheatCodeStatus(BOOL val);
 extern	BOOL	getCheatCodeStatus( void );
-extern	BOOL	attemptCheatCode(STRING	*pName);
+extern	BOOL	attemptCheatCode(char *pName);
 unsigned char	*xorString(unsigned char *string);
-#endif

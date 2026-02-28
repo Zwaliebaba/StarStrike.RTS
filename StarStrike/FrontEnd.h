@@ -1,8 +1,8 @@
+#pragma once
+
 /* 
  * Frontend.h
  */
-#ifndef _frontend_h
-#define _frontend_h
 
 // determines which option screen to use. when in GS_TITLE_SCREEN mode.
 typedef enum _title_mode {
@@ -65,8 +65,8 @@ extern VOID processFrontendSnap		(BOOL bHideCursor);
 extern void addTopForm				(VOID);
 extern void addBottomForm			(VOID);
 extern void addBackdrop				(VOID);
-extern void	addTextButton			(UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt,BOOL bAlignLeft,BOOL bGrey);
-extern void	addSideText				(UDWORD id,  UDWORD PosX, UDWORD PosY, STRING *txt);
+extern void	addTextButton			(UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt,BOOL bAlignLeft,BOOL bGrey);
+extern void	addSideText				(UDWORD id,  UDWORD PosX, UDWORD PosY, char *txt);
 extern void addFESlider				(UDWORD id, UDWORD parent, UDWORD x,UDWORD y,UDWORD stops,UDWORD pos,UDWORD attachID );
 
 extern void	displayLogo				(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
@@ -254,4 +254,3 @@ BOOL addIGTextButton(UDWORD id,UWORD y,UDWORD StringID,UDWORD Style);
 #define FRONTEND_SEQUENCE		20097
 #define FRONTEND_SEQUENCE_R		20098
 
-#endif

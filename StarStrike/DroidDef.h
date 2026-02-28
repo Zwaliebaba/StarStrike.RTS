@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * DroidDef.h
  *
  * Droid structure definitions
  */
-#ifndef _droiddef_h
-#define _droiddef_h
 
 #include "Animobj.h"
 #include "Audio.h"
@@ -12,7 +12,7 @@
 /* The number of components in the asParts / asBits arrays */
 #define DROID_MAXCOMP		(COMP_NUMCOMPONENTS - 1)//(COMP_NUMCOMPONENTS - 2)
 
-/* The maximum number of droid weapons and programs */
+/* The maximum number of droid weapons && programs */
 #define DROID_MAXWEAPS		1//3
 //#define DROID_MAXPROGS		3
 #define	DROID_DAMAGE_SCALING	400
@@ -93,7 +93,7 @@ typedef struct _droid_template
 
 	/* The droid components.  This array is indexed by COMPONENT_TYPE
 	 * so the ECM would be accessed using asParts[COMP_ECM].
-	 * COMP_BRAIN is an index into the asCommandDroids array NOT asBrainStats
+	 * COMP_BRAIN is an index into the asCommandDroids array !asBrainStats
 	 */
 	SDWORD			asParts[DROID_MAXCOMP];
 
@@ -101,7 +101,7 @@ typedef struct _droid_template
 												  the droid*/
 	UDWORD			powerPoints;				/*total power points required to build/maintain
 												  the droid */
-	UDWORD			storeCount;					/*used to load in weaps and progs*/
+	UDWORD			storeCount;					/*used to load in weaps && progs*/
 	/* The weapon systems */
 	UDWORD			numWeaps;					/* Number of weapons*/
 	UDWORD			asWeaps[DROID_MAXWEAPS];	/* weapon indices */
@@ -140,8 +140,8 @@ typedef struct _droid
 
 	/* Holds the specifics for the component parts - allows damage
 	 * per part to be calculated. Indexed by COMPONENT_TYPE.
-	 * Weapons and Programs need to be dealt with separately.
-	 * COMP_BRAIN is an index into the asCommandDroids array NOT asBrainStats
+	 * Weapons && Programs need to be dealt with separately.
+	 * COMP_BRAIN is an index into the asCommandDroids array !asBrainStats
 	 */
 	COMPONENT		asBits[DROID_MAXCOMP];
 	
@@ -233,4 +233,3 @@ typedef struct _droid
 DROID;
 
 
-#endif

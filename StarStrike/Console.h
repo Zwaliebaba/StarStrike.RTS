@@ -1,5 +1,5 @@
-#ifndef _console_h
-#define _console_h
+#pragma once
+
 
 #define MAX_CONSOLE_MESSAGES			(64)
 #define MAX_CONSOLE_STRING_LENGTH		(255)
@@ -44,7 +44,7 @@ struct _console_message *psNext;
 extern char ConsoleString[MAX_CONSOLE_TMP_STRING_LENGTH];
 
 extern void	consolePrintf				( SBYTE *layout, ... );
-extern BOOL	addConsoleMessage			( STRING *messageText, CONSOLE_TEXT_JUSTIFICATION jusType );
+extern BOOL	addConsoleMessage			( char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType );
 extern void	updateConsoleMessages		( void );
 extern void	initConsoleMessages			( void );
 extern void	setConsoleMessageDuration	( UDWORD time );
@@ -87,7 +87,7 @@ extern	void	toggleConsoleDrop( void );
 
 	CONPRINTF(ConsoleString,(ConsoleString,"Hello %d",123));
 
-	Doing it this way will work on both PC and Playstation.
+	Doing it this way will work on both PC && Playstation.
 
 	Be very carefull that the resulting string is no longer
 	than MAX_CONSOLE_TMP_STRING_LENGTH.
@@ -105,7 +105,6 @@ extern	void	toggleConsoleDrop( void );
 #define DBCONPRINTF(s,x)
 #endif
 								
-#endif
 
 
 

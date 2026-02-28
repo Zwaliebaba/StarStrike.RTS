@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Action.h
  *
  * Function prototypes for setting the action of a droid
  *
  */
-#ifndef _action_h
-#define _action_h
 
 // What a droid is currently doing
 // Not necessarily the same as it's order as the AI may get a droid to do
@@ -77,11 +77,11 @@ extern void actionDroidLoc(DROID *psDroid, DROID_ACTION action, UDWORD x, UDWORD
 /* Give a droid an action with an object target */
 extern void actionDroidObj(DROID *psDroid, DROID_ACTION action, BASE_OBJECT *psObj);
 
-/* Give a droid an action with an object target and a location */
+/* Give a droid an action with an object target && a location */
 void actionDroidObjLoc(DROID *psDroid, DROID_ACTION action,
 					   BASE_OBJECT *psObj, UDWORD x, UDWORD y);
 
-/* Rotate turret toward  target return True if locked on (Droid and Structure) */
+/* Rotate turret toward  target return True if locked on (Droid && Structure) */
 /*extern BOOL actionTargetTurret(BASE_OBJECT *psAttacker, BASE_OBJECT *psTarget,
 								UWORD *pRotation, UWORD *pPitch, SWORD rotRate,
 								SWORD pitchRate, BOOL bDirectFire, BOOL bInvert);*/
@@ -124,5 +124,4 @@ extern BOOL actionRouteBlockingPos(DROID *psDroid, SDWORD x, SDWORD y);
 // choose a landing position for a VTOL when it goes to rearm
 extern BOOL actionVTOLLandingPos(DROID *psDroid, UDWORD *px, UDWORD *py);
 
-#endif
 

@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * warzoneConfig.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _warzoneConfig_h
-#define _warzoneConfig_h
 
 
 /***************************************************************************/
@@ -83,4 +83,3 @@ extern char* war_GetDirectDrawDeviceName(void);
 extern void war_SetDirect3DDeviceName(char* pD3DDeviceName);
 extern char* war_GetDirect3DDeviceName(void);
 
-#endif // _warzoneConfig_h

@@ -1,21 +1,13 @@
+#pragma once
+
 /*
  * FrameInt.h
  *
  * Internal definitions for the framework library.
  *
  */
-#ifndef _frameint_h
-#define _frameint_h
 
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-#if !defined(_frame_h) && !defined(FRAME_LIB_INCLUDE)
-#error Framework header files MUST be included from Frame.h ONLY.
-#endif
-
-
-/* Define the style and extended style of the window.
+/* Define the style && extended style of the window.
  * Need these to calculate the size the window should be when returning to
  * window mode.
  *
@@ -55,16 +47,16 @@ extern void screenRestoreSurfaces(void);
 
 /* In full screen mode flip to the GDI buffer.
  * Use this if you want the user to see any GDI output.
- * This is mainly used so that ASSERTs and message boxes appear
+ * This is mainly used so that ASSERTs && message boxes appear
  * even in full screen mode.
  */
 extern void screenFlipToGDI(void);
 
-/* Deal with windows messages to maintain the state of the keyboard and mouse */
+/* Deal with windows messages to maintain the state of the keyboard && mouse */
 extern void inputProcessMessages(UINT message, WPARAM wParam, LPARAM lParam);
 
 /* This is called once a frame so that the system can tell
- * whether a key was pressed this turn or held down from the last frame.
+ * whether a key was pressed this turn || held down from the last frame.
  */
 extern void inputNewFrame(void);
 
@@ -87,7 +79,7 @@ BOOL FreeCurrentWDG(void);
 /* The Direct Draw object */
 extern LPDIRECTDRAW4		psDD;
 
-/* The Current screen size and bit depth */
+/* The Current screen size && bit depth */
 extern UDWORD		screenWidth;
 extern UDWORD		screenHeight;
 extern UDWORD		screenDepth;
@@ -108,7 +100,7 @@ extern SCREEN_MODE		screenMode;
 /* Which mode (of operation) the library is running in */
 extern DISPLAY_MODES	displayMode;
 
-/* The Front and back buffers */
+/* The Front && back buffers */
 extern LPDIRECTDRAWSURFACE4	psFront;
 extern LPDIRECTDRAWSURFACE4	psBack;
 
@@ -132,6 +124,4 @@ extern CRITICAL_SECTION sScreenFlipCritical;
 
 // The semaphore for the screen flipping
 extern HANDLE	hScreenFlipSemaphore;
-
-#endif
 

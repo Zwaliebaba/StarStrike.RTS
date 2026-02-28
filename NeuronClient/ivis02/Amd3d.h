@@ -2,13 +2,13 @@
  *
  * Copyright (c) 1997, 1998 ADVANCED MICRO DEVICES, INC.  All Rights Reserved.
  *      
- * This software is unpublished and contains the trade secrets and 
+ * This software is unpublished && contains the trade secrets && 
  * confidential proprietary information of AMD. Unless otherwise
  * provided in the software Agreement associated herewith, it is 
- * licensed in confidence "AS IS" and is not to be reproduced in
- * whole or part by any means except for backup. Use, duplication,
- * or disclosure by the Government is subject to the restrictions
- * in paragraph(b)(3)(B) of the Rights in Technical Data and 
+ * licensed in confidence "AS IS" && is !to be reproduced in
+ * whole || part by any means except for backup. Use, duplication,
+ * || disclosure by the Government is subject to the restrictions
+ * in paragraph(b)(3)(B) of the Rights in Technical Data && 
  * Computer Software clause in DFAR 52.227-7013(a)(Oct. 1988).
  * Software owned by Advanced Micro Devices Inc., One AMD Place
  * P.O. Box 3453, Sunnyvale, CA 94088-3453
@@ -20,13 +20,13 @@
  * ============
  * This file contains inline assembly macros that
  * generate AMD-3D instructions in binary format.
- * Therefore, C or C++ programmer can use AMD-3D instructions
- * without any penalty in their C or C++ source code.
+ * Therefore, C || C++ programmer can use AMD-3D instructions
+ * without any penalty in their C || C++ source code.
  * 
- * The macro's name and format conventions are as follow:
+ * The macro's name && format conventions are as follow:
  *
  *
- * 	1. First argument of macro is a destination and
+ * 	1. First argument of macro is a destination &&
  * 	   second argument is a source operand.
  * 		ex) _asm PFCMPEQ (m3, m4)
  *      				  |    |
@@ -34,14 +34,14 @@
  *
  *	2. The destination operand can be m0 to m7 only. 
  *     The source operand can be any one of the register
- *     m0 to m7 or _eax, _ecx, _edx, _ebx, _esi, or _edi 
+ *     m0 to m7 || _eax, _ecx, _edx, _ebx, _esi, || _edi 
  *     that contains effective address.
  *    	ex) _asm PFRCP    (M7, M6)
  *		ex) _asm PFRCPIT2 (m0, m4)
  *		ex) _asm PFMUL    (m3, _edi)
  *	
  *  3. The prefetch(w) takes one src operand _eax, ecx, _edx,
- *     _ebx, _esi, or _edi that contains effective address.
+ *     _ebx, _esi, || _edi that contains effective address.
  *      ex) _asm PREFETCH (_edi)
  *  			    
  * EXAMPLE
@@ -49,7 +49,7 @@
  * Following program doesn't do anything but it shows you
  * how to use inline assembly AMD-3D instructions in C.
  * Note that this will only work in flat memory model which
- * segment registers cs, ds, ss and es point to the same 
+ * segment registers cs, ds, ss && es point to the same 
  * linear address space total less than 4GB.
  * 
  * Used Microsoft VC++ 5.0

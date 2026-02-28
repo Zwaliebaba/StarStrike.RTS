@@ -1,15 +1,15 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * Anim.h
  *
- * Animation types and function headers
+ * Animation types && function headers
  *
  * Gareth Jones 11/7/97
  */
 /***************************************************************************/
 
-#ifndef _ANIM_H_
-#define _ANIM_H_
 
 /***************************************************************************/
 
@@ -95,7 +95,7 @@ ANIM3D;
 
 /***************************************************************************/
 
-typedef void * (* GETSHAPEFUNC) ( STRING *pStr );
+typedef void * (* GETSHAPEFUNC) ( char *pStr );
 
 typedef struct ANIMGLOBALS
 {
@@ -131,6 +131,5 @@ void		anim_SetVals( char szFileName[], UWORD uwAnimID );
 
 /***************************************************************************/
 
-#endif	/* _ANIM_H_ */
 
 /***************************************************************************/

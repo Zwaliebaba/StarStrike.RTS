@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Slider.h
  *
  * Slider bar interface definitions.
  */
-#ifndef _slider_h
-#define _slider_h
 
 /* The widget heaps */
 extern OBJ_HEAP	*psSldHeap;
@@ -23,7 +23,7 @@ typedef struct _w_slider
 	UWORD		barSize;			// Thickness of slider bar
 	UWORD		pos;				// Current stop position of the slider
 	UWORD		state;				// Slider state
-	STRING		*pTip;				// Tool tip
+	char *pTip;				// Tool tip
 } W_SLIDER;
 
 /* Create a slider widget data structure */
@@ -54,6 +54,4 @@ extern void sliderHiLiteLost(W_SLIDER *psWidget);
 extern void sliderDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset,
 						  UDWORD *pColours);
 
-
-#endif
 

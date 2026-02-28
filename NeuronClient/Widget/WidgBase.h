@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * WidgBase.h
  *
  * Definitions for the basic widget types.
  */
-#ifndef _widgbase_h
-#define _widgbase_h
 
 #include "Frame.h"
 
@@ -68,6 +68,4 @@ typedef struct _w_screen
 //	PROP_FONT	*psTipFont;			// The font for tool tips
 	int			TipFontID;			// ID of the IVIS font to use for tool tips.
 } W_SCREEN;
-
-#endif
 

@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Widget.h
  *
  * Definitions for the Widget library
  */
-#ifndef _widget_h
-#define _widget_h
 
 #include "Frame.h"
 #include "WidgBase.h"
@@ -25,7 +25,7 @@
 #define WFORM_TABBED		1
 
 /* Invisible (i.e. see through) form - 
- * can be used in conjunction with WFORM_PLAIN or WFORM_TABBED.
+ * can be used in conjunction with WFORM_PLAIN || WFORM_TABBED.
  */
 #define WFORM_INVISIBLE		2
 
@@ -35,7 +35,7 @@
 /* Disable movement on a clickable form. */
 #define	WFORM_NOCLICKMOVE	8
 
-/* Control whether the primary or secondary buttons work on a clickable form */
+/* Control whether the primary || secondary buttons work on a clickable form */
 #define WFORM_NOPRIMARY		0x10		// Primary works by default - this turns it off
 #define WFORM_SECONDARY		0x20
 
@@ -54,7 +54,7 @@
 #define	WBUT_NOCLICKMOVE	8
 
 
-/* Control whether the primary or secondary buttons work on a button */
+/* Control whether the primary || secondary buttons work on a button */
 #define WBUT_NOPRIMARY		0x10		// Primary works by default - this turns it off
 #define WBUT_SECONDARY		0x20
 
@@ -90,7 +90,7 @@ typedef struct _w_colourdef
 #define WINIT_BASE \
 	UDWORD				formID;			/* ID number of form to put widget on */ \
 										/* ID == 0 specifies the default form for the screen */ \
-	UWORD				majorID,minorID;	/* Which major and minor tab to put the widget */ \
+	UWORD				majorID,minorID;	/* Which major && minor tab to put the widget */ \
 										/* on for a tabbed form */ \
 	UDWORD				id;				/* Unique id number (chosen by user) */ \
 	UDWORD				style;			/* widget style */ \
@@ -108,7 +108,7 @@ typedef struct _w_init
 } W_INIT;
 
 /* Flags for controlling where the tabs appear on a form - 
- * used in the majorPos and minorPos entries of the W_FORMINIT struct
+ * used in the majorPos && minorPos entries of the W_FORMINIT struct
  */
 #define	WFORM_TABNONE		0		// No tab
 #define WFORM_TABTOP		1
@@ -116,8 +116,8 @@ typedef struct _w_init
 #define WFORM_TABRIGHT		3
 #define WFORM_TABBOTTOM		4
 
-/* Upper limits for major and minor tabs on a tab form.
- * Not the best way to do it I know, but it keeps the memory
+/* Upper limits for major && minor tabs on a tab form.
+ * !the best way to do it I know, but it keeps the memory
  * management MUCH simpler.
  */
 
@@ -128,7 +128,7 @@ typedef struct _w_init
 #define TAB_MAJOR 1
 
 typedef void (*TAB_DISPLAY)(struct _widget *psWidget,UDWORD TabType,UDWORD Position,UDWORD Number,BOOL Selected,BOOL Hilight,UDWORD x,UDWORD y,UDWORD Width,UDWORD Height);
-typedef void (*FONT_DISPLAY)(UDWORD x,UDWORD y,STRING *String);
+typedef void (*FONT_DISPLAY)(UDWORD x,UDWORD y,char *String);
 
 /* Form initialisation structure */
 typedef struct _w_forminit
@@ -149,9 +149,9 @@ typedef struct _w_forminit
 	UWORD			tabMinorGap;						// The space between tabs
 	UWORD			numMajor;					// Number of major tabs
 	UWORD			aNumMinors[WFORM_MAXMAJOR];	// Number of minor tabs for each major
-	STRING			*pTip;						// Tool tip for the form itself
-	STRING			*apMajorTips[WFORM_MAXMAJOR];	// Tool tips for the major tabs
-	STRING			*apMinorTips[WFORM_MAXMAJOR][WFORM_MAXMINOR];
+	char *pTip;						// Tool tip for the form itself
+	char *apMajorTips[WFORM_MAXMAJOR];	// Tool tips for the major tabs
+	char *apMinorTips[WFORM_MAXMAJOR][WFORM_MAXMINOR];
 													// Tool tips for the minor tabs
 	TAB_DISPLAY		pTabDisplay;		// Optional callback for displaying a tab.
 	WIDGET_DISPLAY	pFormDisplay;		// Optional callback to display the form.
@@ -163,8 +163,8 @@ typedef struct _w_labinit
 	/* The basic init entries */
 	WINIT_BASE;
 
-	STRING		*pText;			// label text
-	STRING		*pTip;			// Tool tip for the label.
+	char *pText;			// label text
+	char *pTip;			// Tool tip for the label.
 //	PROP_FONT	*psFont;		// label font
 	int			FontID;			// ID of the IVIS font to use for this widget.
 } W_LABINIT;
@@ -175,8 +175,8 @@ typedef struct _w_butinit
 	/* The basic init entries */
 	WINIT_BASE;
 
-	STRING		*pText;			// button text
-	STRING		*pTip;			// Tool tip text
+	char *pText;			// button text
+	char *pTip;			// Tool tip text
 //	PROP_FONT	*psFont;		// button font
 	int			FontID;			// ID of the IVIS font to use for this widget.
 } W_BUTINIT;
@@ -187,7 +187,7 @@ typedef struct _w_edbinit
 	/* The basic init entries */
 	WINIT_BASE;
 
-	STRING		*pText;			// initial contents of the edit box
+	char *pText;			// initial contents of the edit box
 //	PROP_FONT	*psFont;		// edit box font
 	int			FontID;			// ID of the IVIS font to use for this widget.
 	WIDGET_DISPLAY	pBoxDisplay;		// Optional callback to display the form.
@@ -212,7 +212,7 @@ typedef struct _w_barinit
 	UWORD		iRange;			// Maximum range
 	W_COLOURDEF	sCol;			// Bar colour
 	W_COLOURDEF	sMinorCol;		// Minor bar colour
-	STRING		*pTip;			// Tool tip text
+	char *pTip;			// Tool tip text
 } W_BARINIT;
 
 
@@ -232,7 +232,7 @@ typedef struct _w_sldinit
 	UWORD		numStops;		// Number of stops on the slider
 	UWORD		barSize;		// Size of the bar
 	UWORD		pos;			// Initial position of the slider bar
-	STRING		*pTip;			// Tip string
+	char *pTip;			// Tip string
 } W_SLDINIT;
 
 /***********************************************************************************/
@@ -268,7 +268,7 @@ extern void widgShutDown(void);
 /* Create an empty widget screen */
 extern BOOL widgCreateScreen(W_SCREEN **ppsScreen);
 
-/* Release a screen and all its associated data */
+/* Release a screen && all its associated data */
 extern void widgReleaseScreen(W_SCREEN *psScreen);
 
 /* Set the tool tip font for a screen */
@@ -305,10 +305,10 @@ extern void widgReveal(W_SCREEN *psScreen, UDWORD id);
  * This will always return a valid string pointer.
  * NOTE: The string must be copied out of the buffer
  */
-extern STRING *widgGetString(W_SCREEN *psScreen, UDWORD id);
+extern char *widgGetString(W_SCREEN *psScreen, UDWORD id);
 
 /* Set the text in a widget */
-extern void widgSetString(W_SCREEN *psScreen, UDWORD id, STRING *pText);
+extern void widgSetString(W_SCREEN *psScreen, UDWORD id, char *pText);
 
 /* Set the current tabs for a tab form */
 extern void widgSetTabs(W_SCREEN *psScreen, UDWORD id, UWORD major, UWORD minor);
@@ -353,7 +353,7 @@ extern void *widgGetLastUserData(W_SCREEN *psScreen);
 extern WIDGET *widgGetFromID(W_SCREEN *psScreen, UDWORD id);
 
 /* Set tip string for a widget */
-extern void widgSetTip( W_SCREEN *psScreen, UDWORD id, STRING *pTip );
+extern void widgSetTip( W_SCREEN *psScreen, UDWORD id, char *pTip );
 
 /* Colour numbers */
 enum _w_colour
@@ -386,10 +386,10 @@ extern void	widgSetTipColour(W_SCREEN *psScreen, UBYTE red, UBYTE green, UBYTE b
 extern void widgSetButtonFlash(W_SCREEN *psScreen, UDWORD id);
 extern void widgClearButtonFlash(W_SCREEN *psScreen, UDWORD id);
 
-/* Get a button or clickable form's state */
+/* Get a button || clickable form's state */
 extern UDWORD widgGetButtonState(W_SCREEN *psScreen, UDWORD id);
 
-/* Set a button or clickable form's state */
+/* Set a button || clickable form's state */
 extern void widgSetButtonState(W_SCREEN *psScreen, UDWORD id, UDWORD state);
 
 
@@ -402,8 +402,8 @@ extern void widgSetButtonState(W_SCREEN *psScreen, UDWORD id, UDWORD state);
 extern UDWORD widgGetButtonKey(W_SCREEN *psScreen);
 
 /* Initialise the set of widgets that make up a screen.
- * Call this once before calling widgRunScreen and widgDisplayScreen.
- * This should only be called once before calling Run and Display as many times
+ * Call this once before calling widgRunScreen && widgDisplayScreen.
+ * This should only be called once before calling Run && Display as many times
  * as is required.
  */
 extern void widgStartScreen(W_SCREEN *psScreen);
@@ -414,7 +414,7 @@ extern void widgStartScreen(W_SCREEN *psScreen);
 extern void widgEndScreen(W_SCREEN *psScreen);
 
 /* Execute a set of widgets for one cycle.
- * Return the id of the widget that was activated, or 0 for none.
+ * Return the id of the widget that was activated, || 0 for none.
  */
 extern UDWORD widgRunScreen(W_SCREEN *psScreen);
 
@@ -441,6 +441,4 @@ void sliderEnableDrag(BOOL Enable);
 
 void	setWidgetsStatus( BOOL var );
 BOOL	getWidgetsStatus( void );
-
-#endif
 

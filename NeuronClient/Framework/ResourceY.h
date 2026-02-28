@@ -1,5 +1,5 @@
 typedef union {
-	STRING  *sval;
+	char *sval;
 } YYSTYPE;
 #define TEXT	257
 #define QTEXT	258

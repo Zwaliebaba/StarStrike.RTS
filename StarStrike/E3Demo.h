@@ -1,5 +1,5 @@
-#ifndef e3demo_h
-#define e3demo_h
+#pragma once
+
 extern	void	initDemoCamera		( void );
 extern	void	demoRequestStart	( void );
 extern	void	processDemoCam		( void );
@@ -9,4 +9,3 @@ extern	void	demoProcessTilesIn	( void );
 extern	void	demoProcessTilesOut	( void );
 extern	void	setFindNewTarget	( void );
 
-#endif

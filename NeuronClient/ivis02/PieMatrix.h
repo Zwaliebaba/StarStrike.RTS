@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * pieMatrix.h
@@ -6,8 +8,6 @@
  *
  */
 /***************************************************************************/
-#ifndef _pieMatrix_h
-#define _pieMatrix_h
 
 #include "Piedef.h"
 
@@ -121,5 +121,3 @@ extern void pie_SetGeometricOffset(int x, int y);
 // PIEVERTEX structure contains much infomation that is not required on the playstation ... and hence is not currently used
 extern BOOL pie_PieClockwise(PIEVERTEX *s);	
 
-
-#endif

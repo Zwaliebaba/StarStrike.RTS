@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Function.h
  *
  * Definitions for the Structure Functions.
  *
  */
-#ifndef _function_h
-#define _function_h
 
 #include "ObjectDef.h"
 
@@ -86,5 +86,4 @@ extern void upgradeTransporterDroids(DROID *psTransporter,
 
 extern BOOL FunctionShutDown();
 
-#endif //_function_h
 

@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * pieclip.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _pieclip_h
-#define _pieclip_h
 
 /***************************************************************************/
 
@@ -45,5 +45,3 @@ extern BOOL	pie_SetVideoBufferWidth	( UDWORD width );
 extern BOOL	pie_SetVideoBufferHeight	( UDWORD height );
 extern UDWORD	pie_GetVideoBufferWidth	( void );
 extern UDWORD	pie_GetVideoBufferHeight	( void );
-
-#endif // _pieclip_h

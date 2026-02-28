@@ -1,7 +1,7 @@
+#pragma once
+
 /***************************************************************************/
 
-#ifndef _AUDIO_ID_H_
-#define _AUDIO_ID_H_
 
 /***************************************************************************/
 /* INGAME AUDIO */
@@ -166,7 +166,7 @@ typedef enum
 	ID_SOUND_WELL_DONE,
 	ID_SOUND_EXCELLENT,
 
-/* Group and Commander Assignment */
+/* Group && Commander Assignment */
 
 	ID_SOUND_ASSIGNED_TO_COMMANDER,
 	ID_SOUND_GROUP_REPORTING,
@@ -178,7 +178,7 @@ typedef enum
 	ID_SOUND_ROUTE_OBSTRUCTED,
 	ID_SOUND_NO_ROUTE_AVAILABLE,
 #endif
-/* Transports and LZS */
+/* Transports && LZS */
 
 	ID_SOUND_REINFORCEMENTS_AVAILABLE,
 	ID_SOUND_REINFORCEMENTS_IN_TRANSIT,
@@ -232,7 +232,7 @@ typedef enum
 	ID_UNITS_TRANSFER,
 
 #ifndef COVERMOUNT
-/* Group and Commander Voices - Male */
+/* Group && Commander Voices - Male */
 	ID_SOUND_GROUP,
 	ID_SOUND_GROUP_0,
 	ID_SOUND_GROUP_1,
@@ -485,11 +485,10 @@ INGAME_AUDIO;
 
 /***************************************************************************/
 
-extern BOOL	audioID_GetIDFromStr( STRING *pWavStr, SDWORD *piID );
+extern BOOL	audioID_GetIDFromStr( char *pWavStr, SDWORD *piID );
 
 /***************************************************************************/
 
-#endif	// _AUDIO_ID_H_
 
 /***************************************************************************/
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * FunctionDef.h
  *
  * Structure defs for functions.
  *
  */
-#ifndef _functiondef_h
-#define _functiondef_h
 
 #include "StatsDef.h"
 
@@ -53,7 +53,7 @@ enum FUNCTION_TYPES
 
 #define FUNCTION_STATS \
 	UDWORD		ref;			/* Unique ID of the item */ \
-	STRING*		pName;			/* Text name of the component */ \
+	char *		pName;			/* Text name of the component */ \
 	UBYTE		type			/* The type of Function */
 /*Common struct for all functions*/
 typedef struct _function
@@ -73,7 +73,7 @@ typedef struct _repair_droid_function
 									  restore even destroyed droid components*/
 } REPAIR_DROID_FUNCTION;
 
-/*To generate and supply power to other structures*/
+/*To generate && supply power to other structures*/
 typedef struct _power_gen_function
 {
 	//common stats
@@ -94,7 +94,7 @@ typedef struct _wall_function
 {
 	//common stats
 	FUNCTION_STATS;
-	STRING						*pStructName;		//storage space for the name so can work out
+	char *pStructName;		//storage space for the name so can work out
 													//which stat when structs are loaded in
 	struct _structure_stats		*pCornerStat;		//pointer to which stat to use as a corner wall
 } WALL_FUNCTION;
@@ -172,7 +172,7 @@ typedef UPGRADE_FUNCTION	REPAIR_UPGRADE_FUNCTION;
 typedef UPGRADE_FUNCTION	POWER_UPGRADE_FUNCTION;
 typedef UPGRADE_FUNCTION	REARM_UPGRADE_FUNCTION;
 
-/*Upgrade the weapon ROF and accuracy for the weapons of a particular class*/
+/*Upgrade the weapon ROF && accuracy for the weapons of a particular class*/
 typedef struct _weapon_upgrade_function
 {
 	//common stats
@@ -192,7 +192,7 @@ typedef struct _weapon_upgrade_function
 
 } WEAPON_UPGRADE_FUNCTION;
 
-/*Upgrade the structure stats for all non wall and defence structures*/
+/*Upgrade the structure stats for all non wall && defence structures*/
 typedef struct _structure_upgrade_function
 {
 	//common stats
@@ -204,7 +204,7 @@ typedef struct _structure_upgrade_function
 
 } STRUCTURE_UPGRADE_FUNCTION;
 
-/*Upgrade the structure stats for all wall and defence structures*/
+/*Upgrade the structure stats for all wall && defence structures*/
 typedef struct _wallDefence_upgrade_function
 {
 	//common stats
@@ -333,7 +333,7 @@ typedef struct _function_upgrade
 //	UDWORD			powerRequired;		/*The amount of power required to upgrade*/
 //	UDWORD			resistancePoints;	/*The percentage to increase the resistance points by*/
 //} RESISTANCE_UPGRADE_FUNCTION;
-/*blocks LOS and restricts movement*/
+/*blocks LOS && restricts movement*/
 //typedef struct _defensive_structure_function
 //{
 //	//common stats
@@ -346,5 +346,4 @@ typedef struct _function_upgrade
 //} DEFENSIVE_STRUCTURE_FUNCTION;
 
 
-#endif
 

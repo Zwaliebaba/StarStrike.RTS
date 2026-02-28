@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Heap.h
  *
@@ -8,13 +10,11 @@
  *           4 bytes for the extension blocks
  *
  */
-#ifndef _heap_h
-#define _heap_h
 
 #include "Types.h"
 #include "Debug.h"
  /* Include Mem.h to get the DEBUG_MALLOC #define - this controls whether
-  * normal or debugging memory management is used.
+  * normal || debugging memory management is used.
   */
 #include "Mem.h"
 
@@ -27,7 +27,7 @@ typedef struct _free_object
 /* Header for each object in DEBUG_MALLOC mode */
 typedef struct _heap_objhdr
 {
-	STRING	*pFile;
+	char *pFile;
 	SDWORD	line;
 	struct _heap_objhdr		*psNext;
 } HEAP_OBJHDR;
@@ -58,7 +58,7 @@ typedef struct _obj_heap
 	UDWORD		currUsage;		// The number of objects being used at the moment
 	HEAP_OBJHDR	*psInUse;		// The list of headers of objects currently allocated
 
-	STRING		*pFile;			// The name of the file the heap was created in
+	char *pFile;			// The name of the file the heap was created in
 	SDWORD		line;			// The line of the file the heap was created on
 #endif
 } OBJ_HEAP;
@@ -66,15 +66,15 @@ typedef struct _obj_heap
 /****************************************************************************************/
 /*                           Function Protoypes                                         */
 /*                                                                                      */
-/*      These should not be called directly - use the macros below                      */
+/*      These should !be called directly - use the macros below                      */
 
 
 /* Store the location in C code at which a call to the heap was made */
-extern void heapSetCallPos(STRING *pFileName, SDWORD lineNumber);
+extern void heapSetCallPos(char *pFileName, SDWORD lineNumber);
 
 /* Function to create a heap
  * Takes the size of the objects to be managed by the heap,
- * the initial number of objects to allocate and the number of
+ * the initial number of objects to allocate && the number of
  * objects to allocate when the heap is extended.
  * Returns an initialised OBJ_HEAP structure.
  */
@@ -91,7 +91,7 @@ extern BOOL heapFree(OBJ_HEAP *psHeap, void *pObject);
 /* Reset the heap, i.e. free all the objects in the heap */
 extern void heapReset(OBJ_HEAP *psHeap);
 
-/* Destroy a heap and release all the memory associated with it */
+/* Destroy a heap && release all the memory associated with it */
 extern void heapDestroy(OBJ_HEAP *psHeap);
 
 /* Produce a summary report on the heaps ... DEBUG_MALLOC only */
@@ -129,6 +129,4 @@ void heapReport(void);
 
 #define HEAP_DESTROY(psHeap)  \
 	heapDestroy(psHeap)
-
-#endif
 

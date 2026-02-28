@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Interp.h
  *
  * Script interpreter definitions
  */
-#ifndef _interp_h
-#define _interp_h
 
 /* The possible value types for scripts */
 typedef enum _interp_type
@@ -19,7 +19,7 @@ typedef enum _interp_type
 	VAL_TRIGGER,
 	VAL_EVENT,
 
-	/* Type used by the compiler for functions that do not return a value */
+	/* Type used by the compiler for functions that do !return a value */
 	VAL_VOID,
 
 	VAL_USERTYPESTART,		// user defined types should start with this id
@@ -28,7 +28,7 @@ typedef enum _interp_type
 // flag to specify a variable reference rather than simple value
 #define VAL_REF		0x00100000
 
-/* A value consists of its type and value */
+/* A value consists of its type && value */
 typedef struct _interp_val
 {
 	INTERP_TYPE		type;
@@ -37,7 +37,7 @@ typedef struct _interp_val
 		BOOL		bval;		// VAL_BOOL
 		SDWORD		ival;		// VAL_INT
 //		float		fval;		// VAL_FLOAT
-		STRING		*sval;		// VAL_STRING
+		char *sval;		// VAL_STRING
 		void		*oval;		// VAL_OBJECT
 		void		*pVoid;		// VAL_VOIDPTR
 	} v;
@@ -123,7 +123,7 @@ typedef enum _op_code
 /* The type of function called by an OP_CALL */
 typedef BOOL (*SCRIPT_FUNC)(void);
 
-/* The type of function called to access an object or in-game variable */
+/* The type of function called to access an object || in-game variable */
 typedef BOOL (*SCRIPT_VARFUNC)(UDWORD index);
 
 /* The possible storage types for a variable */
@@ -140,7 +140,7 @@ typedef UBYTE STORAGE_TYPE;
 /* Variable debugging info for a script */
 typedef struct _var_debug
 {
-	STRING			*pIdent;
+	char *pIdent;
 	STORAGE_TYPE	storage;
 } VAR_DEBUG;
 
@@ -156,7 +156,7 @@ typedef struct _array_data
 /* Array debug info for a script */
 typedef struct _array_debug
 {
-	STRING			*pIdent;
+	char *pIdent;
 	UBYTE			storage;
 } ARRAY_DEBUG;
 
@@ -165,7 +165,7 @@ typedef struct _script_debug
 {
 	UDWORD	offset;		// Offset in the compiled script that corresponds to
 	UDWORD	line;		// this line in the original script.
-	STRING	*pLabel;	// the trigger/event that starts at this line
+	char *pLabel;	// the trigger/event that starts at this line
 } SCRIPT_DEBUG;
 
 /* Different types of triggers */
@@ -188,7 +188,7 @@ typedef struct _trigger_data
 	UDWORD			time;		// How often to check the trigger
 } TRIGGER_DATA;
 
-/* A compiled script and its associated data */
+/* A compiled script && its associated data */
 typedef struct _script_code
 {
 	UDWORD			size;			// The size (in bytes) of the compiled code
@@ -234,6 +234,4 @@ extern BOOL interpInitialise(void);
 
 // TRUE if the interpreter is currently running
 extern BOOL interpProcessorActive(void);
-
-#endif
 

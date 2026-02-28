@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ObjMem.h
  *
  * Routines for managing object's memory
  *
  */
-#ifndef _objmem_h
-#define _objmem_h
 
 #include "ObjectDef.h"
 
@@ -108,6 +108,5 @@ extern UDWORD getRepairIdFromFlag(FLAG_POSITION *psFlag);
 
 #ifdef DEBUG
 extern void checkFactoryFlags(void);
-#endif
 #endif
 

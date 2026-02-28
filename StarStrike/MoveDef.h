@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * MoveDef.h
  *
  * Structure definitions for movement structures.
  *
  */
-#ifndef _movedef_h
-#define _movedef_h
 
 #define TRAVELSIZE			100
 
@@ -77,6 +77,5 @@ typedef struct _move_control
 } MOVE_CONTROL;
 
 
-#endif
 
 

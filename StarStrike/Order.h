@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Order.h
  *
  * Function prototypes for giving droids orders
  *
  */
-#ifndef _order_h
-#define _order_h
 
 #include "Orderdef.h"
 
@@ -143,15 +143,15 @@ extern void orderDroidObj(DROID *psDroid, DROID_ORDER order, BASE_OBJECT *psObj)
 /* Get the state of a droid order with an object */
 extern BOOL orderStateObj(DROID *psDroid, DROID_ORDER order, BASE_OBJECT **ppsObj);
 
-/* Give a droid an order with a location and a stat */
+/* Give a droid an order with a location && a stat */
 extern void orderDroidStatsLoc(DROID *psDroid, DROID_ORDER order,
 						BASE_STATS *psStats, UDWORD x, UDWORD y);
 
-/* Get the state of a droid order with a location and a stat */
+/* Get the state of a droid order with a location && a stat */
 extern BOOL orderStateStatsLoc(DROID *psDroid, DROID_ORDER order,
 						BASE_STATS **ppsStats, UDWORD *pX, UDWORD *pY);
 
-/* Give a droid an order with a location and a stat */
+/* Give a droid an order with a location && a stat */
 extern void orderDroidStatsTwoLoc(DROID *psDroid, DROID_ORDER order,
 						BASE_STATS *psStats, UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2);
 
@@ -172,15 +172,15 @@ extern void orderDroidAdd(DROID *psDroid, struct _droid_order_data *psOrder);
 // do the next order from a droids order list
 extern BOOL orderDroidList(DROID *psDroid);
 
-/* order all selected droids with a location and a stat */
+/* order all selected droids with a location && a stat */
 void orderSelectedStatsLoc(UDWORD player, DROID_ORDER order,
 						   BASE_STATS *psStats, UDWORD x, UDWORD y, BOOL add);
 
-/* add an order with a location and a stat to the droids order list*/
+/* add an order with a location && a stat to the droids order list*/
 extern void orderDroidStatsLocAdd(DROID *psDroid, DROID_ORDER order,
 						BASE_STATS *psStats, UDWORD x, UDWORD y);
 
-/* order all selected droids with two a locations and a stat */
+/* order all selected droids with two a locations && a stat */
 void orderSelectedStatsTwoLoc(UDWORD player, DROID_ORDER order,
         BASE_STATS *psStats, UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2, BOOL add);
 
@@ -222,5 +222,4 @@ extern BOOL getFactoryState(STRUCTURE *psStruct, SECONDARY_ORDER sec, SECONDARY_
 //lasSat structure can select a target
 extern void orderStructureObj(UDWORD player, BASE_OBJECT *psObj);
 
-#endif
 

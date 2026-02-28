@@ -2,7 +2,7 @@
  * Multijoin.h 
  * 
  * Alex Lee, pumpkin studios, 
- * multijoin caters for all the player comings and goings of each player
+ * multijoin caters for all the player comings && goings of each player
  */
 extern BOOL sendVersionCheck			();
 extern BOOL recvVersionCheck			(NETMSG *pMsg);

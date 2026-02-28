@@ -1,5 +1,5 @@
-#ifndef _selection_h
-#define _selection_h
+#pragma once
+
 
 typedef enum _selection_class
 {
@@ -36,4 +36,3 @@ extern void selCommander(SDWORD n);
 
 // ---------------------------------------------------------------------
 
-#endif

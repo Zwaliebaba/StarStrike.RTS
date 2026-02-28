@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Data.h
  *
  * Data loading functions
  */
-#ifndef _data_h
-#define _data_h
 
 /* Pass all the data loading functions to the framework library */
 extern BOOL dataInitLoadFuncs(void);
@@ -53,5 +53,4 @@ extern void resetCheatHash();
 extern UDWORD cheatHash[CHEAT_MAXCHEAT];
 
 
-#endif
 

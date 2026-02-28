@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ResearchDef.h
  *
  * Structure definitions for research
  *
  */
-#ifndef _researchdef_h
-#define _researchdef_h
 
 /* Research struct type definitions */
 typedef enum
@@ -18,10 +18,10 @@ typedef struct research_stats
 {
 	STATS_BASE;
 	UBYTE			techCode;
-	//STRING			*pTechnologyName;	/* Text name of the group the research is a 
+	//char *pTechnologyName;	/* Text name of the group the research is a 
 	//									   member of */
 	TECH_LEVEL		techLevel;			/* technology level of the research topic */
-//	STRING			*pSubGroupName;		/* Text name of the Subgroup to which the research belongs */
+//	char *pSubGroupName;		/* Text name of the Subgroup to which the research belongs */
 	UWORD       	subGroup;			/* Subgroup of the item - an iconID from 'Framer' to depict in the button*/
 
 	UWORD			researchPoints;		/* Number of research points required to 
@@ -55,7 +55,7 @@ typedef struct research_stats
 	COMP_BASE_STATS	**pArtefactResults;	/*List of Artefacts that are possible after
 										  this research*/
 	COMP_BASE_STATS	**pReplacedArtefacts;/*List of artefacts that are replaced by the above 
-										  result - not necessarily any! 1 to 1 relation with 
+										  result - !necessarily any! 1 to 1 relation with 
 										  above list */
 	struct _viewdata	*pViewData;		/*data used to display a message in the 
 										  Intelligence Screen*/
@@ -102,5 +102,4 @@ typedef struct _player_research
 
 // clear all bits in the status except for the possible bit
 #define ResetResearchStatus(x) ((x)->ResearchStatus&=(~RESBITS))
-#endif
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * IntelMap.h
  *
  * Functions for the display of the Intelligence Map
  */
 
-#ifndef _intelmap_h
-#define _intelmap_h
 
 /* Intelligence Map screen IDs */
 #define IDINTMAP_FORM			6000	//The intelligence map base form
@@ -35,7 +35,7 @@ extern void intProcessIntelMap(UDWORD id);
 /* Process return code from the Message View for Tutorial Mode*/
 //extern void intProcessMessageView(UDWORD id);
 
-/* rotate the view so looking directly down if forward = TRUE or
+/* rotate the view so looking directly down if forward = TRUE ||
  back to previous view if forward = FALSE */
 //extern void intelMapView(BOOL forward);
 
@@ -49,7 +49,7 @@ extern void intRemoveIntelMapNoAnim(void);
 //extern void initTextDisplay(MESSAGE *psMessage, UDWORD fontID, UWORD fontColour);
 
 /* scroll the text message from left to right - aka tickertape messages */
-//extern void scrollMessage(STRING *pText, UDWORD startX, UDWORD endX, UDWORD y, UDWORD gap);
+//extern void scrollMessage(char *pText, UDWORD startX, UDWORD endX, UDWORD y, UDWORD gap);
 
 /*sets psCurrentMsg for the Intelligence screen*/
 extern void setCurrentMsg(void);
@@ -67,6 +67,5 @@ extern BOOL messageIsImmediate(void);
 /*sets the flag*/
 extern void setMessageImmediate(BOOL state);
 
-#endif	//intelmap.h
 
 

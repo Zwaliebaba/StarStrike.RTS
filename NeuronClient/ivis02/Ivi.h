@@ -1,11 +1,11 @@
+#pragma once
+
 
 //***	ivi.h iVi engine definitions. [Sam Kerbeck]
 //*	24-04-96.30-07-96 PC
 //*	18-11-96.04-12-96	WIN'95
 //*
 
-#ifndef _ivi_
-#define _ivi_
 
 #include "Piedef.h"
 
@@ -90,5 +90,3 @@ extern void iV_DisplayLogFile(void);
 
 
 
-
-#endif

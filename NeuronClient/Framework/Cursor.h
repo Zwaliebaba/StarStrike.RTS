@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Cursor.h
  *
@@ -5,8 +7,6 @@
  * than the program framerate.
  *
  */
-#ifndef _cursor_h
-#define _cursor_h
 
 // data required to load a new cursor description
 typedef struct _cursor_load
@@ -33,7 +33,5 @@ extern BOOL cursorDisplay(void);
 
 // Stop displaying the cursor
 extern BOOL cursorHide(void);
-
-#endif
 
 

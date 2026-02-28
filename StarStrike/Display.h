@@ -1,14 +1,14 @@
+#pragma once
+
 /*
  * Display.h
  *
- * Definitions for the display system structures and routines.
+ * Definitions for the display system structures && routines.
  *
  */
 
 
 
-#ifndef _display_h
-#define _display_h
 
 #include "Base.h"
 #include "Structure.h"
@@ -23,7 +23,7 @@ extern void shakeStart(void);
 /* Tidy up after a mode change */
 extern BOOL dispModeChange();
 
-/* Process the user input. This just processes the key input and jumping around the radar*/
+/* Process the user input. This just processes the key input && jumping around the radar*/
 //extern BOOL processInput(void);
 
 extern void ProcessRadarInput(void);
@@ -225,5 +225,4 @@ void AddDerrickBurningMessage(void);
 // check whether the queue order keys are pressed
 extern BOOL ctrlShiftDown(void);
 
-#endif
 

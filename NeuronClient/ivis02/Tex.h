@@ -1,5 +1,5 @@
-#ifndef _tex_
-#define _tex_
+#pragma once
+
 
 #include "Ivi.h"
 
@@ -38,11 +38,11 @@ extern iTexPage	_TEX_PAGE[iV_TEX_MAX];
 
 
 extern int iV_TexLoad( char *path, char *filename, int type,
-						iBool palkeep, iBool bColourKeyed );
+						BOOL palkeep, BOOL bColourKeyed );
 extern int iV_TexLoadNew( char *path, char *filename, int type,
-					iBool palkeep, iBool bColourKeyed );
+					BOOL palkeep, BOOL bColourKeyed );
 extern int pie_ReloadTexPage(char *filename,UBYTE *pBuffer);
-extern int pie_AddBMPtoTexPages( 	iSprite* s, char* filename, int type, iBool bColourKeyed, iBool bResource);
+extern int pie_AddBMPtoTexPages( 	iSprite* s, char* filename, int type, BOOL bColourKeyed, BOOL bResource);
 extern void pie_TexInit(void);
 
 
@@ -55,5 +55,3 @@ extern BOOL iV_IsPower2(UDWORD Value);
 
 BOOL GenerateTEXPAGE(char *Filename, RECT *VramArea, UDWORD Mode, UWORD Clut);
 BOOL FindTextureNumber(UDWORD TexNum,int* TexPage);
-
-#endif

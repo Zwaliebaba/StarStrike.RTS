@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Button.h
  *
  * Definitions for edit box functions.
  */
-#ifndef _button_h
-#define _button_h
 
 /* The widget heap */
 extern OBJ_HEAP	*psButHeap;
@@ -25,8 +25,8 @@ typedef struct _w_button
 	WIDGET_BASE;
 
 	UDWORD		state;				// The current button state
-	STRING		*pText;				// The text for the button
-	STRING		*pTip;				// The tool tip for the button
+	char *pText;				// The text for the button
+	char *pTip;				// The tool tip for the button
 	SWORD HilightAudioID;				// Audio ID for form clicked sound
 	SWORD ClickedAudioID;				// Audio ID for form hilighted sound
 	WIDGET_AUDIOCALLBACK AudioCallback;	// Pointer to audio callback function
@@ -72,6 +72,4 @@ extern void buttonClearFlash(W_BUTTON *psButton);
 
 /* The button display function */
 extern void buttonDisplay(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
-
-#endif
 

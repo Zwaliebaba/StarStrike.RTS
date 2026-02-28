@@ -1,5 +1,5 @@
-#ifndef _intdisplay_h
-#define _intdisplay_h
+#pragma once
+
 
 #include "Widget.h"
 #include "WidgInt.h"
@@ -45,12 +45,12 @@ enum {
 };
 
 typedef struct {
-	STRING *Token;
+	char *Token;
 	SWORD ID;
 } TOKENID;
 
 typedef struct {
-	STRING *Token;
+	char *Token;
 	SWORD ID;
 	SWORD IMD;
 } RESEARCHICON;
@@ -286,8 +286,8 @@ BOOL StatIsResearch(BASE_STATS *Stat);
 void StatGetResearchImage(BASE_STATS *psStat, SDWORD *Image, iIMDShape **Shape, 
                           BASE_STATS **ppGraphicData, BOOL drawTechIcon);
 
-//SWORD GetTokenID(TOKENID *Tok,STRING *Token);
-//SWORD FindTokenID(TOKENID *Tok,STRING *Token);
+//SWORD GetTokenID(TOKENID *Tok,char *Token);
+//SWORD FindTokenID(TOKENID *Tok,char *Token);
 
 //displays a border for a form
 extern void intDisplayBorderForm(struct _widget *psWidget, UDWORD xOffset, 
@@ -327,4 +327,3 @@ extern void intDisplayMissionClock(struct _widget *psWidget, UDWORD xOffset, UDW
 
 extern void intDisplayAllyIcon(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 
-#endif

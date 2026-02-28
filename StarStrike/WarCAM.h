@@ -1,4 +1,5 @@
-#ifndef _warcam_h
+#pragma once
+
 /* Prevent multiple inclusion */
 #define _warcam_h
 
@@ -90,5 +91,3 @@ void	updateTestAngle( void );
 
 
 
-
-#endif

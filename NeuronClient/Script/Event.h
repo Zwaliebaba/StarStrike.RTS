@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Event.h
  *
  * Interface to the event management system.
  *
  */
-#ifndef _event_h
-#define _event_h
 
 /* The number of values in a context value chunk */
 #define CONTEXT_VALS 20
@@ -94,6 +94,4 @@ extern BOOL eventLoadTrigger(UDWORD time, SCRIPT_CONTEXT *psContext,
 
 //resets the event timer - updateTime
 extern void eventTimeReset(UDWORD initTime);
-
-#endif
 

@@ -1,5 +1,5 @@
-#ifndef _difficulty_h
-#define _difficulty_h
+#pragma once
+
 
 typedef enum _difficulty_level
 {
@@ -16,4 +16,3 @@ extern SDWORD	modifyForDifficultyLevel(SDWORD basicVal,BOOL IsPlayer);
 extern void setModifiers(FRACT Player,FRACT Enemy);
 
 
-#endif

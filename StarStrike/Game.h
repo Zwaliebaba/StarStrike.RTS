@@ -1,14 +1,14 @@
+#pragma once
+
 /*
  * game.h	  
  *
- * load and save game routines.
+ * load && save game routines.
  * Very likely to ALL change! All the headers are separately defined at the 
  * moment - they probably don't need to be - if no difference make into one. 
  * Also the struct defintions throughout the game could be re-ordered to contain 
  * the variables required for saving so that don't need to create a load more here!
  */
-#ifndef _game_h
-#define _game_h							  
 
 /***************************************************************************/
 /*
@@ -105,27 +105,27 @@ typedef struct _score_save_header
  */
 /***************************************************************************/
 
-extern BOOL loadGame(STRING *pGameToLoad, BOOL keepObjects, BOOL freeMem, BOOL UserSaveGame);	// UserSaveGame is TRUE when the save game is not a new level (User Save Game)
+extern BOOL loadGame(char *pGameToLoad, BOOL keepObjects, BOOL freeMem, BOOL UserSaveGame);	// UserSaveGame is TRUE when the save game is not a new level (User Save Game)
 /*This just loads up the .gam file to determine which level data to set up - split up
 so can be called in levLoadData when starting a game from a load save game*/
 // GameIsLevelStart is TRUE when we are starting a new level from the game data (i.e. WDG data not memcard on PSX)
-extern BOOL loadGameInit(STRING *pGameToLoad,BOOL GameIsLevelStart);
+extern BOOL loadGameInit(char *pGameToLoad,BOOL GameIsLevelStart);
 
-extern BOOL loadMissionExtras(STRING *pGameToLoad, SWORD levelType);
+extern BOOL loadMissionExtras(char *pGameToLoad, SWORD levelType);
 
 // load the script state given a .gam name
-extern BOOL loadScriptState(STRING *pFileName);
+extern BOOL loadScriptState(char *pFileName);
 
 //direct access for forceloader
 extern BOOL gameLoad(UBYTE *pFileData, UDWORD filesize);
 
-extern BOOL saveGame(STRING *aFileName, SDWORD saveType);
+extern BOOL saveGame(char *aFileName, SDWORD saveType);
 
 // Get the campaign number for loadGameInit game
-extern UDWORD getCampaign(STRING *pGameToLoad, BOOL *bSkipCDCheck);
+extern UDWORD getCampaign(char *pGameToLoad, BOOL *bSkipCDCheck);
 
 /*calls windows find file tree*/
-extern BOOL getSaveGameName(STRING *pName);
+extern BOOL getSaveGameName(char *pName);
 
 /*set validty keys for save game debugging*/
 extern void game_SetValidityKey(UDWORD keys);
@@ -136,5 +136,4 @@ extern UDWORD getSaveGameType(void);
 UDWORD RemapPlayerNumber(UDWORD OldNumber);
 
 
-#endif
 

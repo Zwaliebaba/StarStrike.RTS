@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * Script.h
  *
  * Interface to the script library
  */
-#ifndef _script_h
-#define _script_h
 
 #include "Interp.h"
 #include "Stack.h"
@@ -81,7 +81,7 @@ extern BOOL scriptSaveProg(SCRIPT_CODE *psProg, UDWORD *pSize, UBYTE **ppData);
 extern BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg);
 
 /* Lookup a script variable */
-extern BOOL scriptGetVarIndex(SCRIPT_CODE *psCode, STRING *pID, UDWORD *pIndex);
+extern BOOL scriptGetVarIndex(SCRIPT_CODE *psCode, char *pID, UDWORD *pIndex);
 
 /* Run a compiled script */
 extern BOOL interpRunScript(SCRIPT_CONTEXT *psContext, INTERP_RUNTYPE runType,
@@ -195,6 +195,4 @@ extern BOOL eventSetTrigger(void);
 //   2 - added and fired triggers
 //   3 - as 2 but show tested but not fired triggers as well
 extern BOOL eventSetTraceLevel(void);
-
-#endif
 

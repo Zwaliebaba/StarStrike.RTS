@@ -1,23 +1,23 @@
+#pragma once
+
 /*
  * mem.h
  *
  * Interface to the malloc/free replacements
  */
 
-#ifndef _mem_h
-#define _mem_h
 
 #include <stdlib.h>
 #include "Types.h"
 #include "Debug.h"
 
-/* DEBUG_MALLOC == TRUE uses debugging malloc and free
-   DEBUG_MALLOC == FALSE uses normal malloc and free */
+/* DEBUG_MALLOC == TRUE uses debugging malloc && free
+   DEBUG_MALLOC == FALSE uses normal malloc && free */
 #ifdef DEBUG
 
 #define DEBUG_MALLOC	TRUE
 
-/* in fast debugging mode turn off heap and pointer valid checking - GJ */
+/* in fast debugging mode turn off heap && pointer valid checking - GJ */
 #ifdef DEBUG_FAST
 #define DEBUG_HEAP		FALSE
 #define	NO_PTRVALID
@@ -50,21 +50,21 @@ extern void memSetBlockHeap(struct _block_heap *psHeap);
 extern struct _block_heap *memGetBlockHeap(void);
 
 /* malloc replacements */
-extern void *memMalloc(STRING *pFileName, SDWORD LineNumber, size_t Size);
+extern void *memMalloc(char *pFileName, SDWORD LineNumber, size_t Size);
 extern void *memMallocRelease(size_t Size);
 
 /* free replacements */
-extern void memFree(STRING *pFileName, SDWORD LineNumber, void *pMemToFree);
+extern void memFree(char *pFileName, SDWORD LineNumber, void *pMemToFree);
 extern void memFreeRelease(void *pMemToFree);
 
 /* Check a pointer refers to a valid block of memory */
 extern BOOL memPointerValid(void *pPtr, size_t Size);
 
 /* Report on currently allocated memory */
-extern void memMemoryReport(STRING *pFileName);
+extern void memMemoryReport(char *pFileName);
 
 /* Display the memory treap */
-extern void memDisplayTreap(STRING *pFileName);
+extern void memDisplayTreap(char *pFileName);
 
 #if DEBUG_MALLOC
 
@@ -90,5 +90,3 @@ extern void memDisplayTreap(STRING *pFileName);
 
 
 
-
-#endif

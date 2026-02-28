@@ -1,13 +1,13 @@
+#pragma once
+
 /***************************************************************************/
 /*
- * Projectile types and function headers
+ * Projectile types && function headers
  *
  * Gareth Jones 11/7/97
  */
 /***************************************************************************/
 
-#ifndef _PROJECTILE_H_
-#define _PROJECTILE_H_
 
 /***************************************************************************/
 
@@ -58,29 +58,29 @@ SDWORD	proj_GetLongRange(WEAPON_STATS *psStats, SDWORD dz);
 	(													\
 		(psObj->player == selectedPlayer)				\
 	)													\
-	OR													\
+	||													\
 	(													\
 		(psObj->psSource != NULL)						\
-		AND												\
+		&&												\
 		(												\
-			(psObj->psSource->type == OBJ_STRUCTURE && psObj->psSource->player == selectedPlayer) OR\
-			(psObj->psSource->type == OBJ_STRUCTURE && psObj->psSource->visible[selectedPlayer]) OR\
-			(psObj->psSource->type == OBJ_DROID     && psObj->psSource->visible[selectedPlayer]) OR\
+			(psObj->psSource->type == OBJ_STRUCTURE && psObj->psSource->player == selectedPlayer) ||\
+			(psObj->psSource->type == OBJ_STRUCTURE && psObj->psSource->visible[selectedPlayer]) ||\
+			(psObj->psSource->type == OBJ_DROID     && psObj->psSource->visible[selectedPlayer]) ||\
 			(psObj->psSource->type == OBJ_DROID     && psObj->psSource->player == selectedPlayer) \
 		)												\
 	)													\
-	OR													\
+	||													\
 	(													\
 		(psObj->psDest != NULL)							\
-		AND												\
+		&&												\
 		(												\
-			(psObj->psDest->type == OBJ_STRUCTURE && psObj->psDest->player == selectedPlayer) OR\
-			(psObj->psDest->type == OBJ_STRUCTURE && psObj->psSource->visible[selectedPlayer]) OR\
-			(psObj->psDest->type == OBJ_DROID     && psObj->psDest->visible[selectedPlayer]) OR\
+			(psObj->psDest->type == OBJ_STRUCTURE && psObj->psDest->player == selectedPlayer) ||\
+			(psObj->psDest->type == OBJ_STRUCTURE && psObj->psSource->visible[selectedPlayer]) ||\
+			(psObj->psDest->type == OBJ_DROID     && psObj->psDest->visible[selectedPlayer]) ||\
 			(psObj->psDest->type == OBJ_DROID     && psObj->psSource->player == selectedPlayer) \
 		)												\
 	)													\
-	OR													\
+	||													\
 	(													\
 		godMode											\
 	)													\
@@ -95,6 +95,5 @@ extern BOOL	justBeenHitByEW		( BASE_OBJECT *psObj );
 extern void	objectShimmy	( BASE_OBJECT *psObj );
 
 
-#endif	/* _PROJECTILE_H_ */
 
 /***************************************************************************/

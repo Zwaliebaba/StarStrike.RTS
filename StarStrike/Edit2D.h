@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef DISP2D
 
 /*
@@ -5,8 +7,6 @@
  *
  * Interface to the 2d editing routines.
  */
-#ifndef _edit2d_h
-#define _edit2d_h
 
 /* Whether to show the terrain type on the map */
 extern BOOL showTerrain;
@@ -30,9 +30,6 @@ extern BOOL ed2dLoadMapFile(void);
 extern BOOL ed2dSaveMapFile(void);
 
 /* Write the data to the file */
-extern BOOL writeMapFile(STRING *pFileName);
-
-#endif
-
+extern BOOL writeMapFile(char *pFileName);
 
 #endif

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Init.h
  *
  * Interface to the initialisation routines.
  *
  */
-#ifndef _init_h
-#define _init_h
 
 
 // the size of the file loading buffer
@@ -39,5 +39,4 @@ extern BLOCK_HEAP	*psMapHeap;
 // the block heap for the pre WRF data
 extern BLOCK_HEAP	*psMissionHeap;
 
-#endif
 

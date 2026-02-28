@@ -1,11 +1,11 @@
+#pragma once
+
 /***************************************************************************/
 /* 
  * loadsave.h
  */
 /***************************************************************************/
 
-#ifndef _loadsave_h
-#define _loadsave_h
 
 /***************************************************************************/
 /*
@@ -58,4 +58,3 @@ BOOL saveInMissionRes(void);
 BOOL saveMidMission(void);
 
 extern void deleteSaveGame(char* saveGameName);
-#endif/_loadsave_h

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Move.h
  *
  * Interface for the unit movement system
  *
  */
-#ifndef _move_h
-#define _move_h
 
 #include "ObjectDef.h"
 #include "Findpath.h"
@@ -52,7 +52,7 @@ extern void moveUpdateTracked(DROID *psDroid);
 extern void fillNewBlocks(DROID *psDroid);
 extern void fillInitialView(DROID *psDroid);
 
-/* update body and turret to local slope */
+/* update body && turret to local slope */
 extern void updateDroidOrientation(DROID *psDroid);
 
 extern void moveSetFormationSpeedLimiting( BOOL );
@@ -77,5 +77,4 @@ void moveMakeVtolHover( DROID *psDroid );
 //extern void	setDrivingStatus( BOOL val );
 //extern BOOL	getDrivingStatus( void );
 
-#endif
 

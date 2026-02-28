@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * AI.h
  *
  * Definitions for the AI system structures
  *
  */
-#ifndef _ai_h
-#define _ai_h
 
 #include "ObjectDef.h"
 
@@ -54,5 +54,4 @@ extern BOOL aiChooseSensorTarget(BASE_OBJECT *psObj, BASE_OBJECT **ppsTarget);
 can fire on the propulsion type of the target*/
 extern BOOL validTarget(BASE_OBJECT *psObject, BASE_OBJECT *psTarget);
 
-#endif
 

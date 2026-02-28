@@ -1,9 +1,9 @@
+#pragma once
+
 /*
  * Internal definitions for the level system
  *
  */
-#ifndef _levelint_h
-#define _levelint_h
 
 // return values from the lexer
 enum _token_type
@@ -29,11 +29,11 @@ enum _token_type
 } LTOKEN_TYPE;
 
 // return values from the lexer
-extern STRING *pLevToken;
+extern char *pLevToken;
 extern SDWORD levVal;
 
 // error report function for the level parser
-extern void levError(STRING *pError);
+extern void levError(char *pError);
 
 // the lexer function
 extern int lev_lex(void);
@@ -43,5 +43,4 @@ extern void levSetInputBuffer(UBYTE *pBuffer, UDWORD size);
 
 extern void levGetErrorData(int *pLine, char **ppText);
 
-#endif
 

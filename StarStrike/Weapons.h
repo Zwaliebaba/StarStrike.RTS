@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Weapons.h
  *
  * Definitions for the weapons
  *
  */
-#ifndef _weapons_h
-#define _weapons_h
 
 typedef struct _weapon
 {
@@ -16,5 +16,4 @@ typedef struct _weapon
 	UDWORD			recoilValue;
 } WEAPON;
 
-#endif
 

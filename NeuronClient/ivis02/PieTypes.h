@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * pieTypes.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _pieTypes_h
-#define _pieTypes_h
 
 #include "Frame.h"
 
@@ -32,12 +32,13 @@
  *	Global Type Definitions
  */
 /***************************************************************************/
-typedef signed char int8;
-typedef signed short int16;
-typedef int int32;
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
+/* Integer types — aliases of Framework/Types.h types to avoid duplication */
+typedef SBYTE  int8;
+typedef SWORD  int16;
+typedef SDWORD int32;
+typedef UBYTE  uint8;
+typedef UWORD  uint16;
+typedef UDWORD uint32;
 
 
 //
@@ -47,7 +48,6 @@ typedef unsigned int uint32;
 typedef struct {int left, top, right, bottom;} iClip;
 typedef uint8 iBitmap;
 typedef struct {uint8 r, g, b;} iColour;
-typedef int iBool;
 typedef struct {int32 x, y;} iPoint;
 typedef struct {int width, height; iBitmap *bmp;} iSprite;
 typedef iColour iPalette[256];
@@ -61,9 +61,7 @@ typedef struct {int32 x, y;} iPoint32;
 	typedef struct {int32 x, y, z;} iVector;
 	typedef struct {double x, y, z;} iVectorf;
 	typedef struct {int xshift, width, height; iBitmap *bmp;
-					iColour *pPal; iBool bColourKeyed; } iTexture;
+					iColour *pPal; BOOL bColourKeyed; } iTexture;
 	typedef struct {int32 x, y, z, u, v; uint8 g;} iVertex; 
 typedef struct {FRACT x,y,z;} PIEVECTORF;
 typedef struct {iVector p, r;} iView;
-
-#endif // _pieTypes_h

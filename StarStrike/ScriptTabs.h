@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ScriptTabs.h
  *
  * All the tables for the script compiler
  *
  */
-#ifndef _scripttabs_h
-#define _scripttabs_h
 
 #include "Script.h"
 
@@ -134,5 +134,4 @@ extern BOOL scrTabInitialise(void);
 // Shut down the script system
 extern void scrShutDown(void);
 
-#endif
 

@@ -1,3 +1,5 @@
+#pragma once
+
 /***************************************************************************/
 /*
  * dx6TexMan.h
@@ -7,8 +9,6 @@
  */
 /***************************************************************************/
 
-#ifndef _dx6TexMan_h
-#define _dx6TexMan_h
 
 /***************************************************************************/
 
@@ -43,4 +43,3 @@ extern BOOL dtm_LoadRadarSurface(BYTE* radarBuffer);
 extern SDWORD dtm_GetRadarTexImageSize(void);
 
 extern void dx6_SetBilinear( BOOL bBilinearOn );
-#endif // 

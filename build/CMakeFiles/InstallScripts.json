@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/zwali/source/repos/StarStrike.RTS/build/cmake_install.cmake",
+		"C:/Users/zwali/source/repos/StarStrike.RTS/build/NeuronCore/cmake_install.cmake",
+		"C:/Users/zwali/source/repos/StarStrike.RTS/build/NeuronClient/cmake_install.cmake",
+		"C:/Users/zwali/source/repos/StarStrike.RTS/build/StarStrike/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

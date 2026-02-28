@@ -2,10 +2,10 @@
 # Depends on NeuronClient (which transitively brings in NeuronCore).
 #
 # CONFIGURE_DEPENDS: CMake will re-glob and re-configure automatically
-# whenever .c or .h files are added to or removed from this directory.
+# whenever .cpp or .h files are added to or removed from this directory.
 
 file(GLOB STARSTRIKE_SRC CONFIGURE_DEPENDS
-    "*.c"
+    "*.cpp"
     "*.h"
 )
 

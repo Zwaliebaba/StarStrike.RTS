@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Player.h
  *
@@ -5,8 +7,6 @@
  *
  */
 
-#ifndef _player_h
-#define _player_h
 
 /* Initialise the player AI system */
 extern BOOL playerInitialise(void);
@@ -32,5 +32,4 @@ extern void playerNewDroid(DROID *psDroid);
 /* sends players droids to attack a specified x/y */
 extern void attackLocation(UDWORD x, UDWORD y, UDWORD player);
 
-#endif
 

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ScriptCB.h
  *
  * functions to deal with parameterised script callback triggers.
  *
  */
-#ifndef _scriptcb_h
-#define _scriptcb_h
 
 
 // The pointer to the droid that was just built for a CALL_NEWDROID
@@ -98,6 +98,5 @@ extern BOOL scrCBPlayerLeft(void);
 extern BOOL scrCBAllianceOffer(void);
 extern UDWORD	CBallFrom,CBallTo;
 
-#endif
 
 

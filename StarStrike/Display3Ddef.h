@@ -1,5 +1,5 @@
-#ifndef _display3ddef_h
-#define _display3ddef_h
+#pragma once
+
 
 #define TILE_WIDTH 64
 #define TILE_HEIGHT 64
@@ -36,4 +36,3 @@
 #define BOX_PULSE_SIZE	10
 extern UBYTE	boxPulseColours[BOX_PULSE_SIZE]; 
 
-#endif

@@ -1,7 +1,7 @@
+#pragma once
+
 /* Wrappers.h */
 
-#ifndef _wrappers_h
-#define _wrappers_h
 
 typedef enum {
 	TITLECODE_CONTINUE,
@@ -41,4 +41,3 @@ extern UBYTE        getScriptWinLoseVideo   ( void );
 //#define LOADBARCALLBACK() loadingScreenCallback()
 #define LOADBARCALLBACK() 
 
-#endif

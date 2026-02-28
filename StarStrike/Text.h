@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * Text.h (was Strings.h)
  *
  * String management functions
  *
  */
-#ifndef _text_h
-#define _text_h
 
 //the two defines below are MUTUALLY EXCLUSIVE! don't have both defined...
 //#define RESOURCE_NAMES
@@ -518,5 +518,4 @@ extern BOOL stringsInitialise(void);
 /* Shut down the string system */
 extern void stringsShutDown(void);
 
-#endif
 

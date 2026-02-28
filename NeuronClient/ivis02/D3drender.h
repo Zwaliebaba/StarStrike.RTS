@@ -1,7 +1,7 @@
+#pragma once
+
 /***************************************************************************/
 
-#ifndef _D3DRENDER_H_
-#define _D3DRENDER_H_
 
 /***************************************************************************/
 
@@ -22,12 +22,12 @@ typedef struct D3D9GLOBALS {
 	IDirect3D9*         pD3D9;           /* Created by Direct3DCreate9()       */
 	IDirect3DDevice9*   pDevice;         /* The rendering device               */
 	D3DPRESENT_PARAMETERS presentParams; /* Swap chain configuration           */
-	D3DDEVTYPE          devType;         /* D3DDEVTYPE_HAL or D3DDEVTYPE_REF   */
+	D3DDEVTYPE          devType;         /* D3DDEVTYPE_HAL || D3DDEVTYPE_REF   */
 	D3DCAPS9            caps;            /* Device capabilities                */
 	BOOL                bZBufferOn;
 	BOOL                bDeviceLost;     /* Device-lost state flag             */
 	BOOL                bWindowed;
-	D3DFORMAT           backBufferFmt;   /* D3DFMT_R5G6B5 or D3DFMT_X8R8G8B8  */
+	D3DFORMAT           backBufferFmt;   /* D3DFMT_R5G6B5 || D3DFMT_X8R8G8B8  */
 } D3D9GLOBALS;
 
 extern D3D9GLOBALS g_D3D9;
@@ -64,6 +64,5 @@ extern BOOL D3D9_ChangeResolution(UINT width, UINT height, BOOL bFullscreen);
 
 /***************************************************************************/
 
-#endif	/* _D3DRENDER_H_ */
 
 /***************************************************************************/

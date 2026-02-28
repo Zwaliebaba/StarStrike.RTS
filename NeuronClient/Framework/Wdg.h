@@ -1,9 +1,8 @@
+#pragma once
+
 /*
 	WDG releated goodies
 */
-
-#ifndef _wdg_h
-#define _wdg_h
 
 // list of all wrfs in the wdg
 typedef struct
@@ -78,7 +77,7 @@ typedef struct
 } CACHE;
 
 BOOL WDG_SetCurrentWDG(char *filename);
-BOOL loadFileFromWDG(STRING *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE MemAllocationMode);
+BOOL loadFileFromWDG(char *pFileName, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE MemAllocationMode);
 struct _wdg_findfile;
 BOOL loadFileFromWDGCache(struct _wdg_findfile *psFindFile, UBYTE **ppFileData, UDWORD *pFileSize, UBYTE MemAllocationMode);
 BOOL LoadWRFCatalog(WDGINFO *CurrentWRF, FILE *pFileHandle);
@@ -108,5 +107,3 @@ void WDG_GetCurrentWDGCatalog(char **ppFileName, UDWORD *pNumWRF, WDGINFO **ppsW
 
 // get the current WRF file catalog
 void WDG_GetCurrentWFRFileCatalog(UDWORD *pCatOffset, WRFINFO **ppsFileCatalog);
-
-#endif

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * DXInput.h
  *
  * Input functions using Direct Input.
  *
  */
-#ifndef _DXInput_h
-#define _DXInput_h
 
 #ifndef DIRECTINPUT_VERSION
 #define DIRECTINPUT_VERSION 0x0500
@@ -40,8 +40,6 @@ extern BOOL DInpGetMouseState(SDWORD *pX, SDWORD *pY, SDWORD *pButtons);
 
 
 // convert a direct input error to a string
-extern STRING *DIErrorToString(HRESULT dierror);
+extern char *DIErrorToString(HRESULT dierror);
 
-
-#endif
 

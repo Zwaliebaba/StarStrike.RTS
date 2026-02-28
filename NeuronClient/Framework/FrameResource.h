@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * FrameResources.h
  *
@@ -7,8 +9,6 @@
 // This file used to be called resource.h but that clashed with resource.h that was in the main source directory
 
 
-#ifndef _resource_h
-#define _resource_h
 
 /* Maximum number of characters in a resource type */
 #define RESTYPE_MAXCHAR		20
@@ -19,7 +19,7 @@
 /* Function pointer for a function that loads from a memory buffer */
 typedef BOOL (*RES_BUFFERLOAD)(UBYTE *pBuffer, UDWORD size, void **pData);
 /* Function pointer for a function that loads from a filename */
-typedef BOOL (*RES_FILELOAD)(STRING *pFile, void **pData);
+typedef BOOL (*RES_FILELOAD)(char *pFile, void **pData);
 
 /* Function pointer for releasing a resource loaded by the above functions */
 typedef void (*RES_FREE)(void *pData);
@@ -87,15 +87,15 @@ extern BOOL resInitialise(void);
 extern void resShutDown(void);
 
 // set the base resource directory
-extern void resSetBaseDir(STRING *pResDir);
+extern void resSetBaseDir(char *pResDir);
 
 /* Parse the res file */
 struct _block_heap;
-extern BOOL resLoad(STRING *pResFile, SDWORD blockID,
+extern BOOL resLoad(char *pResFile, SDWORD blockID,
 			 UBYTE *pLoadBuffer, SDWORD bufferSize,
 			 struct _block_heap *psMemHeap);
 
-/* Release all the resources currently loaded and the resource load functions */
+/* Release all the resources currently loaded && the resource load functions */
 extern void resReleaseAll(void);
 
 // release the data for a particular block ID
@@ -104,31 +104,31 @@ extern void resReleaseBlockData(SDWORD blockID);
 /* Release all the resources currently loaded but keep the resource load functions */
 extern void resReleaseAllData(void);
 
-/* Add a buffer load and release function for a file type */
-extern BOOL	resAddBufferLoad(STRING *pType, RES_BUFFERLOAD buffLoad,
+/* Add a buffer load && release function for a file type */
+extern BOOL	resAddBufferLoad(char *pType, RES_BUFFERLOAD buffLoad,
 							 RES_FREE release);
 
-/* Add a file name load and release function for a file type */
-extern BOOL	resAddFileLoad(STRING *pType, RES_FILELOAD fileLoad,
+/* Add a file name load && release function for a file type */
+extern BOOL	resAddFileLoad(char *pType, RES_FILELOAD fileLoad,
 						   RES_FREE release);
 
 /* Call the load function for a file */
-extern BOOL resLoadFile(STRING *pType, STRING *pFile);
+extern BOOL resLoadFile(char *pType, char *pFile);
 
 // Add data to the resource system
-extern BOOL resAddData(STRING *pType, STRING *pID, void *pData);
+extern BOOL resAddData(char *pType, char *pID, void *pData);
 
-/* Return the resource for a type and ID */
-extern void *resGetDataFromHash(STRING *pType, UDWORD HashedID);
-extern void *resGetData(STRING *pType, STRING *pID);
-extern BOOL resPresent(STRING *pType, STRING *pID);
-void resToLower(STRING *pStr);
+/* Return the resource for a type && ID */
+extern void *resGetDataFromHash(char *pType, UDWORD HashedID);
+extern void *resGetData(char *pType, char *pID);
+extern BOOL resPresent(char *pType, char *pID);
+void resToLower(char *pStr);
 
 // return the ID string for a piece of data
-//extern BOOL resGetIDfromData(STRING *pType, void *pData, STRING **ppID); // no longer valid use the function below
+//extern BOOL resGetIDfromData(char *pType, void *pData, char **ppID); // no longer valid use the function below
 
 // return the HashedID string for a piece of data
-extern BOOL resGetHashfromData(STRING *pType, void *pData, UDWORD *pHash);
+extern BOOL resGetHashfromData(char *pType, void *pData, UDWORD *pHash);
 
 VOID resDoResLoadCallback();
 
@@ -148,6 +148,4 @@ BOOL OpenWDG(char *WDGname);
 BOOL IsWDGopen(void);
 void CloseWDG(void);
 
-
-#endif
 

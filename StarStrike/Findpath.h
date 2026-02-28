@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * FindPath.h
  *
  * Routing functions interface.
  *
  */
-#ifndef _findpath_h
-#define _findpath_h
 
 #define MAXMOVES			50
 #define WALLHUGSIZE			150
@@ -63,4 +63,3 @@ extern UDWORD dirDiff(SDWORD start, SDWORD end);
 #define WEST		6
 #define NORTHWEST	7
 
-#endif // findpath_h

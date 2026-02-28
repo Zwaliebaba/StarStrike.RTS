@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * SeqDisp.h
  *
  * Functions for the display of the Escape Sequences
  */
 
-#ifndef _SeqDisp_h
-#define _SeqDisp_h
 
 #include "PieMode.h"
 /***************************************************************************/
@@ -54,7 +54,7 @@ extern BOOL seq_ClearTextForVideo(void);
 //clear the sequence list
 extern void seq_ClearSeqList(void);
 //add a sequence to the list to be played
-extern void seq_AddSeqToList(STRING *pSeqName, STRING *pAudioName, STRING *pTextName, BOOL bLoop, UDWORD PSXSeqNumber);
+extern void seq_AddSeqToList(char *pSeqName, char *pAudioName, char *pTextName, BOOL bLoop, UDWORD PSXSeqNumber);
 /*checks to see if there are any sequences left in the list to play*/
 extern BOOL seq_AnySeqLeft(void);
 
@@ -68,6 +68,5 @@ extern BOOL seq_GetSubtitles(void);
 extern void seq_StartNextFullScreenVideo(void);
 
  
-#endif	//SeqDisp.h
 
 

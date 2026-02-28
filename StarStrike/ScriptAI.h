@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * ScriptAI.h
  *
  * Script functions to support the AI system
  *
  */
-#ifndef _scriptai_h
-#define _scriptai_h
 
 // Add a droid to a group
 extern BOOL scrGroupAddDroid(void);
@@ -177,7 +177,6 @@ BOOL scrSkDefenseLocation(void);
 
 
 
-#endif
 
 
 

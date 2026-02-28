@@ -1,5 +1,5 @@
-#ifndef _bridge_h
-#define _bridge_h
+#pragma once
+
 
 /* Shift these out into a header file */
 #define MINIMUM_BRIDGE_SPAN 2
@@ -28,4 +28,3 @@ extern void	getBridgeInfo(UDWORD startX,UDWORD startY,UDWORD endX, UDWORD endY, 
 /* FIX ME - this is used in debug to test the bridge build code */
 extern void	testBuildBridge(UDWORD startX,UDWORD startY,UDWORD endX,UDWORD endY);
 
-#endif

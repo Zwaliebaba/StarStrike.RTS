@@ -1,10 +1,10 @@
+#pragma once
+
 /*
  * WidgInt.h
  *
  * Internal widget library definitions
  */
-#ifndef _widgint_h
-#define _widgint_h
 
 /* Control whether to use malloc for widgets */
 #define W_USE_MALLOC	FALSE
@@ -28,20 +28,20 @@ extern void widgSetReturn(WIDGET *psWidget);
 extern WIDGET *widgGetFromID(W_SCREEN *psScreen, UDWORD id);
 
 /* Get a string from the string heap */
-extern BOOL widgAllocString(STRING **ppStr);
+extern BOOL widgAllocString(char **ppStr);
 
-/* Get a string from the heap and copy in some data.
+/* Get a string from the heap && copy in some data.
  * The string to copy will be truncated if it is too long.
  */
-extern BOOL widgAllocCopyString(STRING **ppDest, STRING *pSrc);
+extern BOOL widgAllocCopyString(char **ppDest, char *pSrc);
 
 /* Copy one string to another
  * The string to copy will be truncated if it is longer than WIDG_MAXSTR.
  */
-extern void widgCopyString(STRING *pDest, STRING *pSrc);
+extern void widgCopyString(char *pDest, char *pSrc);
 
 /* Return a string to the string heap */
-extern void widgFreeString(STRING *pStr);
+extern void widgFreeString(char *pStr);
 
 /* Release a list of widgets */
 extern void widgReleaseWidgetList(WIDGET *psWidgets);
@@ -60,6 +60,4 @@ extern void screenSetFocus(W_SCREEN *psScreen, WIDGET *psWidget);
 
 /* Clear the keyboard focus */
 extern void screenClearFocus(W_SCREEN *psScreen);
-
-#endif
 

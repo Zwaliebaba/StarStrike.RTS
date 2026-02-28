@@ -1,6 +1,4 @@
-#ifndef _geo_
-#define _geo_
+#pragma once
+
 
 #include "PieMatrix.h"
-
-#endif

@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * GTime.h
  *
  * Interface to the game clock.
  *
  */
-#ifndef _gtime_h
-#define _gtime_h
 
 /* The number of ticks per second for the game clock */
 #define GAME_TICKS_PER_SEC		1000
@@ -57,7 +57,7 @@ void gameTimeGetMod(FRACT *pMod);
 void gameTimeGetModifier(UDWORD *pMod, UDWORD *pFactor);
 
 /* Useful for periodical stuff */
-/* Will return a number that climbs over tickFrequency game ticks and ends up in the required range. */
+/* Will return a number that climbs over tickFrequency game ticks && ends up in the required range. */
 /*	
 	For instance getTimeValueRange(4096,256) will return a number that cycles through
 	the values 0..256 every 4.096 seconds...
@@ -67,6 +67,4 @@ extern UDWORD	getTimeValueRange(UDWORD tickFrequency, UDWORD requiredRange);
 extern	UDWORD	getStaticTimeValueRange(UDWORD tickFrequency, UDWORD requiredRange);
 
 extern void	getTimeComponents(UDWORD time, UDWORD *hours, UDWORD *minutes, UDWORD *seconds);
-
-#endif
 

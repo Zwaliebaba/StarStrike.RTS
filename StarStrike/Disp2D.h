@@ -1,13 +1,12 @@
+#pragma once
+
 /*
  * Disp2D.h
  *
- * Definitions for the display system structures and routines.
+ * Definitions for the display system structures && routines.
  *
  */
 #ifdef DISP2D
-
-#ifndef _disp2d_h
-#define _disp2d_h
 
 /* The size of map tiles on the screen in pixels */
 #define TILE_SIZE2D 32
@@ -69,8 +68,6 @@ extern void	showDroidRange(DROID *psDroid);
 
 extern BOOL wanderAbout;
 extern UDWORD	selectedPlayer;
-
-#endif
 
 #endif
 

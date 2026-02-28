@@ -91,7 +91,7 @@ typedef void (FX_CALL *grResetTriStats_fpt)();
 typedef void (FX_CALL *grTriStats_fpt)(FxU32 *trisProcessed, FxU32 *trisDrawn);
 
 /*
-** Glide configuration and special effect maintenance functions
+** Glide configuration && special effect maintenance functions
 */
 typedef void (FX_CALL *grAlphaBlendFunction_fpt)(
                      GrAlphaBlendFnc_t rgb_sf,   GrAlphaBlendFnc_t rgb_df,

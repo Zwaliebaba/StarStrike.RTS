@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * AIDef.h
  *
  * Structure definitions for the AI system
  *
  */
-#ifndef _aidef_h
-#define _aidef_h
 
 struct BASE_OBJECT;
 
@@ -35,5 +35,4 @@ typedef struct _ai_data
 } AI_DATA;
 
 
-#endif
 

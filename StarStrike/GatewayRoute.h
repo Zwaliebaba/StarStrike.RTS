@@ -1,11 +1,11 @@
+#pragma once
+
 /*
  * GatewayRoute.h
  *
  * Interface to the gateway routing code
  *
  */
-#ifndef _gatewayroute_h
-#define _gatewayroute_h
 
 #include "Gateway.h"
 
@@ -33,5 +33,4 @@ extern SDWORD gwrAStarRoute(SDWORD player, UDWORD terrain,
 							SDWORD sx, SDWORD sy, SDWORD fx, SDWORD fy,
 							GATEWAY **ppsRoute);
 
-#endif
 
