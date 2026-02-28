@@ -98,7 +98,7 @@ CACHE Cache={ NULL,0,0,FALSE };
 char CurrentWDGname[MAX_STR];		// name of the current wdg
 
 // set the current WDG and it's catalogs
-void WDG_SetCurrentWDGCatalog(char *filename, UDWORD numWRF, WDGINFO *psWRFCatalog)
+void WDG_SetCurrentWDGCatalog(const char *filename, UDWORD numWRF, WDGINFO *psWRFCatalog)
 {
 	strcpy(CurrentWDGname,filename);
 	NumberOfWRFfiles = numWRF;
@@ -681,7 +681,7 @@ BOOL FILE_InitialiseCache(SDWORD CacheSize)
 			
 	}
 #endif
-	CacheBuffer=MALLOC(CacheSize);
+	CacheBuffer=(UBYTE *)MALLOC(CacheSize);
 	if (CacheBuffer==NULL)
 	{
 		DBPRINTF(("No memory for the file cache ... !\n"));
@@ -1109,7 +1109,7 @@ BOOL loadFileFromWDGCache(WDG_FINDFILE *psFindFile, UBYTE **ppFileData, UDWORD *
 	else if (MemAllocationMode==WDG_ALLOCATEMEM)
 	{
 		// we must allocate memory for the file
-		*ppFileData=MALLOC(CurrentFile->filesize);
+		*ppFileData=(UBYTE *)MALLOC(CurrentFile->filesize);
 		if (*ppFileData==NULL)
 		{
 			// no mem for file

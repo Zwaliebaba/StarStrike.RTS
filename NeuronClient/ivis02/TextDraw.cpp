@@ -217,7 +217,7 @@ int iV_GetTextBelowBase(void)
 
 
 
-int iV_GetTextWidth(unsigned char *String)
+int iV_GetTextWidth(const char *String)
 {
 	int Index;
 	int MaxX = 0;
@@ -309,7 +309,7 @@ int iV_GetCharWidth(unsigned char Char)
 
 
 /*
-void iV_GetTextExtents(char *String,int *Width,int *y0,int *y1)
+void iV_GetTextExtents(const char *String,int *Width,int *y0,int *y1)
 {
 	int Index;
 	int MaxX = 0;
@@ -487,7 +487,7 @@ void SetExtentsMode_USEMAX(void)
 //
 // Returns y coord of next text line.
 //
-UDWORD pie_DrawFormattedText(UBYTE *String,UDWORD x,UDWORD y,UDWORD Width,UDWORD Justify,BOOL DrawBack)
+UDWORD pie_DrawFormattedText(const char *String,UDWORD x,UDWORD y,UDWORD Width,UDWORD Justify,BOOL DrawBack)
 {
 	int i,si,osi;
 	int Len = strlen((char*)String);
@@ -742,7 +742,7 @@ UDWORD pie_DrawFormattedText(UBYTE *String,UDWORD x,UDWORD y,UDWORD Width,UDWORD
 
 static SWORD OldTextColourIndex = -1;
 
-void pie_DrawText(unsigned char *string, UDWORD x, UDWORD y)
+void pie_DrawText(const char *string, UDWORD x, UDWORD y)
 {
 	int Index;
 	UWORD ImageID;
@@ -961,7 +961,7 @@ void pie_RenderCharToSurface(UDWORD *lpSurface, SDWORD pitch, IMAGEFILE *ImageFi
 	}
 }
 
-void pie_DrawTextToSurface(unsigned char *String, int XPos, int YPos)
+void pie_DrawTextToSurface(const char *String, int XPos, int YPos)
 {
 	/* No-op: DirectDraw surface text rendering removed in D3D9 migration.
 	 * This function had no callers.
@@ -970,7 +970,7 @@ void pie_DrawTextToSurface(unsigned char *String, int XPos, int YPos)
 
 
 
-void pie_DrawText270(unsigned char *String,int XPos,int YPos)
+void pie_DrawText270(const char *String,int XPos,int YPos)
 {
 	int Index;
 	UWORD ImageID;

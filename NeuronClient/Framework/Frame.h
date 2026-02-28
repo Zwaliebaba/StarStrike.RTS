@@ -34,7 +34,7 @@
 #include "ListMacs.h"
 
 /* Initialise the frame work library */
-extern BOOL frameInitialise(HANDLE hInstance,		// The windows application instance
+extern BOOL frameInitialise(HINSTANCE hInstance,		// The windows application instance
 					 char *pWindowName,	// The text to appear in the window title bar
 					 UDWORD	width,			// The display width
 					 UDWORD height,			// The display height
@@ -93,7 +93,7 @@ extern UDWORD frameGetOverallRate(void);
 extern UDWORD frameGetRecentRate(void);
 
 /* The handle for the application window */
-extern HANDLE	frameGetWinHandle(void);
+extern HWND	frameGetWinHandle(void);
 
 //enumerate all available direct draw devices
 extern BOOL frameDDEnumerate(void);
@@ -137,7 +137,7 @@ extern SDWORD ftol(float f);
 extern BOOL	bRunningUnderGlide;
 
 
-UINT HashString( char *String );
-UINT HashStringIgnoreCase( char *String );
+UINT HashString( const char *String );
+UINT HashStringIgnoreCase( const char *String );
 
 

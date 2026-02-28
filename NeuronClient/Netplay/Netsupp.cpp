@@ -28,7 +28,7 @@ HRESULT CreateDirectPlayInterface( LPDIRECTPLAY4A *lplpDirectPlay4A);
 
 BOOL	NETstartLogging	(VOID);
 BOOL	NETstopLogging	(VOID);
-BOOL	NETlogEntry		(CHAR *str,UDWORD a,UDWORD b);
+BOOL	NETlogEntry		(const CHAR *str,UDWORD a,UDWORD b);
 
 // ////////////////////////////////////////////////////////////////////////
 // Open the DPLAY interface
@@ -37,8 +37,8 @@ HRESULT CreateDirectPlayInterface( LPDIRECTPLAY4A *lplpDirectPlay4A )
 	HRESULT				hr;
 	LPDIRECTPLAY4A		lpDirectPlay4A = NULL;
 	
-	hr = CoCreateInstance(	&CLSID_DirectPlay, NULL, CLSCTX_INPROC_SERVER, // Create an IDirectPlay4 interface
-							&IID_IDirectPlay4A, (LPVOID*)&lpDirectPlay4A);
+	hr = CoCreateInstance(	CLSID_DirectPlay, NULL, CLSCTX_INPROC_SERVER, // Create an IDirectPlay4 interface
+							IID_IDirectPlay4A, (LPVOID*)&lpDirectPlay4A);
 
 	*lplpDirectPlay4A = lpDirectPlay4A;									// return interface created
 	return (hr);
@@ -191,7 +191,7 @@ BOOL NETstopLogging()
 }
 
 
-BOOL NETlogEntry(CHAR *str,UDWORD a,UDWORD b)
+BOOL NETlogEntry(const CHAR *str,UDWORD a,UDWORD b)
 {
 #ifdef LOG
 	static UDWORD lastframe = 0;

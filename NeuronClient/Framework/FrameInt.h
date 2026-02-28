@@ -23,7 +23,7 @@
 extern HINSTANCE	hInstance;
 
 /* Handle for the main window */
-extern HANDLE		hWndMain;
+extern HWND		hWndMain;
 
 /* Initialise the double buffered display */
 
@@ -35,7 +35,7 @@ extern BOOL screenInitialise(UDWORD		width,			// Display width
 							 BOOL		bVidMem,		// Whether to put surfaces in
 														// video memory
 							 BOOL		bDDraw,			// Whether to create ddraw surfaces												// video memory
-							 HANDLE		hWindow);		// The main windows handle
+							 HWND		hWindow);		// The main windows handle
 
 
 

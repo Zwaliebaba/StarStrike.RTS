@@ -22,6 +22,7 @@
 #include "PieState.h"
 #include "PieTexture.h"
 #include "PieClip.h"
+#include "Bspfunc.h"
 
 #include "D3drender.h"
 
@@ -521,7 +522,7 @@ void pie_Draw3DShape(iIMDShape *shape, int frame, int team, UDWORD col, UDWORD s
 
 	if ((!pie_Hardware()) && shape->BSPNode!=NULL)
 	{
-		AddIMDPrimativesBSP2(shape,scrPoints,frame);
+		AddIMDPrimativesBSP2(shape,(iIMDPoly *)scrPoints,frame);
 		return;
 	}
 
@@ -742,17 +743,17 @@ void pie_Draw3DShape(iIMDShape *shape, int frame, int team, UDWORD col, UDWORD s
 				}
 				else
 				{
-					pPixels->d3dx = D3DVAL((psRendSurface->xcentre + (rx / tzx)));
-					pPixels->d3dy = D3DVAL((psRendSurface->ycentre - (ry / tzy)));
-				}
-	}
+									pPixels->d3dx = D3DVAL((psRendSurface->xcentre + (rx / tzx)));
+										pPixels->d3dy = D3DVAL((psRendSurface->ycentre - (ry / tzy)));
+									}
+						}
 
 
-#ifdef BSPIMD
+					#ifdef BSPIMD
 
-	if ((!pie_Hardware()) && shape->BSPNode!=NULL)
-	{
-		AddIMDPrimativesBSP2(shape,scrPoints,frame);
+						if ((!pie_Hardware()) && shape->BSPNode!=NULL)
+						{
+							AddIMDPrimativesBSP2(shape,(iIMDPoly *)scrPoints,frame);
 		return;
 	}
 
@@ -1438,7 +1439,7 @@ void pie_DrawPoly(SDWORD numVrts, PIEVERTEX *aVrts, SDWORD texPage, void* psEffe
 			}
 			else//jps 15apr99 translucent water code
 			{
-				psAlpha = psEffects;
+				psAlpha = (UBYTE *)psEffects;
 //				alpha = 255-clippedVrts[i].specular.byte.a;
 //				alpha = pie_ByteScale(alpha, *psAlpha);//scale transparency by fog value
 				alpha = *psAlpha;//dont scale transparency by fog value
@@ -1465,7 +1466,7 @@ void pie_DrawTile(PIEVERTEX *pv0, PIEVERTEX *pv1, PIEVERTEX *pv2, PIEVERTEX *pv3
 
 	tileCount++;
 
-	pie_SetRendMode(TRANS_DECAL);
+	pie_SetRendMode((REND_MODE)TRANS_DECAL);
 	pie_SetTexturePage(texPage);
 	pie_SetBilinear(TRUE);
 

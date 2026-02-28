@@ -358,7 +358,7 @@ char *GetLastResourceFilename(void)
 }
 
 // Set the resource name of the last resource file loaded
-void SetLastResourceFilename(char *pName)
+void SetLastResourceFilename(const char *pName)
 {
 	strncpy(LastResourceFilename, pName, FILE_MAXCHAR-1);
 	LastResourceFilename[FILE_MAXCHAR-1] = 0;
@@ -576,7 +576,7 @@ void AddBinaryResourceType(char *ResourceType)
 }
 
 
-void resDataInit(RES_DATA* psRes, char *DebugName, UDWORD DataIDHash, void *pData, UDWORD BlockID)
+void resDataInit(RES_DATA* psRes, const char *DebugName, UDWORD DataIDHash, void *pData, UDWORD BlockID)
 {
 
 	psRes->pData = pData;
@@ -732,7 +732,7 @@ BOOL resLoadFile(char *pType, char *pFile)
 		// Set up the resource structure if there is something to store
 		if (pData != NULL)
 		{
-			psRes = MALLOC(sizeof(RES_DATA));
+			psRes = (RES_DATA *)MALLOC(sizeof(RES_DATA));
 			if (!psRes)
 			{
 				DBERROR(("resLoadFile: Out of memory"));
@@ -754,7 +754,7 @@ BOOL resLoadFile(char *pType, char *pFile)
 
 
 /* Return the resource for a type && hashedname */
-void *resGetDataFromHash(char *pType, UDWORD HashedID)
+void *resGetDataFromHash(const char *pType, UDWORD HashedID)
 {
 	RES_TYPE	*psT;
 	RES_DATA	*psRes;
@@ -807,7 +807,7 @@ void *resGetDataFromHash(char *pType, UDWORD HashedID)
 
 
 /* Return the resource for a type && ID */
-void *resGetData(char *pType, char *pID)
+void *resGetData(const char *pType, const char *pID)
 {
 	RES_TYPE	*psT;
 	RES_DATA	*psRes;
@@ -859,7 +859,7 @@ void *resGetData(char *pType, char *pID)
 }
 
 
-BOOL resGetHashfromData(char *pType, void *pData, UDWORD *pHash)
+BOOL resGetHashfromData(const char *pType, void *pData, UDWORD *pHash)
 {
 	RES_TYPE	*psT;
 	RES_DATA	*psRes;
@@ -956,7 +956,7 @@ BOOL resGetIDfromData(char *pType, void *pData, char **ppID)
 #endif
 
 /* Simply returns true if a resource is present */
-BOOL resPresent(char *pType, char *pID)
+BOOL resPresent(const char *pType, const char *pID)
 {
 	RES_TYPE	*psT;
 	RES_DATA	*psRes;
@@ -1241,7 +1241,7 @@ BOOL FILE_ProcessFile(WRFINFO *CurrentFile, UBYTE *pRetreivedFile)
 	{
 		RES_DATA *psRes;
 
-		psRes = MALLOC(sizeof(RES_DATA));
+		psRes = (RES_DATA *)MALLOC(sizeof(RES_DATA));
 		if (!psRes)
 		{
 			DBERROR(("resLoadFile: Out of memory"));

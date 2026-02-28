@@ -17,11 +17,11 @@ extern void iV_ClearFonts(void);
 extern void iV_SetFont(int FontID);
 extern int iV_CreateFontIndirect(IMAGEFILE *ImageFile,UWORD *AsciiTable,int SpaceSize);
 extern int iV_CreateFont(IMAGEFILE *ImageFile,UWORD StartID,UWORD EndID,int SpaceSize,BOOL bInGame);
-extern void iV_GetTextExtents(unsigned char *String,int *Width,int *y0,int *y1);
+extern void iV_GetTextExtents(const char *String,int *Width,int *y0,int *y1);
 extern int iV_GetTextAboveBase(void);
 extern int iV_GetTextBelowBase(void);
 extern int iV_GetTextLineSize(void);
-extern int iV_GetTextWidth(unsigned char *String);
+extern int iV_GetTextWidth(const char *String);
 extern int iV_GetCharWidth(unsigned char Char);
 extern void iV_SetTextColour(SWORD Index);
 
@@ -54,11 +54,11 @@ extern void pie_SetFormattedTextFlags(UDWORD Flags);
 extern UDWORD pie_GetFormattedTextFlags(void);
 extern void pie_StartTextExtents(void);
 extern void pie_FillTextExtents(int BorderThickness,UBYTE r,UBYTE g,UBYTE b,BOOL Alpha);
-extern UDWORD pie_DrawFormattedText(UBYTE *String,UDWORD x,UDWORD y,UDWORD Width,UDWORD Justify,BOOL DrawBack);
+extern UDWORD pie_DrawFormattedText(const char *String,UDWORD x,UDWORD y,UDWORD Width,UDWORD Justify,BOOL DrawBack);
 
-extern void pie_DrawText(unsigned char *string,UDWORD x,UDWORD y);
-extern void pie_DrawTextToSurface(unsigned char *String, int XPos, int YPos);
-extern void pie_DrawText270(unsigned char *String,int XPos,int YPos);
+extern void pie_DrawText(const char *string,UDWORD x,UDWORD y);
+extern void pie_DrawTextToSurface(const char *String, int XPos, int YPos);
+extern void pie_DrawText270(const char *String,int XPos,int YPos);
 extern void pie_RenderBlueTintedBitmap(iBitmap *bmp, int x, int y, int w, int h, int ow);
 extern void pie_RenderDeepBlueTintedBitmap(iBitmap *bmp, int x, int y, int w, int h, int ow);
 

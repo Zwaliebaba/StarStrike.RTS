@@ -38,7 +38,7 @@ BOOL DInpInitialise(void)
 		return FALSE;
 	}
 
-	hr = psDI->lpVtbl->CreateDevice(psDI, &GUID_SysMouse, &psDIMouse, NULL);
+	hr = psDI->CreateDevice(GUID_SysMouse, &psDIMouse, NULL);
 	if (FAILED(hr))
 	{
 		DBERROR(("DXInpInitialise: couldn't create mouse object"));
@@ -52,15 +52,15 @@ BOOL DInpInitialise(void)
 	sDataFormat.dwDataSize = 0;
 	sDataFormat.dwNumObjs = 0;
 	sDataFormat.rgodf = NULL;*/
-	hr = psDIMouse->lpVtbl->SetDataFormat(psDIMouse, &c_dfDIMouse);//&sDataFormat);
+	hr = psDIMouse->SetDataFormat(&c_dfDIMouse);//&sDataFormat);
 	if (FAILED(hr))
 	{
 		DBERROR(("DXInpInitialise: couldn't set mouse format"));
 		return FALSE;
 	}
  
-	hr = psDIMouse->lpVtbl->SetCooperativeLevel(psDIMouse, hWndMain,
-				   DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+	hr = psDIMouse->SetCooperativeLevel(hWndMain,
+			   DISCL_EXCLUSIVE | DISCL_FOREGROUND);
  	if (FAILED(hr))
 	{
 		DBERROR(("DXInpInitialise: couldn't set mouse cooperative level"));
@@ -85,8 +85,8 @@ BOOL DInpInitialise(void)
 // Shut down the DX input system
 void DInpShutDown(void)
 {
-	RELEASE(psDIMouse);
-	RELEASE(psDI);
+	if (psDIMouse != NULL) { psDIMouse->Release(); psDIMouse = NULL; }
+	if (psDI != NULL) { psDI->Release(); psDI = NULL; }
 }
 
 
@@ -105,7 +105,7 @@ BOOL DInpMouseAcc(UDWORD aquireType)
 	case DINP_MOUSEACQUIRE:
 		if (!DIMouseAcquired)
 		{
-			hr = psDIMouse->lpVtbl->Acquire(psDIMouse);
+			hr = psDIMouse->Acquire();
 			if (FAILED(hr))
 			{
 				ASSERT((FALSE, "DInpMouseAcc: failed to aquire mouse"));
@@ -117,7 +117,7 @@ BOOL DInpMouseAcc(UDWORD aquireType)
 	case DINP_MOUSERELEASE:
 		if (DIMouseAcquired)
 		{
-			hr = psDIMouse->lpVtbl->Unacquire(psDIMouse);
+			hr = psDIMouse->Unacquire();
 			if (FAILED(hr))
 			{
 				ASSERT((FALSE, "DInpMouseAcc: failed to unaquire mouse"));
@@ -140,14 +140,14 @@ BOOL DInpGetMouseState(SDWORD *pX, SDWORD *pY, SDWORD *pButtons)
 	HRESULT			hr;
 	DIMOUSESTATE	sState;
 
-	hr = psDIMouse->lpVtbl->GetDeviceState(psDIMouse,
+	hr = psDIMouse->GetDeviceState(
 					sizeof(DIMOUSESTATE), &sState);
 	if (hr == DIERR_INPUTLOST)
 	{
 		DIMouseAcquired = FALSE;
 		DInpMouseAcc(DINP_MOUSEACQUIRE);
-		hr = psDIMouse->lpVtbl->GetDeviceState(psDIMouse,
-						sizeof(DIMOUSESTATE), &sState);
+		hr = psDIMouse->GetDeviceState(
+					sizeof(DIMOUSESTATE), &sState);
 	}
 	if (FAILED(hr))
 	{
@@ -196,7 +196,7 @@ BOOL DInpGetMouseState(SDWORD *pX, SDWORD *pY, SDWORD *pButtons)
 }
 
 // convert a direct input error to a string
-char *DIErrorToString(HRESULT	dierror)
+const char *DIErrorToString(HRESULT	dierror)
 {
 	switch (dierror)
 	{

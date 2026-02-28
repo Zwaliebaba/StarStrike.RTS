@@ -50,11 +50,11 @@ extern void memSetBlockHeap(struct _block_heap *psHeap);
 extern struct _block_heap *memGetBlockHeap(void);
 
 /* malloc replacements */
-extern void *memMalloc(char *pFileName, SDWORD LineNumber, size_t Size);
+extern void *memMalloc(const char *pFileName, SDWORD LineNumber, size_t Size);
 extern void *memMallocRelease(size_t Size);
 
 /* free replacements */
-extern void memFree(char *pFileName, SDWORD LineNumber, void *pMemToFree);
+extern void memFree(const char *pFileName, SDWORD LineNumber, void *pMemToFree);
 extern void memFreeRelease(void *pMemToFree);
 
 /* Check a pointer refers to a valid block of memory */

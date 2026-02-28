@@ -139,7 +139,7 @@ SDWORD	memBlockCmp(UDWORD	key1, UDWORD key2)
  * A buffer is also allocated at the top && bottom of the memory to check for
  * overwrites.
  */
-void *memMalloc(char *pFileName, SDWORD LineNumber, size_t Size)
+void *memMalloc(const char *pFileName, SDWORD LineNumber, size_t Size)
 {
 	void		*pMemBase;
 	MEM_NODE	*psNode;
@@ -242,7 +242,7 @@ void *memMallocRelease(size_t Size)
  * All memory is reset to FREE_BYTE before freeing to avoid using
  * freed memory.
  */
-void memFree(char *pFileName, SDWORD LineNumber, void *pMemToFree)
+void memFree(const char *pFileName, SDWORD LineNumber, void *pMemToFree)
 {
 	MEM_NODE	sNode, *psDeleted;
 	SDWORD		i, InvalidBottom, InvalidTop;

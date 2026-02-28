@@ -173,7 +173,7 @@ static int scr__base[] = {
  */
 #include <stdlib.h>
 #include <stdio.h>
-#if	__STDC__
+#if	__STDC__ || defined(__cplusplus)
 #define YY_ARGS(args)	args
 #else
 #define YY_ARGS(args)	()
@@ -286,7 +286,7 @@ YY_DECL	int	unput	YY_ARGS((int c));
 
 /* functions defined in libl.lib */
 extern	int	scr_wrap	YY_ARGS((void));
-extern	void	scr_error	YY_ARGS((char *fmt, ...));
+extern	void	scr_error	YY_ARGS((const char *fmt, ...));
 extern	void	scr_comment	YY_ARGS((char *term));
 extern	int	scr_mapch	YY_ARGS((int delim, int escape));
 
@@ -1075,8 +1075,7 @@ typedef struct scr__save_block_tag {
 } YY_SAVED;
 
 YY_SAVED *
-scr_SaveScan(fp)
-FILE * fp;
+scr_SaveScan(FILE *fp)
 {
 	YY_SAVED * p;
 
@@ -1103,8 +1102,7 @@ FILE * fp;
  * Restore previous LEX state
  */
 void
-scr_RestoreScan(p)
-YY_SAVED * p;
+scr_RestoreScan(YY_SAVED *p)
 {
 	if (p == NULL)
 		return;
@@ -1160,8 +1158,7 @@ input()
  * pushback char
  */
 YY_DECL int
-unput(c)
-	int c;
+unput(int c)
 {
 #ifndef YY_PRESERVE
 	if (scr__end >= YYLMAX) {

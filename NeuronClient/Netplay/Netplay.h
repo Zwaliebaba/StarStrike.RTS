@@ -148,7 +148,7 @@ extern BOOL	   NETspectate				(GUID guidSessionInstance);		// create a spectator
 extern BOOL	   NETisSpectator			(DPID dpid);					// check for spectator staus.
 
 //from netsupp
-extern BOOL		NETlogEntry				(CHAR *str,UDWORD a,UDWORD b);
+extern BOOL		NETlogEntry				(const CHAR *str,UDWORD a,UDWORD b);
 extern BOOL		NETstopLogging			(VOID);
 extern BOOL		NETstartLogging			(VOID);
 	

@@ -221,9 +221,9 @@ sound_SaveTrackData( TRACK * psTrack, QMIXWAVEPARAMS *psQMixParams,
 							g_qMixConfig.dwSamplingRate + 1;
 
 	/* add to riff data list */
-	psRiffData = MALLOC( sizeof(RIFFDATA) );
-	psRiffData->pWaveFormat = psQMixParams->Resident.Format;
-	psRiffData->pubData     = psQMixParams->Resident.Data;
+	psRiffData = (RIFFDATA *)MALLOC( sizeof(RIFFDATA) );
+	psRiffData->pWaveFormat = (WAVEFORMATEX *)psQMixParams->Resident.Format;
+	psRiffData->pubData     = (UBYTE *)psQMixParams->Resident.Data;
 	psRiffData->psMixWave   = psMixWave;
 
 	/* save data pointer in track */
@@ -271,7 +271,7 @@ sound_ReadRiffMemResFile( QMIXWAVEPARAMS *pQMixParams, void *pBuffer,
 	memset( &mmioInfo, 0, sizeof(MMIOINFO) );
 	mmioInfo.fccIOProc = FOURCC_MEM;
 	mmioInfo.cchBuffer = udwSize;
-	mmioInfo.pchBuffer = pBuffer;
+	mmioInfo.pchBuffer = (HPSTR)pBuffer;
 
 	hmmio = mmioOpen( NULL, &mmioInfo, MMIO_READ );
     if ( !hmmio )
@@ -331,7 +331,7 @@ sound_ReadRiffMemResFile( QMIXWAVEPARAMS *pQMixParams, void *pBuffer,
 	}
 
 	pQMixParams->Resident.Bytes = dataChunk.cksize;
-    pQMixParams->Resident.Data  = MALLOC( dataChunk.cksize );
+	pQMixParams->Resident.Data  = (HPSTR)MALLOC( dataChunk.cksize );
 
     if ( mmioRead( hmmio, (char *) pQMixParams->Resident.Data,
 					dataChunk.cksize) != (LONG)dataChunk.cksize )
@@ -832,7 +832,7 @@ sound_GetDirectSoundObj( void )
 {
 	LPDIRECTSOUND	pDirectSound;
 
-	g_uiRet = QSOUND(GetDirectSound( g_hQMixer, &pDirectSound ));
+	g_uiRet = QSOUND(GetDirectSound( g_hQMixer, (LPVOID *)&pDirectSound ));
 
 	if ( g_uiRet != 0 )
 	{

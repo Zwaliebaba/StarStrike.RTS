@@ -146,6 +146,8 @@ extern UDWORD formGetClickState(W_CLICKFORM *psForm);
 
 extern void formSetFlash(W_FORM *psWidget);
 
+extern void formClearFlash(W_FORM *psWidget);
+
 /* Set the button state of a click form */
 extern void formSetClickState(W_CLICKFORM *psForm, UDWORD state);
 

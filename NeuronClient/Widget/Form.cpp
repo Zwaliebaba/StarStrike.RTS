@@ -1577,7 +1577,7 @@ void formDisplayTabbed(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD 
 	/* Adjust for where the tabs are */
 
 	if(psForm->pFormDisplay) {
-		psForm->pFormDisplay((WIDGET *)psForm, xOffset, yOffset, psForm->aColours);
+		psForm->pFormDisplay((WIDGET *)psForm, xOffset, yOffset, (UDWORD *)psForm->aColours);
 	} else {
 	//	screenSetLineColour(0,0,0);
 		/* Draw the form outline */

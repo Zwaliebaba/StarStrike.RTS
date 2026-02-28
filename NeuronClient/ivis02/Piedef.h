@@ -217,7 +217,7 @@ extern void pie_D3DPoly(PIED3DPOLY *poly);
 extern void pie_DrawTile(PIEVERTEX *pv0, PIEVERTEX *pv1, PIEVERTEX *pv2, PIEVERTEX *pv3,  SDWORD texPage);
 
 // Special re-mix of sscanf that moves the string pointer along - defined in imdLoad.c
-extern int __cdecl sscanf1 (char **stringPos, const char *format, ...);
+extern int __cdecl sscanf1 (UBYTE **stringPos, const char *format, ...);
 
 
 

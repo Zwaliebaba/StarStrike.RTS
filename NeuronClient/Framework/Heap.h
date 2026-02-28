@@ -70,7 +70,7 @@ typedef struct _obj_heap
 
 
 /* Store the location in C code at which a call to the heap was made */
-extern void heapSetCallPos(char *pFileName, SDWORD lineNumber);
+extern void heapSetCallPos(const char *pFileName, SDWORD lineNumber);
 
 /* Function to create a heap
  * Takes the size of the objects to be managed by the heap,
@@ -108,7 +108,7 @@ void heapReport(void);
 
 #define HEAP_ALLOC(psHeap, ppObject) \
 	(heapSetCallPos(__FILE__, __LINE__), \
-	 heapAlloc(psHeap, ppObject))
+	 heapAlloc(psHeap, (void **)(ppObject)))
 
 #else
 
@@ -116,7 +116,7 @@ void heapReport(void);
 	heapCreate(ppsHeap, size, init, ext)
 
 #define HEAP_ALLOC(psHeap, ppObject) \
-	heapAlloc(psHeap, ppObject)
+	heapAlloc(psHeap, (void **)(ppObject))
 
 #endif
 

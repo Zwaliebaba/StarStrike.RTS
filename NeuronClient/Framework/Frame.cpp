@@ -48,7 +48,7 @@ typedef struct _cursor_resource
 HINSTANCE	hInstance;
 
 /* Handle for the main window */
-HANDLE	hWndMain;
+HWND	hWndMain;
 
 /* Are we running under glide? */
 BOOL	bRunningUnderGlide = FALSE;
@@ -251,7 +251,7 @@ UDWORD	frameGetFrameNumber(void)
 }
 
 /* Return the handle for the application window */
-HANDLE	frameGetWinHandle(void)
+HWND	frameGetWinHandle(void)
 {
 	return hWndMain;
 }
@@ -275,7 +275,7 @@ char *winErrorToString(SDWORD error)
 	);
 
 	// Copy the string.
-	strncpy(winErrorString, lpMsgBuf, 254);
+	strncpy(winErrorString, (const char *)lpMsgBuf, 254);
 	winErrorString[255] = '0';
 
 	// Free the buffer.
@@ -553,7 +553,7 @@ extern void frameSetWindowProc(DEFWINPROCTYPE winProc)
  */
 
 
-static BOOL WinInitGlide(HANDLE hInstance, char *name, int width, int height, BOOL maximize)
+static BOOL WinInitGlide(HINSTANCE hInstance, char *name, int width, int height, BOOL maximize)
 {
 	WNDCLASS cls;
 //	HWND hWndMainGlide;	// note that this doesn't go anywhere....
@@ -601,7 +601,7 @@ static BOOL WinInitGlide(HANDLE hInstance, char *name, int width, int height, BO
 	return TRUE;
 }
 
-static BOOL winInitApp(HANDLE hInstance,	// Instance handle for the program
+static BOOL winInitApp(HINSTANCE hInstance,	// Instance handle for the program
 				char *pWindowName,	// The text to put on the window title bar
 				UDWORD width,			// The window width
 				UDWORD height)			// The window height
@@ -705,7 +705,7 @@ static BOOL winInitApp(HANDLE hInstance,	// Instance handle for the program
  *
  * Initialise the framework library. - PC version
  */
-BOOL frameInitialise(HANDLE hInst,			// The windows application instance
+BOOL frameInitialise(HINSTANCE hInst,			// The windows application instance
 					 char *pWindowName,	// The text to appear in the window title bar
 					 UDWORD	width,			// The display width
 					 UDWORD height,			// The display height
@@ -1210,7 +1210,7 @@ static SDWORD WDGCacheEndPos=-1;
  * Accepts string && returns hashed integer.
  */
 /***************************************************************************/
-UINT HashString( char *String )
+UINT HashString( const char *String )
 {
 	UINT	iHashValue, i;
 	CHAR	*c = (CHAR *) String;
@@ -1232,7 +1232,7 @@ UINT HashString( char *String )
 	return iHashValue;
 }
 
-UINT HashStringIgnoreCase( char *String )
+UINT HashStringIgnoreCase( const char *String )
 {
 	UINT	iHashValue, i;
 	CHAR	*c = (CHAR *) String;

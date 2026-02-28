@@ -192,18 +192,18 @@ void eventShutDown(void)
 // get the trigger id string
 char *eventGetTriggerID(SCRIPT_CODE *psCode, SDWORD trigger)
 {
-	char *pID, *pTrigType;
+	const char *pID, *pTrigType;
 	static STRING	aIDNum[255];
 	SDWORD			i;
 	TRIGGER_TYPE	type;
 
 	if ((trigger >= 0) && (trigger < psCode->numTriggers))
 	{
-		type = psCode->psTriggerData[trigger].type;
+		type = (TRIGGER_TYPE)psCode->psTriggerData[trigger].type;
 	}
 	else
 	{
-		return "INACTIVE";
+		return (char *)"INACTIVE";
 	}
 
 	pTrigType = "UNKNOWN";
@@ -256,7 +256,7 @@ char *eventGetTriggerID(SCRIPT_CODE *psCode, SDWORD trigger)
 // get the event id string
 char *eventGetEventID(SCRIPT_CODE *psCode, SDWORD event)
 {
-	char *pID;
+	const char *pID;
 	static STRING	aIDNum[255];
 	SDWORD			i;
 
@@ -277,7 +277,7 @@ char *eventGetEventID(SCRIPT_CODE *psCode, SDWORD event)
 		}
 	}
 
-	return pID;
+	return (char *)pID;
 }
 
 // Print out all the info available about a trigger
@@ -412,7 +412,7 @@ BOOL eventNewContext(SCRIPT_CODE *psCode, CONTEXT_RELEASE release,
 			{
 				type = psCode->pGlobals[val];
 			}
-			psNewChunk->asVals[storeIndex].type = type;
+			psNewChunk->asVals[storeIndex].type = (INTERP_TYPE)type;
 			psNewChunk->asVals[storeIndex].v.ival = 0;
 			if (asCreateFuncs != NULL && type < numFuncs && asCreateFuncs[type])
 			{
@@ -469,7 +469,7 @@ BOOL eventCopyContext(SCRIPT_CONTEXT *psContext, SCRIPT_CONTEXT **ppsNew)
 		"eventCopyContext: Invalid context pointer"));
 
 	// Get a new context
-	if (!eventNewContext(psContext->psCode, psContext->release, &psNew))
+	if (!eventNewContext(psContext->psCode, (CONTEXT_RELEASE)psContext->release, &psNew))
 	{
 		return FALSE;
 	}

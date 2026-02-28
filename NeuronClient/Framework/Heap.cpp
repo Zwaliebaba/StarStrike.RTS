@@ -37,7 +37,7 @@ static OBJ_HEAP * HeapDebugList[MAXDEBUGHEAPS];
 #endif
 
 /* Store the location in C code at which a call to the heap was made */
-void heapSetCallPos(char *pFileName, SDWORD lineNumber)
+void heapSetCallPos(const char *pFileName, SDWORD lineNumber)
 {
 	cPos = lineNumber;
 
@@ -49,7 +49,7 @@ void heapSetCallPos(char *pFileName, SDWORD lineNumber)
 	}
 	strcpy(pCFile, pFileName);
 #else
-	pCFile = pFileName;
+	pCFile = (char *)pFileName;
 #endif
 }
 

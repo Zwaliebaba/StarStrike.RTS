@@ -10,7 +10,7 @@
  * Portable way of defining ANSI C prototypes
  */
 #ifndef YY_ARGS
-#ifdef __STDC__
+#if defined(__STDC__) || defined(__cplusplus)
 #define YY_ARGS(x)	x
 #else
 #define YY_ARGS(x)	()
@@ -220,7 +220,7 @@ typedef struct yyTraceItems_tag {
  */
 
 extern int strres_lex YY_ARGS((void));
-extern void strres_error YY_ARGS((char *, ...));
+extern void strres_error YY_ARGS((const char *, ...));
 
 #if YYDEBUG
 
@@ -354,7 +354,7 @@ static char *	yygetState YY_ARGS((int));
  * A simple error reporting routine
  */
 
-void strres_error(char *pMessage,...)
+void strres_error(const char *pMessage,...)
 {
 	int		line;
 	char	*pText;
@@ -385,7 +385,7 @@ void strres_error(char *pMessage,...)
 
 static int win_yyparse();			/* prototype */
 
-strres_parse() 
+int strres_parse() 
 {
 	int wReturnValue;
 	HANDLE hRes_table;		/* handle of resource after loading */
@@ -478,7 +478,7 @@ static int win_yyparse()
  * standard way.
  */
 
-strres_parse() 
+int strres_parse() 
 
 #endif /* YACC_WINDOWS */
 

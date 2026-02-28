@@ -18,7 +18,7 @@
 #ifdef DIRECTDRAW_VERSION
 
 #ifndef RELEASE
-#define RELEASE(x) if ((x) != NULL) {(void)(x)->lpVtbl->Release(x); (x) = NULL;}
+#define RELEASE(x) if ((x) != NULL) {(void)(x)->Release(); (x) = NULL;}
 #endif
 
 #else /* No real ddraw.h � provide stub types */
@@ -348,12 +348,12 @@ typedef BOOL (WINAPI *LPDDENUMCALLBACKEXA)(GUID*, LPSTR, LPSTR, LPVOID, HMONITOR
 typedef HRESULT (WINAPI *LPDIRECTDRAWENUMERATEEXA)(LPDDENUMCALLBACKEXA, LPVOID, DWORD);
 
 /* ================================================================== */
-/* COM Release macro � calls Release via vtable                       */
+/* COM Release macro — calls Release via vtable                       */
 /* At runtime, pointers are always NULL so Release is never called.    */
 /* ================================================================== */
 
 #ifndef RELEASE
-#define RELEASE(x) if ((x) != NULL) {(void)(x)->lpVtbl->Release(x); (x) = NULL;}
+#define RELEASE(x) if ((x) != NULL) {(void)(x)->Release(); (x) = NULL;}
 #endif
 
 #endif /* DIRECTDRAW_VERSION */

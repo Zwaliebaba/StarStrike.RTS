@@ -119,23 +119,23 @@ extern BOOL resLoadFile(char *pType, char *pFile);
 extern BOOL resAddData(char *pType, char *pID, void *pData);
 
 /* Return the resource for a type && ID */
-extern void *resGetDataFromHash(char *pType, UDWORD HashedID);
-extern void *resGetData(char *pType, char *pID);
-extern BOOL resPresent(char *pType, char *pID);
+extern void *resGetDataFromHash(const char *pType, UDWORD HashedID);
+extern void *resGetData(const char *pType, const char *pID);
+extern BOOL resPresent(const char *pType, const char *pID);
 void resToLower(char *pStr);
 
 // return the ID string for a piece of data
 //extern BOOL resGetIDfromData(char *pType, void *pData, char **ppID); // no longer valid use the function below
 
 // return the HashedID string for a piece of data
-extern BOOL resGetHashfromData(char *pType, void *pData, UDWORD *pHash);
+extern BOOL resGetHashfromData(const char *pType, void *pData, UDWORD *pHash);
 
 VOID resDoResLoadCallback();
 
 //return last imd resource
 char *GetLastResourceFilename(void);
 // Set the resource name of the last resource file loaded
-void SetLastResourceFilename(char *pName);
+void SetLastResourceFilename(const char *pName);
 
 // Returns the filename of the last resource file loaded
 UDWORD GetLastHashName(void);

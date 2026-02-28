@@ -33,7 +33,7 @@ extern char *pLevToken;
 extern SDWORD levVal;
 
 // error report function for the level parser
-extern void levError(char *pError);
+extern void levError(const char *pError);
 
 // the lexer function
 extern int lev_lex(void);

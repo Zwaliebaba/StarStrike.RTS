@@ -10,7 +10,7 @@
  * Portable way of defining ANSI C prototypes
  */
 #ifndef YY_ARGS
-#ifdef __STDC__
+#if defined(__STDC__) || defined(__cplusplus)
 #define YY_ARGS(x)	x
 #else
 #define YY_ARGS(x)	()
@@ -360,7 +360,7 @@ typedef struct yyTraceItems_tag {
  */
 
 extern int scrv_lex YY_ARGS((void));
-extern void scrv_error YY_ARGS((char *, ...));
+extern void scrv_error YY_ARGS((const char *, ...));
 
 #if YYDEBUG
 
@@ -571,7 +571,7 @@ BOOL scrvLoad(UBYTE *pData, UDWORD size)
 
 #ifndef FINALBUILD
 /* A simple error reporting routine */
-void scrv_error(char *pMessage,...)
+void scrv_error(const char *pMessage,...)
 {
 	int		line;
 	char	*pText;
@@ -609,7 +609,7 @@ void scrv_error(char *pMessage,...)
 
 static int win_yyparse();			/* prototype */
 
-scrv_parse() 
+int scrv_parse() 
 {
 	int wReturnValue;
 	HANDLE hRes_table;		/* handle of resource after loading */
@@ -702,7 +702,7 @@ static int win_yyparse()
  * standard way.
  */
 
-scrv_parse() 
+int scrv_parse() 
 
 #endif /* YACC_WINDOWS */
 

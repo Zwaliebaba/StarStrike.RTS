@@ -78,7 +78,7 @@ typedef struct _treap
 
 
 /* Store the location in C code at which a call to the heap was made */
-extern void treapSetCallPos(char *pFileName, SDWORD lineNumber);
+extern void treapSetCallPos(const char *pFileName, SDWORD lineNumber);
 
 /* Function type for object equality */
 //typedef BOOL (*TREAP_EQUAL)(void *pObj1, void *pObj2);

@@ -1,4 +1,5 @@
 /* yacc -v -D Resource_y.h -p res_ -o Resource_y.c Resource.y */
+#include <cstring>
 #ifdef YYTRACE
 #define YYDEBUG 1
 #else
@@ -10,7 +11,7 @@
  * Portable way of defining ANSI C prototypes
  */
 #ifndef YY_ARGS
-#ifdef __STDC__
+#if defined(__STDC__) || defined(__cplusplus)
 #define YY_ARGS(x)	x
 #else
 #define YY_ARGS(x)	()
@@ -231,7 +232,7 @@ typedef struct yyTraceItems_tag {
  */
 
 extern int res_lex YY_ARGS((void));
-extern void res_error YY_ARGS((char *, ...));
+extern void res_error YY_ARGS((const char *, ...));
 
 #if YYDEBUG
 
@@ -365,7 +366,7 @@ static char *	yygetState YY_ARGS((int));
  * A simple error reporting routine
  */
 
-void res_error(char *pMessage,...)
+void res_error(const char *pMessage,...)
 {
 	int		line;
 	char	*pText;
@@ -396,7 +397,7 @@ void res_error(char *pMessage,...)
 
 static int win_yyparse();			/* prototype */
 
-res_parse() 
+int res_parse() 
 {
 	int wReturnValue;
 	HANDLE hRes_table;		/* handle of resource after loading */
@@ -489,7 +490,7 @@ static int win_yyparse()
  * standard way.
  */
 
-res_parse() 
+int res_parse() 
 
 #endif /* YACC_WINDOWS */
 

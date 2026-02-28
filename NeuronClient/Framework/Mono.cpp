@@ -24,8 +24,8 @@
 #define	SLASH_T				0x09						/* tab */
 #define	SLASH_N				0x0A						/* new line */
 
-static void	DBug_DumpString(SDWORD, SDWORD, UBYTE *, UBYTE);
-static UBYTE	DBug_ExpandString(UBYTE *, UBYTE *, UBYTE, va_list, UBYTE);
+static void	DBug_DumpString(SDWORD, SDWORD, const char *, UBYTE);
+static UBYTE	DBug_ExpandString(char *, const char *, UBYTE, va_list, UBYTE);
 static UBYTE	DBug_CheckFormatChar(UBYTE);
 
 
@@ -135,16 +135,16 @@ void	dbg_MONO_ClearScreen(void)
 
 void	dbg_MONO_PrintString(SDWORD	 ub_leftedge,
 							 SDWORD	 ub_topedge,
-							   SBYTE	*pub_formatstring,
+							   const char	*pub_formatstring,
 							   ...)
 {
 	va_list	 val_arglist;
-	UBYTE	*pub_formatstringptr,
-			 aub_percentstring[256],
-			 ub_percentstringindex,
+	const char	*pub_formatstringptr;
+	char	 aub_percentstring[256],
 			 aub_currentcharacter[2],
+			 aub_expandedstring[256];
+	UBYTE	 ub_percentstringindex,
 			 ub_attribute,
-			 aub_expandedstring[256],
 			 ub_numprinted;
 	BOOL	 bool_percent,
 			 bool_printchar;
@@ -310,14 +310,14 @@ void	dbg_MONO_PrintString(SDWORD	 ub_leftedge,
 }
 
 static void	DBug_DumpString(SDWORD	 ub_leftedge,
-						SDWORD	 ub_topedge,
-						UBYTE	*pub_string,
-						UBYTE	 ub_attr)
+					SDWORD	 ub_topedge,
+					const char	*pub_string,
+					UBYTE	 ub_attr)
 {
 	UDWORD	 ul_stringlength,
 			 ul_i;
-	UBYTE	*pub_stringptr,
-			*pub_screenptr;
+	const char	*pub_stringptr;
+	UBYTE	*pub_screenptr;
 
 
 	/* init the string pointer */
@@ -350,11 +350,11 @@ static void	DBug_DumpString(SDWORD	 ub_leftedge,
 	}
 }
 
-static UBYTE	DBug_ExpandString(UBYTE		*pub_stringbuffer,
-						  UBYTE		*pub_percentstring,
-						  UBYTE		 ub_oldattribute,
-						  va_list	 val_arglist,
-						  UBYTE		 ub_numprinted)
+static UBYTE	DBug_ExpandString(char		*pub_stringbuffer,
+					  const char		*pub_percentstring,
+					  UBYTE		 ub_oldattribute,
+					  va_list	 val_arglist,
+					  UBYTE		 ub_numprinted)
 {
 	UBYTE	 ub_percentchar,
 			 ub_newattribute,
@@ -419,7 +419,7 @@ static UBYTE	DBug_ExpandString(UBYTE		*pub_stringbuffer,
 
 		case	'n':	/* how many characters printed so far */
 
-			pub_numberchars = va_arg(val_arglist, char *);
+			pub_numberchars = va_arg(val_arglist, UBYTE *);
 			*pub_numberchars = ub_numprinted;
 
 			break;

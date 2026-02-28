@@ -137,7 +137,7 @@ static int res__base[] = {
  */
 #include <stdlib.h>
 #include <stdio.h>
-#if	__STDC__
+#if	__STDC__ || defined(__cplusplus)
 #define YY_ARGS(args)	args
 #else
 #define YY_ARGS(args)	()
@@ -250,7 +250,7 @@ YY_DECL	int	unput	YY_ARGS((int c));
 
 /* functions defined in libl.lib */
 extern	int	res_wrap	YY_ARGS((void));
-extern	void	res_error	YY_ARGS((char *fmt, ...));
+extern	void	res_error	YY_ARGS((const char *fmt, ...));
 extern	void	res_comment	YY_ARGS((char *term));
 extern	int	res_mapch	YY_ARGS((int delim, int escape));
 
@@ -746,8 +746,7 @@ typedef struct res__save_block_tag {
 } YY_SAVED;
 
 YY_SAVED *
-res_SaveScan(fp)
-FILE * fp;
+res_SaveScan(FILE *fp)
 {
 	YY_SAVED * p;
 
@@ -774,8 +773,7 @@ FILE * fp;
  * Restore previous LEX state
  */
 void
-res_RestoreScan(p)
-YY_SAVED * p;
+res_RestoreScan(YY_SAVED *p)
 {
 	if (p == NULL)
 		return;
@@ -831,8 +829,7 @@ input()
  * pushback char
  */
 YY_DECL int
-unput(c)
-	int c;
+unput(int c)
 {
 #ifndef YY_PRESERVE
 	if (res__end >= YYLMAX) {

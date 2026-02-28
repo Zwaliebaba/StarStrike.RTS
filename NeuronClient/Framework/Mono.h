@@ -38,7 +38,7 @@
 */
 extern void		 dbg_MONO_ClearRectangle(SDWORD, SDWORD, SDWORD, SDWORD);
 extern void		 dbg_MONO_ClearScreen(void);
-extern void		 dbg_MONO_PrintString(SDWORD, SDWORD, SBYTE *, ...);
+extern void		 dbg_MONO_PrintString(SDWORD, SDWORD, const char *, ...);
 
 /* Tell lint that PrintString takes printf like arguments */
 /*lint -printf(3,dbg_MONO_PrintString) */

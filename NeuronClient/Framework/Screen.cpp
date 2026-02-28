@@ -32,7 +32,7 @@ SCREEN_MODE		screenMode = SCREEN_WINDOWED;
 DISPLAY_MODES	displayMode;
 
 /* The handle for the main application window */
-HANDLE		hWndMain = NULL;
+extern HWND		hWndMain;
 
 /* The Direct Draw objects */
 #define MAX_DDDEVICES 6
@@ -41,7 +41,7 @@ LPDIRECTDRAW4		psDD = NULL;
 GUID aDDDeviceGUID[MAX_DDDEVICES];
 DDDEVICEIDENTIFIER aDDDeviceInfo[MAX_DDDEVICES];
 DDDEVICEIDENTIFIER aDDHostInfo[MAX_DDDEVICES];
-static numDevices = 0;
+static int numDevices = 0;
 /* The Front && back buffers */
 LPDIRECTDRAWSURFACE4	psFront = NULL;
 /* The back buffer is !static to give a back door to display routines so
@@ -139,7 +139,7 @@ void	printTextToGlideArea( void )
 {
 HDC	glideHDC;
 
-	glideHDC = GetDC(systemBitmap);
+	glideHDC = GetDC((HWND)systemBitmap);
 
 }
 
@@ -884,7 +884,7 @@ HWND screenGetHWnd( void )
 	return hWndMain;
 }
 
-BOOL screenInitialiseGlide(UDWORD	width, UDWORD height, HANDLE hWindow)
+BOOL screenInitialiseGlide(UDWORD	width, UDWORD height, HWND hWindow)
 {
 	/* Store the screen information */
 	screenWidth = width;
@@ -908,7 +908,7 @@ BOOL screenInitialise(UDWORD		width,			// Display width
 					  BOOL			bVidMem,		// Whether to put surfaces in
 													// video memory
 					  BOOL			bDDraw,			// Whether to create ddraw surfaces												// video memory
-					  HANDLE		hWindow)		// The main windows handle
+					  HWND		hWindow)		// The main windows handle
 {
 	HRESULT				ddrval;
 	DDSURFACEDESC2		sSurfDesc;
@@ -1812,23 +1812,23 @@ typedef enum _outcode
 
 __inline void compOutCode(SDWORD x, SDWORD y, OUTCODE *pCode)
 {
-	*pCode = 0;
+	*pCode = (OUTCODE)0;
 	if (y >= (SDWORD)screenHeight)
 	{
-		*pCode |= OUT_TOP;
+		*pCode = (OUTCODE)(*pCode | OUT_TOP);
 	}
 	else if (y < 0)
 	{
-		*pCode |= OUT_BOTTOM;
+		*pCode = (OUTCODE)(*pCode | OUT_BOTTOM);
 	}
 
 	if (x >= (SDWORD)screenWidth)
 	{
-		*pCode |= OUT_RIGHT;
+		*pCode = (OUTCODE)(*pCode | OUT_RIGHT);
 	}
 	else if (x < 0)
 	{
-		*pCode |= OUT_LEFT;
+		*pCode = (OUTCODE)(*pCode | OUT_LEFT);
 	}
 }
 

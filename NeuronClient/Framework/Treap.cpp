@@ -22,7 +22,7 @@ static char *pCFile;
 static STRING	pCFileNone[] = "None";
 
 /* Store the location in C code at which a call to the heap was made */
-void treapSetCallPos(char *pFileName, SDWORD lineNumber)
+void treapSetCallPos(const char *pFileName, SDWORD lineNumber)
 {
 	cLine = lineNumber;
 
@@ -74,7 +74,7 @@ SDWORD treapStringCmp(UDWORD key1, UDWORD key2)
  */
 BOOL treapCreate(TREAP **ppsTreap, TREAP_CMP cmp, UDWORD init, UDWORD ext)
 {
-	*ppsTreap = MALLOC(sizeof(TREAP));
+	*ppsTreap = (TREAP *)MALLOC(sizeof(TREAP));
 	if (!(*ppsTreap))
 	{
 		DBERROR(("treapCreate: Out of memory"));
@@ -175,7 +175,7 @@ BOOL treapAdd(TREAP *psTreap, UDWORD key, void *pObj)
 {
 	TREAP_NODE	*psNew;
 
-	if (!HEAP_ALLOC(psTreap->psNodes, &psNew))
+	if (!HEAP_ALLOC(psTreap->psNodes, (void **)&psNew))
 	{
 		return FALSE;
 	}

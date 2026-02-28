@@ -61,7 +61,7 @@ BOOL CheckColourKey( iIMDShape *psShape );
 // Advances the string pointer past consumed input by manually walking
 // the format and input in lockstep after vsscanf succeeds.
 int __cdecl sscanf1 (
-		char **stringPos,
+		UBYTE **stringPos,
 		const char *format,
 		...
 		)
@@ -77,7 +77,7 @@ int __cdecl sscanf1 (
 			return 0;
 		}
 
-		string = *stringPos;
+		string = (char *)*stringPos;
 
 		// Work on a local copy to prevent vsscanf from reading past
 		// the end of the source buffer when it is not null-terminated within
@@ -229,7 +229,7 @@ int __cdecl sscanf1 (
 
 			if (p > string)
 			{
-				*stringPos = p;
+				*stringPos = (UBYTE *)p;
 			}
 		}
 
@@ -240,14 +240,14 @@ char GetCh1(UBYTE **data)
 {
 	char Byte;
 	char *pointer;
-	pointer=*data;
+	pointer=(char *)*data;
 	Byte=*pointer++;
-	*data=pointer;
+	*data=(UBYTE *)pointer;
 	return Byte;
 }
 
 
-BOOL AtEndOfFile(char *CurPos, char *EndOfFile)
+BOOL AtEndOfFile(UBYTE *CurPos, UBYTE *EndOfFile)
 {
 
 	while ((*CurPos==0x09)||(*CurPos==0x0a)||(*CurPos==0x0d)||(*CurPos==0x20)||(*CurPos==0x00))
@@ -289,7 +289,7 @@ iIMDShape *iV_IMDLoad(char *filename, BOOL palkeep)
 	UBYTE *pFileData,*pFileDataStart;
 	UDWORD FileSize;
 	BOOL res;
-	UBYTE path[MAX_FILE_PATH];
+	char path[MAX_FILE_PATH];
 
 
 	iV_DEBUG1("imd[IMDLoad] = loading shape file '%s':",filename);
@@ -343,7 +343,7 @@ iIMDShape *iV_IMDLoad(char *filename, BOOL palkeep)
 
 
 	pFileDataStart=pFileData;
-	pIMD=iV_ProcessIMD(&pFileData,pFileData+FileSize,path, imagePath,palkeep);
+	pIMD=iV_ProcessIMD(&pFileData,pFileData+FileSize,(UBYTE *)path, (UBYTE *)imagePath,palkeep);
 
 	FREE(pFileDataStart);	// free the file up
 
@@ -829,7 +829,7 @@ static BOOL _imd_load_bsp(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s, 
 	}
 
 	// Build table of nodes - we sort out the links later 
-	NodeList=MALLOC((sizeof(BSPTREENODE))*BSPNodeCount);	// Allocate the entire node tree
+	NodeList=(PSBSPTREENODE)MALLOC((sizeof(BSPTREENODE))*BSPNodeCount);	// Allocate the entire node tree
 
 	memset(NodeList,0,(sizeof(BSPTREENODE))*BSPNodeCount);	// Zero it out ... we need to make all pointers NULL
 
@@ -1655,7 +1655,7 @@ int tpGetNumPIEs(void);
 iIMDShape *tpGetPIE(int Index);
 char *tpGetPIEName(int Index);
 int tpGetNumLevels(int Index);
-int tpGetLevel(int Index,int LevelIndex);
+iIMDShape *tpGetLevel(int Index,int LevelIndex);
 
 void tpInit(void)
 {
@@ -1695,7 +1695,7 @@ int tpGetNumLevels(int Index)
 }
 
 
-int tpGetLevel(int Index,int LevelIndex)
+iIMDShape *tpGetLevel(int Index,int LevelIndex)
 {
 	return tp_PieList[Index].Levels[LevelIndex % tp_PieList[Index].NumLevels];
 }

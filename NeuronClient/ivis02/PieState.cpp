@@ -116,7 +116,7 @@ void pie_SetDefaultStates(void)//Sets all states
 	pie_SetFogColour(0x00000000);//nicks colour
 
 	//depth Buffer on
-	rendStates.depthBuffer = FALSE;//to force reset to true
+	rendStates.depthBuffer = (DEPTH_MODE)FALSE;//to force reset to true
 	pie_SetDepthBufferStatus(DEPTH_CMP_LEQ_WRT_ON);
 
 	//set render mode
@@ -154,8 +154,8 @@ void pie_ResetStates(void)//Sets all states
 
 	//depth Buffer on
 	temp = rendStates.depthBuffer;
-	rendStates.depthBuffer = -1;//to force reset
-	pie_SetDepthBufferStatus(temp);
+	rendStates.depthBuffer = (DEPTH_MODE)-1;//to force reset
+	pie_SetDepthBufferStatus((DEPTH_MODE)temp);
 
 	//set render mode
 //	pie_SetTranslucent(TRUE);
@@ -163,20 +163,20 @@ void pie_ResetStates(void)//Sets all states
 	
 	//basic gouraud textured rendering
 	temp = rendStates.texCombine;
-	rendStates.texCombine = -1;//to force reset
-	pie_SetTexCombine(temp);
+	rendStates.texCombine = (TEX_MODE)-1;//to force reset
+	pie_SetTexCombine((TEX_MODE)temp);
 
 	temp = rendStates.colourCombine;
-	rendStates.colourCombine = -1;//to force reset
-	pie_SetColourCombine(temp);
+	rendStates.colourCombine = (COLOUR_MODE)-1;//to force reset
+	pie_SetColourCombine((COLOUR_MODE)temp);
 
 	temp = rendStates.alphaCombine;
-	rendStates.alphaCombine = -1;//to force reset
-	pie_SetAlphaCombine(temp);
+	rendStates.alphaCombine = (ALPHA_MODE)-1;//to force reset
+	pie_SetAlphaCombine((ALPHA_MODE)temp);
 
 	temp = rendStates.transMode;
-	rendStates.transMode = -1;//to force reset
-	pie_SetTranslucencyMode(temp);
+	rendStates.transMode = (TRANSLUCENCY_MODE)-1;//to force reset
+	pie_SetTranslucencyMode((TRANSLUCENCY_MODE)temp);
 
 	//chroma keying on black
 	temp = rendStates.keyingOn;

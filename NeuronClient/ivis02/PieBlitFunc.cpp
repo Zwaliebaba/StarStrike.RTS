@@ -441,8 +441,8 @@ void pie_UploadDisplayBuffer(UBYTE *DisplayBuffer)
 {
 	//only call inside D3D render
 	pie_GlobalRenderEnd(FALSE);
-	screen_Upload(DisplayBuffer);
-	screen_SetBackDrop(DisplayBuffer, pie_GetVideoBufferWidth(), pie_GetVideoBufferHeight());
+	screen_Upload((UWORD *)DisplayBuffer);
+	screen_SetBackDrop((UWORD *)DisplayBuffer, pie_GetVideoBufferWidth(), pie_GetVideoBufferHeight());
 	pie_GlobalRenderBegin();
 }
 

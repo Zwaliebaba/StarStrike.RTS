@@ -10,7 +10,7 @@
  * Portable way of defining ANSI C prototypes
  */
 #ifndef YY_ARGS
-#ifdef __STDC__
+#if defined(__STDC__) || defined(__cplusplus)
 #define YY_ARGS(x)	x
 #else
 #define YY_ARGS(x)	()
@@ -352,7 +352,7 @@ typedef struct yyTraceItems_tag {
  */
 
 extern int audp_lex YY_ARGS((void));
-extern void audp_error YY_ARGS((char *, ...));
+extern void audp_error YY_ARGS((const char *, ...));
 
 #if YYDEBUG
 
@@ -485,7 +485,7 @@ static char *	yygetState YY_ARGS((int));
 /***************************************************************************/
 /* A simple error reporting routine */
 
-void audp_error(char *pMessage,...)
+void audp_error(const char *pMessage,...)
 {
 	int		line;
 	char	*pText;
@@ -504,6 +504,8 @@ void audp_error(char *pMessage,...)
 
 /***************************************************************************/
 /* Read a resource file */
+
+int audp_parse(void);
 
 BOOL ParseResourceFile( UBYTE *pData, UDWORD fileSize )
 {
@@ -535,7 +537,7 @@ BOOL ParseResourceFile( UBYTE *pData, UDWORD fileSize )
 
 static int win_yyparse();			/* prototype */
 
-audp_parse() 
+int audp_parse() 
 {
 	int wReturnValue;
 	HANDLE hRes_table;		/* handle of resource after loading */
@@ -628,7 +630,7 @@ static int win_yyparse()
  * standard way.
  */
 
-audp_parse() 
+int audp_parse() 
 
 #endif /* YACC_WINDOWS */
 

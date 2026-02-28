@@ -185,7 +185,7 @@ static BOOL eventLoadContext(SDWORD version, UBYTE *pBuffer, UDWORD *pSize)
 	{
 		// get the script code
 		pScriptID = (char *)pPos;
-		psCode = resGetData("SCRIPT", pScriptID);
+		psCode = (SCRIPT_CODE *)resGetData("SCRIPT", pScriptID);
 		pPos += strlen(pScriptID) + 1;
 
 		// check the number of variables
@@ -201,7 +201,7 @@ static BOOL eventLoadContext(SDWORD version, UBYTE *pBuffer, UDWORD *pSize)
 		pPos += sizeof(UBYTE);
 
 		// create the context
-		if (!eventNewContext(psCode, release, &psCCont))
+		if (!eventNewContext(psCode, (CONTEXT_RELEASE)release, &psCCont))
 		{
 			return FALSE;
 		}
@@ -215,7 +215,7 @@ static BOOL eventLoadContext(SDWORD version, UBYTE *pBuffer, UDWORD *pSize)
 		for(i=0; i < numVars; i+= 1)
 		{
 			// get the variable type
-			type = *((SWORD*)pPos);
+			type = (INTERP_TYPE)*((SWORD*)pPos);
 			pPos += sizeof(SWORD);
 			size += sizeof(SWORD);
 
@@ -303,7 +303,7 @@ static BOOL eventLoadContextHashed(SDWORD version, UBYTE *pBuffer, UDWORD *pSize
 //notHashed		pPos += strlen(pScriptID) + 1;
 		hashedName = *((UDWORD*)pPos);
 		pPos += sizeof(UDWORD);
-		psCode = resGetDataFromHash("SCRIPT", hashedName);
+		psCode = (SCRIPT_CODE *)resGetDataFromHash("SCRIPT", hashedName);
 		
 
 		// check the number of variables
@@ -319,7 +319,7 @@ static BOOL eventLoadContextHashed(SDWORD version, UBYTE *pBuffer, UDWORD *pSize
 		pPos += sizeof(UBYTE);
 
 		// create the context
-		if (!eventNewContext(psCode, release, &psCCont))
+		if (!eventNewContext(psCode, (CONTEXT_RELEASE)release, &psCCont))
 		{
 			return FALSE;
 		}
@@ -333,7 +333,7 @@ static BOOL eventLoadContextHashed(SDWORD version, UBYTE *pBuffer, UDWORD *pSize
 		for(i=0; i < numVars; i+= 1)
 		{
 			// get the variable type
-			type = *((SWORD*)pPos);
+			type = (INTERP_TYPE)*((SWORD*)pPos);
 			pPos += sizeof(SWORD);
 			size += sizeof(SWORD);
 
@@ -572,7 +572,7 @@ BOOL eventSaveState(SDWORD version, UBYTE **ppBuffer, UDWORD *pFileSize)
 
 	
 	// Allocate the buffer to save to
-	pBuffer = MALLOC(totalSize);
+	pBuffer = (UBYTE *)MALLOC(totalSize);
 	if (pBuffer == NULL)
 	{
 		DBERROR(("eventSaveState: out of memory"));

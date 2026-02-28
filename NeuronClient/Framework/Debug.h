@@ -89,16 +89,16 @@
  * Function prototypes from debug.c
  *
  */
-extern void dbg_printf(SBYTE *pFormat, ...);
-extern void dbg_SetOutputFile(SBYTE *pFilename);
+extern void dbg_printf(const char *pFormat, ...);
+extern void dbg_SetOutputFile(const char *pFilename);
 extern void dbg_NoOutputFile(void);
 extern void dbg_SetOutputString(void);
 extern void dbg_NoOutputString(void);
-extern void dbg_MessageBox(SBYTE *pFormat, ...);
-extern void dbg_ErrorPosition(SBYTE *pFile, UDWORD Line);
-extern void dbg_ErrorBox(SBYTE *pFormat, ...);
-extern void dbg_AssertPosition(SBYTE *pFile, UDWORD Line);
-extern void dbg_Assert(BOOL Expression, SBYTE *pFormat, ...);
+extern void dbg_MessageBox(const char *pFormat, ...);
+extern void dbg_ErrorPosition(const char *pFile, UDWORD Line);
+extern void dbg_ErrorBox(const char *pFormat, ...);
+extern void dbg_AssertPosition(const char *pFile, UDWORD Line);
+extern void dbg_Assert(BOOL Expression, const char *pFormat, ...);
 
 /*****************************************************************************************
  *
@@ -116,7 +116,7 @@ typedef enum _db_mbretval
 } DB_MBRETVAL;
 
 // message box callback function
-typedef DB_MBRETVAL (*DB_MBCALLBACK)(SBYTE *pBuffer);
+typedef DB_MBRETVAL (*DB_MBCALLBACK)(const char *pBuffer);
 
 // Set the message box callback
 extern void dbg_SetMessageBoxCallback(DB_MBCALLBACK callback);

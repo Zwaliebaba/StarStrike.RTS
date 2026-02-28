@@ -63,9 +63,9 @@ void dbg_SetAssertCallback(DB_MBCALLBACK callback)
  * dbg_SetOutputFile, dbg_NoOutputFile
  * dbg_SetOutputString, dbg_NoOutputString
  */
-void dbg_printf(SBYTE *pFormat, ...)
+void dbg_printf(const char *pFormat, ...)
 {
-	SBYTE		aBuffer[DEBUG_STR_MAX];   // Output string buffer
+	char		aBuffer[DEBUG_STR_MAX];   // Output string buffer
     va_list		pArgs;					  // Format arguments
 	
 	/* Initialise the argument list */
@@ -94,7 +94,7 @@ void dbg_printf(SBYTE *pFormat, ...)
  *
  * Send debugging output to a file
  */
-void dbg_SetOutputFile(SBYTE *pFilename)
+void dbg_SetOutputFile(const char *pFilename)
 {
 	ASSERT((pFilename != NULL, "dbg_SetOutputFile passed NULL filename"));
 
@@ -148,9 +148,9 @@ void dbg_NoOutputString(void)
  *
  * Display a message box, arguments as printf
  */
-void dbg_MessageBox(SBYTE *pFormat, ...)
+void dbg_MessageBox(const char *pFormat, ...)
 {
-	SBYTE		aBuffer[DEBUG_STR_MAX];   // Output string buffer
+	char		aBuffer[DEBUG_STR_MAX];   // Output string buffer
     va_list		pArgs;					  // Format arguments
 	DB_MBRETVAL	retVal;
 	
@@ -183,9 +183,9 @@ void dbg_MessageBox(SBYTE *pFormat, ...)
  * Set the position for an error message.
  */
 #define ERROR_DEFAULT_FILE "No valid Error file name"
-static SBYTE aErrorFile[DEBUG_STR_MAX]=ERROR_DEFAULT_FILE;
+static char aErrorFile[DEBUG_STR_MAX]=ERROR_DEFAULT_FILE;
 static UDWORD ErrorLine;
-void dbg_ErrorPosition(SBYTE *pFile, UDWORD Line)
+void dbg_ErrorPosition(const char *pFile, UDWORD Line)
 {
 	if (pFile == NULL)
 	{
@@ -217,9 +217,9 @@ void dbg_ErrorPosition(SBYTE *pFile, UDWORD Line)
  *
  * Display an error message in a dialog box, arguments as printf
  */
-void dbg_ErrorBox(SBYTE *pFormat, ...)
+void dbg_ErrorBox(const char *pFormat, ...)
 {
-	SBYTE		aBuffer[DEBUG_STR_MAX] = "";	// Output string buffer
+	char		aBuffer[DEBUG_STR_MAX] = "";	// Output string buffer
     va_list		pArgs;							// Format arguments
 	DB_MBRETVAL	retVal;
 	
@@ -260,9 +260,9 @@ void dbg_ErrorBox(SBYTE *pFormat, ...)
  */
 #define ASSERT_DEFAULT_FILE "No Valid Assert File Name"
 //static SBYTE aAssertFile[DEBUG_STR_MAX];
-static SBYTE *pAssertFile;
+static const char *pAssertFile;
 static UDWORD AssertLine;
-void dbg_AssertPosition(SBYTE *pFile, UDWORD Line)
+void dbg_AssertPosition(const char *pFile, UDWORD Line)
 {
 	if (pFile == NULL)
 	{
@@ -302,10 +302,10 @@ void dbg_AssertPosition(SBYTE *pFile, UDWORD Line)
  * DebugBreak is used to jump into the debugger.
  *
  */
-void dbg_Assert(BOOL Expression, SBYTE *pFormat, ...)
+void dbg_Assert(BOOL Expression, const char *pFormat, ...)
 {
 	va_list		pArgs;
-	SBYTE		aBuffer[DEBUG_STR_MAX];
+	char		aBuffer[DEBUG_STR_MAX];
 	int			Result=0;
 	DB_MBRETVAL	retVal;
 

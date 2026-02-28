@@ -17,6 +17,8 @@
 
 #include "Dderror.h"
 #include "Types.h"
+#include <cstdio>
+#include <cstring>
 
 /*
  * DDErrorToString
@@ -27,7 +29,7 @@
 char *DDErrorToString(HRESULT error)
 {
     static char buf[64];
-    if (error == 0) return "No error.\0";
+    if (error == 0) { strcpy(buf, "No error."); return buf; }
     sprintf(buf, "DD/D3D error 0x%08X", (unsigned int)error);
     return buf;
 }

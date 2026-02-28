@@ -10,7 +10,7 @@
 
 /* Basic numeric types */
 typedef unsigned	char	UBYTE;
-typedef	signed		char	SBYTE;
+typedef	char				SBYTE;	// Was: signed char — changed to char for C++ compatibility (char* ↔ SBYTE*)
 typedef	char		STRING;
 typedef	unsigned	short	UWORD;
 typedef	signed		short	SWORD;

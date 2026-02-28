@@ -76,7 +76,7 @@ void (*iV_pBoxFill)(int x0, int y0, int x1, int y1, uint32 colour);
 void line(int x0, int y0, int x1, int y1, uint32 colour)
 
 {
-	register code1, code2, code;
+	int code1, code2, code;
 	int x, y;
 
 

@@ -51,11 +51,11 @@ BOOL NETsetRegistryEntries(char *name,char *guid,char *file,char *cline,char *pa
 
 	if(ghGameDisp == REG_CREATED_NEW_KEY)			// set the key values.
 	{
-		RegSetValueEx(ghGameKey, "Guid"				,0, REG_SZ, guid, strlen(guid)+1 );	//guid
-		RegSetValueEx(ghGameKey, "File"				,0, REG_SZ, file, strlen(file)+1 );	//file
-		RegSetValueEx(ghGameKey, "CommandLine"		,0, REG_SZ, cline,strlen(cline)+1);	//commandline
-		RegSetValueEx(ghGameKey, "Path"				,0, REG_SZ, path, strlen(path)+1 );	//path
-		RegSetValueEx(ghGameKey, "CurrentDirectory"	,0, REG_SZ, cdir, strlen(cdir)+1 );	//currentdir
+		RegSetValueEx(ghGameKey, "Guid"				,0, REG_SZ, (const BYTE *)guid, strlen(guid)+1 );	//guid
+		RegSetValueEx(ghGameKey, "File"				,0, REG_SZ, (const BYTE *)file, strlen(file)+1 );	//file
+		RegSetValueEx(ghGameKey, "CommandLine"		,0, REG_SZ, (const BYTE *)cline,strlen(cline)+1);	//commandline
+		RegSetValueEx(ghGameKey, "Path"				,0, REG_SZ, (const BYTE *)path, strlen(path)+1 );	//path
+		RegSetValueEx(ghGameKey, "CurrentDirectory"	,0, REG_SZ, (const BYTE *)cdir, strlen(cdir)+1 );	//currentdir
 	}
 
 	RegCloseKey(ghGameKey);
@@ -70,7 +70,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 	DWORD	type,resultsize;
 	char	result[256];
 	char	path[256];
-	HANDLE	pFileHandle;
+	FILE	*pFileHandle;
 
 	strcat(basekey,name);		// form base path
 
@@ -84,7 +84,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 
 	// check guid exists
 	resultsize = 256;
-	if(RegQueryValueEx(key,"Guid",NULL,&type,(char*)&result,&resultsize) !=  ERROR_SUCCESS)
+	if(RegQueryValueEx(key,"Guid",NULL,&type,(LPBYTE)&result,&resultsize) !=  ERROR_SUCCESS)
 	{
 		DBERROR(("NETPLAY: DirectPlay Registry Key Does !Have Guid Entry. No Lobby Support"));
 		RegCloseKey(key);
@@ -101,7 +101,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 
 	// check File exists on disk
 	resultsize = 256;
-	if(RegQueryValueEx(key,"Path",	NULL,&type,(char*)&result,&resultsize) !=  ERROR_SUCCESS)
+	if(RegQueryValueEx(key,"Path",	NULL,&type,(LPBYTE)&result,&resultsize) !=  ERROR_SUCCESS)
 	{
 		DBERROR(("NETPLAY: DirectPlay Registry Key Does !Have An Path Entry. No Lobby Support"));
 		RegCloseKey(key);
@@ -109,7 +109,7 @@ BOOL NETcheckRegistryEntries(char *name,char *guid)
 	}
 	strcpy(path,result);
 	resultsize = 256;
-	if(RegQueryValueEx(key,"File",	NULL,&type,(char*)&result,&resultsize) !=  ERROR_SUCCESS)
+	if(RegQueryValueEx(key,"File",	NULL,&type,(LPBYTE)&result,&resultsize) !=  ERROR_SUCCESS)
 	{
 		DBERROR(("NETPLAY: DirectPlay Registry Key Does !Have An File Entry. No Lobby Support"));
 		RegCloseKey(key);
@@ -209,7 +209,7 @@ BOOL NETconnectToLobby(LPNETPLAY lpNetPlay)
 		DBPRINTF(("NETPLAY:didnt connect\n"));
 		goto FAILURE;
 	}
-	hr = IDirectPlay2_QueryInterface(lpDirectPlay2A, &IID_IDirectPlay4A, (LPVOID *) &lpDirectPlay4A);// Obtain IDirectPlay4A interface
+	hr = lpDirectPlay2A->QueryInterface(IID_IDirectPlay4A, (LPVOID *) &lpDirectPlay4A);// Obtain IDirectPlay4A interface
 	if FAILED(hr)
 	{	DBPRINTF(("NETPLAY:didnt query\n"));
 		goto FAILURE;

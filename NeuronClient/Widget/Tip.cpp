@@ -71,7 +71,7 @@ void widgSetTipColour(W_SCREEN *psScreen, UBYTE red, UBYTE green, UBYTE blue)
  */
 //void tipStart(WIDGET *psSource, char *pNewTip, PROP_FONT *psNewFont,
 void tipStart(WIDGET *psSource, char *pNewTip, int NewFontID,
-					 UDWORD *pNewColours, SDWORD x, SDWORD y, UDWORD width, UDWORD height)
+					 SDWORD *pNewColours, SDWORD x, SDWORD y, UDWORD width, UDWORD height)
 {
 	ASSERT((PTRVALID(psSource, sizeof(WIDGET)),
 		"tipStart: Invalid widget pointer"));
@@ -91,7 +91,7 @@ void tipStart(WIDGET *psSource, char *pNewTip, int NewFontID,
 	pTip = pNewTip;
 	psWidget = psSource;
 	FontID = NewFontID;
-	pColours = pNewColours;
+	pColours = (UDWORD *)pNewColours;
 }
 
 

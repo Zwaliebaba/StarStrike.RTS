@@ -307,7 +307,7 @@ BOOL interpRunScript(SCRIPT_CONTEXT *psContext, INTERP_RUNTYPE runType, UDWORD i
 		{
 		case OP_PUSH:
 			// The type of the value is stored in with the opcode
-			sVal.type = (*ip) & OPCODE_DATAMASK;
+			sVal.type = (INTERP_TYPE)((*ip) & OPCODE_DATAMASK);
 			// Copy the data as a DWORD
 			sVal.v.ival = (SDWORD)(*(ip+1));
 			TRCPRINTF(("PUSH        "));
@@ -322,7 +322,7 @@ BOOL interpRunScript(SCRIPT_CONTEXT *psContext, INTERP_RUNTYPE runType, UDWORD i
 			break;
 		case OP_PUSHREF:
 			// The type of the variable is stored in with the opcode
-			sVal.type = (*ip) & OPCODE_DATAMASK;
+			sVal.type = (INTERP_TYPE)((*ip) & OPCODE_DATAMASK);
 			// store the pointer
 			psVar = interpGetVarData(psGlobals, *(ip + 1));
 			sVal.v.oval = &(psVar->v.ival);
@@ -563,12 +563,12 @@ BOOL interpCheckEquiv(INTERP_TYPE to, INTERP_TYPE from)
 	if (to & VAL_REF)
 	{
 		toRef = TRUE;
-		to = to & ~VAL_REF;
+		to = (INTERP_TYPE)(to & ~VAL_REF);
 	}
 	if (from & VAL_REF)
 	{
 		fromRef = TRUE;
-		from = from & ~VAL_REF;
+		from = (INTERP_TYPE)(from & ~VAL_REF);
 	}
 	if (toRef != fromRef)
 	{
