@@ -923,21 +923,6 @@ BOOL dataTERTILESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 		}
 	}
 
-//	if (pie_Hardware())
-//	{
-//		getTileRadarColours();
-//		// make several 256 * 256 pages
-//		if (bTilesPCXLoaded)
-//		{
-//			remakeTileTexturePages(tilesPCX.width,tilesPCX.height,TILE_WIDTH, TILE_HEIGHT, tilesPCX.bmp);
-//		}
-//		else
-//		{
-//			makeTileTexturePages(tilesPCX.width,tilesPCX.height,TILE_WIDTH, TILE_HEIGHT, tilesPCX.bmp);
-//		}
-//	}
-//	else
-//	{
 		/* Squirt the tiles into a nice long thin bitmap */
 		if (bTilesPCXLoaded)
 		{
@@ -1028,26 +1013,6 @@ BOOL dataHWTERTILESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 			makeTileTexturePages(tilesPCX.width,tilesPCX.height,TILE_WIDTH, TILE_HEIGHT, tilesPCX.bmp);
 		}
 	}
-//	else
-//	{
-//		/* Squirt the tiles into a nice long thin bitmap */
-//		if (bTilesPCXLoaded)
-//		{
-//			if(!remakeTileTextures())
-//			{
-//	 			DBERROR(("Problem converting the terrain graphics file"));
-//				return(FALSE);	
-//			}
-//		}
-//		else
-//		{
-//			if(!makeTileTextures())
-//			{
-//	 			DBERROR(("Problem converting the terrain graphics file"));
-//				return(FALSE);	
-//			}
-//		}
-//	}
 
 	if (bTilesPCXLoaded)
 	{
@@ -1097,27 +1062,6 @@ void dataIMGRelease(void *pData)
 
 
 /* Load a PCX to an iSprite */
-//BOOL dataISpriteLoad(STRING *pFile, void **ppData)
-//{
-//	iPalette	sPal;
-//	iSprite		*psSprite;
-//
-//	psSprite = MALLOC(sizeof(iSprite));
-//	if (!psSprite)
-//	{
-//		return FALSE;
-//	}
-//
-//	if (!iV_PCXLoad(pFile, psSprite, sPal))
-//	{
-//		FREE(psSprite);
-//		return FALSE;
-//	}
-//
-//	*ppData = psSprite;
-//
-//	return TRUE;
-//}
 
 
 #define TEXTUREWIDTH (256)

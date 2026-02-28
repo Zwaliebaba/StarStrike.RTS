@@ -514,18 +514,14 @@ BOOL _intAddDesign( BOOL bShowCentreScreen )
 	if (psCurrTemplate != NULL)
 	{
 		memcpy(&sCurrDesign, psCurrTemplate, sizeof(DROID_TEMPLATE));
-#ifndef HASH_NAMES
 		strncpy(aCurrName, getStatName( psCurrTemplate ), WIDG_MAXSTR - 1);
 		strcpy( sCurrDesign.aName, aCurrName );
-#endif
 	}
 	else
 	{
 		memcpy(&sCurrDesign, &sDefaultDesignTemplate, sizeof(DROID_TEMPLATE));
 		strcpy(aCurrName, strresGetString(psStringRes, STR_DES_NEWVEH));
-#ifndef HASH_NAMES
 		strcpy( sCurrDesign.aName, aCurrName );
-#endif
 	}
 
 	/* Add the design templates form */
@@ -1072,11 +1068,7 @@ BOOL intAddTemplateButtons(UDWORD formID, UDWORD formWidth, UDWORD formHeight,
 
 
 			// On the playstation the tips are additionaly setup when they are displayed ... because we only have one text name buffer
-#ifdef HASH_NAMES
-			strncpy(aButText, "TempTip", DES_COMPBUTMAXCHAR);
-#else
 			strncpy(aButText, getTemplateName( psTempl ), DES_COMPBUTMAXCHAR);
-#endif
 			sButInit.pTip = getTemplateName(psTempl);
 
 			BufferID = GetStatBuffer();
@@ -1386,9 +1378,6 @@ intChooseSystemStats( DROID_TEMPLATE *psTemplate )
 	return psStats;
 }
 
-/* set SHOWTEMPLATENAME to 0 to show template components in edit box */
-#define SHOWTEMPLATENAME	0
-
 
 /*
 	Go through the template for player 0 matching up all the 
@@ -1504,10 +1493,6 @@ STRING *GetDefaultTemplateName(DROID_TEMPLATE *psTemplate)
 
 static void intSetEditBoxTextFromTemplate( DROID_TEMPLATE *psTemplate )
 {
-#if SHOWTEMPLATENAME
-	widgSetString(psWScreen, IDDES_NAMEBOX, getStatName(psTemplate));
-#else
-
 	strcpy( aCurrName, "" );
 
 	/* show component names if default template else show stat name */
@@ -1519,9 +1504,8 @@ static void intSetEditBoxTextFromTemplate( DROID_TEMPLATE *psTemplate )
 	{
 		GetDefaultTemplateName(psTemplate);
 	}
-	
+
 	widgSetString(psWScreen, IDDES_NAMEBOX, aCurrName);
-#endif
 }
 
 /* Set all the design bar graphs from a design template */
@@ -2504,24 +2488,6 @@ static BOOL intAddSystemButtons(SDWORD mode)
 	    }
     }
 
-#if 0	// command turrets now in systems
-	// add the command droid button
-	sButInit.formID = IDDES_RIGHTBASE;
-	sButInit.id = IDDES_COMMAND;
-	sButInit.style = WBUT_PLAIN;
-	sButInit.x = 86;
-	sButInit.y = 10;
-	sButInit.width = iV_GetImageWidth(IntImages, IMAGE_DES_COMMAND);
-	sButInit.height = iV_GetImageHeight(IntImages, IMAGE_DES_COMMAND);
-	sButInit.pTip = strresGetString(psStringRes, STR_DES_COMMAND);
-	sButInit.FontID = WFont;
-	sButInit.pDisplay = intDisplayButtonHilight;
-	sButInit.pUserData = (void*)PACKDWORD_TRI(0,IMAGE_DES_EXTRAHI , IMAGE_DES_COMMAND);
-	if (!widgAddButton(psWScreen, &sButInit))
-	{
-		return FALSE;
-	}
-#endif
 
 	// lock down the correct button
 	switch (mode)
@@ -3958,9 +3924,7 @@ static BOOL intValidTemplate(DROID_TEMPLATE *psTempl)
 	psTempl->droidType = droidTemplateType(psTempl);
 
 	/* copy current name into template */
-#ifndef HASH_NAMES
 	strcpy( sCurrDesign.aName, aCurrName );
-#endif
 
 	return TRUE;
 }
@@ -4029,7 +3993,6 @@ void intSetButtonFlash( UDWORD id, BOOL bFlash )
 #endif
 }
 
-#ifndef HASH_NAMES
 /*
  * desTemplateNameCustomised
  *
@@ -4049,7 +4012,6 @@ BOOL desTemplateNameCustomised( DROID_TEMPLATE *psTemplate )
 		return TRUE;
 	}
 }
-#endif
 
 /* checks whether to update name or has user already changed it */
 void desUpdateDesignName( DROID_TEMPLATE *psTemplate, STRING *szCurrName )
@@ -4065,9 +4027,7 @@ void intProcessDesign(UDWORD id)
 	UDWORD			currID;
 //	DES_COMPMODE	currCompMode;
 	UDWORD			i;
-#ifndef HASH_NAMES
 	BOOL			bTemplateNameCustomised;
-#endif
 
 //19	#ifdef PSX
 //19	if(id == IDDES_NAMEBOX) {
@@ -4099,12 +4059,7 @@ void intProcessDesign(UDWORD id)
 
 			strncpy(aCurrName, strresGetString(psStringRes, STR_DES_NEWVEH),
 				WIDG_MAXSTR-1);
-#ifdef HASH_NAMES
-//			sCurrDesign.NameHash=HashString(aCurrName);
-			sCurrDesign.NameHash=0;	// As we are creating a new design the name must be NULL - This is needed for the save games
-#else
 			strcpy( sCurrDesign.aName, aCurrName );
-#endif
 //			strncpy(aCurrName, strresGetString(psStringRes, STR_DES_NEWVEH),
 //				WIDG_MAXSTR-1);
 
@@ -4139,12 +4094,8 @@ void intProcessDesign(UDWORD id)
 			{
 				/* Set the new template */
 				memcpy(&sCurrDesign, psTempl, sizeof(DROID_TEMPLATE));
-#ifdef HASH_NAMES
-				strncpy(aCurrName, strresGetString(NULL,psTempl->NameHash), WIDG_MAXSTR-1);
-#else
 				//strcpy( sCurrDesign.aName, aCurrName );
 				strncpy( aCurrName, getTemplateName(psTempl), WIDG_MAXSTR-1);
-#endif
 				/* reveal body and propulsion component buttons */
 				widgReveal( psWScreen, IDDES_BODYBUTTON );
 				widgReveal( psWScreen, IDDES_PROPBUTTON );
@@ -4207,9 +4158,7 @@ void intProcessDesign(UDWORD id)
 	else if (id >= IDDES_COMPSTART && id <= IDDES_COMPEND)
 	{
 		/* check whether can change template name */
-#ifndef HASH_NAMES
 		bTemplateNameCustomised = desTemplateNameCustomised( &sCurrDesign );
-#endif
 
 		/* Component stats button has been pressed - clear the old button */
 		if (desCompID != 0)
@@ -4331,13 +4280,11 @@ void intProcessDesign(UDWORD id)
 		intSetBodyPoints(&sCurrDesign);
 
 		/* update name if not customised */
-#ifndef HASH_NAMES
 		if ( bTemplateNameCustomised == FALSE )
 		{
 			strcpy( sCurrDesign.aName,
 					GetDefaultTemplateName(&sCurrDesign) );
 		}
-#endif
 
 		/* Update the name in the edit box */
 		intSetEditBoxTextFromTemplate( &sCurrDesign );
@@ -4371,9 +4318,7 @@ void intProcessDesign(UDWORD id)
 	else if (id >= IDDES_EXTRASYSSTART && id <= IDDES_EXTRASYSEND)
 	{
 		/* check whether can change template name */
-#ifndef HASH_NAMES
 		bTemplateNameCustomised = desTemplateNameCustomised( &sCurrDesign );
-#endif
 
 		// Extra component stats button has been pressed - clear the old button
 		if (desCompID != 0)
@@ -4477,13 +4422,11 @@ void intProcessDesign(UDWORD id)
 		intSetBodyPoints(&sCurrDesign);
 
 		/* update name if not customised */
-#ifndef HASH_NAMES
 		if ( bTemplateNameCustomised == FALSE )
 		{
 			strcpy( sCurrDesign.aName,
 					GetDefaultTemplateName(&sCurrDesign) );
 		}
-#endif
 		/* Update the name in the edit box */
 		intSetEditBoxTextFromTemplate( &sCurrDesign );
 
@@ -4525,12 +4468,9 @@ void intProcessDesign(UDWORD id)
 			break;
 			/* The name edit box */
 		case IDDES_NAMEBOX:
-#ifdef HASH_NAMES
-#else
 			strncpy(sCurrDesign.aName, widgGetString(psWScreen, IDDES_NAMEBOX),
 						DROID_MAXNAME);
 			strncpy(aCurrName, sCurrDesign.aName,WIDG_MAXSTR-1);
-#endif
 			break;
 		case IDDES_BIN:
 			/* Find the template for the current button */
@@ -4612,12 +4552,8 @@ void intProcessDesign(UDWORD id)
 
 				/* Set the new template */
 				memcpy(&sCurrDesign, psTempl, sizeof(DROID_TEMPLATE));
-#ifdef HASH_NAMES
-				strncpy(aCurrName, strresGetString(NULL,psTempl->NameHash), WIDG_MAXSTR-1);
-#else
 				//strcpy( sCurrDesign.aName, aCurrName );
 				strncpy( aCurrName, getTemplateName(psTempl), WIDG_MAXSTR-1);
-#endif
 				intSetEditBoxTextFromTemplate( psTempl );
 
 				intSetDesignStats(&sCurrDesign);
@@ -5184,12 +5120,8 @@ BOOL saveTemplate(void)
 
 		/* Copy the template */
 		memcpy(psTempl, &sCurrDesign, sizeof(DROID_TEMPLATE));
-#ifdef HASH_NAMES
-			// NameHash already copied
-#else
 		strncpy(psTempl->aName, aCurrName, DROID_MAXNAME);
 		psTempl->aName[DROID_MAXNAME - 1] = 0;
-#endif
 
 		/* Now update the droid template form */
 		widgDelete(psWScreen, IDDES_TEMPLFORM);

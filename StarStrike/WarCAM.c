@@ -1634,26 +1634,6 @@ BOOL	retVal;
 /* Displays a spinning MTV style logo in the top right of the screen */
 void	dispWarCamLogo( void )
 {
-//iVector		dv;
-//
-//	if(gamePaused())
-//	{
-//		/* get out if we're paused */
-//		return;
-//	}
-//
-//	warCamLogoRotation += MAKEINT( (MAKEFRACT(LOGO_ROT_SPEED) * fraction) );
-//	dv.x = 280;
-//	dv.y = 165;
-//	dv.z = 1000;
-//	iV_MatrixBegin();							/* Push the indentity matrix */
-//	iV_TRANSLATE(dv.x,dv.y,dv.z);
-//	scaleMatrix(15);
-//	iV_MatrixRotateY(warCamLogoRotation);
-//	iV_MatrixRotateX(player.r.x);
-//
-//	pie_Draw3DShape(cameraImd, 0, 0, pie_MAX_BRIGHT_LEVEL, 0, pie_BUTTON, 0);
-//	iV_MatrixEnd();
 }
 
 void	toggleRadarAllignment( void )

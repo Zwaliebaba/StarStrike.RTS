@@ -1,22 +1,6 @@
 
 // Routines to provide simple maths functions that work on both PSX & PC
 
-// Use the type "FRACT" instead of FLOAT
-//  - This is defined as a float on PC and a 20.12 fixed point number on PSX
-//
-//  Use:-
-//		MAKEFRACT(int);  to convert from a SDWORD to a FRACT
-//		MAKEINT(fract);	to convert the other way
-//		FRACTmul(fract,fract); to multiply two fract numbers
-//		FRACTdiv(fract,fract); to divide two numbers
-//		SQRT(fract);		to get square root of a fract (returns a fract)
-//      iSQRT(int);			to get a square root of an integer (returns an UDWORD)
-//      FRACTCONST(constA,constB);	; Generates a constant of (constA/constB)
-//                         e.g. to define 0.5 use FRACTCONST(1,2)
-//                              to define 0.114 use FRACTCONT(114,1000)
-//
-// Also PERCENT(int,int);	// returns a int value 0->100 of the percentage of the first param over the second
-//
 
 
 // This file used to be in the deliverance src directory. But Jeremy quite correctly

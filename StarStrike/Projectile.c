@@ -171,9 +171,6 @@ proj_FreeAllProjectiles( void )
 BOOL
 proj_Shutdown( void )
 {
-#if 0
-	heapReport();
-#endif
 
 	/* destroy hash table */
 	hashTable_Destroy( g_pProjObjTable );

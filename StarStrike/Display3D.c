@@ -599,11 +599,7 @@ BOOL		bPlayerHasHQ = FALSE;
 			setConsolePermanence(TRUE,TRUE);
 	  		permitNewConsoleMessages(TRUE);
 
-#ifndef COVERMOUNT
-#ifndef NON_INTERACT
 			addConsoleMessage("Warzone 2100 : Pumpkin Studios ",RIGHT_JUSTIFY);
-#endif
-#endif
 	  		permitNewConsoleMessages(FALSE);
 		}
 
@@ -618,14 +614,6 @@ BOOL		bPlayerHasHQ = FALSE;
 		gridVarCalls = 0;
 	*/
 
-#ifdef ALEXM
-      	sprintf(buildInfo,"Skipped effects : %d", getNumSkippedEffects());
-	iV_DrawText(buildInfo,100,200);
-	sprintf(buildInfo,"Miss Count : %d", getMissCount());
-	iV_DrawText(buildInfo,100,220);
-	sprintf(buildInfo,"Even effects : %d", getNumEvenEffects());
-	iV_DrawText(buildInfo,100,240);
-#endif
 
  //	sprintf(buildInfo,"Average Grid Height : %d", averageCentreTerrainHeight);
  //	iV_DrawText(buildInfo,100,240);
@@ -5096,9 +5084,6 @@ iPoint	offset;
 PIEVERTEX aVrts[3];
 BYTE	oldColours[4];
 UDWORD	oldColoursWord[4];
-#if defined(SHOW_ZONES) || defined(SHOW_GATEWAYS)
-SDWORD	zone;
-#endif
 
 	/* Get the correct tile index for the x coordinate */
 	actualX = playerXTile + j;
@@ -5109,9 +5094,6 @@ SDWORD	zone;
    //	ASSERT((actualY<mapWidth,"Y Coordinate invalid in tile draw"));
 
 
-#ifdef SHOW_ZONES
-	zone = 0;
-#endif
 
 	/* Let's just get out now if we're not supposed to draw it */
 	if( (actualX<0) OR
@@ -5125,19 +5107,6 @@ SDWORD	zone;
 	else
 	{
 		psTile = mapTile(actualX,actualY);
-#ifdef SHOW_ZONES
-		if (!fpathBlockingTile(actualX,actualY) ||
-			TERRAIN_TYPE(psTile) == TER_WATER)
-		{
-			zone = gwGetZone(actualX,actualY);
-		}
-#endif
-#ifdef SHOW_GATEWAYS
-		if (psTile->tileInfoBits & BITS_GATEWAY)
-		{
-			zone  = gwGetZone(actualX,actualY);
-		}
-#endif
 	}
 
 	if(!TILE_DRAW(psTile))
@@ -5153,17 +5122,6 @@ SDWORD	zone;
 		tileNumber = RiverBedTileID;
 	}
 
-#if defined(SHOW_ZONES)
-	if (zone != 0)
-	{
-		tileNumber = zone;
-	}
-#elif defined(SHOW_GATEWAYS)
-	if (psTile->tileInfoBits & BITS_GATEWAY)
-	{
-		tileNumber = 55;//zone;
-	}
-#endif
 
 
 	/* Is the tile highlighted? Perhaps because there's a building foundation on it */
@@ -5260,10 +5218,6 @@ SDWORD	zone;
 	}
 	*/
 	/* Get the right texture page */
-#if 0
-	/* Software is just an address */
-	texturePage.bmp = tilesRAW[tileNumber & TILE_NUMMASK];
-#endif
 	/* 3dfx is pre stored and indexed */
 	pie_SetTexturePage(tileTexInfo[tileNumber & TILE_NUMMASK].texPage);
 

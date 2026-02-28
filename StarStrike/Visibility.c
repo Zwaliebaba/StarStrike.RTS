@@ -734,30 +734,6 @@ found:
 }*/
 
 
-//#ifdef WIN32
-//
-//void processVisibility(BASE_OBJECT *psObj)
-//{
-//	processVis(psObj);
-//}
-//
-//#else
-//
-//
-//void processVisibility(BASE_OBJECT *psObj)
-//{
-//	static BASE_OBJECT *psTmpObj;
-//
-//	// Stack in the DCache.
-//	psTmpObj = psObj;
-//	SetSpDCache();
-//	processVis(psTmpObj);
-//	SetSpNormal();
-//}
-//
-//#endif
-//
-//
 /* Find out what can see this object */
 void processVisibility(BASE_OBJECT *psObj)
 {

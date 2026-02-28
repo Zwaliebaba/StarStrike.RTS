@@ -112,7 +112,6 @@ void embalm(BASE_OBJECT *psDead)
 	psSlot->died = psDead->died;
 
 	pName = NULL;
-#ifndef HASH_NAMES
 	switch (psDead->type)
 	{
 	case OBJ_DROID:
@@ -125,7 +124,6 @@ void embalm(BASE_OBJECT *psDead)
 		pName = ((FEATURE *)psDead)->psStats->pName;
 		break;
 	}
-#endif
 
 	if (pName != NULL)
 	{
@@ -381,14 +379,6 @@ void objmemUpdate(void)
 
 // turn off the list integrity check for all builds
 //#ifdef DEBUG
-#if 0
-#define DESTROY(list, del, type) \
-	_DESTROY(list, del, type); \
-	objListIntegCheck()
-#else
-#define DESTROY(list, del, type) \
-	_DESTROY(list, del, type)
-#endif
 
 /* Remove an object from the active list
  * list is a pointer to the object list

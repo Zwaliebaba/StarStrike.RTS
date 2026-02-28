@@ -1858,11 +1858,7 @@ BOOL newMapInitialise(void)
 void	initMiscVars( void )
 {
 	selectedPlayer = 0;
-#ifndef NON_INTERACT
 	godMode = FALSE;
-#else
-	godMode = TRUE;
-#endif
 
 //#ifdef ALEXM
 //   	setBlipDraw(TRUE);

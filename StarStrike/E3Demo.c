@@ -58,11 +58,7 @@ static	DROID	*getDroidForDemo( UDWORD player );
 /* Sets up the system */
 void	initDemoCamera( void )
 {
-#ifdef NON_INTERACT
-	presentStatus = DC_ISACTIVE;
-#else if
 	presentStatus = DC_INACTIVE;
-#endif
 	lastCameraMove = 0;
 	lastDroidMove = 0;
 	droidMoveInterval = DROID_MOVE_INTERVAL;

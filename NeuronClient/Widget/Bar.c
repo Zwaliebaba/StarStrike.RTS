@@ -211,24 +211,6 @@ void widgSetMinorBarSize(W_SCREEN *psScreen, UDWORD id, UDWORD iValue )
 }
 
 
-#if 0
-/* Run a barGraph widget */
-void barGraphRun(W_BARGRAPH *psWidget)
-{
-}
-
-
-/* Respond to a mouse click */
-void barGraphClicked(W_BARGRAPH *psWidget)
-{
-}
-
-
-/* Respond to a mouse up */
-void barGraphReleased(W_BARGRAPH *psWidget)
-{
-}
-#endif
 
 
 /* Respond to a mouse moving over a barGraph */

@@ -1216,33 +1216,6 @@ void intUpdateTransCapacity(struct _widget *psWidget, struct _w_context *psConte
 
 	intSetTransCapacityLabel(Label->aText);
 
-//	if (psCurrTransporter)
-//	{
-//		capacity = calcRemainingCapacity(psCurrTransporter);
-////		for (psDroid = psCurrTransporter->psGroup->psList; psDroid != NULL AND psDroid != 
-////				; psDroid = psNext)
-////		{
-////			psNext = psDroid->psGrpNext;
-////			//switch on body size
-////			capacity -= transporterSpaceRequired(psDroid);
-////		}
-//		//change round the way the remaining capacity is displayed - show 0/10 when empty now
-//		capacity = TRANSPORTER_CAPACITY - capacity;
-//
-//		Label->aText[0] = (UBYTE)('0'+capacity / 10);
-//		Label->aText[1] = (UBYTE)('0'+capacity % 10);
-//		//NOT ANY MORE!
-//		//Label->style &= ~WIDG_HIDDEN;
-//		//if nothing on the Transporter, need to remove the Launch Button
-//		/*if (capacity == TRANSPORTER_CAPACITY)
-//		{
-//			widgHide(psWScreen, IDTRANS_LAUNCH);
-//		}
-//		else
-//		{
-//			widgReveal(psWScreen, IDTRANS_LAUNCH);
-//		}*/
-//	}
 }
 
 
@@ -1710,23 +1683,6 @@ BOOL launchTransporter(DROID *psTransporter)
 		//automatic from the script call to startMission now AB 12/05/97
 		//launchMission();
 
-#if 0
-		/* deselect all droids */
-		selDroidDeselect( selectedPlayer );
-
-        //don't follow the Transporter if its ferrying droids to safety
-        if (!getDroidsToSafetyFlag())
-        {
-    		if ( getWarCamStatus() )
-	    	{
-		    	camToggleStatus();
-		    }
-
-    		/* select transporter */
-	    	psTransporter->selected = TRUE;
-		    camToggleStatus();
-        }
-#endif
 
 		//tell the transporter to move to the new offworld location
 		missionGetTransporterExit( psTransporter->player, &iX, &iY );

@@ -1742,49 +1742,6 @@ void intDisplayButtonHilight(struct _widget *psWidget, UDWORD xOffset, UDWORD yO
 
 	GetButtonState(psWidget,&Hilight,&Down,&Grey);
 
-//	switch(psWidget->type) {
-//		case WIDG_FORM:
-//			if( ((W_CLICKFORM*)psWidget)->state & WCLICK_HILITE) {
-//				Hilight = TRUE;
-//			}
-//			if( ((W_CLICKFORM*)psWidget)->state & (WCLICK_DOWN | WCLICK_LOCKED | WCLICK_CLICKLOCK)) {
-//				Down = 1;
-//			}
-//			if( ((W_CLICKFORM*)psWidget)->state & WCLICK_GREY) {
-//				Grey = 1;
-//			}
-//			break;
-//
-//		case WIDG_BUTTON:
-//			if( ((W_BUTTON*)psWidget)->state & WBUTS_HILITE) {
-//				Hilight = TRUE;
-//			}
-//			if( ((W_BUTTON*)psWidget)->state & (WBUTS_DOWN | WBUTS_LOCKED | WBUTS_CLICKLOCK)) {
-//				Down = 1;
-//			}
-//			if( ((W_BUTTON*)psWidget)->state & WBUTS_GREY) {
-//				Grey = 1;
-//			}
-//			break;
-//
-//		case WIDG_EDITBOX:
-//			if( ((W_EDITBOX*)psWidget)->state & WEDBS_HILITE) {
-//				Hilight = TRUE;
-//			}
-//			break;
-//
-//		case WIDG_SLIDER:
-//			if( ((W_SLIDER*)psWidget)->state & SLD_HILITE) {
-//				Hilight = TRUE;
-//			}
-//			if( ((W_SLIDER*)psWidget)->state & (WCLICK_DOWN | WCLICK_LOCKED | WCLICK_CLICKLOCK)) {
-//				Down = 1;
-//			}
-//			break;
-//
-//		default:
-//			Hilight = FALSE;
-//	}
 
 	if(Grey) {
 		ImageID = (UWORD)(UNPACKDWORD_TRI_A((UDWORD)psWidget->pUserData));
@@ -1984,85 +1941,6 @@ void intDisplayTab(struct _widget *psWidget,UDWORD TabType, UDWORD Position,
 	}
 }
 
-//void intDisplaySystemTab(struct _widget *psWidget,UDWORD TabType, UDWORD Position,
-//				   UDWORD Number,BOOL Selected,BOOL Hilight,UDWORD x,UDWORD y,UDWORD Width,UDWORD Height)
-//{
-//	TABDEF *Tab = (TABDEF*)psWidget->pUserData;
-//#ifdef PSX
-//	UWORD ImageID;
-//#endif
-//
-////	ASSERT((Number < 4,"intDisplaySystemTab : Too many tabs."));
-//	UNUSEDPARAMETER(Position);
-//	UNUSEDPARAMETER(Width);
-//	UNUSEDPARAMETER(Height);
-//
-//	Number = Number%4;	// Make sure number never gets bigger than 3.
-//
-//#ifdef WIN32
-//	if(TabType == TAB_MAJOR) 
-//	{
-//		iV_DrawTransImage(IntImages,(UWORD)(Tab->MajorUp+Number),x,y);
-//
-//		if(Hilight) 
-//		{
-//			iV_DrawTransImage(IntImages,Tab->MajorHilight,x,y);
-//		} 
-//		else if(Selected) 
-//		{
-//			iV_DrawTransImage(IntImages,(UWORD)(Tab->MajorSelected+Number),x,y);
-//		}
-//	}
-//	else
-//	{
-//		//ASSERT((FALSE,"intDisplaySystemTab : NOT CATERED FOR!!!"));
-//		iV_DrawTransImage(IntImages,(UWORD)(Tab->MinorUp),x,y);
-//
-//		if(Hilight) 
-//		{
-//			iV_DrawTransImage(IntImages,Tab->MinorHilight,x,y);
-//		} 
-//		else if(Selected) 
-//		{
-//			iV_DrawTransImage(IntImages,Tab->MinorSelected,x,y);
-//		}
-//	}
-//#else
-//	if(TabType == TAB_MAJOR) 
-//	{
-//		if(Hilight) 
-//		{
-//			iV_DrawTransImage(IntImages,Tab->MajorHilight,x,y);
-//		} 
-//		else if(Selected) 
-//		{
-//			iV_DrawTransImage(IntImages,(UWORD)(Tab->MajorSelected+Number),x,y);
-//		}
-//
-//		ImageID = (UWORD)(Tab->MajorUp+Number);
-//		iV_DrawTransImage(IntImages,ImageID,x,y);
-//	}
-//	else
-//	{
-//		if(Hilight) 
-//		{
-//			iV_DrawTransImage(IntImages,Tab->MinorHilight,x,y);
-//		} 
-//		else if(Selected) 
-//		{
-//			iV_DrawTransImage(IntImages,Tab->MinorSelected,x,y);
-//		}
-//
-//		ImageID = (UWORD)(Tab->MinorUp);
-//		iV_DrawTransImage(IntImages,ImageID,x,y);
-//	}
-//
-//	AddCursorSnap(&InterfaceSnap,
-//					x+(iV_GetImageXOffset(IntImages,ImageID))+iV_GetImageWidth(IntImages,ImageID)/2,
-//					y+(iV_GetImageYOffset(IntImages,ImageID))+iV_GetImageHeight(IntImages,ImageID)/2,
-//					psWidget->formID,psWidget->id,NULL);
-//#endif
-//}
 
 //static void intUpdateSliderCount(struct _widget *psWidget, struct _w_context *psContext)
 //{
@@ -3286,23 +3164,6 @@ DROID_TEMPLATE *FactoryGetTemplate(FACTORY *Factory)
 	return (DROID_TEMPLATE*)Factory->psSubject;
 }
 
-//iIMDShape *TemplateGetIMD(DROID_TEMPLATE *Template,UDWORD Player)
-//{
-////	return droidIMDs[GetIMDFromTemplate(Template,Player)];
-//	return NULL;
-//}
-//
-///*UDWORD TemplateGetIMDIndex(DROID_TEMPLATE *Template,UDWORD Player)
-//{
-//	return GetIMDFromTemplate(Template,Player);
-//}*/
-//
-//SDWORD ResearchGetImage(RESEARCH_FACILITY *Research)
-//{
-//	UNUSEDPARAMETER(Research);
-//
-//	return 0;	//IMAGE_RESITEM;
-//}
 
 
 BOOL StatIsStructure(BASE_STATS *Stat)
@@ -3539,21 +3400,6 @@ void StatGetResearchImage(BASE_STATS *psStat, SDWORD *Image, iIMDShape **Shape,
 	return -1;
 }*/
 
-//void intDisplayBorderForm(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours)
-//{
-//	W_TABFORM *Form = (W_TABFORM*)psWidget;
-//	UDWORD x0,y0,x1,y1;
-//	UNUSEDPARAMETER(pColours);
-//
-//	x0 = xOffset+Form->x;
-//	y0 = yOffset+Form->y;
-//	x1 = x0 + Form->width;
-//	y1 = y0 + Form->height;
-//
-//	AdjustTabFormSize(Form,&x0,&y0,&x1,&y1);
-//
-//	RenderWindowFrame(&FrameNormal,x0,y0,x1-x0,y1-y0);
-//}
 
 #define	DRAW_BAR_TEXT	1
 
@@ -3946,26 +3792,6 @@ void drawRadarBlips()
 	}
 	*/
 
-// deathmatch code
-//#ifdef WIN32	
-//	if(bMultiPlayer && (game.type == DMATCH))
-//	{
-//		for (psFeature = apsFeatureLists[0]; psFeature != NULL; psFeature = 
-//			psFeature->psNext)
-//		{
-//			if( psFeature->psStats->subType == FEAT_GEN_ARTE)	// it's an artifact.
-//			{
-//				worldPosToRadarPos(psFeature->x >> TILE_SHIFT ,
-//								   psFeature->y >> TILE_SHIFT,  &radarX,&radarY);
-//				if (radarX > 0 && radarX < (SDWORD)VisWidth &&			// it's visable.
-//					radarY > 0 && radarY < (SDWORD)VisHeight)
-//				{
-//					iV_DrawTransImage(IntImages,(UWORD)(IMAGE_RAD_ENM3),radarX + RADTLX, radarY + RADTLY);
-//				}
-//			}
-//		}
-//	}
-//#endif
 
 }
 

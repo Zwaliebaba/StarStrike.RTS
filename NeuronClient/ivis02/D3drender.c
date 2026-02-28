@@ -178,24 +178,6 @@ InitD3D( D3DINFO *psD3Dinfo )
 }
 
 /***************************************************************************/
-#if 0
-void
-D3DFreeTexturePages( void )
-{
-	DWORD	i;
-
-	/* free D3D texture pages */
-	for ( i=0; i<iV_TEX_MAX; i++ )
-	{
-		if ( _TEX_PAGE[i].tex.pTex != NULL )
-		{
-			D3DFreeTexturePage( _TEX_PAGE[i].tex.pTex );
-			FREE( _TEX_PAGE[i].tex.pTex );
-			_TEX_PAGE[i].tex.pTex = NULL;
-		}
-	}
-}
-#endif
 /***************************************************************************/
 
 void
@@ -970,36 +952,6 @@ exit_with_error:
 	return FALSE;
 }
 /***************************************************************************/
-#if 0
-void
-RestoreAllD3DTextures( void )
-{
-	int				i;
-	TEXPAGE_D3D		*psTexPage;
-	LPDDPIXELFORMAT	psCurTexSurfDesc;
-
-	psCurTexSurfDesc =
-		&g_sD3DGlob.TextureFormat[g_sD3DGlob.uwCurrTextureFormat].ddsd;
-
-	/* free and reload D3D texture pages */
-	for ( i=0; i<iV_TEX_MAX; i++ )
-	{
-		/* reload D3D texture if ivis texture loaded */
-		if ( _TEX_PAGE[i].tex.width > 0 )
-		{
-			psTexPage = _TEX_PAGE[i].tex.pTex;
-
-			if ( psTexPage != NULL )
-			{
-				D3DFreeTexturePage( psTexPage );
-			}
-
-			D3DGetD3DTexturePage( &_TEX_PAGE[i].tex,
-								  _TEX_PAGE[i].tex.pPal );
-		}
-	}
-}
-#endif
 /***************************************************************************/
 
 

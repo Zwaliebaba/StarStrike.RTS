@@ -337,13 +337,6 @@ static BOOL widgCheckIDForm(W_FORM *psForm, UDWORD id)
 	return FALSE;
 }
 
-#if 0
-/* Check whether an ID number has been used on a screen */
-static BOOL widgCheckID(W_SCREEN *psScreen, UDWORD id)
-{
-	return widgCheckIDForm((W_FORM *)psScreen->psForm, id);
-}
-#endif
 
 
 ///* Set the tool tip font for a screen */

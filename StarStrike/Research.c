@@ -98,12 +98,8 @@ UDWORD					aDefaultSensor[MAX_PLAYERS];
 UDWORD					aDefaultECM[MAX_PLAYERS];
 UDWORD					aDefaultRepair[MAX_PLAYERS];
 
-#ifdef HASH_NAMES
-static UWORD setIconIDFromHashedName(STRING *pIconName, UDWORD NameHash);
-#else
 //set the iconID based on the name read in in the stats
 static UWORD setIconID(STRING *pIconName, STRING *pName);
-#endif
 
 static COMP_BASE_STATS * getComponentDetails(STRING *pName, STRING *pCompName);
 static void replaceComponent(COMP_BASE_STATS *pNewComponent, COMP_BASE_STATS *pOldComponent,
@@ -113,11 +109,7 @@ static BOOL checkResearchName(RESEARCH *psRes, UDWORD numStats);
 
 char *getResearchName(RESEARCH *pResearch)
 {
-#ifdef HASH_NAMES
-	return(strresGetString(NULL,pResearch->NameHash));
-#else
 	return(getName(pResearch->pName));
-#endif
 }
 
 //flag that indicates whether the player can self repair
@@ -289,14 +281,10 @@ BOOL loadResearch(SBYTE *pResearchData, UDWORD bufferSize)
 		//allocate storage for the name
 
 
-#ifdef HASH_NAMES
-		pResearch->NameHash=HashString(ResearchName);
-#else
 		if (!allocateName(&pResearch->pName, ResearchName))
 		{
 			return FALSE;
 		}
-#endif
 
 		//check the name hasn't been used already
 		if (!checkResearchName(pResearch, i))
@@ -366,11 +354,7 @@ BOOL loadResearch(SBYTE *pResearchData, UDWORD bufferSize)
 		}*/
 		if (strcmp(ResearchName, "0"))
 		{
-#ifdef HASH_NAMES
-			pResearch->subGroup = setIconIDFromHashedName(ResearchName, pResearch->NameHash);
-#else
 			pResearch->subGroup = setIconID(ResearchName, pResearch->pName);
-#endif
 		}
 		else
 		{
@@ -445,11 +429,7 @@ BOOL loadResearch(SBYTE *pResearchData, UDWORD bufferSize)
 		//set the iconID
 		if (strcmp(iconID, "0"))
 		{
-#ifdef HASH_NAMES
-			pResearch->iconID = setIconIDFromHashedName(iconID, pResearch->NameHash);
-#else
 			pResearch->iconID = setIconID(iconID, pResearch->pName);
-#endif
 		}
 		else
 		{
@@ -763,10 +743,6 @@ BOOL loadResearchPR(SBYTE *pPRData, UDWORD bufferSize)
 	BOOL				recFound;
 
 
-#ifdef HASH_NAMES
-	UDWORD				HashedResearchName;
-	UDWORD				HashedPRName;
-#endif
 
 	pStartPRData = pPRData;
 
@@ -792,29 +768,17 @@ BOOL loadResearchPR(SBYTE *pPRData, UDWORD bufferSize)
 		{
 			return FALSE;
 		}
-#ifdef HASH_NAMES
-		HashedResearchName=HashString(ResearchName);
-		HashedPRName=HashString(PRName);
-#endif
 
 		//loop through each Research to compare the name
 		for (incR=0; incR < numResearch; incR++)
 		{
 
-#ifdef HASH_NAMES
-			if ( pResearch[incR].NameHash == HashedResearchName)
-#else
 			if (!(strcmp(ResearchName, pResearch[incR].pName)))
-#endif
 			{
 				//Research found
 				for (incPR=0; incPR < numResearch; incPR++)
 				{
-#ifdef HASH_NAMES
-					if ( pPRResearch[incPR].NameHash == HashedPRName )
-#else
 					if (!(strcmp(PRName, pPRResearch[incPR].pName)))
-#endif
 					{
 						//check not allocating more than allowed
 						if ((pResearch[incR].storeCount + 1) > 
@@ -1038,10 +1002,6 @@ BOOL loadResearchStructures(SBYTE *pStructData, UDWORD bufferSize,UDWORD listNum
 	BOOL				recFound;
 	UDWORD				numToFind;
 
-#ifdef HASH_NAMES
-	UDWORD				HashedResearchName;
-	UDWORD				HashedStructureName;
-#endif
 
 	//initialise the storage flags
 	for (incR = 0; incR < numResearch; incR++)
@@ -1091,28 +1051,16 @@ BOOL loadResearchStructures(SBYTE *pStructData, UDWORD bufferSize,UDWORD listNum
 			return FALSE;
 		}
 
-#ifdef HASH_NAMES
-		HashedResearchName=HashString(ResearchName);
-		HashedStructureName=HashString(StructureName);
-#endif
 
 		//loop through each Research to compare the name
 		for (incR=0; incR < numResearch; incR++)
 		{
-#ifdef HASH_NAMES
-			if (pResearch[incR].NameHash==HashedResearchName)
-#else
 			if (!(strcmp(ResearchName, pResearch[incR].pName)))
-#endif
 			{
 				//Research found
 				for (incS=0; incS < numStructureStats; incS++)
 				{
-#ifdef HASH_NAMES
-					if (pStructure[incS].NameHash==HashedStructureName)
-#else
 					if (!(strcmp(StructureName, pStructure[incS].pName)))
-#endif
 					{
 						//Structure found - alloc this to the current Research
 						switch (listNumber)
@@ -1200,10 +1148,6 @@ BOOL loadResearchFunctions(SBYTE *pFunctionData, UDWORD bufferSize)
 	RESEARCH			*pResearch = asResearch;
 	FUNCTION			**pFunction = asFunctions;
 	BOOL				recFound;
-#ifdef HASH_NAMES
-	UDWORD				HashedResearchName;
-	UDWORD				HashedFunctionName;
-#endif
 
 	//initialise the storage flags
 	for (incR = 0; incR < numResearch; incR++)
@@ -1232,28 +1176,16 @@ BOOL loadResearchFunctions(SBYTE *pFunctionData, UDWORD bufferSize)
 			return FALSE;
 		}
 
-#ifdef HASH_NAMES
-		HashedResearchName=HashString(ResearchName);
-		HashedFunctionName=HashString(FunctionName);
-#endif
 
 		//loop through each Research to compare the name
 		for (incR=0; incR < numResearch; incR++)
 		{
-#ifdef HASH_NAMES
-			if (pResearch[incR].NameHash==HashedResearchName)
-#else
 			if (!(strcmp(ResearchName, pResearch[incR].pName)))
-#endif
 			{
 				//Research found
 				for (incF=0; incF < numFunctions; incF++)
 				{
-#ifdef HASH_NAMES
-					if ((*pFunction[incF]).NameHash==HashedFunctionName)
-#else
 					if (!(strcmp(FunctionName, (*pFunction[incF]).pName)))
-#endif
 					{
 						//Function found alloc this to the current Research
 						pResearch[incR].pFunctionList[pResearch[incR].
@@ -2340,33 +2272,6 @@ RESEARCH * getResearchForMsg(VIEWDATA *pViewData)
 	return NULL;
 }
 
-#ifdef HASH_NAMES
-
-static UWORD setIconIDFromHashedName(STRING *pIconName, UDWORD NameHash)
-{
-	IMAGEDEF *Image;
-	UWORD i;
-	UDWORD IconHash = HashString(pIconName);
-  	IMAGEFILE *Images = (IMAGEFILE*)resGetData("IMG","intfac.img");
-
-	Image = Images->ImageDefs;
-	for(i=0; i<Images->Header.NumImages; i++) {
-		if(IconHash == Image->HashValue) {
-//			DBPRINTF(("Matched research icon #%d\n",IconHash));
-			return i;
-		}
-
-		Image++;
-	}
-
-    //add more names as images are created
-//	ASSERT((FALSE, "Invalid icon graphic %s for topic %s", pIconName, pName));
-	DBPRINTF(("Failed to matched research icon  %s #%d\n",pIconName,IconHash));
-
-	return 0;	// Should never get here.
-}
-
-#else
 
 //set the iconID based on the name read in in the stats
 static UWORD setIconID(STRING *pIconName, STRING *pName)
@@ -2473,7 +2378,6 @@ static UWORD setIconID(STRING *pIconName, STRING *pName)
 	return 0;	// Should never get here.
 }
 
-#endif
 
 
 SDWORD	mapRIDToIcon( UDWORD rid )
@@ -2624,9 +2528,6 @@ COMP_BASE_STATS * getComponentDetails(STRING *pName, STRING *pCompName)
 {
 	UDWORD				stat, size, quantity, address, inc;
 	COMP_BASE_STATS		*pArtefact;
-#ifdef HASH_NAMES
-	UDWORD				HashedName;
-#endif
 
 	stat = componentType(pName);
 	//get the stat list
@@ -2704,17 +2605,10 @@ COMP_BASE_STATS * getComponentDetails(STRING *pName, STRING *pCompName)
 	}
 	address = (UDWORD)pArtefact;
 
-#ifdef HASH_NAMES
-	HashedName=HashString(pCompName);
-#endif
 
 	for (inc = 0; inc < quantity; inc++)
 	{
-#ifdef HASH_NAMES
-		if (pArtefact->NameHash==HashedName)
-#else
 		if (!strcmp(pArtefact->pName, pCompName))
-#endif
 		{
 			return pArtefact;
 		}
@@ -2731,9 +2625,6 @@ RESEARCH * getResearch(STRING *pName, BOOL resName)
 {
 	UDWORD inc;
 
-#ifdef HASH_NAMES
-	UDWORD	HashedName=HashString(pName);
-#endif
 	//need to get the in game name if a resource name has been passed in
 	if (resName)
 	{
@@ -2745,11 +2636,7 @@ RESEARCH * getResearch(STRING *pName, BOOL resName)
 
 	for (inc=0; inc < numResearch; inc++)
 	{
-#ifdef HASH_NAMES
-		if (asResearch[inc].NameHash==HashedName)
-#else
 		if (!strcmp(asResearch[inc].pName, pName))
-#endif
 		{
 			return &asResearch[inc];
 		}
@@ -2928,7 +2815,6 @@ void replaceComponent(COMP_BASE_STATS *pNewComponent, COMP_BASE_STATS *pOldCompo
 
 /*Looks through all the currently allocated stats to check the name is not 
 a duplicate*/
-#ifndef HASH_NAMES
 static BOOL checkResearchName(RESEARCH *psResearch, UDWORD numStats)
 {
 	UDWORD inc;
@@ -2949,25 +2835,6 @@ static BOOL checkResearchName(RESEARCH *psResearch, UDWORD numStats)
 	return TRUE;
 }
 
-#else
-
-static BOOL checkResearchName(RESEARCH *psResearch, UDWORD numStats)
-{
-	UDWORD inc;
-
-	for (inc = 0; inc < numStats; inc++)
-	{
-		if (asResearch[inc].NameHash==psResearch->NameHash)		
-		{
-			//oops! found the name
-			ASSERT((FALSE, "Research name has already been used - %x", psResearch->NameHash));
-			return FALSE;
-		}
-	}
-	return TRUE;
-}
-
-#endif
 
 /* Sets the 'possible' flag for a player's research so the topic will appear in 
 the research list next time the Research Facilty is selected */
@@ -3069,11 +2936,7 @@ void researchReward(UBYTE losingPlayer, UBYTE rewardPlayer)
 
 
 
-#ifdef HASH_NAMES
-#define	getResearchName(res) (strresGetString(NULL,res.NameHash))
-#else
 #define	getResearchName(res) (res.pName)
-#endif
 
 
 /*checks that the research has loaded up as expected - must be done after 

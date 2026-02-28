@@ -184,14 +184,10 @@ BOOL loadFeatureStats(SBYTE *pFeatureData, UDWORD bufferSize)
 		psFeature->baseBreadth=(UWORD)Breadth;
 
 
-#ifdef HASH_NAMES
-		psFeature->NameHash=HashString(featureName);
-#else
 		if (!allocateName(&psFeature->pName, featureName))
 		{
 			return FALSE;
 		}
-#endif
 
 		//determine the feature type
 		featureType(psFeature, type);
@@ -216,11 +212,7 @@ BOOL loadFeatureStats(SBYTE *pFeatureData, UDWORD bufferSize)
 		psFeature->psImd = (iIMDShape *) resGetData("IMD", GfxFile);
 		if (psFeature->psImd == NULL)
 		{
-#ifdef HASH_NAMES
-			DBERROR(("Cannot find the feature PIE for record %s",  strresGetString(NULL,psFeature->NameHash)));
-#else
 			DBERROR(("Cannot find the feature PIE for record %s",  getName(psFeature->pName)));
-#endif
 			return FALSE;
 		}
 		
@@ -1145,9 +1137,6 @@ SDWORD getFeatureStatFromName( STRING *pName )
 	UDWORD			inc;
 	FEATURE_STATS	*psStat;
 
-#ifdef HASH_NAMES
-	UDWORD		HashedName=HashString(pName);
-#endif
 
 #ifdef RESOURCE_NAMES
 	
@@ -1161,11 +1150,7 @@ SDWORD getFeatureStatFromName( STRING *pName )
 	for (inc = 0; inc < numFeatureStats; inc++)
 	{
 		psStat = &asFeatureStats[inc];
-#ifdef HASH_NAMES
-		if (psStat->NameHash==HashedName)
-#else
 		if (!strcmp(psStat->pName, pName))
-#endif
 		{
 			return inc;
 		}

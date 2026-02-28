@@ -1309,9 +1309,6 @@ done:
 
 static void orderPlayFireSupportAudio( BASE_OBJECT *psObj )
 {
-#ifdef COVERMOUNT
-	return;
-#else
 	
 	DROID		*psDroid = NULL;
 	STRUCTURE	*psStruct = NULL;
@@ -1356,7 +1353,6 @@ static void orderPlayFireSupportAudio( BASE_OBJECT *psObj )
 	{
 		audio_QueueTrackMinDelay( iAudioID, AUDIO_DELAY_FIRESUPPORT );
 	}
-#endif
 
 }
 
@@ -1371,52 +1367,10 @@ void orderDroidBase(DROID *psDroid, DROID_ORDER_DATA *psOrder)
 	STRUCTURE	*psStruct, *psRepairFac, *psFactory;
 	SDWORD		iDX, iDY, state;
 	UDWORD		droidX,droidY;
-#ifdef DEBUG_GROUP2
-	static UDWORD lastFrame;
-#endif
 
 //	ASSERT((psDroid->x != 0 && psDroid->y != 0,
 //		"orderUnitBase: unit at (0,0)"));
 
-#ifdef DEBUG_GROUP2
-	if (lastFrame != frameGetFrameNumber())
-	{
-		lastFrame = frameGetFrameNumber();
-		DBP2(("\nNEW FRAME %d\n\n", lastFrame));
-	}
-
-	DBP2(("D %d P %d at (%d,%d) O %d: (%d,%d) (%d,%d)",
-		psDroid->id, psDroid->player, psDroid->x,psDroid->y,
-		psOrder->order, psOrder->x,psOrder->y, psOrder->x2,psOrder->y2));
-	if (psOrder->psObj != NULL)
-	{
-		DBP2((" T: "));
-		switch (psOrder->psObj->type)
-		{
-		case OBJ_DROID:
-			DBP2((" D %d P %d", psOrder->psObj->id, psOrder->psObj->player));
-			break;
-		case OBJ_STRUCTURE:
-			DBP2((" S %d P %d", psOrder->psObj->id, psOrder->psObj->player));
-			break;
-		case OBJ_FEATURE:
-			DBP2((" F %d P %d", psOrder->psObj->id, psOrder->psObj->player));
-			break;
-		}
-	}
-	if (psOrder->psStats != NULL)
-	{
-		if (psOrder->psStats->pName != NULL)
-		{
-			DBP2((" TS: %s", psOrder->psStats->pName));
-		}
-		else
-		{
-			DBP2((" TS: %d", psOrder->psStats->ref));
-		}
-	}
-	DBP2(("\n"));
-#endif
 
 	// deal with a droid receiving a primary order
 	if (secondaryGotPrimaryOrder(psDroid, psOrder->order))
@@ -1602,34 +1556,6 @@ void orderDroidBase(DROID *psDroid, DROID_ORDER_DATA *psOrder)
 		}
 		ASSERT((PTRVALID(psOrder->psStats, sizeof(STRUCTURE_STATS)),
 			"orderUnitBase: invalid structure stats pointer"));
-#if 0
-		// quick hack to get the droid to choose the location itself
-		psRepairFac = NULL;
-		iRepairFacDistSq = 0;
-		for(psStruct=apsStructLists[psDroid->player]; psStruct; psStruct = psStruct->psNext)
-		{
-			/* get droid->facility distance squared */
-			iDX = (SDWORD)psDroid->x - (SDWORD)psStruct->x;
-			iDY = (SDWORD)psDroid->y - (SDWORD)psStruct->y;
-			iStructDistSq = iDX*iDX + iDY*iDY;
-
-			/* choose current structure if first repair facility found or
-			 * nearer than previously chosen facility
-			 */
-			if ( psRepairFac == NULL || (iRepairFacDistSq > iStructDistSq) )
-			{
-				/* first facility found */
-				psRepairFac = psStruct;
-				iRepairFacDistSq = iStructDistSq;
-			}
-		}
-		if (bposGetLocation(psDroid->player, clustGetClusterID(psRepairFac),
-									psOrder->psStats, &iDX, &iDY))
-		{
-			psOrder->x = iDX << TILE_SHIFT;
-			psOrder->y = iDY << TILE_SHIFT;
-		}
-#endif
 		//if (getDroidDestination((STRUCTURE_STATS *)psOrder->psStats,
 //		if (getDroidDestination(psOrder->psStats,
 //								psOrder->x,psOrder->y, &actionX,&actionY))
@@ -3119,7 +3045,6 @@ void orderPlayOrderObjAudio( UDWORD player, BASE_OBJECT *psObj )
 	DROID	*psDroid;
 
 	UNUSEDPARAMETER(psObj);
-#ifndef COVERMOUNT
 	/* loop over selected droids */
 	for( psDroid = apsDroidLists[player]; psDroid; psDroid=psDroid->psNext )
 	{
@@ -3140,7 +3065,6 @@ void orderPlayOrderObjAudio( UDWORD player, BASE_OBJECT *psObj )
 			break;
 		}
 	}
-#endif
 }
 
 /* Give selected droids an order from an object target
@@ -4130,25 +4054,6 @@ void orderSelectedWaypoint(UDWORD player, UDWORD x, UDWORD y)
 		{
 			orderAddWayPoint(psCurr,x,y);
 			
-//			if (psPrev && !psFormation)
-//			{
-//				if (formationNew(&psFormation, FT_LINE, (SDWORD)x,(SDWORD)y,
-//					(SDWORD)calcDirection((SDWORD)psCurr->x,(SDWORD)psCurr->y, (SDWORD)x,(SDWORD)y)) )
-//				{
-//					formationJoin(psFormation, (BASE_OBJECT *)psPrev);
-//					psPrev->sMove.psFormation = psFormation;
-//				}
-//				else
-//				{
-//					psFormation = NULL;
-//				}
-//			}
-//			if (psFormation)
-//			{
-//				formationJoin(psFormation, (BASE_OBJECT *)psCurr);
-//				psCurr->sMove.psFormation = psFormation;
-///			}
-///			psPrev = psCurr;
 
 		}
 	}

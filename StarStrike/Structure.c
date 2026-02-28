@@ -491,11 +491,7 @@ void structureType(STRUCTURE_STATS *pStructure, char *pType)
 
 char *getStructName(STRUCTURE_STATS	 *psStruct)
 {
-#ifdef HASH_NAMES
-	return(	strresGetString(NULL,psStruct->NameHash));	
-#else
 	return(	getName(psStruct->pName));
-#endif
 }	
 
 /*returns the structure strength based on the string name passed in */
@@ -750,9 +746,6 @@ BOOL loadStructureStats(SBYTE *pStructData, UDWORD bufferSize)
     UDWORD              dummyVal;
 
 
-#ifdef HASH_NAMES
-	UDWORD				HashedType;
-#endif
 
 #if (MAX_PLAYERS != 8)
 	char NotUsedString[MAX_NAME_SIZE];
@@ -858,14 +851,10 @@ BOOL loadStructureStats(SBYTE *pStructData, UDWORD bufferSize)
 			return FALSE;
 		}	
 		strcpy(psStructure->pName,StructureName);*/
-#ifdef HASH_NAMES
-		psStructure->NameHash=HashString(StructureName);
-#else
 		if (!allocateName(&psStructure->pName, StructureName))
 		{
 			return FALSE;
 		}
-#endif
 
 		psStructure->ref = REF_STRUCTURE_START + i;
 
@@ -899,18 +888,11 @@ BOOL loadStructureStats(SBYTE *pStructData, UDWORD bufferSize)
 			{
 				return FALSE;
 			}	
-#ifdef HASH_NAMES
-			HashedType=HashString(ecmType);
-#endif
 
 			for (inc=0; inc < numECMStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pECMType->NameHash==HashedType)
-#else
 				if (!strcmp(ecmType, pECMType->pName))
-#endif
 				{
 					psStructure->pECM = pECMType;
 					break;
@@ -930,17 +912,10 @@ BOOL loadStructureStats(SBYTE *pStructData, UDWORD bufferSize)
 				return FALSE;
 			}	
 			pSensorType = asSensorStats;
-#ifdef HASH_NAMES
-			HashedType=HashString(sensorType);
-#endif
 			for (inc=0; inc < numSensorStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pSensorType->NameHash==HashedType)
-#else
 				if (!strcmp(sensorType, pSensorType->pName))
-#endif
 				{
 					psStructure->pSensor = pSensorType;
 					break;
@@ -1164,10 +1139,6 @@ BOOL loadStructureWeapons(SBYTE *pWeaponData, UDWORD bufferSize)
 	WEAPON_STATS		*pWeapon = asWeaponStats;
 	BOOL				weaponFound, structureFound;
 
-#ifdef HASH_NAMES
-	UDWORD				StructureHash;
-	UDWORD				WeaponHash;
-#endif
 
 
 	pStartWeaponData = pWeaponData;
@@ -1192,29 +1163,17 @@ BOOL loadStructureWeapons(SBYTE *pWeaponData, UDWORD bufferSize)
 		weaponFound = structureFound = FALSE;
 		//loop through each Structure_Stat to compare the name
 
-#ifdef HASH_NAMES
-		StructureHash=HashString(StructureName);
-		WeaponHash=HashString(WeaponName);
-#endif
 
 		for (incS=0; incS < numStructureStats; incS++)
 		{
 
-#ifdef HASH_NAMES
-			if (pStructure[incS].NameHash==StructureHash)
-#else
 			if (!(strcmp(StructureName, pStructure[incS].pName)))
-#endif
 			{
 				//Structure found, so loop through each weapon
 				structureFound = TRUE;
 				for (incW=0; incW < numWeaponStats; incW++)
 				{
-#ifdef HASH_NAMES
-					if (pWeapon[incW].NameHash==WeaponHash)
-#else
 					if (!(strcmp(WeaponName, pWeapon[incW].pName)))
-#endif
 					{
 						weaponFound = TRUE;
 						//weapon found alloc this weapon to the current Structure
@@ -1265,10 +1224,6 @@ BOOL loadStructureFunctions(SBYTE *pFunctionData, UDWORD bufferSize)
 	STRUCTURE_STATS		*pStructure = asStructureStats;
 	FUNCTION			*pFunction, **pStartFunctions = asFunctions;
 	BOOL				functionFound, structureFound;
-#ifdef HASH_NAMES
-	UDWORD				StructureHash;
-	UDWORD				FunctionHash;
-#endif
 
 	pStartFunctionData = pFunctionData;
 
@@ -1290,19 +1245,11 @@ BOOL loadStructureFunctions(SBYTE *pFunctionData, UDWORD bufferSize)
 		{
 			return FALSE;
 		}*/
-#ifdef HASH_NAMES
-		StructureHash=HashString(StructureName);
-		FunctionHash=HashString(FunctionName);
-#endif
 
 		//loop through each Structure_Stat to compare the name
 		for (incS=0; incS < numStructureStats; incS++)
 		{
-#ifdef HASH_NAMES
-			if (pStructure[incS].NameHash==StructureHash)
-#else
 			if (!(strcmp(StructureName, pStructure[incS].pName)))
-#endif
 			{
 				//Structure found, so loop through each Function
 				structureFound = TRUE;
@@ -1310,11 +1257,7 @@ BOOL loadStructureFunctions(SBYTE *pFunctionData, UDWORD bufferSize)
 				for (incF=0; incF < numFunctions; incF++)
 				{
 					pFunction = *pStartFunctions;
-#ifdef HASH_NAMES
-					if (pFunction->NameHash==FunctionHash)
-#else
 					if (!(strcmp(FunctionName, pFunction->pName)))
-#endif
 					{
 						//function found alloc this function to the current Structure
 						functionFound = TRUE;
@@ -1367,11 +1310,7 @@ BOOL loadStructureFunctions(SBYTE *pFunctionData, UDWORD bufferSize)
 			for (i=0; i < numStructureStats; i++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (((WALL_FUNCTION *)pFunction)->StructNameHash == pStructure->NameHash)
-#else
 				if (!strcmp(((WALL_FUNCTION *)pFunction)->pStructName, pStructure->pName))
-#endif
 				{
 					((WALL_FUNCTION *)pFunction)->pCornerStat = pStructure;
 					break;
@@ -1381,11 +1320,7 @@ BOOL loadStructureFunctions(SBYTE *pFunctionData, UDWORD bufferSize)
 			//if haven't found the STRUCTURE STAT, then problem
 			if (!((WALL_FUNCTION *)pFunction)->pCornerStat)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("Unknown Corner Wall stat for function %x", pFunction->NameHash));
-#else
 				DBERROR(("Unknown Corner Wall stat for function %s", pFunction->pName));
-#endif
 				return FALSE;
 			}
 		}
@@ -1574,16 +1509,6 @@ BOOL structureDamage(STRUCTURE *psStructure, UDWORD damage, UDWORD weaponClass,
 	}
 
 	/* Actually reduce the Structure's armour */
-#if 0
-	if (armourDamage >= psStructure->armour)
-	{
-		psStructure->armour = 0;
-	}
-	else
-	{
-		psStructure->armour -= armourDamage;
-	}
-#endif
 
 	DBP1(("        body left: %d armour left: %d\n",
 		psStructure->body, psStructure->armour));
@@ -2730,11 +2655,7 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 			//this structure must have a function assigned to the stat
 			if (psBuilding->pStructureType->numFuncs == 0)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("There must be a function assigned to this building - %x",	psBuilding));
-#else
 				DBERROR(("There must be a function assigned to this building - %s",	getName(psBuilding->pStructureType->pName)));
-#endif
 				return FALSE;
 			}
 			//allocate the necessary space
@@ -2849,11 +2770,7 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 			//this structure must have a function assigned to the stat
 			if (psBuilding->pStructureType->numFuncs == 0)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("There must be a function assigned to this building - %s",	strresGetString(NULL,psBuilding->pStructureType->NameHash) ));
-#else
 				DBERROR(("There must be a function assigned to this building - %s",	getName(psBuilding->pStructureType->pName)));
-#endif
 				return FALSE;
 			}
 			//allocate the necessary space
@@ -2916,11 +2833,7 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 			//this structure must have a function assigned to the stat
 			if (psBuilding->pStructureType->numFuncs == 0)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("There must be a function assigned to this building - %s",	strresGetString(NULL,psBuilding->pStructureType->NameHash) ));
-#else
 				DBERROR(("There must be a function assigned to this building - %s",	getName(psBuilding->pStructureType->pName)));
-#endif
 				return FALSE;
 			}
 			//allocate the necessary space
@@ -2955,11 +2868,7 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 			//this structure must have a function assigned to the stat
 			if (psBuilding->pStructureType->numFuncs == 0)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("There must be a function assigned to this building - %s",	strresGetString(NULL,psBuilding->pStructureType->NameHash) ));
-#else
 				DBERROR(("There must be a function assigned to this building - %s",	getName(psBuilding->pStructureType->pName)));
-#endif
 				return FALSE;
 			}
 			//allocate the necessary space
@@ -2996,11 +2905,7 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 			//this structure must have a function assigned to the stat
 			if (psBuilding->pStructureType->numFuncs == 0)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("There must be a function assigned to this building - %s",	strresGetString(NULL,psBuilding->pStructureType->NameHash) ));
-#else
 				DBERROR(("There must be a function assigned to this building - %s",	getName(psBuilding->pStructureType->pName)));
-#endif
 				return FALSE;
 			}
 			//this function is called once the structure has been built
@@ -3012,11 +2917,7 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 			//this structure must have a function assigned to the stat - this is just a check!
 			if (psBuilding->pStructureType->numFuncs == 0)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("There must be a function assigned to this building - %s",	strresGetString(NULL,psBuilding->pStructureType->NameHash) ));
-#else
 				DBERROR(("There must be a function assigned to this building - %s",	getName(psBuilding->pStructureType->pName)));
-#endif
 				return FALSE;
 			}
 			break;
@@ -3026,11 +2927,7 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 			//this structure must have a function assigned to the stat
 			if (psBuilding->pStructureType->numFuncs == 0)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("There must be a function assigned to this building - %s",	strresGetString(NULL,psBuilding->pStructureType->NameHash) ));
-#else
 				DBERROR(("There must be a function assigned to this building - %s",	getName(psBuilding->pStructureType->pName)));
-#endif
 				return FALSE;
 			}
 
@@ -3089,13 +2986,8 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 			//this structure must have a function assigned to the stat
 			if (psBuilding->pStructureType->numFuncs == 0)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("There must be a function assigned to this building - %s",	
-					strresGetString(NULL,psBuilding->pStructureType->NameHash) ));
-#else
 				DBERROR(("There must be a function assigned to this building - %s",	
 					getName(psBuilding->pStructureType->pName)));
-#endif
 				return FALSE;
 			}
 			//try and create the Structure
@@ -4197,9 +4089,6 @@ void aiUpdateStructure(STRUCTURE *psStructure)
 				return;
 			}
 
-#ifdef TEST_EW
-    bMultiPlayer = TRUE;
-#endif
             //electronic warfare affects the functionality of some structures in multiPlayer
             if (bMultiPlayer)
             {
@@ -4210,9 +4099,6 @@ void aiUpdateStructure(STRUCTURE *psStructure)
                 }
             }
 
-#ifdef TEST_EW
-    bMultiPlayer = FALSE;
-#endif
 			pPlayerRes += (pSubject->ref - REF_RESEARCH_START);
 			//check research has not already been completed by another structure
 			if (IsResearchCompleted(pPlayerRes)==0)
@@ -4297,9 +4183,6 @@ void aiUpdateStructure(STRUCTURE *psStructure)
 				return;
 			}
 
-#ifdef TEST_EW
-    bMultiPlayer = TRUE;
-#endif
             //electronic warfare affects the functionality of some structures in multiPlayer
             if (bMultiPlayer)
             {
@@ -4310,9 +4193,6 @@ void aiUpdateStructure(STRUCTURE *psStructure)
                 }
             }
 
-#ifdef TEST_EW
-    bMultiPlayer = FALSE;
-#endif
 			if (psFactory->timeStarted == ACTION_START_TIME)
 			{
 				/*if (Quantity == NON_STOP_PRODUCTION)
@@ -4504,9 +4384,6 @@ void aiUpdateStructure(STRUCTURE *psStructure)
                             return;
                         }
                     }
-#ifdef TEST_EW
-    bMultiPlayer = TRUE;
-#endif
                     //don't do anything if the resistance is low in multiplayer
                     if (bMultiPlayer)
                     {
@@ -4516,9 +4393,6 @@ void aiUpdateStructure(STRUCTURE *psStructure)
                             return;
                         }
                     }
-#ifdef TEST_EW
-    bMultiPlayer = FALSE;
-#endif
                     //check if enough power to do any
                     //powerCost = (powerReqForDroidRepair(psDroid) - 
                       //  psDroid->powerAccrued) / POWER_FACTOR;
@@ -4827,19 +4701,6 @@ void aiUpdateStructure(STRUCTURE *psStructure)
 
 				}
 				/* check whether rearm finished */
-#if 0
-				if ( !bFinishAction &&
-					 ((ONEINFIVE) AND (psStructure->visible[selectedPlayer])) )
-				{
-					/* add plasma repair effect whilst being repaired */
-					iVecEffect.x = psDroid->x;
-					iVecEffect.y = psDroid->z;
-					iVecEffect.z = psDroid->y;
-					effectSetSize(100);
-					addEffect( &iVecEffect,EFFECT_EXPLOSION,EXPLOSION_TYPE_SPECIFIED_SOLID,
-								TRUE,getImdFromIndex(MI_PLASMA),0 );
-				}
-#endif
 			}
 			////check for full vtol droid being assigned
 			//else if (!vtolEmpty(psDroid))
@@ -4970,17 +4831,11 @@ iVector			dv;
 		if ((gameTime - psBuilding->lastResistance) > RESISTANCE_INTERVAL)
 		{
 			psBuilding->resistance++;
-#ifdef TEST_EW
-    bMultiPlayer = TRUE;
-#endif
             //in multiplayer, certain structures do not function whilst low resistance
             if (bMultiPlayer)
             {
                 resetResistanceLag(psBuilding);
             }
-#ifdef TEST_EW
-    bMultiPlayer = FALSE;
-#endif
 			psBuilding->lastResistance = gameTime;
             //once the resistance is back up reset the last time increased
             if (psBuilding->resistance >= (SWORD)iPointsRequired)
@@ -5619,36 +5474,6 @@ BOOL validLocation(BASE_STATS *psStats, UDWORD x, UDWORD y, UDWORD player,
 								{
 									if (TILE_HAS_STRUCTURE(mapTile(i,j)))
 									{
-//// On Playstation, to try and reduce the number of structures on screen.. defence
-//// structures can only be build next to walls, otherwise there has to be a gap.
-//#ifdef PSX
-//										psStruct = getTileStructure(i,j);
-//										if (psStruct)
-//                                        {
-//										    //defence structures can be built next to a wall, but nothing else.
-//										    if (psBuilding->type == REF_DEFENSE)
-//										    {   
-//												if (!(psStruct->pStructureType->type == REF_WALL OR
-//													psStruct->pStructureType->type == REF_WALLCORNER))
-//												{
-//													valid = FALSE;
-//												}
-//    										}
-//                                            //and walls can be built next to corner walls and defensive structures
-//	    									else if (psBuilding->type == REF_WALL)
-//                                            {
-//												if (!(psStruct->pStructureType->type == REF_DEFENSE OR
-//													psStruct->pStructureType->type == REF_WALLCORNER))
-//												{
-//													valid = FALSE;
-//												}
-//                                            }
-//                                            else
-//		    								{
-//			    								valid = FALSE;
-//				    						}
-//                                        }
-//#else
 										psStruct = getTileStructure(i,j);
 										
 										
@@ -6634,28 +6459,6 @@ SWORD buildFoundation(STRUCTURE_STATS *psStructStats, UDWORD x, UDWORD y)
 
 /* gets a structure stat from its name - relies on the name being unique (or it will 
    return the first one it finds!! */
-#ifdef HASH_NAMES
-SDWORD getStructStatFromName(STRING *pName)
-{
-	UDWORD				inc;
-	STRUCTURE_STATS		*psStat;
-	UDWORD	HashValue;
-
-	HashValue=HashString(pName);
-
-
-	for (inc = 0; inc < numStructureStats; inc++)
-	{
-		psStat = &asStructureStats[inc];
-		if (psStat->NameHash==HashValue)
-		{
-			return inc;
-		}
-	}
-	return -1;
-}
-
-#else
 SDWORD getStructStatFromName(STRING *pName)
 {
 	UDWORD				inc;
@@ -6679,7 +6482,6 @@ SDWORD getStructStatFromName(STRING *pName)
 	}
 	return -1;
 }
-#endif
 
 /*check to see if the structure is 'doing' anything  - return TRUE if idle*/
 BOOL  structureIdle(STRUCTURE *psBuilding)
@@ -7934,9 +7736,6 @@ BOOL validStructResistance(STRUCTURE *psStruct)
 	ASSERT((PTRVALID(psStruct, sizeof(STRUCTURE)),
 		"invalidStructResistance: invalid structure pointer"));
 
-#ifdef TEST_EW
-    bMultiPlayer = TRUE;
-#endif
 
     if (psStruct->pStructureType->resistance != 0)
     {
@@ -7969,9 +7768,6 @@ BOOL validStructResistance(STRUCTURE *psStruct)
         }
     }
 
-#ifdef TEST_EW
-    bMultiPlayer = FALSE;
-#endif
 
     return bTarget;
 }
@@ -9295,9 +9091,6 @@ STRUCTURE * giftSingleStructure(STRUCTURE *psStructure, UBYTE attackPlayer, BOOL
     BOOL                bPowerOn;
     UWORD               direction;
 
-#ifdef TEST_EW
-    bMultiPlayer = TRUE;
-#endif
 
     //this is not the case for EW in multiPlayer mode
     if (!bMultiPlayer)
@@ -9394,9 +9187,6 @@ STRUCTURE * giftSingleStructure(STRUCTURE *psStructure, UBYTE attackPlayer, BOOL
             }                
         }
 
-#ifdef TEST_EW
-        bMultiPlayer = FALSE;
-#endif
 
         //ASSERT((FALSE,
         //    "giftSingleStructure: EW attack in multiplayer"));

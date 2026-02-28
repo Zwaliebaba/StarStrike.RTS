@@ -568,17 +568,6 @@ BOOL process2DInput(void)
 
 /*
 removed cos types are different - am
-#if 0
-	if (keyPressed(KEY_H))
-	{
-		psTile = psMapTiles;
-		for(i=mapWidth*mapHeight; i>0; i--)
-		{
-//			psTile->type = TER_ROAD;
-			psTile++;
-		}
-	}
-#endif
 */
 	/* Process mouse clicks, dependant on mouse mode */
 	disp2DToWorld(mouseX(), mouseY(), &worldX,&worldY);

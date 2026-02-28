@@ -285,47 +285,23 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
 #define DBMONOCR0(x,y,width,height)
 #endif
 
-#ifdef DEBUG_GROUP1
-#define DBP1(x)							DBPRINTF(x)
-#define DBMB1(x)						DBMB(x)
-#define DBMONOP1(x)						DBMONOPRINTF(x)
-#define DBMONOC1()						DBMONOCLEAR()
-#define DBMONOCR1(x,y,width,height)		DBMONOCLEARRECT(x,y,width,height)
-#else
 #define DBP1(x)
 #define DBMB1(x)
 #define DBMONOP1(x)
 #define DBMONOC1()
 #define DBMONOCR1(x,y,width,height)
-#endif
 
-#ifdef DEBUG_GROUP2
-#define DBP2(x)							DBPRINTF(x)
-#define DBMB2(x)						DBMB(x)
-#define DBMONOP2(x)						DBMONOPRINTF(x)
-#define DBMONOC2()						DBMONOCLEAR()
-#define DBMONOCR2(x,y,width,height)		DBMONOCLEARRECT(x,y,width,height)
-#else
 #define DBP2(x)
 #define DBMB2(x)
 #define DBMONOP2(x)
 #define DBMONOC2()
 #define DBMONOCR2(x,y,width,height)
-#endif
 
-#ifdef DEBUG_GROUP3
-#define DBP3(x)							DBPRINTF(x)
-#define DBMB3(x)						DBMB(x)
-#define DBMONOP3(x)						DBMONOPRINTF(x)
-#define DBMONOC3()						DBMONOCLEAR()
-#define DBMONOCR3(x,y,width,height)		DBMONOCLEARRECT(x,y,width,height)
-#else
 #define DBP3(x)
 #define DBMB3(x)
 #define DBMONOP3(x)
 #define DBMONOC3()
 #define DBMONOCR3(x,y,width,height)
-#endif
 
 #ifdef DEBUG_GROUP4
 #define DBP4(x)							DBPRINTF(x)

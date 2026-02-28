@@ -1214,9 +1214,6 @@ BOOL scrAddReticuleButton(void)
 		return FALSE;
 	}
 
-#ifdef NON_INTERACT
-	return(TRUE);
-#endif
 
 	//set the appropriate flag to 'draw' the button
 	switch (val)
@@ -4095,11 +4092,7 @@ BOOL scrStructureBuiltInRange(void)
 		if (xdiff*xdiff + ydiff*ydiff <= rangeSquared)
 		{	
 
-#ifdef HASH_NAMES
-			if( psCurr->pStructureType->NameHash == psTarget->NameHash ) 
-#else
 			if( strcmp(psCurr->pStructureType->pName,psTarget->pName) == 0 ) 
-#endif	
 			{
 				if (psCurr->status == SS_BUILT)
 				{

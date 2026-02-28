@@ -253,19 +253,11 @@ init://jump here from the end if re_initialising
 
 	if (war_GetRendMode() == REND_MODE_GLIDE)
 	{
-#ifdef COVERMOUNT
-		pie_LoadBackDrop(SCREEN_COVERMOUNT,TRUE);
-#else
 		pie_LoadBackDrop(SCREEN_RANDOMBDROP,TRUE);
-#endif
 	}
 	else
 	{
-#ifdef COVERMOUNT
-		pie_LoadBackDrop(SCREEN_COVERMOUNT,FALSE);
-#else
 		pie_LoadBackDrop(SCREEN_RANDOMBDROP,FALSE);
-#endif
 	}
 	pie_SetFogStatus(FALSE);
 	pie_ScreenFlip(CLEAR_BLACK);
@@ -501,9 +493,6 @@ init://jump here from the end if re_initialising
 								DBPRINTF(("GAMECODE_QUITGAME\n"));
 								gameStatus = GS_TITLE_SCREEN;
 								Restart = TRUE;
-#ifdef NON_INTERACT
-								quit = TRUE;
-#endif
 
 								if(NetPlay.bLobbyLaunched)
 								{

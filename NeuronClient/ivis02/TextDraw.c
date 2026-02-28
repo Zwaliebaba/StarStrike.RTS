@@ -789,76 +789,6 @@ void pie_DrawText(unsigned char *string, UDWORD x, UDWORD y)
 }
 
 
-///* New foreign character capable text printer - AlexM */
-//void	pie_DrawText(unsigned char *string, UDWORD x, UDWORD y)
-//{
-//UWORD		imageID;
-//IVIS_FONT	*Font;
-//unsigned char	presChar;
-//
-//	/* Get the present font */
-//	Font = &iVFonts[ActiveFontID];
-//
-//	/* Colour selection */
-//	pie_BeginTextRender(Font->FontColourIndex);
-//   
-//	/* Keep going until NULL terminated */
-//	while((presChar = (*string)))
-//	{
-//		/* Ensure that we skip spaces */
-//		if(presChar == 32)
-//		{
-//			x += Font->FontSpaceSize;
-//		}
-//		/*	Otherwise we should have a legitimate character. This means
-//			that we have to indirect to the correct ImageID as some characters
-//			are not used or needed.
-//		*/
-//		else
-//		{
-//			/*	Get the image ID - this will select from one of two tables; one
-//				for the front end and one for in game. We can start to use an
-//				array index if we need more. 
-//			*/
-//#ifdef WIN32
-//			if(Font->bGameFont)
-//			{
-//				imageID = textJumpTableGame[presChar];	// Presently only for in game
-//			}
-//			else
-//			{
-//				imageID = (UWORD)(Font->FontStartID + presChar - '!');
-//				// will ultimately be...
-//				// imageID = textJumpTableFrontEnd[presChar];
-//			}
-//#else
-//				// 
-//				imageID = (UWORD)(Font->FontStartID + presChar - '!');
-//#endif
-//
-//
-//			/* Draw the character */
-//			pie_TextRender(Font->FontFile,imageID,x,y);
-//#ifdef WIN32
-// 			x += iV_GetImageWidth(Font->FontFile,imageID) + 1;
-//#else
-// 			x += iV_GetImageWidth(Font->FontFile,imageID) + 2;	// legacy?
-//#endif																
-//			
-//		}
-//#ifdef WIN32
-//		/* New bit to make text wrap */
-//		if(x > (pie_GetVideoBufferWidth() - Font->FontSpaceSize) )
-//		{
-//			/* Drop it to the next line if we hit screen edge */
-//			x = 0;
-//			y += iV_GetTextLineSize();
-//		}
-//#endif
-//		/* Jump along to the next character */
-//		string++;
-//	}
-//}
 
 // --------------------------------------------------------------------------
 // OLD text printer below
@@ -1137,47 +1067,6 @@ void pie_DrawText270(unsigned char *String,int XPos,int YPos)
 }
 
 
-//void pie_DrawText270(unsigned char *String,int XPos,int YPos)
-//{
-//	int Index;
-//	IVIS_FONT *Font = &iVFonts[ActiveFontID];
-//
-//#ifdef WIN32
-//	if (pie_Hardware())
-//#endif
-//	{
-//		YPos += (iV_GetImageWidth(Font->FontFile,(UWORD)(Font->FontStartID)) + 1) ;
-//	}
-//
-//
-//	pie_BeginTextRender(Font->FontColourIndex);
-//					
-//	while (*String!=0)	
-//	{
-//		Index = ( *String - '!' );
-//		if((Index >= 0) && (Index <= Font->FontEndID - Font->FontStartID)) 
-//		{			
-//			pie_TextRender270(Font->FontFile,(UWORD)(Index+Font->FontStartID),XPos,YPos);
-//
-//#ifdef WIN32
-//			YPos -= (iV_GetImageWidth(Font->FontFile,(UWORD)(Index+Font->FontStartID)) +1) ;
-//#else
-//			YPos -= (iV_GetImageWidth(Font->FontFile,(UWORD)(Index+Font->FontStartID)) +2) ;
-////			YPos -= (iV_GetImageWidth(Font->FontFile,Index+Font->FontStartID)+1)*2 ;
-//#endif
-//
-//		}
-//		else if(Index == -1)
-//		{
-////#ifdef WIN32
-//			YPos -= (Font->FontSpaceSize);
-////#else
-////			YPos -= (Font->FontSpaceSize)*2;
-////#endif
-//		}
-//		String++;
-//	}
-//}
 
 void pie_BeginTextRender(SWORD ColourIndex)
 {

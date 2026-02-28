@@ -244,12 +244,7 @@ void statsDealloc(COMP_BASE_STATS* pStats, UDWORD listSize, UDWORD structureSize
 
 static BOOL allocateStatName(BASE_STATS* pStat, char *Name)
 {
-#ifdef HASH_NAMES
-		pStat->NameHash=HashString(Name);
-		return(TRUE);
-#else
 		return (allocateName(&pStat->pName, Name));
-#endif	
 }
 
 
@@ -462,11 +457,7 @@ STRING *getStatName(void * Stat)
 {
 	BASE_STATS *psStats=(BASE_STATS * )Stat;
 
-#ifdef HASH_NAMES
-	return(strresGetString(NULL,psStats->NameHash));
-#else
 	return(getName(psStats->pName));
-#endif
 }
 
 
@@ -743,11 +734,7 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 			return FALSE;
 		}
 
-#ifdef HASH_NAMES
-		StatsName=NULL;
-#else
 		StatsName=psStats->pName;
-#endif
 
 		//covered by the movement model now - AB 15/06/98
 		//set the homing round
@@ -2375,9 +2362,6 @@ BOOL loadBodyPropulsionIMDs(SBYTE *pData, UDWORD bufferSize)
 						leftIMD[MAX_NAME_SIZE], rightIMD[MAX_NAME_SIZE];
 	iIMDShape			**startIMDs;
 	BOOL				found;
-#ifdef HASH_NAMES
-	UDWORD				HashedName;
-#endif
 	//check that the body and propulsion stats have already been read in
 
 	ASSERT((asBodyStats != NULL, "Body Stats have not been set up"));
@@ -2426,19 +2410,12 @@ BOOL loadBodyPropulsionIMDs(SBYTE *pData, UDWORD bufferSize)
 		{
 			return FALSE;
 		}
-#ifdef HASH_NAMES
-		HashedName=HashString(bodyName);
-#endif
 
 
 		for (numStats = 0; numStats < numBodyStats; numStats++)
 		{
 			psBodyStat = &asBodyStats[numStats];
-#ifdef HASH_NAMES
-			if (psBodyStat->NameHash==HashedName)
-#else
 			if (!strcmp(psBodyStat->pName, bodyName))
-#endif
 			{
 				found = TRUE;
 				break;
@@ -2457,18 +2434,11 @@ BOOL loadBodyPropulsionIMDs(SBYTE *pData, UDWORD bufferSize)
 			return FALSE;
 		}
 
-#ifdef HASH_NAMES
-		HashedName=HashString(propulsionName);
-#endif
 
 		for (numStats = 0; numStats < numPropulsionStats; numStats++)
 		{
 			psPropulsionStat = &asPropulsionStats[numStats];
-#ifdef HASH_NAMES
-			if (psPropulsionStat->NameHash==HashedName)
-#else
 			if (!strcmp(psPropulsionStat->pName, propulsionName))
-#endif
 			{
 				found = TRUE;
 				break;
@@ -2565,9 +2535,6 @@ BOOL loadWeaponSounds(SBYTE *pSoundData, UDWORD bufferSize)
 	STRING			WeaponName[MAX_NAME_SIZE];
 	STRING			szWeaponWav[MAX_NAME_SIZE],	szExplosionWav[MAX_NAME_SIZE];
 
-#ifdef HASH_NAMES
-	UDWORD			HashedName;
-#endif
 	BOOL 	Ok = TRUE;
 	
 	NumRecords = numCR((UBYTE *)pSoundData, bufferSize);
@@ -2598,18 +2565,11 @@ BOOL loadWeaponSounds(SBYTE *pSoundData, UDWORD bufferSize)
 			return FALSE;
 		}
 
-#ifdef HASH_NAMES
-		HashedName=HashString(WeaponName);
-#endif
 
 
 		for (inc = 0; inc < (SDWORD)numWeaponStats; inc++)
 		{
-#ifdef HASH_NAMES
-			if (asWeaponStats[inc].NameHash==HashedName)
-#else
 			if (!strcmp(asWeaponStats[inc].pName, WeaponName))
-#endif
 			{
 				asWeaponStats[inc].iAudioFireID = weaponSoundID;
 				asWeaponStats[inc].iAudioImpactID = explosionSoundID;
@@ -3418,37 +3378,6 @@ SDWORD	getCompFromName(UDWORD compType, STRING *pName)
 
 
 
-#ifdef HASH_NAMES
-//get the component Inc for a stat based on the name and type
-//returns -1 if record not found
-SDWORD	getCompFromHash(UDWORD compType, UDWORD HashedName)
-{
-	BASE_STATS	*psStats = NULL;
-	UDWORD		numStats = 0, count, statSize = 0;
-
-
-
-	getStatsDetails(compType, &psStats,&numStats,&statSize);
-
-	//find the stat with the same name
-	
-//	DBPRINTF(("hunting %d stats for hash %x\n",numStats,HashedName);
-
-	for(count = 0; count < numStats; count++)
-	{
-//	DBPRINTF(("%x ",psStats->NameHash);
-		if (HashedName==psStats->NameHash)
-		{
-//			DBPRINTF(("found at %d\n",count);
-			return count;
-		}
-		psStats = (BASE_STATS *)((UDWORD)psStats + statSize);
-	}
-//	DBPRINTF(("not found\n");
-	//return -1 if record not found or an invalid component type is passed in
-	return -1;
-}
-#endif
 
 //converts the name read in from Access into the name which is used in the Stat lists
 BOOL getResourceName(STRING *pName)
@@ -3476,11 +3405,7 @@ BOOL getResourceName(STRING *pName)
 
 STRING* getNameFromStat(BASE_STATS* pStat)
 {
-#ifdef HASH_NAMES
-	return(strresGetString(NULL,pStat->NameHash));
-#else
 	return(getName(pStat->pName));
-#endif
 }
 
 /*return the name to display for the interface - valid for OBJECTS and STATS*/
@@ -3574,11 +3499,7 @@ BOOL setTechLevel(BASE_STATS *psStats, STRING *pLevel)
 	}
 	else
 	{
-#ifdef HASH_NAMES
-		ASSERT((FALSE, "Invalid stat id for %x", psStats->NameHash));
-#else
 		ASSERT((FALSE, "Invalid stat id for %s", psStats->pName));
-#endif
 		return FALSE;
 	}
 	return TRUE;
@@ -3762,7 +3683,6 @@ UBYTE	getWeaponEffect(STRING *pWeaponEffect)
 	}
 }
 
-#ifndef HASH_NAMES	   // don't allocate name
 
 /*
 looks up the name to get the resource associated with it - or allocates space 
@@ -3810,7 +3730,6 @@ BOOL allocateName(STRING **ppStore, STRING *pName)
 
 
 
-#endif
 
 /*Access functions for the upgradeable stats of a weapon*/
 UDWORD	weaponFirePause(WEAPON_STATS *psStats, UBYTE player)

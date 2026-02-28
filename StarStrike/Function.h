@@ -14,21 +14,6 @@
 extern FUNCTION		**asFunctions;
 extern UDWORD		numFunctions;
 
-//lists the current Upgrade level that can be applied to a structure through research
-//extern FUNCTION_UPGRADE		*apProductionUpgrades[MAX_PLAYERS];
-//extern UDWORD		numProductionUpgrades;
-//extern FUNCTION_UPGRADE		*apResearchUpgrades[MAX_PLAYERS];
-//extern UDWORD		numResearchUpgrades;
-//extern FUNCTION_UPGRADE		*apArmourUpgrades[MAX_PLAYERS];
-//extern UDWORD		numArmourUpgrades;
-//extern FUNCTION_UPGRADE		*apBodyUpgrades[MAX_PLAYERS];
-//extern UDWORD		numBodyUpgrades;
-//extern FUNCTION_UPGRADE		*apRepairUpgrades[MAX_PLAYERS];
-//extern UDWORD		numRepairUpgrades;
-//extern FUNCTION_UPGRADE		*apResistanceUpgrades[MAX_PLAYERS];
-//extern UDWORD		numResistanceUpgrades;
-//extern FUNCTION_UPGRADE		*apWeaponUpgrades[MAX_PLAYERS];
-//extern UDWORD		numWeaponUpgrades;
 
 extern BOOL loadFunctionStats(SBYTE *pFunctionData, UDWORD bufferSize);
 

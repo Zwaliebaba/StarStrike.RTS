@@ -333,53 +333,6 @@ void gridGarbageCollect(void)
 	}
 
 //#ifdef DEBUG
-#if 0
-	// integrity check the array
-	{
-		GRID_ARRAY	*psCurr, *psCheck;
-		SDWORD		curr, check;
-		BASE_OBJECT	*psObj;
-
-		check = 0;
-//		psCheck = apsMapGrid[garbageX][garbageY];
-		psCheck = apsMapGrid[GridIndex(garbageX,garbageY)];
-		while (psCheck != NULL)
-		{
-			psObj = psCheck->apsObjects[check];
-			if (psObj != NULL)
-			{
-				// see if there is a duplicate element in the array
-				curr = 0;
-//				psCurr = apsMapGrid[garbageX][garbageY];
-				psCurr = apsMapGrid[GridIndex(garbageX,garbageY)];
-				while ( psCurr != NULL )
-				{
-					if ( !((psCurr == psCheck) && (curr == check)) &&
-						(psCurr->apsObjects[curr] == psObj) )
-					{
-						ASSERT((FALSE, "mapGrid integrity check failed"));
-
-						psCurr->apsObjects[curr] = NULL;
-					}
-
-					curr += 1;
-					if (curr >= MAX_GRID_ARRAY_CHUNK)
-					{
-						psCurr=psCurr->psNext;
-						curr = 0;
-					}
-				}
-			}
-
-			check += 1;
-			if (check >= MAX_GRID_ARRAY_CHUNK)
-			{
-				psCheck = psCheck->psNext;
-				check = 0;
-			}
-		}
-	}
-#endif
 }
 
 

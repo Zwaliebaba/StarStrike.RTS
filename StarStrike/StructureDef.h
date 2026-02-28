@@ -102,9 +102,6 @@ typedef struct _flag_position
 } FLAG_POSITION;
 
 
-#ifdef DEMO
-#define NUM_DEMO_STRUCTS	12
-#endif
 
 //only allowed one weapon per structure (more memory for Tim) 
 #define STRUCT_MAXWEAPS		1

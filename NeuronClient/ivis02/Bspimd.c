@@ -75,10 +75,6 @@ _inline int IsPointOnPlane( PSPLANE psPlane, iVector * vP )
 	FRACT Dot;
 
 	/* validate input */
-#ifdef BSP_MAXDEBUG
-	ASSERT( (PTRVALID(psPlane,sizeof(PLANE)),
-			"IsPointOnPlane: invalid plane\n") );
-#endif
 
 	/* subtract point on plane from input point to get position vector */
 	vecP.x = MAKEFRACT(vP->x - psPlane->vP.x);
@@ -160,9 +156,6 @@ static FRACT GetDist( PSTRIANGLE psTri, int pA, int pB );
 // little routine for getting an imd vector structure in the IMD from the vertex ID
 static _inline iVector *IMDvec(int Vertex)
 {
-#ifdef BSP_MAXDEBUG
-	assert((Vertex>=0)&&(Vertex<CurrentVertexListCount));
-#endif
 	return (CurrentVertexList+Vertex);
 }
 
@@ -187,9 +180,6 @@ void GetPlane( iIMDShape *s, UDWORD PolygonID, PSPLANE psPlane )
 
 	psTri=&(s->polys[PolygonID]);
 	CurrentVertexList=s->points;
-#ifdef BSP_MAXDEBUG
-	CurrentVertexListCount=s->npoints;	// for error detection
-#endif
 
 	if (psTri->npnts==4)
 	{

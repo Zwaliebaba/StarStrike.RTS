@@ -3402,41 +3402,6 @@ void moveUpdateDroidPos( DROID *psDroid, FRACT dx, FRACT dy )
 //	psDroid->sMove.dx = dx;
 //	psDroid->sMove.dy = dy;
 
-//#ifdef PSX
-//	psDroid->x = (UDWORD)MAKEINT(psDroid->sMove.fx);
-//	psDroid->y = (UDWORD)MAKEINT(psDroid->sMove.fy);
-//
-//	if ( psDroid->x > 0x80000000)
-//	{
-//		DBPRINTF(("Droid off edge of map ... fixing (a)\n"));
-//		psDroid->x=1;
-//	} 
-//	else
-//	{
-//		if ( psDroid->x > mapWidth*TILE_UNITS )
-//		{
-//			DBPRINTF(("Droid off edge of map ... fixing (b)\n"));
-//			psDroid->x= mapWidth*TILE_UNITS-1;
-//			
-//		}
-//	}
-//
-//
-//	if ( psDroid->y > 0x80000000)
-//	{
-//		DBPRINTF(("Droid off edge of map ... fixing (c)\n"));
-//		psDroid->y=1;
-//	} 
-//	else
-//	{
-//		if ( psDroid->y > mapHeight*TILE_UNITS )
-//		{
-//			DBPRINTF(("Droid off edge of map ... fixing (d)\n"));
-//			psDroid->y= mapHeight*TILE_UNITS-1;
-//			
-//		}
-//	}
-//#else
 	iX = MAKEINT(psDroid->sMove.fx);
 	iY = MAKEINT(psDroid->sMove.fy);
 
@@ -4287,15 +4252,6 @@ void movePlayAudio( DROID *psDroid, BOOL bStarted, BOOL bStoppedBefore, SDWORD i
 		}
 	}
 
-#if 0
-if ( oldStatus != newStatus )
-{
-	char	szOldStatus[100], szNewStatus[100];
-	moveGetStatusStr( oldStatus, szOldStatus );
-	moveGetStatusStr( newStatus, szNewStatus );
-	DBPRINTF( ("oldStatus = %s newStatus = %s\n", szOldStatus, szNewStatus) );
-}
-#endif
 
 }
 

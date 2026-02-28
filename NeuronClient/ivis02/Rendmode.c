@@ -374,27 +374,6 @@ void iV_RenderAssign(int mode, iSurface* s)
         //			iV_ppBitmapRot270			= _dummyFunc5_D3D;
         //			iV_pBitmapRot270			= _dummyFunc4_D3D;
 
-        //			iV_Line 					= _dummyFunc2_D3D;
-        //			iV_HLine 					= _dummyFunc3_D3D;
-        //			iV_VLine 					= _dummyFunc3_D3D;
-        //			iV_Circle 					= _dummyFunc3_D3D;
-        //			iV_CircleFill 				= _dummyFunc3_D3D;
-        //			iV_Polygon 					= iV_pPolygon;
-        //			iV_Quad						= _dummyFunc8_D3D;
-        //			iV_Triangle 				= iV_pTriangle;
-        //			iV_Box 						= _dummyFunc2_D3D;
-        //			iV_BoxFill 					= _dummyFunc2_D3D;
-        //			iV_Bitmap 					= _dummyFunc4_D3D;
-        //			iV_BitmapResize 			= _dummyFunc6_D3D;
-        //			iV_BitmapResizeRot90		= _dummyFunc6_D3D;
-        //			iV_BitmapResizeRot180		= _dummyFunc6_D3D;
-        //			iV_BitmapResizeRot270 		= _dummyFunc6_D3D;
-        //			iV_BitmapGet 				= _dummyFunc4_D3D;
-        //			iV_BitmapTrans				= _dummyFunc4_D3D;
-        //			iV_BitmapShadow				= _dummyFunc4_D3D;
-        //			iV_BitmapRot90				= _dummyFunc4_D3D;
-        //			iV_BitmapRot180				= _dummyFunc4_D3D;
-        //			iV_BitmapRot270				= _dummyFunc4_D3D;
         iV_SetTransFilter = SetTransFilter_D3D;
         //			iV_TransBoxFill	   			= TransBoxFill_D3D;
 

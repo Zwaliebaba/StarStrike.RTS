@@ -785,19 +785,6 @@ BOOL frameInitialise(HANDLE hInst,			// The windows application instance
 		}
 	}
 //#else
-#if 0
-   	/* Initialise the windows stuff and open a window */
-	if (!winInitApp(hInstance, pWindowName, width, height))
-	{
-		return FALSE;
-	}
-
-  	/* Initialise the Direct Draw Buffers */
-	if (!screenInitialise(width, height, bitDepth, fullScreen, bVidMem, bActiveDDraw, hWndMain))
-	{
-		return FALSE;							
-	}
-#endif
 	/* Initialise the input system */
 	inputInitialise();
 	/* Initialise the frame rate stuff */

@@ -128,28 +128,6 @@ BOOL rayInitialise(void)
 //	rayC(x, y, ray, length, callback);
 //}
 
-//#else
-//
-//void rayCast(UDWORD x, UDWORD y, UDWORD ray, UDWORD length, RAY_CALLBACK callback)
-//{
-//	static UDWORD Tx;
-//	static UDWORD Ty;
-//	static UDWORD Tray;
-//	static UDWORD Tlength;
-//	static RAY_CALLBACK Tcallback;
-//
-//	Tx = x;
-//	Ty = y;
-//	Tray = ray;
-//	Tlength = length;
-//	Tcallback = callback;
-//	// Stack in the DCache.
-//	SetSpDCache();
-//	rayC(Tx, Ty, Tray, Tlength, Tcallback);
-//	SetSpNormal();
-//}
-//
-//#endif
 
 /* cast a ray from x,y (world coords) at angle ray (0-360)
  * The ray angle starts at zero along the positive y axis and

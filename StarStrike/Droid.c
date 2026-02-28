@@ -721,192 +721,6 @@ void	vanishDroid(DROID *psDel)
 	removeDroidBase(psDel);
 }
 
-#if 0
-/* Remove a droid and free it's memory */
-void destroyDroid(DROID *psDel)
-{
-	iVector	pos;
-	UDWORD	widthScatter,breadthScatter,heightScatter;
-	UDWORD	i;
-	DROID	*psCurr, *psNext;
-	BOOL	bRet;
-	DROID_GROUP	*psGroup;
-	STRUCTURE	*psStruct;
-
-	if(!driveDroidKilled(psDel)) {	// Tell the driver system it's gone.
-	}
-
-	if (psDel->died)
-	{
-		// droid has already been killed, quit
-		return;
-	}
-
-	//ajl, inform others of destruction.
-	if(bMultiPlayer)					
-	{	
-		SendDestroyDroid(psDel);
-	}
-
-	/* if baba and not running (on fire) then squish */
-	if( psDel->droidType == DROID_PERSON )
-	{
-		if ( psDel->order != DORDER_RUNBURN )
-		{
-			if(psDel->visible[selectedPlayer])
-			{
-// The babarian has been run over ...
-				audio_PlayStaticTrack( psDel->x, psDel->y, ID_SOUND_BARB_SQUISH );
-
-			}
-		}
-	}
-	else if(psDel->visible[selectedPlayer])
-	{
-		/* First, add some gravitons and explosions */
-		widthScatter = TILE_UNITS/4;
-		breadthScatter = TILE_UNITS/4;
-		heightScatter = TILE_UNITS/5;
-		for(i=0; i<4; i++)
-		{
-			pos.x = psDel->x + widthScatter - rand()%(2*widthScatter);
-			pos.z = psDel->y + breadthScatter - rand()%(2*breadthScatter);
-			pos.y = psDel->z + 16 +heightScatter;
-
-			if(ONEINFOUR)
-			{
-				pos.y = psDel->z + 16 +heightScatter;
-				addEffect(&pos,EFFECT_EXPLOSION,EXPLOSION_TYPE_SMALL,FALSE,NULL,0);
-			}
-			else
-
-			{
-				pos.y = psDel->z;
-//				addEffect(&pos,EFFECT_GRAVITON,GRAVITON_TYPE_EMITTING_DR,TRUE,debrisImds[rand()%MAX_DEBRIS],0);
-				addEffect(&pos,EFFECT_GRAVITON,GRAVITON_TYPE_EMITTING_DR,TRUE,getRandomDebrisImd(),0);
-			}
-		}			
-
-		
-		/* And then a destruction sequence...*/
-		pos.x = psDel->x;
-		pos.z = psDel->y;
-		pos.y = psDel->z;
-		addEffect(&pos,EFFECT_DESTRUCTION,DESTRUCTION_TYPE_DROID,FALSE,NULL,0);
-		audio_PlayStaticTrack( psDel->x, psDel->y, ID_SOUND_EXPLOSION );
-	}
-
-	/* remove animation if present */
-	if ( psDel->psCurAnim != NULL )
-	{
-		bRet = animObj_Remove( &psDel->psCurAnim, psDel->psCurAnim->psAnim->uwID );
-		ASSERT( (bRet == TRUE, "destroyUnit: animObj_Remove failed") );
-		psDel->psCurAnim = NULL;
-	}
-
-	//put back the power required to maintain this droid (=power to build)
-	//returnPower(psDel->player, psDel->power);
-
-	// leave the current formation if any
-	if (psDel->sMove.psFormation)
-	{
-		formationLeave(psDel->sMove.psFormation, (BASE_OBJECT *)psDel);
-		psDel->sMove.psFormation = NULL;
-	}
-
-	//kill all the droids inside the transporter
-	if (psDel->droidType == DROID_TRANSPORTER)
-	{
-		if (psDel->psGroup)
-		{
-			//free all droids associated with this Transporter
-			for (psCurr = psDel->psGroup->psList; psCurr != NULL AND psCurr != 
-				psDel; psCurr = psNext)
-			{
-				psNext = psCurr->psGrpNext;
-				droidRelease(psCurr);
-				HEAP_FREE(psDroidHeap, psCurr);
-			}
-		}
-	}
-
-	// check moral
-	if (psDel->psGroup && psDel->psGroup->refCount > 1)
-	{
-		psGroup = psDel->psGroup;
-		grpLeave(psDel->psGroup, psDel);
-		orderGroupMoralCheck(psGroup);
-	}
-	//else if (psDel->player == BARB1 || psDel->player == BARB2)
-    else
-	{
-		orderMoralCheck(psDel->player);
-	}
-
-	// leave the current group if any
-	if (psDel->psGroup)
-	{
-		grpLeave(psDel->psGroup, psDel);
-		psDel->psGroup = NULL;
-	}
-
-	//once a droid is destroyed - it leaves a wrecked droid FEATURE in its place
-//	buildFeature((asFeatureStats + droidFeature), psDel->x, psDel->y);
-	//if( (psDel->droidType == DROID_PERSON || psDel->droidType == DROID_CYBORG) &&
-    if( (psDel->droidType == DROID_PERSON || cyborgDroid(psDel) &&
-		(psDel->order != DORDER_RUNBURN) )
-	{
-		/* blow person up into blood and guts */
-		compPersonToBits(psDel);
-	}
-
-	/* Put Deliv. Pts back into world when a command droid dies */
-	if(psDel->droidType == DROID_COMMAND)
-	{
-	
-		for (psStruct = apsStructLists[psDel->player]; psStruct; psStruct=psStruct->psNext)
-		{
-/* Replace the delivery points for the factories assigned to this command droid */
-//			if ( psStruct->pStructureType->type == REF_FACTORY )	/* Is it a factory? */
-//			{
-//				assignFactoryCommandDroid(psStruct, NULL);	/* Return d. pt. */
-//			}
-
-			// alexl's stab at a right answer.
-			if ( StructIsFactory(psStruct) && ((FACTORY *)psStruct->pFunctionality)->psCommander == psDel)
-			{
-				assignFactoryCommandDroid(psStruct, NULL);
-			}
-
-
-		}
-	}
-
-	// kill the command droid if any
-/*	- no seperate COMMAND_DROID structure now
-	if (psDel->asBits[COMP_BRAIN].nStat != 0)
-	{
-		destroyCommandDroid((SDWORD)psDel->player,
-							(SDWORD)psDel->asBits[COMP_BRAIN].nStat);
-	}*/
-
-	// remove the droid from the grid
-	gridRemoveObject((BASE_OBJECT *)psDel);
-
-	// remove the droid from the cluster systerm
-	clustRemoveObject((BASE_OBJECT *)psDel);
-
-
-	if(psDel->player == selectedPlayer)
-	{
-		intRefreshScreen();
-	}
-	
-	killDroid(psDel);
-
-}
-
-#endif
 /* Remove a droid from the List so doesn't update or get drawn etc
 TAKE CARE with removeDroid() - usually want droidRemove since it deal with cluster and grid code*/
 //returns FALSE if the droid wasn't removed - because it died!
@@ -1112,26 +926,6 @@ void droidResetNaybors(void)
 }
 
 
-//#ifdef WIN32
-//
-//void droidGetNaybors(DROID *psDroid)
-//{
-//	droidGetNayb(psDroid);
-//}
-//
-//#else
-//
-//void droidGetNaybors(DROID *psDroid)
-//{
-//	static DROID *psTmpDroid;
-//	psTmpDroid = psDroid;
-//
-//	SetSpDCache();
-//	droidGetNayb(psTmpDroid);
-//	SetSpNormal();
-//}
-//
-//#endif
 
 
 // macro to see if an object is in NAYBOR_RANGE
@@ -1473,22 +1267,6 @@ void droidUpdate(DROID *psDroid)
 //		"unitUpdate (end): Unit at (0,0)"));
 }
 
-//#ifdef WIN32
-//void droidUpdate(DROID *psDroid)
-//{
-//	droidUpd(psDroid);
-//}
-//#else
-//void droidUpdate(DROID *psDroid)
-//{
-//	static DROID *psTmpDroid;
-//	psTmpDroid = psDroid;
-//
-//	SetSpDCache();
-//	droidUpd(psTmpDroid);
-//	SetSpNormal();
-//}
-//#endif
 
 // calculate the experience level of a droid
 /*SDWORD droidCalcExp(DROID *psDroid)
@@ -1982,26 +1760,6 @@ BOOL droidUpdateBuild(DROID *psDroid)
 	else
 	{
 		addConstructorEffect(psStruct);
-//		//FIXME
-//		if((ONEINTEN) AND (psStruct->visible[selectedPlayer]))
-//			{
-//				/* This needs fixing - it's an arse effect! */
-//				widthRange = (psStruct->pStructureType->baseWidth*TILE_UNITS)/3;
-//				breadthRange = (psStruct->pStructureType->baseBreadth*TILE_UNITS)/3;
-//				temp.x = psStruct->x+((rand()%(2*widthRange)) - widthRange);
-//				temp.y = map_TileHeight(psStruct->x>>TILE_SHIFT, psStruct->y>>TILE_SHIFT)+
-//								((psStruct->sDisplay.imd->ymax)/2);
-//				temp.z = psStruct->y+((rand()%(2*breadthRange)) - breadthRange);
-////FIXFX				addExplosion(&temp,TYPE_EXPLOSION_SMOKE_CLOUD,NULL);
-//				if(rand()%2)
-//				{
-//					addEffect(&temp,EFFECT_EXPLOSION,EXPLOSION_TYPE_PLASMA,FALSE,NULL,0);
-//				}
-//				else
-//				{
-//					addEffect(&temp,EFFECT_CONSTRUCTION,CONSTRUCTION_TYPE_DRIFTING,FALSE,NULL,0);
-//				}
-//			}
 	}
 	return TRUE;
 }
@@ -2759,11 +2517,7 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 #ifdef RESOURCE_NAMES
 	UDWORD				id;
 #endif
-#ifdef HASH_NAMES
-	UDWORD				HashedName;
-#else
 	UDWORD				id;
-#endif
 
 
 	/* init default template */
@@ -2782,11 +2536,9 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 		}
 		memset(pDroidDesign, 0, sizeof(DROID_TEMPLATE));
 
-#ifndef HASH_NAMES
 		//pDroidDesign->pName = pDroidDesign->aName;
 		//only fill in aName now
 		pDroidDesign->pName = NULL;
-#endif
 
 		//read the data into the storage - the data is delimeted using comma's
 		componentName[0] = '\0';
@@ -2796,11 +2548,6 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 		sscanf1(&pDroidData,"%[^','],%d,",&componentName, &templateID);
 
 // Hideous mishmash of ifdef's ... sorry about that
-#ifdef HASH_NAMES
-		HashedName=HashString(componentName);
-		pDroidDesign->NameHash=HashedName;
-		strcpy(droidName,strresGetString(NULL,HashedName));
-#else
 
 	//We ain't EVER going back to the way it was so..just store the long (translated) name in aName
 /*#ifdef RESOURCE_NAMES
@@ -2844,7 +2591,6 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 		//get the string from the id and copy into the Name space
 		strcpy(pDroidDesign->aName,strresGetString(psStringRes, id));
 		pDroidDesign->aName[DROID_MAXNAME-1] = 0;
-#endif
 
 		//store the unique template id - NOT ON PSX
 		pDroidDesign->multiPlayerID = templateID;
@@ -2870,17 +2616,10 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 				return FALSE;
 			}	
 
-#ifdef HASH_NAMES
-			HashedName=HashString(componentName);
-#endif
 			for (inc=0; inc < numBodyStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pStats->NameHash==HashedName)
-#else
 				if (!strcmp(componentName, pStats->pName))
-#endif
 				{
 					pDroidDesign->asParts[COMP_BODY] = inc;
 					found = TRUE;
@@ -2915,17 +2654,10 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 			{
 				return FALSE;
 			}	
-#ifdef HASH_NAMES
-			HashedName=HashString(componentName);
-#endif
 			for (inc=0; inc < numBrainStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pStats->NameHash==HashedName)
-#else
 				if (!strcmp(componentName, pStats->pName))
-#endif
 				{
 					pDroidDesign->asParts[COMP_BRAIN] = inc;
 					found = TRUE;
@@ -2961,17 +2693,10 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 			{
 				return FALSE;
 			}	
-#ifdef HASH_NAMES
-			HashedName=HashString(componentName);
-#endif
 			for (inc=0; inc < numConstructStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pStats->NameHash==HashedName)
-#else
 				if (!strcmp(componentName, pStats->pName))
-#endif
 				{
 					pDroidDesign->asParts[COMP_CONSTRUCT] = inc;
 					found = TRUE;
@@ -3006,17 +2731,10 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 			{
 				return FALSE;
 			}	
-#ifdef HASH_NAMES
-			HashedName=HashString(componentName);
-#endif
 			for (inc=0; inc < numECMStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pStats->NameHash==HashedName)
-#else
 				if (!strcmp(componentName, pStats->pName))
-#endif
 				{
 					pDroidDesign->asParts[COMP_ECM] = inc;
 					found = TRUE;
@@ -3058,17 +2776,10 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 			{
 				return FALSE;
 			}	
-#ifdef HASH_NAMES
-			HashedName=HashString(componentName);
-#endif
 			for (inc=0; inc < numPropulsionStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pStats->NameHash==HashedName)
-#else
 				if (!strcmp(componentName, pStats->pName))
-#endif
 				{
 					pDroidDesign->asParts[COMP_PROPULSION] = inc;
 					found = TRUE;
@@ -3103,17 +2814,10 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 			{
 				return FALSE;
 			}	
-#ifdef HASH_NAMES
-			HashedName=HashString(componentName);
-#endif
 			for (inc=0; inc < numRepairStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pStats->NameHash==HashedName)
-#else
 				if (!strcmp(componentName, pStats->pName))
-#endif
 				{
 					pDroidDesign->asParts[COMP_REPAIRUNIT] = inc;
 					found = TRUE;
@@ -3184,18 +2888,11 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 				return FALSE;
 			}	
 
-#ifdef HASH_NAMES
-			HashedName=HashString(componentName);
-#endif
 
 			for (inc=0; inc < numSensorStats; inc++)
 			{
 				//compare the names
-#ifdef HASH_NAMES
-				if (pStats->NameHash==HashedName)
-#else
 				if (!strcmp(componentName, pStats->pName))
-#endif
 				{
 					pDroidDesign->asParts[COMP_SENSOR] = inc;
 					found = TRUE;
@@ -3205,11 +2902,7 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 			}
 			if (!found)
 			{
-#ifdef HASH_NAMES
-				DBERROR(("Sensor not found for droid Template: %s",strresGetString(NULL,pDroidDesign->NameHash)));
-#else
 				DBERROR(("Sensor not found for droid Template: %s",pDroidDesign->aName));
-#endif
 				return FALSE;
 			}
 		}
@@ -3223,11 +2916,7 @@ BOOL loadDroidTemplates(SBYTE *pDroidData, UDWORD bufferSize)
 			 pDroidDesign->numWeaps) ||
 			pDroidDesign->numWeaps > DROID_MAXWEAPS)
 		{
-#ifdef HASH_NAMES
-			DBERROR(("Too many weapons have been allocated for droid Template: %s (%x)",strresGetString(NULL,pDroidDesign->NameHash),pDroidDesign->NameHash));
-#else
 			DBERROR(("Too many weapons have been allocated for droid Template: %s",pDroidDesign->aName));
-#endif
 
 			return FALSE;
 		}
@@ -3443,9 +3132,6 @@ BOOL loadDroidWeapons(SBYTE *pWeaponData, UDWORD bufferSize)
 	BOOL				recFound;
 	UWORD				SkippedWeaponCount=0;
 	SDWORD				incW;
-#ifdef HASH_NAMES
-	UDWORD				HashedName;
-#endif
 	//initialise the store count variable
 	for (player=0; player < MAX_PLAYERS; player++)
 	{
@@ -3485,21 +3171,14 @@ BOOL loadDroidWeapons(SBYTE *pWeaponData, UDWORD bufferSize)
 			return FALSE;
 		}
 
-#ifdef HASH_NAMES
-		HashedName=HashString(TemplateName);
-#endif
 
 		if (player < MAX_PLAYERS)
 		{
 			for(pTemplate = apsDroidTemplates[player]; pTemplate != NULL; pTemplate = 
 				pTemplate->psNext)
 			{
-#ifdef HASH_NAMES
-				if (pTemplate->NameHash==HashedName)
-#else
 				//if (!(strcmp(TemplateName, pTemplate->pName)))
 				if (!(strcmp(TemplateName, pTemplate->aName)))
-#endif
 				{
 					//Template found
 					recFound = TRUE;
@@ -3510,12 +3189,8 @@ BOOL loadDroidWeapons(SBYTE *pWeaponData, UDWORD bufferSize)
 			if (!recFound)
 			{
 				pTemplate = &sDefaultDesignTemplate;
-#ifdef HASH_NAMES
-				if (pTemplate->NameHash!=HashedName)
-#else
 				//if ( strcmp(TemplateName, pTemplate->pName) )
 				if ( strcmp(TemplateName, pTemplate->aName) )
-#endif
 				{
 					DBERROR(("Unable to find Template - %s", TemplateName));
 					return FALSE;
@@ -4099,13 +3774,8 @@ DROID* buildDroid(DROID_TEMPLATE *pTemplate, UDWORD x, UDWORD y, UDWORD player,
 	//fill in other details
 	//psDroid->pTemplate = pTemplate;
 
-#ifdef HASH_NAMES
-	psDroid->HashedDroidName=pTemplate->NameHash;
-	droidSetName(psDroid,strresGetString(NULL,pTemplate->NameHash));
-#else
 	//droidSetName(psDroid,pTemplate->pName);
 	droidSetName(psDroid,pTemplate->aName);
-#endif
 	// Set the droids type
 	psDroid->droidType = droidTemplateType(pTemplate);
 
@@ -5122,9 +4792,6 @@ DROID_TEMPLATE * getTemplateFromName(STRING *pName)
 	UDWORD			player;
 	DROID_TEMPLATE	*psCurr;
 
-#ifdef HASH_NAMES
-	UDWORD			HashedName=HashString(pName);
-#endif
 
 #ifdef RESOURCE_NAMES
 
@@ -5157,12 +4824,8 @@ DROID_TEMPLATE * getTemplateFromName(STRING *pName)
 */
 		for (psCurr = apsDroidTemplates[player]; psCurr != NULL; psCurr = psCurr->psNext)
 		{
-#ifdef HASH_NAMES
-			if (psCurr->NameHash==HashedName)
-#else
 			//if (!strcmp(psCurr->pName, pName))
 			if (!strcmp(psCurr->aName, pName))
-#endif
 			{
                 //if template is selectedPlayers' it must be a CYBORG or we ignore it
                 if (!bMultiPlayer)
@@ -5496,23 +5159,7 @@ UDWORD	calcDroidSystemPoints(DROID *psDroid)
 //
 STRING *droidGetName(DROID *psDroid)
 {
-#ifndef HASH_NAMES
 	return (psDroid->aName);
-#else
-	const STRING ConstructedName[]="Body Mk XXIV";	// dummy name
-
-	// if the hashed name is 0 - it must be a user created droid so we construct its name
-	if (psDroid->HashedDroidName!=0x0)
-	{
-		STRING *DroidName;
-		DroidName=strresGetString(NULL,psDroid->HashedDroidName);
-		if (DroidName!=NULL) return(DroidName);	// if we found a name then return it...  other wise build the name
-	}	
-
-	BuildNameFromDroid(psDroid,ConstructedName);
-	return(ConstructedName);
-	
-#endif
 }
 
 
@@ -5523,10 +5170,8 @@ STRING *droidGetName(DROID *psDroid)
 //
 void droidSetName(DROID *psDroid,STRING *pName)
 {
-#ifndef HASH_NAMES
 	strncpy(psDroid->aName,pName, DROID_MAXNAME);
 	psDroid->aName[DROID_MAXNAME-1] = 0;
-#endif
 }
 
 
@@ -6130,42 +5775,6 @@ STRING *getDroidName(DROID *psDroid)
 a string ID or something the user types in*/
 STRING* getTemplateName(DROID_TEMPLATE *psTemplate)
 {
-#ifdef HASH_NAMES
-	STRING *TempName;
-
-	STRING *NewName;
-/*  - Performed in 	GetDefaultTemplateName   - with other droids 
-
-	// On the PSX the NameHash entry points to the name for database generated templates
-	// - user generated templates are NULL'ed
-	// We only want database name if it's a cyborg.
-	if(psTemplate->droidType == DROID_CYBORG) {
-		if (psTemplate->NameHash!=NULL)
-		{
-			TempName=(strresGetString(psStringRes, psTemplate->NameHash));
-			if (TempName!=NULL)
-			{
-//				DBPRINTF(("name1 [%s]\n",TempName));
-				return(TempName);
-			}
-		}
-	}
-*/
-	// If the above failed or it's not a cyborg then construct the name from the components.
-	NewName=GetDefaultTemplateName(psTemplate);
-
-	if (NewName==NULL || NewName[0]==0)
-	{
-		// No name ... we assume its the NEW VEHICLE BUTTON 
-		strcpy(ConstructedName, strresGetString(psStringRes, STR_DES_NEWVEH));
-	}
-	else
-	{
-		strncpy(ConstructedName,NewName,MAXCONNAME);
-	}
-	return(ConstructedName);
-		
-#else
 	//STRING *pNameID=psTemplate->pName;
 	STRING *pNameID = psTemplate->aName;
 #ifdef STORE_RESOURCE_ID
@@ -6193,7 +5802,6 @@ STRING* getTemplateName(DROID_TEMPLATE *psTemplate)
 #else
 	//just return the name passed in
 	return pNameID;
-#endif
 #endif
 }
 
@@ -6678,9 +6286,6 @@ DROID * giftSingleDroid(DROID *psD, UDWORD to)
 		return psD;
 	}
 
-#ifdef TEST_EW
-    bMultiPlayer = TRUE;
-#endif
 
     if (bMultiPlayer)
     {
@@ -6769,9 +6374,6 @@ DROID * giftSingleDroid(DROID *psD, UDWORD to)
 		eventFireCallbackTrigger(CALL_UNITTAKEOVER);
 		psScrCBDroidTaken = NULL;
 
-#ifdef TEST_EW
-        bMultiPlayer = FALSE;
-#endif
         return NULL;
     }
     else

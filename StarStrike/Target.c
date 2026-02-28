@@ -77,29 +77,6 @@ void targetCloseList(void)
 }
 
 
-//// Aquire a new target.
-////
-//BASE_OBJECT *targetAquireNew(void)
-//{
-//	BASE_OBJECT *psObj;
-//
-//	// First try and target the nearest threat.
-//	if( (psObj=targetAquireNearestObj(TargetingObject,TARGET_TYPE_THREAT)) != NULL) {
-//		DBPRINTF(("Targeting threat\n"));
-//		return psObj;
-//	}
-//
-//	// if that failed then attempt to target the nearest object.
-//	if( (psObj=targetAquireNearestObj(TargetingObject,TARGET_TYPE_ANY)) != NULL) {
-//		DBPRINTF(("Targeting any\n"));
-//		return psObj;
-//	}
-//
-//	TargetCurrent = 0;
-//	TargetCurrentID = UDWORD_MAX;
-//
-//	return NULL;
-//}
 
 /*
 	DROID_WEAPON,		// Weapon droid
@@ -137,42 +114,6 @@ void targetKilledObject(BASE_OBJECT *psObj)
 }
 
 
-//// Aquire the target nearest to the specified screen coords.
-////
-//BASE_OBJECT *targetAquireNearestScreen(SWORD x,SWORD y,UWORD TargetType)
-//{
-//	UWORD i;
-//	UWORD Nearesti = 0;
-//	UDWORD NearestDsq = UDWORD_MAX;
-//	UDWORD dx,dy;
-//	UDWORD Dsq;
-//	BASE_OBJECT *NearestObj = NULL;
-//	BASE_OBJECT *psObj;
-//
-//	for(i=0; i<NumTargets; i++) {
-//		psObj = TargetList[i].psObj;
-//		dx = abs(psObj->sDisplay.screenX - x);
-//		dy = abs(psObj->sDisplay.screenY - y);
-//		Dsq = dx*dx+dy*dy;
-//		if(Dsq < NearestDsq) {
-//			if(TargetList[i].Type & TargetType) {
-//				NearestDsq = Dsq;
-//				Nearesti = i;
-//				NearestObj = psObj;
-//			}
-//		}
-//	}
-//
-//	if(NearestObj != NULL) {
-//		TargetCurrent = Nearesti;
-//		if(TargetCurrentID != NearestObj->id) {
-//			TargetCurrentID = NearestObj->id;
-//			targetStartAnim();
-//		}
-//	}
-//
-//	return NearestObj;
-//}
 
 
 // Aquire the target nearest the vector from x,y to the top of the screen.
@@ -252,54 +193,6 @@ BASE_OBJECT *targetAquireNearestObjView(BASE_OBJECT *psObj,UWORD TargetType)
 }
 
 
-//// Aquire the next target in the target list.
-////
-//BASE_OBJECT *targetAquireNext(UWORD TargetType)
-//{
-//	BASE_OBJECT *Target = NULL;
-//
-//	if(NumTargets) {
-//		UWORD OldCurrent = TargetCurrent;
-//
-//		TargetCurrent++;
-//
-//		while( (Target == NULL) && (TargetCurrent < NumTargets) ) {
-//			// Target is of required type?
-//			if(TargetList[TargetCurrent].Type & TargetType) {
-//				Target = TargetList[TargetCurrent].psObj;
-//			}
-//
-//			TargetCurrent++;
-//		}
-//
-//
-//		if(Target == NULL) {
-//			TargetCurrent = 0;
-//
-//			while( (Target == NULL) && (TargetCurrent < OldCurrent) ) {
-//				// Target is of required type?
-//				if(TargetList[TargetCurrent].Type & TargetType) {
-//					Target = TargetList[TargetCurrent].psObj;
-//				}
-//
-//				TargetCurrent++;
-//			}
-//		}
-//
-//		if(TargetCurrent >= NumTargets) {
-//			TargetCurrent = 0;
-//		}
-//	}
-//
-//	if(Target != NULL) {
-//		if(TargetCurrentID != Target->id) {
-//			TargetCurrentID = Target->id;
-//			targetStartAnim();
-//		}
-//	}
-//
-//	return Target;
-//}
 
 
 // Get the currently targeted object.

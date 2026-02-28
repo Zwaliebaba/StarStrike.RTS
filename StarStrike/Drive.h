@@ -7,27 +7,6 @@
 extern BOOL DirectControl;
 extern DROID *psDrivenDroid;
 
-//DRIVEFUNCINLINE UWORD controlModeGet(void)
-//{
-//	return ControlMode;
-//}
-//
-//
-//DRIVEFUNCINLINE void controlModeSet(UWORD Mode)
-//{
-//	ControlMode = Mode;
-//}
-//
-//
-//DRIVEFUNCINLINE void	setDrivingStatus( BOOL val )
-//{
-//	bDriveMode = val;
-//}
-//
-//DRIVEFUNCINLINE BOOL	getDrivingStatus( void )
-//{
-//	return(bDriveMode);
-//}
 
 
 DRIVEFUNCINLINE BOOL driveHasDriven(void)

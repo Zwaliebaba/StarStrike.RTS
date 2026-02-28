@@ -8,17 +8,10 @@
 #define _statsdef_h
 
 
-#ifdef HASH_NAMES
-/* Elements common to all stats structures */
-#define STATS_BASE \
-	UDWORD			ref;			/* Unique ID of the item */ \
-	UDWORD			NameHash	/* unique hash value of the item (hashed version of pName below) */ 
-#else
 /* Elements common to all stats structures */
 #define STATS_BASE \
 	UDWORD			ref;			/* Unique ID of the item */ \
 	STRING			*pName			/* pointer to the text id name (i.e. short language-independant name) */ 
-#endif
 
 /* Stats common to all stats structs */
 typedef struct _base_stats

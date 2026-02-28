@@ -819,13 +819,6 @@ BOOL dtm_LoadTexSurface( iTexture *psIvisTex, SDWORD index )
  
 BOOL dtm_BLTRadarToTex(void)
 {
-#if 0 //alpaha is set for palette used in dtm_surfLoadFrom8Bit
-	if ( D3DGetAlphaKey() == TRUE )
-	{
-		/* set transparent bits for textures with real alpha (not palettized) */
-		dtm_SetSurfaceAlpha( psRadarSurf4 );
-	}
-#endif
 
    aTextures[RADAR_TEXPAGE_D3D].psSurface4->lpVtbl->Blt(aTextures[RADAR_TEXPAGE_D3D].psSurface4, NULL, psRadarSurf4, NULL, DDBLT_WAIT, NULL );
    return TRUE;

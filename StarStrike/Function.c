@@ -21,21 +21,6 @@
 FUNCTION	**asFunctions;
 UDWORD		numFunctions;
 
-//lists the current Upgrade level that can be applied to a structure through research
-//FUNCTION_UPGRADE		*apProductionUpgrades[MAX_PLAYERS];
-//UDWORD					numProductionUpgrades;
-//FUNCTION_UPGRADE		*apResearchUpgrades[MAX_PLAYERS];
-//UDWORD					numResearchUpgrades;
-//FUNCTION_UPGRADE		*apArmourUpgrades[MAX_PLAYERS];
-//UDWORD					numArmourUpgrades;
-//FUNCTION_UPGRADE		*apBodyUpgrades[MAX_PLAYERS];
-//UDWORD					numBodyUpgrades;
-//FUNCTION_UPGRADE		*apRepairUpgrades[MAX_PLAYERS];
-//UDWORD					numRepairUpgrades;
-//FUNCTION_UPGRADE		*apResistanceUpgrades[MAX_PLAYERS];
-//UDWORD					numResistanceUpgrades;
-//FUNCTION_UPGRADE		*apWeaponUpgrades[MAX_PLAYERS];
-//UDWORD					numWeaponUpgrades;
 
 /*Returns the Function type based on the string - used for reading in data */
 static UDWORD functionType(char* pType);
@@ -277,9 +262,6 @@ BOOL loadFunctionStats(SBYTE *pFunctionData, UDWORD bufferSize)
 // Allocate storage for the name
 BOOL storeName(FUNCTION* pFunction, STRING* pNameToStore)
 {
-#ifdef HASH_NAMES
-	pFunction->NameHash=HashString(pNameToStore);
-#else
 	pFunction->pName = (STRING *)MALLOC(strlen(pNameToStore)+1);
 	if (pFunction->pName == NULL)
 	{
@@ -287,7 +269,6 @@ BOOL storeName(FUNCTION* pFunction, STRING* pNameToStore)
 		return FALSE;
 	}	
 	strcpy(pFunction->pName,pNameToStore);
-#endif
 	return TRUE;
 }
 
@@ -1363,25 +1344,6 @@ BOOL loadRepairDroidFunction(SBYTE *pData)
 	//allocate storage for the name
 	storeName((FUNCTION *)psFunction, functionName);
 
-	//get the armour stats pointer
-	//pArmourType = asArmourStats;
-	//psFunction->pArmour = NULL;
-	//for (i=0; i < numArmourStats; i++)
-	//{
-		//compare the names
-	//	if (!strcmp(armourType, pArmourType->pName))
-	//	{
-	//		psFunction->pArmour = pArmourType;
-	//		break;
-	//	}
-	//	pArmourType++;
-	//}
-	//if not found the armour stat then problem
-	//if (!psFunction->pArmour)
-	//{
-	//	DBERROR(("Armour Type invalid"));
-	//	return FALSE;
-	//}
 
 	//increment the number of upgrades
 	numArmourUpgrades++;
@@ -1550,15 +1512,11 @@ BOOL loadWallFunction(SBYTE *pData)
 		return FALSE;
 	}	
 	strcpy(psFunction->pStructName,structureName);*/
-#ifdef HASH_NAMES
-	psFunction->StructNameHash=HashString(structureName);
-#else
 	if (!allocateName(&psFunction->pStructName, structureName))
 	{
 		DBERROR(("Structure Stats Invalid for function - %s", functionName));
 		return FALSE;
 	}
-#endif
 	psFunction->pCornerStat = NULL;
 
 	return TRUE;
@@ -2221,9 +2179,7 @@ BOOL FunctionShutDown()
 	for (inc=0; inc < numFunctions; inc++)
 	{
 		pFunction = *asFunctions;
-#ifndef HASH_NAMES
 		FREE(pFunction->pName);
-#endif
 
 //#ifndef RESOURCE_NAMES
 #if !defined (RESOURCE_NAMES) && !defined(STORE_RESOURCE_ID)

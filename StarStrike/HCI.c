@@ -627,26 +627,6 @@ static void intCheckReticuleButtons(void);
 // count the number of selected droids of a type
 SDWORD intNumSelectedDroids(UDWORD droidType);
 
-//// Move into drive.c when we create it.
-//void driveDissableControl(void)
-//{
-//}
-//
-//
-//void driveEnableControl(void)
-//{
-//}
-//
-//
-//void driveProcessCursorSnap(void)
-//{
-//	DBPRINTF(("driveProcessCursorSnap\n");
-//	if(VPadPressed(VPAD_MOUSERB)) {
-//		driveDissableControl();
-//		widgetsOn = TRUE;
-//		StartInterfaceSnap();
-//	}
-//}
 
 extern UWORD AsciiLookup[256];
 
@@ -4060,12 +4040,10 @@ BOOL intReticuleIsUp(void)
 
 void intRemoveReticule(void)
 {
-#ifndef NON_INTERACT
 	if(ReticuleUp == TRUE) {
 		widgDelete(psWScreen,IDRET_FORM);		// remove reticule
 		ReticuleUp = FALSE;
 	}
-#endif
 }
 
 	
@@ -4090,9 +4068,6 @@ BOOL intAddPower(void)
 {
 	W_BARINIT	sBarInit;
 
-#ifdef NON_INTERACT
-	return(TRUE);
-#endif
 
 	memset(&sBarInit, 0, sizeof(W_BARINIT));
 
@@ -4938,19 +4913,11 @@ static BOOL _intAddObjectWindow(BASE_OBJECT *psObjects, BASE_OBJECT *psSelected,
 						ASSERT((FALSE, "intAddObject: invalid structure type"));
 				}
 
-	#ifdef HASH_NAMES
-				sBFormInit.pTip = strresGetString(NULL,(((STRUCTURE *)psObj)->pStructureType->NameHash));
-	#else
 				sBFormInit.pTip = getName(((STRUCTURE *)psObj)->pStructureType->pName);
-	#endif
 				break;
 
 			case OBJ_FEATURE:
-	#ifdef HASH_NAMES
-				sBFormInit.pTip = strresGetString(NULL,(((FEATURE *)psObj)->psStats->NameHash));
-	#else
 				sBFormInit.pTip = getName(((FEATURE *)psObj)->psStats->pName);
-	#endif
 				break;
 
 			default:
@@ -5037,11 +5004,7 @@ static BOOL _intAddObjectWindow(BASE_OBJECT *psObjects, BASE_OBJECT *psSelected,
 				}
 				else
 				{
-	#ifdef HASH_NAMES
-					sBFormInit2.pTip = strresGetString(NULL,psStats->NameHash);
-	#else
 					sBFormInit2.pTip = getName(psStats->pName);
-	#endif
 				}
 
 
@@ -5666,11 +5629,7 @@ static void _intSetStats(UDWORD id, BASE_STATS *psStats)
 		}
 		else
 		{
-#ifdef HASH_NAMES
-			sFormInit.pTip = strresGetString(NULL,psStats->NameHash);
-#else
 			sFormInit.pTip = getName(psStats->pName);
-#endif
 		}
 
 		BufferID = (sFormInit.id-IDOBJ_STATSTART)*2+1;
@@ -6122,11 +6081,7 @@ static BOOL _intAddStats(BASE_STATS **ppsStatsList, UDWORD numStats,
 		}
 		else
 		{
-#ifdef HASH_NAMES
-			sBFormInit.pTip = strresGetString(NULL,ppsStatsList[i]->NameHash);
-#else
 			sBFormInit.pTip = getName(ppsStatsList[i]->pName);
-#endif
 		}
 		BufferID = i;
 		ASSERT((BufferID < NUM_STATBUFFERS,"BufferID > NUM_STATBUFFERS"));
@@ -7744,21 +7699,6 @@ static void intInitDroidCycle(void)
 }
 
 
-// Begin drive mode.
-//
-// Selects a construction droid and activates the droid cam and driving mode.
-// If it can't find a construction droid then it tries for a weapon droid.
-//
-//void BeginDriveMode(void)
-//{
-//	DROID *psDroid;
-//
-//	if( (psDroid = intGotoNextDroidType(DROID_CONSTRUCT)) == NULL) {
-//		psDroid = intGotoNextDroidType(DROID_WEAPON);
-//	}
-//
-//	camToggleStatus();
-//}
 
 
 // Find any structure. Returns NULL if none found.
@@ -8442,9 +8382,6 @@ BOOL intAddOptions(void)
 
 BOOL intAddReticule(void)
 {
-#ifdef NON_INTERACT
-	return TRUE;
-#endif
 	return _intAddReticule();
 }
 

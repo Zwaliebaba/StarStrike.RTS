@@ -82,29 +82,6 @@ void formationShutDown(void)
 	HEAP_DESTROY(psFHeap);
 }
 
-#ifdef TEST_BED
-UDWORD	adjustDirection(SDWORD present, SDWORD difference)
-{
-SDWORD	sum;
-	
-	sum = present+difference;
-	if(sum>=0 AND sum<=360)
-	{
-		return(UDWORD)(sum);
-	}
-
-	if (sum<0)
-	{
-		return(UDWORD)(360+sum);
-	}
-
-	if (sum>360)
-	{
-		return(UDWORD)(sum-360);
-	}
-}
-
-#endif
 
 
 // Create a new formation
@@ -852,9 +829,6 @@ BOOL formationMember(FORMATION *psFormation, BASE_OBJECT *psObj)
 
 SDWORD formationObjRadius(BASE_OBJECT *psObj)
 {
-#ifdef TEST_BED
-	return 70;
-#else
 
 	SDWORD		radius;
 	BODY_STATS	*psBdyStats;
@@ -896,6 +870,5 @@ SDWORD formationObjRadius(BASE_OBJECT *psObj)
 	}
 
 	return radius;
-#endif
 }
 

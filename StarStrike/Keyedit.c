@@ -70,23 +70,6 @@ extern char	buildTime[8];
 
 static BOOL pushedKeyMap(UDWORD key)
 {
-//	UDWORD count =0;
-//	id-KM_START
-//	for(selectedKeyMap = keyMappings;
-//		selectedKeyMap->status != KEYMAP_ASSIGNABLE;
-//		(selectedKeyMap->status= KEYMAP__DEBUG) && (selectedKeyMap->status==KEYMAP___HIDE);
-//		
-//		selectedKeyMap = selectedKeyMap->psNext);
-//
-//	while(count!=key)
-//	{
-//		selectedKeyMap = selectedKeyMap->psNext;
-//		if((selectedKeyMap->status!=KEYMAP__DEBUG)&&(selectedKeyMap->status!=KEYMAP___HIDE))		// if it's not a debug mapping..
-//		if(selectedKeyMap->status == KEYMAP_ASSIGNABLE)
-//		{
-//			count++;
-//		}	
-//	}
 	selectedKeyMap = widgGetFromID(psWScreen,key)->pUserData;
 	if(selectedKeyMap && selectedKeyMap->status != KEYMAP_ASSIGNABLE)
 	{

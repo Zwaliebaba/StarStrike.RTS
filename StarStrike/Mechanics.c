@@ -253,12 +253,6 @@ BOOL gameStatStart(void)
 {
 //	UDWORD			inc, comp, stat;
 	BOOL			builtRes = FALSE, builtGen = FALSE;
-#if 0
-	STRUCTURE		*psStructure;
-	DROID_TEMPLATE	*pTemplate;
-	DROID_TEMPLATE	*pNewTempl, *pCurrTempl;
-	UDWORD			posX, posY;
-#endif
 
 /**********************************************************************
  *              All this gets done by calls from data.c to
@@ -593,78 +587,8 @@ BOOL gameStatStart(void)
 		}
 	}
 #endif
-#if 0
-	//give each player a resource extractor and a power generator
-	for (inc=0; inc < MAX_PLAYERS; inc++)
-	{
-		builtGen = builtRes = FALSE;
-		//make the structures available in the lists
-		for (comp = 0; comp < numStructureStats; comp++)
-		{
-			if (asStructureStats[comp].type == REF_RESOURCE_EXTRACTOR)
-			{
-//				apStructTypeLists[inc][comp] = AVAILABLE;
-				do
-				{
-					posX = rand()%mapWidth/2+mapWidth/4;
-					posY = rand()%mapHeight/2+mapHeight/4;
-				}
-				while(blockingTile(posX,posY,TER_ALL));
-/*				psStructure = buildStructure(&asStructureStats[comp], posX << 
-					TILE_SHIFT + TILE_UNITS/2 , (posY << TILE_SHIFT) + TILE_UNITS/2,
-					inc); */
-				psStructure = buildStructure(&asStructureStats[comp], 
-					posX << TILE_SHIFT, (posY << TILE_SHIFT), inc,FALSE); 
-				psStructure->status = SS_BUILT;
-				builtRes = TRUE;
-			}
-			if (asStructureStats[comp].type == REF_POWER_GEN)
-			{
-//				apStructTypeLists[inc][comp] = AVAILABLE;
-				do
-				{
-					posX = rand()%mapWidth/2+mapWidth/4;
-					posY = rand()%mapHeight/2+mapHeight/4;
-				}
-				while(blockingTile(posX,posY,TER_ALL));
-/*				psStructure = buildStructure(&asStructureStats[comp], posX << 
-					TILE_SHIFT + TILE_UNITS/2, (posY << TILE_SHIFT) + TILE_UNITS/2, 
-					inc); */
-				psStructure = buildStructure(&asStructureStats[comp], 
-					posX << TILE_SHIFT, posY << TILE_SHIFT, inc,FALSE); 
-				psStructure->status = SS_BUILT;
-				builtGen = TRUE;
-			}
-			if (builtRes & builtGen)
-			{
-				break;
-			}
-		}
-	}
-#endif
 
 //#ifdef DEMO
-#if	0
-	for (inc = 1; inc < MAX_PLAYERS; inc++)
-	{
-		pCurrTempl = NULL;
-		for(pTemplate = apsDroidTemplates[0]; pTemplate; pTemplate=pTemplate->psNext)
-		{
-			if (createTemplate(pTemplate, &pNewTempl))
-			{
-				if (pCurrTempl == NULL)
-				{
-					apsDroidTemplates[inc] = pNewTempl;
-				}
-				else
-				{
-					pCurrTempl->psNext = pNewTempl;
-				}
-				pCurrTempl = pNewTempl;
-			}
-		}
-	}
-#endif
 
 	return TRUE;
 }

@@ -609,19 +609,11 @@ GAMECODE gameLoop(void)
 			quitting = TRUE;
 			if (pie_GetRenderEngine() == ENGINE_GLIDE)
 			{
-#ifdef COVERMOUNT
-				pie_LoadBackDrop(SCREEN_COVERMOUNT,TRUE);
-#else
 				pie_LoadBackDrop(SCREEN_RANDOMBDROP,TRUE);
-#endif
 			}
 			else
 			{
-#ifdef COVERMOUNT
-				pie_LoadBackDrop(SCREEN_COVERMOUNT,FALSE);
-#else
 				pie_LoadBackDrop(SCREEN_RANDOMBDROP,FALSE);
-#endif
 			}
 		}
 		else //if in video mode esc kill video
@@ -654,9 +646,7 @@ GAMECODE gameLoop(void)
 						(dragBox3D.status != DRAG_DRAGGING) &&
 						(wallDrag.status != DRAG_DRAGGING))
 					{
-#ifndef NON_INTERACT
 						ProcessRadarInput();
-#endif
 					}
 					processInput();
 
@@ -785,21 +775,6 @@ GAMECODE gameLoop(void)
 	}
 
 	/* Check for pause */
-//	if (!video)
-//	{
-//		if (keyPressed(KEY_F12) && !paused)
-//		{
-//			paused = TRUE;
-//			gameTimeStop();
-	//		addGameMessage("Game Status : PAUSED",1000, TRUE);
-//			addConsoleMessage("Game has been paused",DEFAULT_JUSTIFY);
-//		}
-//		else if (keyPressed(KEY_F12) && paused)
-//		{
-//			paused = FALSE;
-//			gameTimeStart();
-//		}
-//	}		// ALL THIS GUBBINS DONE IN A PROPER KEYMAPPING NOW (A DEBUG ONE THOUGH!).
 
 	DBP1(("loop: flip\n"));
 	

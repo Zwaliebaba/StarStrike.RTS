@@ -1043,7 +1043,6 @@ BOOL	Selected;
 
 	// Tell the driving system that the selection may have changed.
 	driveSelectionChanged();
-#ifndef COVERMOUNT
 	/* play group audio but only if they wern't already selected - AM */
 	if ( Selected AND !bAlreadySelected)
 	{
@@ -1051,7 +1050,6 @@ BOOL	Selected;
 		audio_QueueTrack( ID_SOUND_REPORTING );
 		audio_QueueTrack( ID_SOUND_RADIOCLICK_1+(rand()%6) );
 	}
-#endif
 }
 
 

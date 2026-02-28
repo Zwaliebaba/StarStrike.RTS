@@ -393,25 +393,6 @@ BOOL interpRunScript(SCRIPT_CONTEXT *psContext, INTERP_RUNTYPE runType, UDWORD i
 			ip += aOpSize[opcode];
 			break;
 		case OP_PUSHARRAYGLOBAL:
-			// get the number of array elements
-//			arrayElements = (data & ARRAY_ELEMENT_MASK) >> ARRAY_ELEMENT_SHIFT;
-//			data = data & ARRAY_INDEX_MASK;
-			// get the array index
-//			if (!stackPopParams(1, VAL_INT, &arrayIndex))
-//			{
-//				goto exit_with_error;
-//			}
-//			TRCPRINTF(("PUSHARRAYGLOBAL  [%d] %d(+%d)\n", arrayIndex, data, arrayElements));
-//			if (data + arrayElements > numGlobals)
-//			{
-//				ASSERT((FALSE, "interpRunScript: variable index out of range"));
-//				goto exit_with_error;
-//			}
-//			if (arrayIndex < 0 || arrayIndex >= arrayElements)
-//			{
-//				ASSERT((FALSE, "interpRunScript: array index out of range"));
-//				goto exit_with_error;
-//			}
 			TRCPRINTF(("PUSHARRAYGLOBAL  "));
 			if (!interpGetArrayVarData(&ip, psGlobals, psProg, &psVar))
 			{

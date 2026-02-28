@@ -739,9 +739,6 @@ void actionAddVtolAttackRun( DROID *psDroid )
 	FRACT_D		fA;
 	SDWORD		iVNx, iVNy, iA, iX, iY;
 	BASE_OBJECT	*psTarget;
-#if 0
-	SDWORD		iVx, iVy;
-#endif
 
 	if ( psDroid->psActionTarget != NULL )
 	{
@@ -764,19 +761,6 @@ void actionAddVtolAttackRun( DROID *psDroid )
 	fA = trigIntSqrt( iVNx*iVNx + iVNy*iVNy );
 	iA = MAKEINT(fA);
 
-#if 0
-	/* get left perpendicular to normal vector:
-	 * swap normal vector elements and negate y:
-	 * scale to attack ellipse width
-	 */
-	iVx =  iVNy * VTOL_ATTACK_WIDTH / iA;
-	iVy = -iVNx * VTOL_ATTACK_WIDTH / iA;
-
-	/* add waypoint left perpendicular to target*/
-	iX = psTarget->x + iVx;
-	iY = psTarget->y + iVy;
-//	orderAddWayPoint( psDroid, iX, iY );
-#endif
 
 	/* add waypoint behind target attack length away*/
 	iX = psTarget->x + (iVNx * VTOL_ATTACK_LENGTH / iA);
@@ -1492,13 +1476,11 @@ void actionUpdateDroid(DROID *psDroid)
 			{
 
 
-#ifndef COVERMOUNT
 				if ( psDroid->player == selectedPlayer )
 				{
 					audio_QueueTrackMinDelay( ID_SOUND_COMMENCING_ATTACK_RUN2,
 												VTOL_ATTACK_AUDIO_DELAY );
 				}
-#endif
 
 				if (actionTargetTurret((BASE_OBJECT*)psDroid, psDroid->psActionTarget,
 										&(psDroid->turretRotation), &(psDroid->turretPitch),
@@ -2544,39 +2526,6 @@ static void actionDroidBase(DROID *psDroid, DROID_ACTION_DATA *psAction)
 	}
 #endif
 
-#ifdef DEBUG_GROUP3
-	DBP3(("  D %d P %d at (%d,%d) A %d: (%d,%d)",
-		psDroid->id, psDroid->player, psDroid->x,psDroid->y,
-		psAction->action, psAction->x,psAction->y));
-	if (psAction->psObj != NULL)
-	{
-		DBP3((" T: "));
-		switch (psAction->psObj->type)
-		{
-		case OBJ_DROID:
-			DBP3((" D %d P %d", psAction->psObj->id, psAction->psObj->player));
-			break;
-		case OBJ_STRUCTURE:
-			DBP3((" S %d P %d", psAction->psObj->id, psAction->psObj->player));
-			break;
-		case OBJ_FEATURE:
-			DBP3((" F %d P %d", psAction->psObj->id, psAction->psObj->player));
-			break;
-		}
-	}
-	if (psAction->psStats != NULL)
-	{
-		if (psAction->psStats->pName != NULL)
-		{
-			DBP3((" TS: %s", psAction->psStats->pName));
-		}
-		else
-		{
-			DBP3((" TS: %d", psAction->psStats->ref));
-		}
-	}
-	DBP3(("\n"));
-#endif
 	
 	switch (psAction->action)
 	{

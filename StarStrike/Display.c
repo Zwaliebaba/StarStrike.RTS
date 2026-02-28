@@ -451,11 +451,6 @@ void ProcessRadarInput(void)
 	int y = mouseY();
 	UDWORD	temp1,temp2;
 
-#ifdef COVERMOUNT
-#ifdef NON_INTERACT
-	return;
-#endif
-#endif
 	/* Only allow jump-to-area-of-map if radar is on-screen */
 	mouseOverRadar = FALSE;
 	if(radarOnScreen AND  getHQExists(selectedPlayer))
@@ -578,12 +573,6 @@ void processInput(void)
 
 
 
-#ifdef COVERMOUNT
-#ifdef NON_INTERACT
-	keyProcessMappings(FALSE);		// remove these two lines
-	return;						// remove these two lines
-#endif
-#endif
 
 
 	/* Process all of our key mappings */
@@ -664,43 +653,6 @@ void processInput(void)
 */
 }
 
-////don't want to do any of these whilst in the Intelligence Screen
-//void processMouseClickInput(void)
-//{
-//	UDWORD	dragX,dragY,i;
-//	SELECTION_TYPE	selection;
-//	MOUSE_TARGET	item;
-//	BOOL OverRadar = mouseOverRadar;
-//
-//	/* Have we tried to click on something - only used to signal to display3d.c */ 
-//	if (mouseDown(MOUSE_LMB))
-//	{
-//		selectAttempt = TRUE;
-//	}
-//
-//#ifdef WIN32
-//	if(mouseDown(MOUSE_RMB) AND	rotActive)
-//	{
-//  		if(abs(mX-rotX)>8)
-//		{
-//			if(mX<rotX)
-//			{
-//				player.r.y = rotInitial + ( ((rotX-mX)/4) * DEG(1) );
-//			}
-//			else
-//			{
-//				player.r.y = rotInitial - ( ((mX-rotX)/4) * DEG(1) );
-//		   	}
-//		}
-//	}
-//#endif
-//
-//	if(mouseReleased(MOUSE_RMB) AND rotActive)
-//	{
-//		rotActive = FALSE;
-//		ignoreRMBC = TRUE;
-//	}
-//}
 
 
 BOOL OverRadarAndNotDragging(void)
@@ -930,11 +882,6 @@ void processMouseClickInput(void)
 
 
 
-#ifdef COVERMOUNT
-#ifdef NON_INTERACT
-	return;
-#endif
-#endif
 
 	
 	// These four functions were embedded in this function but I moved them out for readability. In the
@@ -993,7 +940,6 @@ void processMouseClickInput(void)
 				kill3DBuilding();
 				bRadarDragging = FALSE;
 			}
-#ifndef NON_INTERACT
 			if(mouseDrag(MOUSE_RMB,(UDWORD *)&rotX,(UDWORD *)&rotY) AND !rotActive AND !bRadarDragging)
 			{
 				rotInitial = player.r.y;
@@ -1002,7 +948,6 @@ void processMouseClickInput(void)
 				yMoved = 0;
 				rotActive = TRUE;
 			}
-#endif
 		}
 	}
 
@@ -1195,11 +1140,6 @@ void scroll(void)
 	UDWORD	timeDiff;
 	BOOL	bRetardScroll = FALSE;
 
-#ifdef COVERMOUNT
-#ifdef NON_INTERACT
-	return;	// no scroll control in demo only version
-#endif
-#endif
 
 	if(InGameOpUp || bDisplayMultiJoiningStatus )		// cant scroll when menu up. or when over radar
 	{
@@ -1561,7 +1501,6 @@ void displayWorld(void)
 	shakeUpdate();
 
 
-#ifndef NON_INTERACT
 	if(mouseDown(MOUSE_RMB) AND	rotActive)
 	{
   		if( (abs(mX-rotX)>8) OR xMoved>8)
@@ -1613,9 +1552,7 @@ void displayWorld(void)
 			setDesiredPitch(player.r.x/DEG_1);
 		}
 	}
-#endif
 
-#ifndef NON_INTERACT
 	if(mouseReleased(MOUSE_RMB) AND rotActive)
 	{
 		rotActive = FALSE;
@@ -1627,7 +1564,6 @@ void displayWorld(void)
 		camInformOfRotation(&pos);
 		bRadarDragging = FALSE;
 	}
-#endif
 
 	draw3DScene();
 
@@ -2749,31 +2685,6 @@ OBJECT_POSITION *	checkMouseLoc(void)
 				}
 			}
 		}
-// old way, only one point allowed.
-//
-//		//look throught the list of structures to see if there is a factory 
-//		//and therefore a DP
-//		for (psStructure = apsStructLists[i]; psStructure; psStructure = psStructure->psNext)
-//		{
-//			if (psStructure->pStructureType->type == REF_FACTORY)
-//			{
-//				psPoint = ((FACTORY *)psStructure->pFunctionality)->psAssemblyPoint;
-//				dispX = psPoint->screenX;
-//				dispY = psPoint->screenY;
-//				dispR = psPoint->screenR;
-//				// Only check DP's that are on screen 
-//				if (DrawnInLastFrame(psPoint->frameNumber)==TRUE)
-//				{
-//					if (mouseInBox(dispX-dispR, dispY-dispR, dispX+dispR, dispY+dispR))
-//					{
-//						// We HAVE clicked on DP!
-//						psReturn = psPoint;
-//						//There's no point in checking other object types 
-//						return(psReturn);
-//					}
-//				}
-//			}
-//		} // end of checking for droids
 
 	}
 	//now check for Proximity Message
@@ -3364,22 +3275,6 @@ SELECTION_TYPE	selectionClass;
 	for(psDroid = apsDroidLists[selectedPlayer];
 			psDroid /*AND !atLeastOne*/; psDroid = psDroid->psNext)
 	{
-		// This code dos'nt work, what about the case of a selection of DROID_WEAPON types with a 
-		// DROID_CONSTRUCT type grouped with them,claims to handle this but dos'nt.
-//PD		if(psDroid->selected)
-//PD		{
-//PD			atLeastOne = TRUE;
-//PD			if(psDroid->type == DROID_WEAPON)
-//PD			{
-//PD				gotWeapon = TRUE;
-//PD				psWeapDroid = psDroid;
-//PD			}
-//PD			if (psDroid->droidType == DROID_COMMAND ||
-//PD				psDominant == NULL)
-//PD			{
-//PD				psDominant = psDroid;
-//PD			}
-//PD		}
 
 		// This works, uses the DroidSelectionWeights[] table to priorities the different
 		// droid types and find the dominant selection.

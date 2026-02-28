@@ -464,10 +464,6 @@ Streamer_ResetMovie( LPMOVIEHANDLE	mhandle,
 LONG
 Alpha_MapMemReq(	LPALPHAHANDLE	ahandle );
 	
-#if 0
-LONG 
-Movie_GetVolume( LPSOUNDHANDLE shandle);
-#endif
 
 
 LPALPHAHANDLE 

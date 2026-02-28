@@ -371,26 +371,6 @@ BOOL driveDroidKilled(DROID *psDroid)
 			DeSelectDroid(psDroid);
 
 			if(!StartDriverMode(psDroid)) {
-	//			NewDroid = intGotoNextDroidType(NULL,DROID_ANY,TRUE);
-	//
-	//			DBPRINTF(("Droid Killed %p new %p\n",psDroid,NewDroid));
-	//
-	//			if(NewDroid == psDroid) {
-	//				NewDroid = intGotoNextDroidType(NULL,DROID_ANY,TRUE);
-	//				DBPRINTF(("Droid Killed %p new %p\n",psDroid,NewDroid));
-	//			}
-	//
-	//			if((!StartDriverMode()) || (NewDroid == psDroid)) {
-	//#ifdef PSX
-	//				// Failed to find a droid to track!
-	//				DBPRINTF(("No droid to drive!\n"));
-	//
-	//		DBPRINTF(("no droids, find a structure\n");
-	//				if(StartObjectOrbit((BASE_OBJECT*)intFindAStructure())) {
-	//				} else {
-	//		DBPRINTF(("no structures or droids, should be game over!\n");
-	//				}
-	//#endif
 					return FALSE;
 	//			}
 			}
