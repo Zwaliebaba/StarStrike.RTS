@@ -426,33 +426,6 @@ static BOOL getWindowsPixelFormat(void)
 
 	return TRUE;
 }
-#if 0
-/*
- * enumModesCallback
- *
- * Callback used by the Direct Draw EnumDisplayModes
- * function.
- * This is used to check a mode exists that matches the
- * requested mode.
- */
-static HRESULT WINAPI enumModesCallback(
-			LPDDSURFACEDESC2 psSurfaceDesc,
-			LPVOID pModeAvailable)
-{
-	/* This function only gets called if the size matches -
-	 * only need to check the bit depth.
-	 */
-	if (psSurfaceDesc->ddpfPixelFormat.dwRGBBitCount == screenDepth)
-	{
-		*((BOOL *)pModeAvailable) = TRUE;
-		return DDENUMRET_OK;
-	}
-	else
-	{
-		return DDENUMRET_OK;
-	}
-}
-#endif
 
 
 /* Convert the display palette to a set of true colour entries of
@@ -1042,30 +1015,6 @@ BOOL screenInitialise(UDWORD		width,			// Display width
 		DBERROR(("Create DD2 object failed:\n%s", DDErrorToString(ddrval)));
 		return FALSE;
 	}
-#if 0
-	/* Check that we can change to the requested mode.
-	 * If not only window mode will be available (unless the windows
-	 * bit depth doesn't match what is required).
-	 */
-	 //why check when all we can do at this point is fail anyway
-
-	memset(&sSurfDesc, 0, sizeof(DDSURFACEDESC2));
-	sSurfDesc.dwSize = sizeof(DDSURFACEDESC2);
-	sSurfDesc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
-	sSurfDesc.dwWidth = width;
-	sSurfDesc.dwHeight = height;
-	ddrval = psDD->lpVtbl->EnumDisplayModes(
-						psDD,
-						0,				// Flags
-						NULL,//&sSurfDesc,		// Surface Description
-						&modeAvailable,	// callback function sets this if mode found
-						enumModesCallback);		// the callback function
-	if (ddrval != DD_OK)
-	{
-		DBERROR(("Enumerate display modes failed:\n%s", DDErrorToString(ddrval)));
-		return FALSE;
-	}
-#endif
 	/* Get the pixel format for the current windows display.
 	 * If this doesn't match the required bit depth, only full screen mode will
 	 * be available.

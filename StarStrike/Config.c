@@ -471,24 +471,6 @@ BOOL loadRenderMode()
 				war_SetFog(val);
 			}
 
-//			if(getWarzoneKeyNumeric("d3dTrans",&val))
-//			{
-//				switch(val)
-//				{
-//				case 0:
-//					war_SetTranslucent(FALSE);
-//					war_SetAdditive(FALSE);
-//					break;
-//				case 1:
-//					war_SetTranslucent(TRUE);
-//					war_SetAdditive(FALSE);
-//					break;
-//				default:
-//					war_SetTranslucent(TRUE);
-//					war_SetAdditive(TRUE);
-//					break;
-//				}
-//			}
 
 		}
 	}

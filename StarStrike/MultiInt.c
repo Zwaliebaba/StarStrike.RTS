@@ -1934,19 +1934,11 @@ VOID	stopJoining(void)
 
 			if (pie_GetRenderEngine() == ENGINE_GLIDE)
 			{
-#ifdef COVERMOUNT
-				pie_LoadBackDrop(SCREEN_COVERMOUNT,TRUE);
-#else
 				pie_LoadBackDrop(SCREEN_RANDOMBDROP,TRUE);
-#endif	
 			}
 			else
 			{
-#ifdef COVERMOUNT
-				pie_LoadBackDrop(SCREEN_COVERMOUNT,FALSE);
-#else
 				pie_LoadBackDrop(SCREEN_RANDOMBDROP,FALSE);
-#endif
 			}
 		}
 
@@ -2018,21 +2010,6 @@ static void processMultiopWidgets(UDWORD id)
 			addMultiRequest("\\multiplay\\customMaps\\*.wrf",MULTIOP_MAP,1);
 			break;
 	
-//		case MULTIOP_ARENA:										// turn on arena game	
-//			widgSetButtonState(psWScreen, MULTIOP_ARENA, WBUT_LOCK);		
-//			widgSetButtonState(psWScreen, MULTIOP_CAMPAIGN, 0);	
-//			widgSetButtonState(psWScreen, MULTIOP_SKIRMISH,0);
-//			widgSetButtonState(psWScreen, MULTIOP_TEAMPLAY,0);
-//			game.type = DMATCH;
-//
-//			widgSetString(psWScreen, MULTIOP_MAP, "DeadValley");	
-//			strcpy(game.map,widgGetString(psWScreen, MULTIOP_MAP));
-//			game.maxPlayers =8;
-//
-//			addGameOptions();
-//			widgSetButtonState(psWScreen, MULTIOP_FNAME,WEDBS_FIXED);
-//			widgSetButtonState(psWScreen, MULTIOP_FNAME_ICON,0);		
-//			break;
 
 		case MULTIOP_CAMPAIGN:									// turn on campaign game
 //			widgSetButtonState(psWScreen, MULTIOP_ARENA, 0);		
@@ -2709,21 +2686,6 @@ void runMultiOptions(VOID)
 		sendPing();
 	}
 
-	// check for being able to go!
-//	if(ingame.localJoiningInProgress 
-//		&& (widgGetFromID(psWScreen,CON_OK) == NULL)	// oks not yet there.
-//		&& ingame.localOptionsReceived					// weve got the options	
-//		&& (game.type == DMATCH))						// it's a dmatch game
-//	{
-//		for(i=0;i<MAX_PLAYERS;i++)
-//		{	
-//			if( isHumanPlayer(i) && !ingame.JoiningInProgress[i])			// only go when someones ready..
-//			{
-//				addOkBut();
-//				break;
-//			}
-//		}
-//	}
 	
 	// if typing and not in an edit box then jump to chat box.
 	k = getQwertyKey();
@@ -4136,9 +4098,6 @@ void displayMultiBut(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, U
 						(SWORD)(y+(psWidget->height/2)),psWidget->formID,psWidget->id,NULL);
 	}
 
-#ifdef PSX
-	iV_SetOTIndex_PSX(iV_GetOTIndex_PSX()-1);
-#endif
 }
 
 

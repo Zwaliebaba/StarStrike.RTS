@@ -3,9 +3,6 @@
 #include <dos.h>
 #include <io.h>
 
-#ifdef PSX
-#include "file_psx.h"
-#endif
 
 #include "Fbf.h"
 #include "Ivispatch.h"

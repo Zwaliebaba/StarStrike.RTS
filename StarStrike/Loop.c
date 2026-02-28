@@ -533,7 +533,6 @@ GAMECODE gameLoop(void)
 		{
 			scroll();
 		}
-#ifdef WIN32
 		if(InGameOpUp)		// ingame options menu up, run it!
 		{
 			intRunInGameOptions();
@@ -596,7 +595,6 @@ GAMECODE gameLoop(void)
 				}
 			}
 		}
-#endif
 
 	}
 
@@ -611,19 +609,11 @@ GAMECODE gameLoop(void)
 			quitting = TRUE;
 			if (pie_GetRenderEngine() == ENGINE_GLIDE)
 			{
-#ifdef COVERMOUNT
-				pie_LoadBackDrop(SCREEN_COVERMOUNT,TRUE);
-#else
 				pie_LoadBackDrop(SCREEN_RANDOMBDROP,TRUE);
-#endif
 			}
 			else
 			{
-#ifdef COVERMOUNT
-				pie_LoadBackDrop(SCREEN_COVERMOUNT,FALSE);
-#else
 				pie_LoadBackDrop(SCREEN_RANDOMBDROP,FALSE);
-#endif
 			}
 		}
 		else //if in video mode esc kill video
@@ -656,9 +646,7 @@ GAMECODE gameLoop(void)
 						(dragBox3D.status != DRAG_DRAGGING) &&
 						(wallDrag.status != DRAG_DRAGGING))
 					{
-#ifndef NON_INTERACT
 						ProcessRadarInput();
-#endif
 					}
 					processInput();
 
@@ -700,7 +688,6 @@ GAMECODE gameLoop(void)
 			pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_ON);
 			pie_SetFogStatus(FALSE);
 
-#ifdef WIN32
 			if(bMultiPlayer)
 			{
 //				if((game.type == DMATCH) && !MultiMenuUp)
@@ -714,7 +701,6 @@ GAMECODE gameLoop(void)
 					setWidgetsStatus(FALSE);
 				}
 			}
-#endif
 			if(getWidgetsStatus())
 			{
 				intDisplayWidgets();
@@ -789,21 +775,6 @@ GAMECODE gameLoop(void)
 	}
 
 	/* Check for pause */
-//	if (!video)
-//	{
-//		if (keyPressed(KEY_F12) && !paused)
-//		{
-//			paused = TRUE;
-//			gameTimeStop();
-	//		addGameMessage("Game Status : PAUSED",1000, TRUE);
-//			addConsoleMessage("Game has been paused",DEFAULT_JUSTIFY);
-//		}
-//		else if (keyPressed(KEY_F12) && paused)
-//		{
-//			paused = FALSE;
-//			gameTimeStart();
-//		}
-//	}		// ALL THIS GUBBINS DONE IN A PROPER KEYMAPPING NOW (A DEBUG ONE THOUGH!).
 
 	DBP1(("loop: flip\n"));
 	
@@ -1113,11 +1084,7 @@ static BOOL bActiveBackDrop = FALSE;
 	/* restore volume after video quit */
 	if ( bVolKilled == TRUE )
 	{
-#ifdef WIN32
 		mixer_SetWavVolume( g_iGlobalVol );
-#else
-		sound_SetGlobalVolume( g_iGlobalVol );
-#endif
 	}
 	
 	return GAMECODE_CONTINUE;

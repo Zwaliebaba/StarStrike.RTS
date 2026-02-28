@@ -85,12 +85,8 @@
 #include <stdarg.h>
 #include "Types.h"
 
-#ifdef WIN32
 /* Include the mono printing stuff */
 #include "Mono.h"
-#else
-#include "printf.h"
-#endif
 
 /****************************************************************************************
  *
@@ -139,9 +135,6 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
 /*lint -printf(1,dbg_printf,dbg_MessageBox,dbg_ErrorBox) */
 /*lint -printf(2,dbg_Assert) */
 
-#ifdef PSX
-extern char DBGstring[256];
-#endif
 
 #ifdef DEBUG
 /* Debugging output required */
@@ -160,20 +153,7 @@ extern char DBGstring[256];
  * to be used :
  *		DBPRINTF(("Example output string with a variable: %d\n", Variable));
  */
-#ifdef WIN32
 #define DBPRINTF(x)				dbg_printf x
-#else
-/*#define DBPRINTF(x) \
-	printf("DBPRINTF @ %s,%d:\n",__FILE__,__LINE__);\
-	printf x;\
-	printf("\n") */
-
-//	#ifdef FINALBUILD
-//		#define DBPRINTF(x);
-//	#else
-		#define DBPRINTF(x) printf x;
-//	#endif
-#endif
 
 /*
  *
@@ -239,20 +219,16 @@ extern char DBGstring[256];
  *
  * Arguments as for printf
  */
-#ifdef PSX
-#define DBERROR(x) printf x; printf("\n...DBERROR in line %d of %s\n",__LINE__,__FILE__);
-#else				   
 #define DBERROR(x) \
 	dbg_ErrorPosition(__FILE__, __LINE__), \
 	dbg_ErrorBox x
-#endif
 
 /****************************************************************************************
  *
  * Mono monitor output macros
  *
  */
-#if defined(WIN32) && defined(MONODEBUG)
+#ifdef MONODEBUG
 
 /*
  *
@@ -309,47 +285,23 @@ extern char DBGstring[256];
 #define DBMONOCR0(x,y,width,height)
 #endif
 
-#ifdef DEBUG_GROUP1
-#define DBP1(x)							DBPRINTF(x)
-#define DBMB1(x)						DBMB(x)
-#define DBMONOP1(x)						DBMONOPRINTF(x)
-#define DBMONOC1()						DBMONOCLEAR()
-#define DBMONOCR1(x,y,width,height)		DBMONOCLEARRECT(x,y,width,height)
-#else
 #define DBP1(x)
 #define DBMB1(x)
 #define DBMONOP1(x)
 #define DBMONOC1()
 #define DBMONOCR1(x,y,width,height)
-#endif
 
-#ifdef DEBUG_GROUP2
-#define DBP2(x)							DBPRINTF(x)
-#define DBMB2(x)						DBMB(x)
-#define DBMONOP2(x)						DBMONOPRINTF(x)
-#define DBMONOC2()						DBMONOCLEAR()
-#define DBMONOCR2(x,y,width,height)		DBMONOCLEARRECT(x,y,width,height)
-#else
 #define DBP2(x)
 #define DBMB2(x)
 #define DBMONOP2(x)
 #define DBMONOC2()
 #define DBMONOCR2(x,y,width,height)
-#endif
 
-#ifdef DEBUG_GROUP3
-#define DBP3(x)							DBPRINTF(x)
-#define DBMB3(x)						DBMB(x)
-#define DBMONOP3(x)						DBMONOPRINTF(x)
-#define DBMONOC3()						DBMONOCLEAR()
-#define DBMONOCR3(x,y,width,height)		DBMONOCLEARRECT(x,y,width,height)
-#else
 #define DBP3(x)
 #define DBMB3(x)
 #define DBMONOP3(x)
 #define DBMONOC3()
 #define DBMONOCR3(x,y,width,height)
-#endif
 
 #ifdef DEBUG_GROUP4
 #define DBP4(x)							DBPRINTF(x)
@@ -438,11 +390,7 @@ extern char DBGstring[256];
 #else
 
 /* No Debugging output required */
-#ifdef WIN32
 #define DBPRINTF(x)
-#else	// currently we want DBPRINTF to work on the PSX even on release build
-#define DBPRINTF(x) printf x;
-#endif
 
 #define DBOUTPUTFILE(x)
 #define DBNOOUTPUTFILE()
@@ -460,11 +408,7 @@ extern char DBGstring[256];
 
 
 
-#ifdef PSX
-#define DBERROR(x)	printf x; printf("\n...DBERROR in line %d of %s\n",__LINE__,__FILE__)
-#else				   
 #define DBERROR(x)	dbg_ErrorBox x
-#endif
 
 
 #define DBMONOPRINTF(x)

@@ -115,9 +115,6 @@ static BOOL formCreatePlain(W_FORM **ppsWidget, W_FORMINIT *psInit)
 	(*ppsWidget)->y = psInit->y;
 	(*ppsWidget)->width = psInit->width;
 	(*ppsWidget)->height = psInit->height;
-#ifdef PSX
-	(*ppsWidget)->OTIndex = WidgGetOTIndex();
-#endif
 	if (psInit->pDisplay)
 	{
 		(*ppsWidget)->display = psInit->pDisplay;
@@ -184,9 +181,6 @@ static BOOL formCreateClickable(W_CLICKFORM **ppsWidget, W_FORMINIT *psInit)
 	(*ppsWidget)->callback = psInit->pCallback;
 	(*ppsWidget)->pUserData = psInit->pUserData;
 	(*ppsWidget)->UserData = psInit->UserData;
-#ifdef PSX
-	(*ppsWidget)->OTIndex = WidgGetOTIndex();
-#endif
 	(*ppsWidget)->AudioCallback = WidgGetAudioCallback();
 	(*ppsWidget)->HilightAudioID = WidgGetHilightAudioID();
 	(*ppsWidget)->ClickedAudioID = WidgGetClickedAudioID();
@@ -365,9 +359,6 @@ static BOOL formCreateTabbed(W_TABFORM **ppsWidget, W_FORMINIT *psInit)
 	(*ppsWidget)->minorPos = psInit->minorPos;
 	(*ppsWidget)->pTabDisplay = psInit->pTabDisplay;
 	(*ppsWidget)->pFormDisplay = psInit->pFormDisplay;
-#ifdef PSX
-	(*ppsWidget)->OTIndex = WidgGetOTIndex();
-#endif
 	formSetDefaultColours((W_FORM *)(*ppsWidget));
 
 	/* Set up the tab data.
@@ -771,24 +762,6 @@ void formGetOrigin(W_FORM *psWidget, SDWORD *pXOrigin, SDWORD *pYOrigin)
 		} else {
 			*pXOrigin = 0;
 		}
-//		if ((psTabForm->majorPos == WFORM_TABTOP) ||
-//			(psTabForm->minorPos == WFORM_TABTOP))
-//		{
-//			*pYOrigin = psTabForm->tabThickness;
-//		}
-//		else
-//		{
-//			*pYOrigin = 0;
-//		}
-//		if ((psTabForm->majorPos == WFORM_TABLEFT) ||
-//			(psTabForm->minorPos == WFORM_TABLEFT))
-//		{
-//			*pXOrigin = psTabForm->tabThickness;
-//		}
-//		else
-//		{
-//			*pXOrigin = 0;
-//		}
 	}
 	else
 	{
@@ -956,23 +929,6 @@ static BOOL formPickTab(W_TABFORM *psForm, UDWORD fx, UDWORD fy,
 		y1 -= psForm->tabMinorThickness;
 	}
 
-//		/* Adjust for where the tabs are */
-//	if (psForm->majorPos == WFORM_TABLEFT || psForm->minorPos == WFORM_TABLEFT)
-//	{
-//		x0 += psForm->tabThickness;
-//	}
-//	if (psForm->majorPos == WFORM_TABRIGHT || psForm->minorPos == WFORM_TABRIGHT)
-//	{
-//		x1 -= psForm->tabThickness;
-//	}
-//	if (psForm->majorPos == WFORM_TABTOP || psForm->minorPos == WFORM_TABTOP)
-//	{
-//		y0 += psForm->tabThickness;
-//	}
-//	if (psForm->majorPos == WFORM_TABBOTTOM || psForm->minorPos == WFORM_TABBOTTOM)
-//	{
-//		y1 -= psForm->tabThickness;
-//	}
 
 
 	xOffset = yOffset = 0;
@@ -1619,22 +1575,6 @@ void formDisplayTabbed(WIDGET *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD 
 	}
 
 	/* Adjust for where the tabs are */
-//	if (psForm->majorPos == WFORM_TABLEFT || psForm->minorPos == WFORM_TABLEFT)
-//	{
-//		x0 += psForm->tabThickness - psForm->tabHorzOffset;
-//	}
-//	if (psForm->majorPos == WFORM_TABRIGHT || psForm->minorPos == WFORM_TABRIGHT)
-//	{
-//		x1 -= psForm->tabThickness - psForm->tabHorzOffset;
-//	}
-//	if (psForm->majorPos == WFORM_TABTOP || psForm->minorPos == WFORM_TABTOP)
-//	{
-//		y0 += psForm->tabThickness - psForm->tabVertOffset;
-//	}
-//	if (psForm->majorPos == WFORM_TABBOTTOM || psForm->minorPos == WFORM_TABBOTTOM)
-//	{
-//		y1 -= psForm->tabThickness - psForm->tabVertOffset;
-//	}
 
 	if(psForm->pFormDisplay) {
 		psForm->pFormDisplay((WIDGET *)psForm, xOffset, yOffset, psForm->aColours);

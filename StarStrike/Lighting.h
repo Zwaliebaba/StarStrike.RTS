@@ -39,9 +39,5 @@ extern void	calcDroidIllumination(DROID *psDroid);
 extern void setScrollLimitLighting(void);
 
 
-#ifdef ALEXM
-extern void	findSunVector( void );
-extern void	showSunOnTile(UDWORD x, UDWORD y);
-#endif
 
 

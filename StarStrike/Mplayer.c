@@ -46,33 +46,6 @@ BOOL mplayerSubmit(void)
 
 		loadMultiStats(NetPlay.players[selectedPlayer].name, &stats2);
 
-#if 0
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_SCORE,	stats.totalScore);
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_KILLS,	stats.totalKills);
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_PLAYS,	stats.played);
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_WINS,	stats.wins);
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_LOSES,	stats.loses);
-
-		// now add stats for this game only. (more secure method)
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_GAME_SCORE,(stats.totalScore - stats2.totalScore));
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_GAME_KILLS,(stats.totalKills - stats2.totalKills));
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_GAME_WIN,	(stats.wins - stats2.wins));
-		MPDPXTRA_AddScoreResult( NetPlay.players[selectedPlayer].dpid, 0, MP_GAME_LOSE,	(stats.loses - stats2.loses));
-
-#else
-		MPDPXTRA_DPIDToMPPLAYERID(NetPlay.players[selectedPlayer].dpid, &mpID);
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_SCORE,	stats.totalScore);
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_KILLS,	stats.totalKills);
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_PLAYS,	stats.played);
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_WINS,	stats.wins);
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_LOSES,	stats.loses);
-
-		// now add stats for this game only. (more secure method)
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_GAME_SCORE,(stats.totalScore - stats2.totalScore));
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_GAME_KILLS,(stats.totalKills - stats2.totalKills));
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_GAME_WIN,	(stats.wins - stats2.wins));
-		MPDPXTRA_AddScoreResultEx( mpID, 0, MP_GAME_LOSE,	(stats.loses - stats2.loses));
-#endif
 
 
 

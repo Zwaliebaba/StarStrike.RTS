@@ -2730,7 +2730,6 @@ BOOL loadGame(STRING *pGameToLoad, BOOL keepObjects, BOOL freeMem, BOOL UserSave
 	setViewAngle(INITIAL_STARTING_PITCH);
 	setDesiredPitch(INITIAL_DESIRED_PITCH);
 
-#ifndef COVERMOUNT
     //check if limbo_expand mission has changed to an expand mission for user save game (mid-mission)
     if (gameType == GTYPE_SAVE_MIDMISSION AND missionLimboExpand())
     {
@@ -2744,7 +2743,6 @@ BOOL loadGame(STRING *pGameToLoad, BOOL keepObjects, BOOL freeMem, BOOL UserSave
             startMissionSave(LDS_EXPAND);
         }
     }
-#endif
 
     //set this if come into a save game mid mission
     if (gameType == GTYPE_SAVE_MIDMISSION)
@@ -3458,10 +3456,8 @@ BOOL gameLoadV7(UBYTE *pFileData, UDWORD filesize)
 		//shouldn't be able to be any other value at the moment!
 		if (psNewLevel->type == LDS_CAMSTART 
 			OR psNewLevel->type == LDS_BETWEEN 
-#ifndef COVERMOUNT
 			OR psNewLevel->type == LDS_EXPAND 
 			OR psNewLevel->type == LDS_EXPAND_LIMBO
-#endif	
 		    )
 		{
 			launchMission();
@@ -9297,10 +9293,8 @@ BOOL loadSaveMessageV(UBYTE *pFileData, UDWORD filesize, UDWORD numMessages, UDW
     }
     else if (gameType == GTYPE_SAVE_START)
     {
-#ifndef COVERMOUNT
         //if we're loading in a CamStart or a CamChange then we're not interested in any saved messages
         if (levelType == LDS_CAMSTART OR levelType == LDS_CAMCHANGE)
-#endif
         {
             return TRUE;
         }

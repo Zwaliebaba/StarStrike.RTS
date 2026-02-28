@@ -21,27 +21,13 @@
 #include "Display.h"
 #include "GTime.h"
 #include "Mission.h"
-#ifdef WIN32
 #include "Multiplay.h"
 #include "Piefunc.h"
-#endif
 
-#ifdef PSX
-#include "InitPSX.h"
-#include "Primatives.h"
-#include "psxvram.h"
-#include "vpsx.h"		// box drawing code
-#include "dcache.h"
-#include "profile.h"
-#include "drawIMD_psx.h"
-#endif
 
 
 #define HIT_NOTIFICATION	(GAME_TICKS_PER_SEC*2)
 
-#ifdef PSX
-//#define TESTRADAR			// Set godmode so that radar shows all.
-#endif
 
 //#define CHECKBUFFER		// Do assertions for buffer overun\underun
 
@@ -67,7 +53,6 @@ static UDWORD		sweep;
 static UBYTE		colBlack,colWhite,colRadarBorder,colGrey;
 
 // colours for each clan on the radar map.
-#ifdef WIN32
 #define CAMPAIGNS	3
 static UDWORD		clanColours[CAMPAIGNS][MAX_PLAYERS] = 
 {
@@ -86,27 +71,6 @@ static UDWORD		flashColours[CAMPAIGNS][MAX_PLAYERS] =
 
 
 
-#else
-#define CAMPAIGNS	4	// Cams 1,2,3 and fastplay.
-static UDWORD		clanColours[CAMPAIGNS][MAX_PLAYERS] = 
-{
-//Player 0 Player (GREEN) 48 236 104
-//Player 1 New Paradigm (YELLOW) 255 255 0 (if bleeds, make G = 200)
-//Player 2 Collective (RED) 223 62 98
-//Player 3 Nexus (BLUE) 47 62 238
-	{81,245,207,197},
-	{81,245,207,197},
-	{81,245,207,197},
-	{81,245,207,197},
-};
-static UDWORD		flashColours[CAMPAIGNS][MAX_PLAYERS] = 
-{
-{165,165,165,165}, // everything flashes red when attacked.
-{165,165,165,165}, 
-{165,165,165,165}, 
-};
-//static UDWORD		clanColours[MAX_PLAYERS] = {255,255,255,255}; // nb black is white on radar.
-#endif
 
 static UBYTE		tileColours[NUM_TILES];
 static BOOL		radarStrobe;
@@ -159,30 +123,12 @@ void resetRadarRedraw(void)
 }
 
 
-#ifdef PSX
-// Now allocated in system initialise 
-void AllocateRadarArea(void)
-{
-	radarBuffer=MALLOC(RADWIDTH*RADHEIGHT);
-}
-
-UBYTE *getRadarBuffer(void)
-{
-	return radarBuffer;
-}
-
-#endif
 
 BOOL InitRadar(void)
 {
-#ifdef WIN32
 	radarBuffer = MALLOC(RADWIDTH*RADHEIGHT);
 	if(radarBuffer==NULL) return FALSE;
 	memset(radarBuffer,0,RADWIDTH*RADHEIGHT);
-#else
-	if(radarBuffer==NULL) return FALSE;
-	memset(radarBuffer,0,(RADWIDTH/2)*(RADHEIGHT/2));
-#endif
 
 // Set up an image structure for the radar bitmap so we can draw
 // it useing iV_DrawImageDef().
@@ -200,17 +146,6 @@ BOOL InitRadar(void)
 	colGrey = COL_DARKGREY;
 	colWhite = COL_WHITE;
 
-#ifdef PSX
-	{
-		int i;
-		for(i=0; i<4; i++) {
-			clanColours[i][0] = (UDWORD)iV_PaletteNearestColour(48,236,104);
-			clanColours[i][1] = (UDWORD)iV_PaletteNearestColour(255,255,0);
-			clanColours[i][2] = (UDWORD)iV_PaletteNearestColour(223,62,98);
-			clanColours[i][3] = (UDWORD)iV_PaletteNearestColour(47,62,238);
-		}
-	}
-#else
 //	clanColours[0] = (UDWORD)iV_PaletteNearestColour(255,255,0);
 //	clanColours[1] = (UDWORD)iV_PaletteNearestColour(255,255,0);
 //	clanColours[2] = (UDWORD)iV_PaletteNearestColour(255,255,0);
@@ -219,20 +154,15 @@ BOOL InitRadar(void)
 //	clanColours[5] = (UDWORD)iV_PaletteNearestColour(255,255,0);
 //	clanColours[6] = (UDWORD)iV_PaletteNearestColour(255,255,0);
 //	clanColours[7] = (UDWORD)iV_PaletteNearestColour(255,255,0);
-#endif
 
-#ifdef WIN32
 	pie_InitRadar();
-#endif
 	return TRUE;
 }
 
 
 BOOL ShutdownRadar(void)
 {
-#ifdef WIN32
 	pie_ShutdownRadar();
-#endif
 	FREE(radarBuffer);
 
 	return TRUE;
@@ -243,23 +173,15 @@ void SetRadarZoom(UWORD ZoomLevel)
 {
 	ASSERT((ZoomLevel <= MAX_RADARZOOM,"SetRadarZoom: Max radar zoom exceeded"));
 
-#ifdef WIN32
 	if(ZoomLevel != RadarZoom) {
 		RadarZoom = ZoomLevel;
 		RadarRedraw = TRUE;
 	}
-#else
-	ZoomLevel = 1;
-#endif
 }
 
 UDWORD GetRadarZoom(void)
 {
-#ifdef WIN32
 	return RadarZoom;
-#else
-	return 1;
-#endif
 }
 
 
@@ -345,40 +267,10 @@ void SetRadarStrobe(UDWORD x,UDWORD y)
 //
 static void CalcRadarPixelSize(UWORD *SizeH,UWORD *SizeV)
 {
-#ifdef WIN32
 	UWORD Size = (UWORD)(1<<RadarZoom);
-#else
-	UWORD Size = (UWORD)(1<<(RadarZoom+1));
-#endif
 	*SizeH = Size;
 	*SizeV = Size;
 
-//#ifdef FORCEPIXELSIZE
-//#ifdef WIN32
-//	*SizeH = 2;
-//	*SizeV = 2;
-//#else
-//	*SizeH = 2;
-//	*SizeV = 2;
-//#endif
-//#else
-//	UWORD boxSizeH,boxSizeV;
-//
-//	boxSizeH = (UWORD)(RadarWidth/mapWidth);
-//	boxSizeV = (UWORD)(RadarHeight/mapHeight);
-//
-//// Ensure boxSizeH and V are always 1 or greater and equal to each other.
-//	if((boxSizeH == 0) || (boxSizeV ==0)) {
-//		boxSizeH = boxSizeV = 1;
-//	} else if(boxSizeH > boxSizeV) {
-//		boxSizeV = boxSizeH;
-//	} else {
-//		boxSizeH = boxSizeV;
-//	}
-//
-//	*SizeH = boxSizeH;
-//	*SizeV = boxSizeV;
-//#endif
 }
 
 
@@ -499,9 +391,6 @@ void drawRadar(void)
 	scrollMaxY = scrollMinY+127;
 #endif
 
-#ifdef PSX
-	DrawRadar_PSX();
-#else
 
 	CalcRadarPixelSize(&boxSizeH,&boxSizeV);
 	CalcRadarScroll(boxSizeH,boxSizeV);
@@ -540,7 +429,6 @@ void drawRadar(void)
 	UpdateRadar(boxSizeH,boxSizeV);
 
 	RadarRedraw = FALSE;
-#endif // End of #ifdef PSX ... else
 }
 
 void	downloadAtStartOfFrame( void )
@@ -582,14 +470,8 @@ static void ClearRadar(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD boxSize
 	UNUSEDPARAMETER(boxSizeH);
 	UNUSEDPARAMETER(boxSizeV);
 
-#ifdef PSX
-	Modulus /= 2;
-	RadWidth = RadarWidth/2;
-	RadHeight = RadarHeight/2;
-#else
 	RadWidth = RadarWidth;
 	RadHeight = RadarHeight;
-#endif
 
 	Scr = screen;
 	for(i=0; i<RadWidth; i++) {
@@ -622,16 +504,6 @@ static void DrawRadarTiles(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD box
 	SDWORD OffsetY;
 	UBYTE ShadeDiv = 0;
 
-#ifdef PSX
-	Modulus /= 2;
-	SizeH = boxSizeH / 2;
-	SizeV = boxSizeV / 2;
-	VisWidth = RadVisWidth / 2;
-	VisHeight = RadVisHeight / 2;
-	SweepPos = (sweep - RadarOffsetY) / 2;
-	OffsetX = RadarOffsetX / 2;
-	OffsetY = RadarOffsetY / 2;
-#else
 	SizeH = boxSizeH;
 	SizeV = boxSizeV;
 	VisWidth = RadVisWidth;
@@ -639,7 +511,6 @@ static void DrawRadarTiles(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD box
 	SweepPos = sweep - RadarOffsetY;
 	OffsetX = RadarOffsetX;
 	OffsetY = RadarOffsetY;
-#endif
 
 	ASSERT(( (SizeV!=0) && (SizeV!=0) ,"Zero pixel size" ));
 
@@ -651,14 +522,10 @@ static void DrawRadarTiles(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD box
 
 	Scr = screen + OffsetX + OffsetY*Modulus;
 
-#ifdef WIN32
 	if(pie_Hardware())//was  == ENGINE_GLIDE)
 	{
 		ShadeDiv = 4;
 	}
-#else
-	ShadeDiv = 4;
-#endif
 
 	if(RadarRedraw) {
 		EndY = VisHeight;
@@ -784,16 +651,6 @@ static void DrawRadarObjects(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD b
 	UBYTE				camNum;
 	
 
-#ifdef PSX
-	Modulus = Modulus / 2;
-	SizeH = boxSizeH / 2 ;
-	SizeV = boxSizeV / 2;
-	VisWidth = RadVisWidth / 2;
-	VisHeight = RadVisHeight / 2;
-//	SweepPos = (sweep - RadarOffsetY) / 2;
-	OffsetX = RadarOffsetX / 2;
-	OffsetY = RadarOffsetY / 2;
-#else
 	SizeH = boxSizeH;
 	SizeV = boxSizeV;
 	VisWidth = RadVisWidth;
@@ -801,7 +658,6 @@ static void DrawRadarObjects(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD b
 //	SweepPos = sweep - RadarOffsetY;
 	OffsetX = RadarOffsetX;
 	OffsetY = RadarOffsetY;
-#endif
 
 	SweepPos = sweep - RadarOffsetY;
 
@@ -810,11 +666,7 @@ static void DrawRadarObjects(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD b
 	}
 
 
-#ifdef WIN32
 	camNum = getCampaignNumber()-1;
-#else
-	camNum = getLevelDataSetNum();
-#endif
 
    	/* Show droids on map - go through all players */
    	for(clan = 0; clan < MAX_PLAYERS; clan++)
@@ -839,13 +691,8 @@ static void DrawRadarObjects(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD b
 				y *= boxSizeV;
 
 				if(TRUE || (RadarRedraw)) {
-#ifdef PSX
-					x = x >> 1;
-					y = y >> 1;
-#endif
 					if((x < VisWidth) && (y < VisHeight) && (x >= 0) && (y >= 0)) {
    						Ptr = screen + x + y*Modulus + OffsetX + OffsetY*Modulus;
-#ifdef WIN32	// 	
 						if((clan == selectedPlayer) AND (gameTime-psDroid->timeLastHit < HIT_NOTIFICATION))
 						{
 						   	/*
@@ -861,7 +708,6 @@ static void DrawRadarObjects(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD b
 								col = flashCol;
 						}
 						else
-#endif
 						{
 								col = playerCol;
 						}
@@ -920,15 +766,8 @@ static void DrawRadarObjects(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD b
 				y = y&(~(boxSizeV-1));
 
 //				if( ((y >= sweep) && (y <= sweep+(bh*boxSizeV))) || (RadarRedraw) ) {
-#ifdef PSX
-					x >>= 1;
-					y >>= 1;
-					SSizeH = (SWORD)(boxSizeH*bh) >> 1;
-					SSizeV = (SWORD)(boxSizeV*bw) >> 1;
-#else
 					SSizeH = (SWORD)boxSizeH*bh;
 					SSizeV = (SWORD)boxSizeV*bw;
-#endif
 
 // Clip the structure box.
 					if(x < 0) {
@@ -1017,10 +856,6 @@ static void DrawRadarObjects(UBYTE *screen,UDWORD Modulus,UWORD boxSizeH,UWORD b
 		y *= boxSizeV;
 
 		if(TRUE) {
-#ifdef PSX
-			x = x >> 1;
-			y = y >> 1;
-#endif
 			psProxDisp->radarX = 0;
 			psProxDisp->radarY = 0;
 			if((x < VisWidth) && (y < VisHeight) && (x >= 0) && (y >= 0)) 
@@ -1098,7 +933,6 @@ SDWORD	dif;
 	return(dif/2);
 }
 
-#ifdef WIN32
 /* Draws a Myth/FF7 style viewing window */
 void	drawViewingWindow( UDWORD x, UDWORD y, UDWORD boxSizeH,UDWORD boxSizeV )
 {
@@ -1155,7 +989,6 @@ UDWORD	camNumber;
 	/* Send the four points to the draw routine and the clip box params */
 	pie_DrawViewingWindow(tv,RADTLX,RADTLY,RADTLX+RADWIDTH,RADTLY+RADHEIGHT,colour);
 }
-#endif
 
 
 static void DrawRadarExtras(UWORD boxSizeH,UWORD boxSizeV)
@@ -1165,9 +998,6 @@ static void DrawRadarExtras(UWORD boxSizeH,UWORD boxSizeV)
 	SDWORD	offsetX,offsetY;
 	iVector v[3],tv[3],ov;
 
-#ifdef PSX
-	iV_SetOTIndex_PSX(OT2D_FARFORE);
-#endif
 
 	offsetX = 
 	offsetY = 
@@ -1196,54 +1026,15 @@ static void DrawRadarExtras(UWORD boxSizeH,UWORD boxSizeV)
 			}	
 		}
 		*/
-#ifndef WIN32
-		// Draw the sweep line.
-		iV_Line(RADTLX,RADTLY+sweep,
-			RADTLX+RadarWidth,RADTLY+sweep,
-			boxPulseColours[sweepStrobeIndex]);
-#endif
 	}
 
 
-#ifndef WIN32
-		// Make sure box stays within radar window.
-		if(viewX < 0) viewX = 0;
-		if(viewY < 0) viewY = 0;
-		if(viewX+(visibleXTiles*boxSizeH) > RADWIDTH) viewX = RADWIDTH-(visibleXTiles*boxSizeH);
-		if(viewY+(visibleYTiles*boxSizeV) > RADHEIGHT) viewY = RADHEIGHT-(visibleYTiles*boxSizeV);
-#endif
 
-#ifdef WIN32
   		drawViewingWindow(viewX,viewY,boxSizeH,boxSizeV);
 		DrawEnableLocks(FALSE);
 		RenderWindowFrame(&FrameRadar,RADTLX-1,RADTLY-1,RADWIDTH+2,RADHEIGHT+2);
 		DrawEnableLocks(TRUE);
 
-#else
-		// Nicely tidied(NOT) ,deleted the bloody PSX radar view box! ffs am
-	 	iV_Box(	RADTLX+viewX,RADTLY+viewY,
-			RADTLX+viewX+(visibleXTiles*boxSizeH)-1,RADTLY+viewY+(visibleYTiles*boxSizeV)-1,
-			COL_WHITE);
-
-		ov.x = RADTLX+viewX+(visibleXTiles*boxSizeH)/2;       
-		ov.y = RADTLY+viewY+(visibleYTiles*boxSizeV)/2;       
-
-		v[0].x = 0;
-		v[0].y = -boxSizeV*RADAR_TRIANGLE_HEIGHT/2;
-
-		v[1].x = boxSizeH*RADAR_TRIANGLE_WIDTH/2;
-		v[1].y = boxSizeV*RADAR_TRIANGLE_HEIGHT/2;
-
-		v[2].x = -boxSizeH*RADAR_TRIANGLE_WIDTH/2;
-		v[2].y = boxSizeV*RADAR_TRIANGLE_HEIGHT/2;
-
-		RotateVector2D(v,tv,&ov,player.r.y,3);
-
-   		iV_Line(tv[0].x,tv[0].y,tv[1].x,tv[1].y,colWhite);
-		iV_Line(tv[1].x,tv[1].y,tv[2].x,tv[2].y,colWhite);
-		iV_Line(tv[2].x,tv[2].y,tv[0].x,tv[0].y,colWhite);
-		RenderBorder(RADTLX-1,RADTLY-1,RADWIDTH+2,RADHEIGHT+2);
-#endif
 		// Draw the radar border.
 }
 
@@ -1264,7 +1055,6 @@ BOOL CoordInRadar(int x,int y)
 }
 
 
-#ifdef WIN32
 void	calcRadarColour(UBYTE *tileBitmap, UDWORD tileNumber)
 {
 	UDWORD	i, j;
@@ -1275,286 +1065,8 @@ void	calcRadarColour(UBYTE *tileBitmap, UDWORD tileNumber)
 	iColour*	psPalette;
 	tRed = tGreen = tBlue = 0;
 #define SAMPLES 8
-#if 0
-	/* Got through every pixel */
-	//what all 4096 of them
-	for(i=0; i<TILE_SIZE; i++)
-	{
-		/* Get pixel colour index */
-		penNumber = (UBYTE) tileBitmap[i];
-		/* Get the r,g,b components */
-		red		=	_iVPALETTE[penNumber].r;			  
-		green	=	_iVPALETTE[penNumber].g;
-		blue	=	_iVPALETTE[penNumber].b;
-		/* Add them to totals */
-		tRed	+=	red;
-		tGreen	+=	green;
-		tBlue	+=	blue;
-	}
-	/* Get average of each component */
-	fRed	=	(UBYTE) (tRed/TILE_SIZE);
-	fGreen	=	(UBYTE) (tGreen/TILE_SIZE);
-	fBlue	=	(UBYTE) (tBlue/TILE_SIZE);
-#else
-	//this routine only checks 64 pixels
-	//offset half a step at the start
-	tileBitmap += ((TILE_HEIGHT/(2*SAMPLES)) * TILE_WIDTH);
-	tileBitmap += (TILE_WIDTH/(2*SAMPLES));
-	psPalette = pie_GetGamePal();
-	for(i=0; i<SAMPLES; i++)
-	{
-		for(j=0; j<SAMPLES; j++)
-		{
-		/* Get pixel colour index */
-		penNumber = (UBYTE) tileBitmap[j*(TILE_WIDTH/SAMPLES)];//stepping across a few steps
-		/* Get the r,g,b components */
-		red		=	psPalette[penNumber].r;
-		green	=	psPalette[penNumber].g;
-		blue	=	psPalette[penNumber].b;
-		/* Add them to totals */
-		tRed	+=	red;
-		tGreen	+=	green;
-		tBlue	+=	blue;
-		}
-		//step down a few lines
-		tileBitmap += ((TILE_HEIGHT/(SAMPLES)) * TILE_WIDTH);
-	}
-	/* Get average of each component */
-	fRed	=	(UBYTE) (tRed/(SAMPLES*SAMPLES));
-	fGreen	=	(UBYTE) (tGreen/(SAMPLES*SAMPLES));
-	fBlue	=	(UBYTE) (tBlue/(SAMPLES*SAMPLES));
-#endif
 	tileColours[tileNumber] = (UBYTE)iV_PaletteNearestColour(fRed,fGreen,fBlue);
 }
 
-#else	// Start of PSX version.
-
-// Take a 4bit PSX tile texture and calculate a radar colour to
-// represent it.
-//
-// Assumes tile is even number of pixels wide.
-//
-void	calcRadarColour(UBYTE *tileBitmap,UWORD *tileClut, UDWORD tileNumber)
-{
-	UDWORD	i;
-	UBYTE	penNumber;
-	UBYTE	fRed,fGreen,fBlue;
-	UBYTE	red,green,blue;
-	UDWORD	tRed,tGreen,tBlue;
-
-	/* Zero all totals */
-	tRed = tGreen = tBlue = 0;
-
-	/* Got through every pixel */
-	for(i=0; i<TILE_SIZE/8; i++)
-	{
-		/* Get pixel colour index */
-		penNumber = (UBYTE)(tileBitmap[i] & 0xf0)>>4;
-
-		/* Get the r,g,b components */
-		red		=	(tileClut[penNumber]&0x1f) << 3;
-		green	=	((tileClut[penNumber]>>5)&0x1f) << 3;
-		blue	=	((tileClut[penNumber]>>10)&0x1f) << 3;
-		/* Add them to totals */
-		tRed	+=	red;
-		tGreen	+=	green;
-		tBlue	+=	blue;
-
-		/* Get pixel colour index */
-		penNumber = (UBYTE)(tileBitmap[i] & 0x0f);
-
-		/* Get the r,g,b components */
-		red		=	(tileClut[penNumber]&0x1f) << 3;
-		green	=	((tileClut[penNumber]>>5)&0x1f) << 3;
-		blue	=	((tileClut[penNumber]>>10)&0x1f) << 3;
-		/* Add them to totals */
-		tRed	+=	red;
-		tGreen	+=	green;
-		tBlue	+=	blue;
-	}
-
-	/* Get average of each component */
-	fRed	=	(UBYTE) (tRed/(TILE_SIZE/4));
-	fGreen	=	(UBYTE) (tGreen/(TILE_SIZE/4));
-	fBlue	=	(UBYTE) (tBlue/(TILE_SIZE/4));
-
-	tileColours[tileNumber] = (UBYTE)iV_PaletteNearestColour(fRed,fGreen,fBlue);
-}
-#endif // End of psx version (calcRadarColour).
 
 
-#ifdef PSX
-
-static void radUpdate_PSX(UWORD mapWidth,UWORD mapHeight);
-static RECT RadarVRAM;
-
-// Allocate system memory and vram areas for radar.
-//
-// If this is defined we hardwire the radars vram location to the bottom right corner of VRAM
-#define HARDWIRE_RADARVRAM
-
-
-BOOL InitRadar_PSX(UWORD Width,UWORD Height)
-{
-	AREA *VRAMArea;
-	UWORD Palette[256];
-	UWORD i,r,g,b;
-	RECT ClutVRAM;
-	iColour *RGBTab;
-
-// Allocate a Width x Height x 8 texture.
-#ifdef HARDWIRE_RADARVRAM
-//	AREA HardWire={1024-(64/2),512-64-32,32,64};
-	AREA HardWire={1024-64,512-64-32,32,64};
-
-	VRAMArea=&HardWire;
-
-#else
-
-	VRAMArea = AllocTexture(Width,Height, 1,0);
-	if (VRAMArea==NULL)	{
-		DBPRINTF(("Unable to allocate radar VRAM!\n"));
-	 	return FALSE;
-	}
-#endif
-
-	RadarVRAM.x = VRAMArea->area_x0;
-	RadarVRAM.y = VRAMArea->area_y0;
-	RadarVRAM.w = Width/2;
-	RadarVRAM.h = Height;
-
-	RadarImage.Tu = 0;
-//	RadarImage.Tu = (VRAMArea->area_x0&0x7f)*2;
-	RadarImage.Tv = VRAMArea->area_y0&0xff;
-
-
-	DBPRINTF(("vram (%d,%d) uv=(%d,%d)\n",
-		VRAMArea->area_x0,
-		VRAMArea->area_y0,
-		RadarImage.Tu,
-		RadarImage.Tv));
-
-	RadarImage.Width = Width;
-	RadarImage.Height = Height;
-#ifdef ALPHABLEND_RADAR
-	RadarImage.TPageID = GetTPage(1,BLEND_RATE,VRAMArea->area_x0,VRAMArea->area_y0);
-#else
-	RadarImage.TPageID = GetTPage(1,0,VRAMArea->area_x0,VRAMArea->area_y0);
-#endif
-
-	DBPRINTF(("Radar VRAM allocated at x %d y %d TPageID %04x\n",VRAMArea->area_x0,VRAMArea->area_y0,RadarImage.TPageID));
-
-	VRAMArea = AllocCLUT(256);
-	if (VRAMArea==NULL)	{
-		DBPRINTF(("Unable to allocate radar CLUT!\n"));
-	 	return FALSE;
-	}
-
-	RadarImage.PalID = GetClut(VRAMArea->area_x0,VRAMArea->area_y0);
-	RadarImage.XOffset = 0;
-	RadarImage.YOffset = 0;
-
-DBPRINTF(("Radar Pal = (%d,%d) = %d\n",VRAMArea->area_x0,VRAMArea->area_y0,RadarImage.PalID));
-
-	RGBTab = gamePal;
-	for(i=0; i<256; i++) {
-		r = RGBTab[i].r;
-		g = RGBTab[i].g;
-		b = RGBTab[i].b;
-		Palette[i] = ((r>>3)&0x1f) | (((g>>3)&0x1f)<<5) | (((b>>3)&0x1f)<<10);
-#ifdef ALPHABLEND_RADAR
-		if(i!=0) {
-			Palette[i] |= 0x8000;
-		} else {
-			Palette[i] = 0;
-		}
-		
-#else
-//		if(Palette[i] == 0) Palette[i] |= 0x8000;
-#endif
-	}
-
-	ClutVRAM.x = VRAMArea->area_x0;
-	ClutVRAM.y = VRAMArea->area_y0;
-	ClutVRAM.w = 256;
-	ClutVRAM.h = 1;
-
-	DrawSync(0);
-	LoadImage(&ClutVRAM,(void*)Palette);
-
-//PD	UpdateRadar_PSX(64,64);
-
-	return TRUE;
-}
-
-
-void ReleaseRadar_PSX(void)
-{
-}
-
-
-
-void UpdateRadar_PSX(UWORD mapWidth,UWORD mapHeight)
-{
-	// Stack in the DCache.
-//	SetSpDCache();
-	radUpdate_PSX(0,0);
-//	SetSpNormal();
-}
-
-static void radUpdate_PSX(UWORD mapWidth,UWORD mapHeight)
-{
-	UDWORD	boxSizeH,boxSizeV;
-
-	CalcRadarPixelSize(&boxSizeH,&boxSizeV);
-	CalcRadarScroll(boxSizeH,boxSizeV);
-
-	if(RadarRedraw) {
-		if((RadVisWidth != RadarWidth) || (RadVisHeight != RadarHeight)) {
-			ClearRadar(radarBuffer,RADWIDTH,boxSizeH,boxSizeV);
-		}
-	}
-
-	DrawRadarTiles(radarBuffer,RadarWidth,boxSizeH,boxSizeV);
-	DrawRadarObjects(radarBuffer,RadarWidth,boxSizeH,boxSizeV);
-
-	RadarRedraw = FALSE;
-
-	DrawSync(0);
-	LoadImage(&RadarVRAM,(void*)radarBuffer);
-
-	UpdateRadar(boxSizeH,boxSizeV);
-}
-
-
-extern void TransBoxFillRGB_psx(UDWORD x0, UDWORD y0, UDWORD x1, UDWORD y1,UBYTE Red,UBYTE Green,UBYTE Blue);
-
-void DrawRadar_PSX(void)
-{
-	UDWORD	boxSizeH,boxSizeV;
-
-
-
-	iV_SetOTIndex_PSX(OT2D_FORE);
-
-#ifdef ALPHABLEND_RADAR
-	iV_EnableSemiTrans_PSX(TRUE);
-#endif
-
-//  Display the radar (twice to give the right amount of transparency cause crappy old
-//  Playstation dos'nt do vairable transparency rates).
-	DrawImageFitDef_PSX(&RadarImage,RADTLX,RADTLY,RADWIDTH,RADHEIGHT);
-#ifdef ALPHABLEND_RADAR
-	DrawImageFitDef_PSX(&RadarImage,RADTLX,RADTLY,RADWIDTH,RADHEIGHT);
-	iV_EnableSemiTrans_PSX(FALSE);
-#endif
-
-	iV_TransBoxFill( RADTLX,RADTLY,
-						RADTLX+RADWIDTH+2,RADTLY+RADHEIGHT+2);
-
-	CalcRadarPixelSize(&boxSizeH,&boxSizeV);
-	CalcRadarScroll(boxSizeH,boxSizeV);
-	DrawRadarExtras(boxSizeH,boxSizeV);
-}
-
-#endif

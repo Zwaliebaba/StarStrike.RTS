@@ -355,29 +355,6 @@ SDWORD	DPAdjustment [16] = { 0,-1,1,-1,1,0,1,1,0,1,-1,1,-1,0,-1,-1 };		// Direct
 
 	do
 		{
-#if 0
-		// Are we within 1 block position of the required destination point?
-		if ( (StartX-EndX)<=1 && (StartX-EndX)>=-1 )
-			if ( (StartY-EndY)<=1 && (StartY-EndY)>=-1 )
-				{
-				// We have reached the end so store away the last coordinate
-				WallPoints[WallPosition].XCoordinate=EndX;
-				WallPoints[WallPosition].YCoordinate=EndY;
-				WallPosition++;
-
-				// Set we have arrived
-				ArrivalFlag=TRUE;
-				continue;
-				}
-#else
-		/* rewritten to stop when we get to the end, not before - John */
-		if (StartX == EndX && StartY == EndY)
-		{
-			// Set we have arrived
-			ArrivalFlag=TRUE;
-			continue;  // While loop instead of do? - John.
-		}
-#endif
 		// Setup the error checking flag
 		ErrorFlag=TRUE;
 

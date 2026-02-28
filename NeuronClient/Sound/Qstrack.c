@@ -199,9 +199,6 @@ sound_ShutdownLibrary( void )
 void
 sound_Update( void )
 {
-#if 0
-	QSOUND(Pump());
-#endif
 }
 
 /***************************************************************************/
@@ -529,9 +526,6 @@ sound_Play3DSample( TRACK * psTrack, AUDIO_SAMPLE * psSample )
 	sound_SetObjectPosition( psSample->iSample,
 								psSample->x, psSample->y, psSample->z );
 
-#if 0
-DBPRINTF( ("sound_Play3DSample: playing channel %i\n", psSample->iSample ) );
-#endif
 
 	sound_SetSampleVol( psSample, AUDIO_VOL_MAX, TRUE );
 
@@ -833,7 +827,6 @@ sound_SampleIsFinished( AUDIO_SAMPLE * psSample )
 
 /***************************************************************************/
 
-#ifdef WIN32
 LPDIRECTSOUND
 sound_GetDirectSoundObj( void )
 {
@@ -853,6 +846,5 @@ sound_GetDirectSoundObj( void )
 		return pDirectSound;
 	}
 }
-#endif
 
 /***************************************************************************/

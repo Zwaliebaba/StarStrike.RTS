@@ -30,9 +30,7 @@
  *	Local Variables
  */
 /***************************************************************************/
-#ifdef WIN32
 	int32		_iVPRIM_DIVTABLE[DIVIDE_TABLE_SIZE];
-#endif
 
 static BOOL fogColourSet = FALSE;
 static SDWORD d3dActive = 0;
@@ -118,12 +116,10 @@ BOOL pie_Initialise(SDWORD mode)
 		r = FALSE;
 	}
 
-#ifdef WIN32
 	if (r)
 	{
 		pie_SetDefaultStates();
 	}
-#endif
 
 	if (r)
 	{
@@ -196,9 +192,7 @@ void pie_ScreenFlip(CLEAR_MODE clearMode)
 
 void pie_Clear(UDWORD colour)
 {
-#ifndef PIEPSX    // Arse	
 	// No-op for D3D renderer
-#endif
 }
 /***************************************************************************/
 

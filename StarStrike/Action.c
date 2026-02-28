@@ -33,17 +33,12 @@
 #include "Drive.h"
 #include "Mission.h"
 #include "AudioId.h"
-#ifdef WIN32
 #include "Multiplay.h"
-#endif
 #include "Formation.h"
 #include "IntDisplay.h"
 #include "FPath.h"
 #include "Script.h"
 #include "ScriptTabs.h"
-#ifdef PSX
-#include "dcache.h"
-#endif
 
 
 /* attack run distance */
@@ -629,11 +624,7 @@ BOOL actionTargetTurret(BASE_OBJECT *psAttacker, BASE_OBJECT *psTarget, UWORD *p
 		/* get target distance */
 		fR = trigIntSqrt( dx*dx + dy*dy );
 
-#ifdef WIN32
 		targetPitch = (SDWORD)( RAD_TO_DEG(atan2(dz, fR)));
-#else
-		targetPitch = angle_PSX2World(ratan2(dz, fR));
-#endif
 		//tPitch = tPitch;
 		if (tPitch > 180)
 		{
@@ -748,9 +739,6 @@ void actionAddVtolAttackRun( DROID *psDroid )
 	FRACT_D		fA;
 	SDWORD		iVNx, iVNy, iA, iX, iY;
 	BASE_OBJECT	*psTarget;
-#if 0
-	SDWORD		iVx, iVy;
-#endif
 
 	if ( psDroid->psActionTarget != NULL )
 	{
@@ -773,19 +761,6 @@ void actionAddVtolAttackRun( DROID *psDroid )
 	fA = trigIntSqrt( iVNx*iVNx + iVNy*iVNy );
 	iA = MAKEINT(fA);
 
-#if 0
-	/* get left perpendicular to normal vector:
-	 * swap normal vector elements and negate y:
-	 * scale to attack ellipse width
-	 */
-	iVx =  iVNy * VTOL_ATTACK_WIDTH / iA;
-	iVy = -iVNx * VTOL_ATTACK_WIDTH / iA;
-
-	/* add waypoint left perpendicular to target*/
-	iX = psTarget->x + iVx;
-	iY = psTarget->y + iVy;
-//	orderAddWayPoint( psDroid, iX, iY );
-#endif
 
 	/* add waypoint behind target attack length away*/
 	iX = psTarget->x + (iVNx * VTOL_ATTACK_LENGTH / iA);
@@ -1501,15 +1476,11 @@ void actionUpdateDroid(DROID *psDroid)
 			{
 
 
-#ifdef WIN32
-#ifndef COVERMOUNT
 				if ( psDroid->player == selectedPlayer )
 				{
 					audio_QueueTrackMinDelay( ID_SOUND_COMMENCING_ATTACK_RUN2,
 												VTOL_ATTACK_AUDIO_DELAY );
 				}
-#endif
-#endif
 
 				if (actionTargetTurret((BASE_OBJECT*)psDroid, psDroid->psActionTarget,
 										&(psDroid->turretRotation), &(psDroid->turretPitch),
@@ -2555,39 +2526,6 @@ static void actionDroidBase(DROID *psDroid, DROID_ACTION_DATA *psAction)
 	}
 #endif
 
-#ifdef DEBUG_GROUP3
-	DBP3(("  D %d P %d at (%d,%d) A %d: (%d,%d)",
-		psDroid->id, psDroid->player, psDroid->x,psDroid->y,
-		psAction->action, psAction->x,psAction->y));
-	if (psAction->psObj != NULL)
-	{
-		DBP3((" T: "));
-		switch (psAction->psObj->type)
-		{
-		case OBJ_DROID:
-			DBP3((" D %d P %d", psAction->psObj->id, psAction->psObj->player));
-			break;
-		case OBJ_STRUCTURE:
-			DBP3((" S %d P %d", psAction->psObj->id, psAction->psObj->player));
-			break;
-		case OBJ_FEATURE:
-			DBP3((" F %d P %d", psAction->psObj->id, psAction->psObj->player));
-			break;
-		}
-	}
-	if (psAction->psStats != NULL)
-	{
-		if (psAction->psStats->pName != NULL)
-		{
-			DBP3((" TS: %s", psAction->psStats->pName));
-		}
-		else
-		{
-			DBP3((" TS: %d", psAction->psStats->ref));
-		}
-	}
-	DBP3(("\n"));
-#endif
 	
 	switch (psAction->action)
 	{
@@ -2907,7 +2845,6 @@ static void actionDroidBase(DROID *psDroid, DROID_ACTION_DATA *psAction)
 }
 
 
-#ifdef WIN32
 /* Give a droid an action */
 void actionDroid(DROID *psDroid, DROID_ACTION action)
 {
@@ -2957,118 +2894,6 @@ void actionDroidObjLoc(DROID *psDroid, DROID_ACTION action,
 	actionDroidBase(psDroid, &sAction);
 }
 
-#else	// PSX versions.
-
-/* Give a droid an action */
-static void _actionDroid(DROID *psDroid, DROID_ACTION action)
-{
-	DROID_ACTION_DATA	sAction;
-
-	memset(&sAction, 0, sizeof(DROID_ACTION_DATA));
-	sAction.action = action;
-	actionDroidBase(psDroid, &sAction);
-}
-
-/* Give a droid an action with a location target */
-static void _actionDroidLoc(DROID *psDroid, DROID_ACTION action, UDWORD x, UDWORD y)
-{
-	DROID_ACTION_DATA	sAction;
-
-	memset(&sAction, 0, sizeof(DROID_ACTION_DATA));
-	sAction.action = action;
-	sAction.x = x;
-	sAction.y = y;
-	actionDroidBase(psDroid, &sAction);
-}
-
-/* Give a droid an action with an object target */
-static void _actionDroidObj(DROID *psDroid, DROID_ACTION action, BASE_OBJECT *psObj)
-{
-	DROID_ACTION_DATA	sAction;
-
-	memset(&sAction, 0, sizeof(DROID_ACTION_DATA));
-	sAction.action = action;
-	sAction.psObj = psObj;
-	sAction.x = psObj->x;
-	sAction.y = psObj->y;
-	actionDroidBase(psDroid, &sAction);
-}
-
-/* Give a droid an action with an object target and a location */
-static void _actionDroidObjLoc(DROID *psDroid, DROID_ACTION action,
-					   BASE_OBJECT *psObj, UDWORD x, UDWORD y)
-{
-	DROID_ACTION_DATA	sAction;
-
-	memset(&sAction, 0, sizeof(DROID_ACTION_DATA));
-	sAction.action = action;
-	sAction.psObj = psObj;
-	sAction.x = x;
-	sAction.y = y;
-	actionDroidBase(psDroid, &sAction);
-}
-
-void actionDroid(DROID *psDroid, DROID_ACTION action)
-{
-	if(SpInDCache()) {
-		SetSpAlt();
-		_actionDroid(psDroid,action);
-		SetSpAltNormal();
-	} else {
-		_actionDroid(psDroid,action);
-	}
-}
-
-/* Give a droid an action with a location target */
-void actionDroidLoc(DROID *psDroid, DROID_ACTION action, UDWORD x, UDWORD y)
-{
-	if(SpInDCache()) {
-		SetSpAlt();
-		_actionDroidLoc(psDroid,action,x,y);
-		SetSpAltNormal();
-	} else {
-		_actionDroidLoc(psDroid,action,x,y);
-	}
-}
-
-/* Give a droid an action with an object target */
-void actionDroidObj(DROID *psDroid, DROID_ACTION action, BASE_OBJECT *psObj)
-{
-	if(SpInDCache()) {
-		SetSpAlt();
-		_actionDroidObj(psDroid,action,psObj);
-		SetSpAltNormal();
-	} else {
-		_actionDroidObj(psDroid,action,psObj);
-	}
-}
-
-/* Give a droid an action with an object target and a location */
-void actionDroidObjLoc(DROID *psDroid, DROID_ACTION action,
-					   BASE_OBJECT *psObj, UDWORD x, UDWORD y)
-{
-	if(SpInDCache()) {
-		static DROID *_psDroid;
-		static DROID_ACTION _action;
-		static BASE_OBJECT *_psObj;
-		static UDWORD _x;
-		static UDWORD _y;
-
-		_psDroid = psDroid;
-		_action = action;
-		_psObj = psObj;
-		_x = x;
-		_y = y;
-
-		SetSpAlt();
-		_actionDroidObjLoc(_psDroid,_action,_psObj,_x,_y);
-		SetSpAltNormal();
-	} else {
-		_actionDroidObjLoc(psDroid,action,psObj,x,y);
-	}
-}
-
-#endif	// End of PSX versions.
 
 
 /*send the vtol droid back to the nearest rearming pad - if one otherwise
@@ -3123,12 +2948,10 @@ void moveToRearm(DROID *psDroid)
 		orderDroid( psDroid, DORDER_RTB );
 		chosen =3;
 	}
-#ifdef WIN32
 	if(bMultiPlayer)
 	{
 		sendVtolRearm(psDroid,psStruct,chosen);
 	}
-#endif
 }
 
 

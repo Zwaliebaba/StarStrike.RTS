@@ -65,9 +65,7 @@ BOOL ParseCommandLine( LPSTR psCmdLine, BOOL bGlideDllPresent)
 #ifdef	_DEBUG
 			clStartWindowed = TRUE;
 #else
-#ifndef COVERMOUNT
 			clStartWindowed = TRUE;
-#endif
 #endif
 		}
 		else if ( stricmp( tokenType, "-intro" ) == 0 )
@@ -109,7 +107,6 @@ BOOL ParseCommandLine( LPSTR psCmdLine, BOOL bGlideDllPresent)
 		{
 			SetGameMode(GS_TITLE_SCREEN);
 		}
-#ifndef NON_INTERACT
 		else if ( stricmp( tokenType, "-game" ) == 0 )
 		{
 			// find the game name
@@ -135,7 +132,6 @@ BOOL ParseCommandLine( LPSTR psCmdLine, BOOL bGlideDllPresent)
 			strncat(saveGameName, token, 240);
 			SetGameMode(GS_SAVEGAMELOAD);
 		}
-#endif
 		else if ( stricmp( tokenType, "-datapath" ) == 0 )
 		{
 			// find the quoted path name
@@ -274,9 +270,6 @@ BOOL ParseCommandLine( LPSTR psCmdLine, BOOL bGlideDllPresent)
 	}
 
 	// look for any gamespy flags in the command line.
-#ifdef NON_INTERACT
-	SetGameMode(GS_NORMAL);
-#endif
 
 	return TRUE;
 }
@@ -298,18 +291,6 @@ BOOL scanGameSpyFlags(LPSTR gflag,LPSTR value)
 //#endif
 
 
-#if 0
-	// check for gamespy flag...
-
-	// if game spy not enabled....
-	if(!openWarzoneKey())
-		return FALSE;
-	if(!getWarzoneKeyNumeric("allowGameSpy",&val))
-	{
-		return TRUE;
-	}
-	closeWarzoneKey();
-#endif
 
 	count++;
 	if(count == 1)

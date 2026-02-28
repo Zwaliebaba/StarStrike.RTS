@@ -13,11 +13,7 @@
 #include <stddef.h>
 #include "d3dtypes.h"
 
-#ifdef WIN32
 #define D3DRMAPI  __stdcall
-#else
-#define D3DRMAPI
-#endif
 
 #if defined(__cplusplus)
 extern "C" {

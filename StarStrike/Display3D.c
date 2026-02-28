@@ -23,13 +23,11 @@
 #include "Bspfunc.h"
 #include "E3Demo.h"	// on the psx?
 #include "Loop.h"
-#ifdef WIN32					
 #include "Atmos.h"
 #include "RayCast.h"
 #include "Levels.h"
 #ifdef JEREMY
 #include "groundMist.h"
-#endif
 #endif
 /* Includes from PUMPKIN stuff */
 #include "Frame.h"
@@ -81,20 +79,16 @@
 #include "Combat.h"
 #include "Order.h"
 
-#ifdef WIN32
 #include "Scores.h"
-#endif
 #ifdef ARROWS
 #include "Arrow.h"
 #endif
 
-#ifdef WIN32
 #include "Multiplay.h"
 
 #include "Environ.h"
 #include "AdvVis.h"
 
-#endif
 
 #include "Texture.h"
 //#ifdef THREEDFX
@@ -605,11 +599,7 @@ BOOL		bPlayerHasHQ = FALSE;
 			setConsolePermanence(TRUE,TRUE);
 	  		permitNewConsoleMessages(TRUE);
 
-#ifndef COVERMOUNT
-#ifndef NON_INTERACT
 			addConsoleMessage("Warzone 2100 : Pumpkin Studios ",RIGHT_JUSTIFY);
-#endif
-#endif
 	  		permitNewConsoleMessages(FALSE);
 		}
 
@@ -624,14 +614,6 @@ BOOL		bPlayerHasHQ = FALSE;
 		gridVarCalls = 0;
 	*/
 
-#ifdef ALEXM
-      	sprintf(buildInfo,"Skipped effects : %d", getNumSkippedEffects());
-	iV_DrawText(buildInfo,100,200);
-	sprintf(buildInfo,"Miss Count : %d", getMissCount());
-	iV_DrawText(buildInfo,100,220);
-	sprintf(buildInfo,"Even effects : %d", getNumEvenEffects());
-	iV_DrawText(buildInfo,100,240);
-#endif
 
  //	sprintf(buildInfo,"Average Grid Height : %d", averageCentreTerrainHeight);
  //	iV_DrawText(buildInfo,100,240);
@@ -1017,7 +999,6 @@ void drawTiles(iView *camera, iView *player)
 	}
 	/* This is done here as effects can light the terrain - pause mode problems though */
 	processEffects();
-#ifdef WIN32
 	atmosUpdateSystem();
 	if(waterOnMap())
 	{
@@ -1028,7 +1009,6 @@ void drawTiles(iView *camera, iView *player)
 		avUpdateTiles();
 	}
 
-#endif
 
 //	doBuildingLights();
 	/* ---------------------------------------------------------------- */
@@ -1089,9 +1069,7 @@ void drawTiles(iView *camera, iView *player)
 	display3DProjectiles();//bucket render implemented
 
 	drawEffects();
-#ifdef WIN32
 	atmosDrawParticles();
-#endif
 #ifdef BUCKET
 	bucketRenderCurrentList();
 #endif
@@ -1168,9 +1146,7 @@ BOOL	init3DView(void)
 	/* Initialise the effects system */
   //	initEffectsSystem();
 
-#ifdef WIN32
 	atmosInitSystem();
-#endif
 
 	initDemoCamera();
 
@@ -1597,12 +1573,10 @@ renderAnimComponent( COMPONENT_OBJECT *psObj )
 			brightness = pie_MAX_BRIGHT_LEVEL;
 		}
 
-#ifdef WIN32
 		if(getRevealStatus() && !godMode)
 		{
 			brightness = avGetObjLightLevel((BASE_OBJECT*)psParentObj,brightness);
 		}
-#endif
 		brightness = (UDWORD)lightDoFogAndIllumination((UBYTE)brightness,getCentreX()-posX,getCentreZ()-posY, &specular);
 
 		pie_Draw3DShape(psObj->psShape, 0, iPlayer, brightness, specular, pie_NO_BILINEAR, 0);
@@ -1890,20 +1864,16 @@ void displayStaticObjects( void )
 								pFunctionality)->active)
 							{
 								displayAnimation( psAnimObj, FALSE );
-#ifdef WIN32
 								if(selectedPlayer == psStructure->player)
 								{
 									audio_PlayObjStaticTrack( (void *) psStructure, ID_SOUND_OIL_PUMP_2 );
 								}
-#endif
 							}
 							else
 							{
 								/* hold anim on first frame */
 								displayAnimation( psAnimObj, TRUE );
-#ifdef WIN32
 								audio_StopObjTrack( (void *) psStructure, ID_SOUND_OIL_PUMP_2 );
-#endif
 							}
 
 						}
@@ -2240,7 +2210,6 @@ BOOL		bForceDraw;
 		}
 
 
-#ifdef WIN32
 		if(godMode OR demoGetStatus() OR bForceDraw)
 		{
 			brightness = 200;
@@ -2249,7 +2218,6 @@ BOOL		bForceDraw;
 		{
 			brightness = avGetObjLightLevel((BASE_OBJECT*)psFeature,brightness);
 		}
-#endif
 
 		brightness = lightDoFogAndIllumination(brightness,getCentreX()-featX,getCentreZ()-featY, &specular);
 		if(psFeature->psStats->subType == FEAT_OIL_RESOURCE)
@@ -2439,7 +2407,6 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 
 	// -------------------------------------------------------------------------------
 	/* Power stations and factories have pulsing lights  */
-#ifdef WIN32	// not on the playstation they dont
 	if(psStructure->sDisplay.imd->numFrames > 0)
 	{
         /*OK, so we've got a hack for a new structure - its a 2x2 wall but 
@@ -2461,8 +2428,6 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 	{
 		animFrame = 0;
 	}
-#else
-#endif
 	playerFrame =getPlayerColour(psStructure->player);// psStructure->player
 
   	// -------------------------------------------------------------------------------
@@ -2524,7 +2489,6 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 			buildingBrightness = 200+brightVar;
 		}
 		
-#ifdef WIN32
 		if(godMode OR demoGetStatus())
 		{
 			buildingBrightness = buildingBrightness;
@@ -2534,7 +2498,6 @@ REPAIR_FACILITY		*psRepairFac = NULL;
 		{
 			buildingBrightness = avGetObjLightLevel((BASE_OBJECT*)psStructure,buildingBrightness);
 		}
-#endif
 		buildingBrightness = lightDoFogAndIllumination((UBYTE)buildingBrightness,getCentreX()-structX,getCentreZ()-structY, &specular);
 
 		/* Draw the building's base first */
@@ -2885,7 +2848,6 @@ SDWORD			brightVar;
 
 			buildingBrightness = 200 + brightVar;
 		}
-#ifdef WIN32
 		if(godMode OR demoGetStatus())
 		{
 			buildingBrightness = buildingBrightness;
@@ -2895,7 +2857,6 @@ SDWORD			brightVar;
 		{
 			buildingBrightness = avGetObjLightLevel((BASE_OBJECT*)psStructure,buildingBrightness);
 		}
-#endif
 		brightness = lightDoFogAndIllumination((UBYTE)buildingBrightness,getCentreX()-structX,getCentreZ()-structY, &specular);
 
 		//first check if partially built - ANOTHER HACK!
@@ -3206,7 +3167,6 @@ BOOL	renderWallSection(STRUCTURE *psStructure)
 			buildingBrightness = 200 + brightVar;
 		}
 
-	#ifdef WIN32
 		if(godMode OR demoGetStatus())
 		{
 			/* NOP */
@@ -3215,7 +3175,6 @@ BOOL	renderWallSection(STRUCTURE *psStructure)
 		{
 			buildingBrightness = avGetObjLightLevel((BASE_OBJECT*)psStructure,buildingBrightness);
 		}
-	#endif
 
 		brightness = lightDoFogAndIllumination((UBYTE)buildingBrightness,getCentreX()-structX,getCentreZ()-structY, &specular);
 
@@ -5125,9 +5084,6 @@ iPoint	offset;
 PIEVERTEX aVrts[3];
 BYTE	oldColours[4];
 UDWORD	oldColoursWord[4];
-#if defined(SHOW_ZONES) || defined(SHOW_GATEWAYS)
-SDWORD	zone;
-#endif
 
 	/* Get the correct tile index for the x coordinate */
 	actualX = playerXTile + j;
@@ -5138,9 +5094,6 @@ SDWORD	zone;
    //	ASSERT((actualY<mapWidth,"Y Coordinate invalid in tile draw"));
 
 
-#ifdef SHOW_ZONES
-	zone = 0;
-#endif
 
 	/* Let's just get out now if we're not supposed to draw it */
 	if( (actualX<0) OR
@@ -5154,19 +5107,6 @@ SDWORD	zone;
 	else
 	{
 		psTile = mapTile(actualX,actualY);
-#ifdef SHOW_ZONES
-		if (!fpathBlockingTile(actualX,actualY) ||
-			TERRAIN_TYPE(psTile) == TER_WATER)
-		{
-			zone = gwGetZone(actualX,actualY);
-		}
-#endif
-#ifdef SHOW_GATEWAYS
-		if (psTile->tileInfoBits & BITS_GATEWAY)
-		{
-			zone  = gwGetZone(actualX,actualY);
-		}
-#endif
 	}
 
 	if(!TILE_DRAW(psTile))
@@ -5182,17 +5122,6 @@ SDWORD	zone;
 		tileNumber = RiverBedTileID;
 	}
 
-#if defined(SHOW_ZONES)
-	if (zone != 0)
-	{
-		tileNumber = zone;
-	}
-#elif defined(SHOW_GATEWAYS)
-	if (psTile->tileInfoBits & BITS_GATEWAY)
-	{
-		tileNumber = 55;//zone;
-	}
-#endif
 
 
 	/* Is the tile highlighted? Perhaps because there's a building foundation on it */
@@ -5289,10 +5218,6 @@ SDWORD	zone;
 	}
 	*/
 	/* Get the right texture page */
-#if 0
-	/* Software is just an address */
-	texturePage.bmp = tilesRAW[tileNumber & TILE_NUMMASK];
-#endif
 	/* 3dfx is pre stored and indexed */
 	pie_SetTexturePage(tileTexInfo[tileNumber & TILE_NUMMASK].texPage);
 

@@ -17,9 +17,6 @@
 #include "Map.h"
 #include "RayCast.h"
 
-#ifdef TEST_BED
-#include "main.h"
-#endif
 
 #include "LOSRoute.h"
 #include "FPath.h"
@@ -233,9 +230,6 @@ BOOL fpathObstructionCallback(SDWORD x, SDWORD y, SDWORD dist)
 	BOOL	cont = TRUE;
 	SDWORD	vx,vy;
 	SDWORD	leftHugDir, rightHugDir;
-#ifdef TEST_BED
-	MAPTILE	*psTile;
-#endif
 
 	// See if this point is past the final point (dot product)
 	vx = x - finalX;
@@ -267,10 +261,6 @@ BOOL fpathObstructionCallback(SDWORD x, SDWORD y, SDWORD dist)
 				nearPoints += 1;
 
 				// DEBUG
-#ifdef TEST_BED
-				psTile = mapTile(sCurrBlock.x >> TILE_SHIFT, sCurrBlock.y >> TILE_SHIFT);
-				psTile->tileInfoBits |= START;
-#endif
 			}
 			else
 			{
@@ -298,10 +288,6 @@ BOOL fpathObstructionCallback(SDWORD x, SDWORD y, SDWORD dist)
 				farPoints += 1;
 
 				// DEBUG
-#ifdef TEST_BED
-				psTile = mapTile(x >> TILE_SHIFT, y >> TILE_SHIFT);
-				psTile->tileInfoBits |= FINISH;
-#endif
 			}
 			else
 			{
@@ -482,9 +468,6 @@ static BOOL fpathWallHug(SDWORD sx,SDWORD sy,	// start pos
 	asPoints[0].y = (sy << TILE_SHIFT) + TILE_UNITS/2;
 	x = sx;
 	y = sy;
-#ifdef TEST_BED
-	mapTile(x,y)->tileInfoBits |= HUG;
-#endif
 	hugFinished = FALSE;
 	while (!hugFinished)
 	{
@@ -536,9 +519,6 @@ static BOOL fpathWallHug(SDWORD sx,SDWORD sy,	// start pos
 		// store the current location
 		if (numPoints < FPATH_HUGMAX)
 		{
-#ifdef TEST_BED
-			mapTile(x,y)->tileInfoBits |= HUG;
-#endif
 			asPoints[numPoints].x = (x << TILE_SHIFT) + TILE_UNITS/2;
 			asPoints[numPoints].y = (y << TILE_SHIFT) + TILE_UNITS/2;
 			numPoints += 1;
@@ -692,9 +672,6 @@ SDWORD fpathHugDistance(SDWORD sx, SDWORD sy, SDWORD fx, SDWORD fy,
 			raySY = asPoints[search+1].y;
 			totalDist += currDist;
 
-#ifdef TEST_BED
-			mapTile(raySX>>TILE_SHIFT, raySY>>TILE_SHIFT)->tileInfoBits |= ROUTE;
-#endif
 		}
 
 		if (targetVisible)
@@ -702,9 +679,6 @@ SDWORD fpathHugDistance(SDWORD sx, SDWORD sy, SDWORD fx, SDWORD fy,
 			// there is LOS to the end of the route so add up the final distance
 			totalDist += sCurrBlock.dist;
 
-#ifdef TEST_BED
-			mapTile(rayFX>>TILE_SHIFT, rayFY>>TILE_SHIFT)->tileInfoBits |= ROUTE;
-#endif
 			break;
 		}
 	}
@@ -812,9 +786,6 @@ void fpathOptimiseRoute(SDWORD sx, SDWORD sy, SDWORD fx, SDWORD fy,
 			raySY = asPoints[currIndex].y = asPoints[search+1].y;
 					asPoints[currIndex].dist = rayDist;
 
-#ifdef TEST_BED
-			mapTile(raySX>>TILE_SHIFT, raySY>>TILE_SHIFT)->tileInfoBits |= ROUTE;
-#endif
 		}
 
 		if (targetVisible)
@@ -827,10 +798,6 @@ void fpathOptimiseRoute(SDWORD sx, SDWORD sy, SDWORD fx, SDWORD fy,
 
 			targetVisible = FALSE;
 
-#ifdef TEST_BED
-			mapTile(asPoints[currIndex].x>>TILE_SHIFT,
-					asPoints[currIndex].y>>TILE_SHIFT)->tileInfoBits |= ROUTE;
-#endif
 //			break;
 		}
 	}
