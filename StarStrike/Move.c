@@ -1685,7 +1685,7 @@ void moveCalcBlockingSlide(DROID *psDroid, FRACT *pmx, FRACT *pmy, SDWORD tarDir
 		if (fpathBlockingTile(horizX,horizY) && fpathBlockingTile(vertX,vertY))
 		{
 			// in a corner - choose an arbitrary slide
-			if (ONEINTWO)
+			if (oneIn(2))
 			{
 				*pmx = MAKEFRACT(0);
 				*pmy = -*pmy;

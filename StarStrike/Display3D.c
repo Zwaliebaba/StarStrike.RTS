@@ -6403,7 +6403,7 @@ UDWORD	trans = 0;
 	each.y = psStructure->z + realY;
 	each.z = psStructure->y - point->z;
 
-	if(ONEINEIGHT)
+	if(oneIn(8))
 	{
 		effectSetSize(30);
   //	 	if(rand()%2)

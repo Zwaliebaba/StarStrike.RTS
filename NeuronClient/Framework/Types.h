@@ -59,39 +59,8 @@ typedef	int	BOOL;
 
 
 
-/* defines for ONEINX - use 
-   
-   if (ONEINX)
-		{
-		code.....
-		}
-
-*/
-
-#define	ONEINTWO				rand()%2==0
-#define ONEINTHREE				rand()%3==0
-#define ONEINFOUR				rand()%4==0
-#define ONEINFIVE				rand()%5==0
-#define ONEINSIX				rand()%6==0
-#define ONEINSEVEN				rand()%7==0
-#define ONEINEIGHT				rand()%8==0
-#define ONEINNINE				rand()%9==0
-#define ONEINTEN				rand()%10==0
-
-#define ONEINTWENTY				rand()%20==0
-#define ONEINTHIRTY				rand()%30==0
-#define ONEINFORTY				rand()%40==0
-#define ONEINFIFTY				rand()%50==0
-#define ONEINSIXTY				rand()%60==0
-#define ONEINSEVENTY			rand()%70==0
-#define ONEINEIGHTY				rand()%80==0
-#define ONEINNINETY				rand()%90==0
-
-#define ONEINHUNDRED			rand()%100==0
-#define ONEINTHOUSAND			rand()%1000==0
-#define ONEINTENTHOUSAND		rand()%10000==0
-#define ONEINHUNDREDTHOUSAND	rand()%100000==0
-#define ONEINMILLION			rand()%1000000==0
+/* Probability helper: returns non-zero (true) with probability 1-in-n */
+#define oneIn(n) (rand() % (n) == 0)
 
 
 #define	ABSDIF(a,b) ((a)>(b) ? (a)-(b) : (b)-(a))

@@ -1549,7 +1549,7 @@ static void addConstructorEffect(STRUCTURE *psStruct)
 // We definitly still want this called on the PSX.
 
 	//FIXME
-	if((ONEINTEN) && (psStruct->visible[selectedPlayer]))
+	if((oneIn(10)) && (psStruct->visible[selectedPlayer]))
 	{
 		/* This needs fixing - it's an arse effect! */
 		widthRange = (psStruct->pStructureType->baseWidth*TILE_UNITS)/4;
@@ -2476,7 +2476,7 @@ BOOL droidUpdateDroidRepair(DROID *psRepairDroid)
 	//psRepairDroid->actionPoints = iPointsToAdd;
 
 	/* add plasma repair effect whilst being repaired */
-	if ((ONEINFIVE) && (psDroidToRepair->visible[selectedPlayer]))
+	if ((oneIn(5)) && (psDroidToRepair->visible[selectedPlayer]))
 	{
 		iVecEffect.x = psDroidToRepair->x + DROID_REPAIR_SPREAD;
 		iVecEffect.y = psDroidToRepair->z + rand()%8;;

@@ -2282,11 +2282,11 @@ void	effectSetupSmoke(EFFECT *psEffect)
 
 	psEffect->frameDelay = (UWORD)SMOKE_FRAME_DELAY;
 	/* Randomly flip gfx for variation */
-	if(ONEINTWO)
+	if(oneIn(2))
 	{
 		SET_FLIPPED_X(psEffect);
 	}
-	if(ONEINTWO)
+	if(oneIn(2))
 	{
 		SET_FLIPPED_Y(psEffect);
 	}
@@ -2461,11 +2461,11 @@ void effectSetupExplosion(EFFECT *psEffect)
 		SET_FACING(psEffect);
 	}
 	/* Randomly flip x && y for variation */
-	if(ONEINTWO)
+	if(oneIn(2))
 	{
 		SET_FLIPPED_X(psEffect);
 	}
-	if(ONEINTWO)
+	if(oneIn(2))
 	{
 		SET_FLIPPED_Y(psEffect);
 	}
@@ -2488,11 +2488,11 @@ void	effectSetupConstruction(EFFECT *psEffect)
 	SET_CYCLIC(psEffect);
 
 	/* Randomly flip the construction graphics in x && y for variation */
-	if(ONEINTWO)
+	if(oneIn(2))
 	{
 		SET_FLIPPED_X(psEffect);
 	}
-	if(ONEINTWO)
+	if(oneIn(2))
 	{
 		SET_FLIPPED_Y(psEffect);
 	}
@@ -2516,11 +2516,11 @@ void	effectSetupDust(EFFECT *psEffect)
 	SET_CYCLIC(psEffect);
 
 	/* Randomly flip the construction graphics in x && y for variation */
-	if(ONEINTWO)
+	if(oneIn(2))
 	{
 		SET_FLIPPED_X(psEffect);
 	}
-	if(ONEINTWO)
+	if(oneIn(2))
 	{
 		SET_FLIPPED_Y(psEffect);
 	}
@@ -2728,7 +2728,7 @@ SDWORD	xBehind,yBehind;
 			/* Gets it's group number */
 			partition = psDroid->id % EFFECT_DROID_DIVISION;
 			/* Right frame to process? */
-			if(partition == frameGetFrameNumber() % EFFECT_DROID_DIVISION && ONEINFOUR)		
+			if(partition == frameGetFrameNumber() % EFFECT_DROID_DIVISION && oneIn(4))		
 			{
 				/* Sufficent time since last update? - The EQUALS comparison is needed */
 				if(gameTime >= (lastUpdateDroids[partition] + DROID_UPDATE_INTERVAL))

@@ -918,7 +918,7 @@ proj_ImpactFunc( PROJ_OBJECT *psObj )
 	// ID_SOUND_RICOCHET_1 is -1 on PSX so code below must be PC only.
 			/* play richochet if MG */
 			if ( psObj->psDest != NULL && psObj->psWStats->weaponSubClass == WSC_MGUN
-					&& ONEINTHREE )
+					&& oneIn(3) )
 			{
 				iAudioImpactID = ID_SOUND_RICOCHET_1 + (rand()%3);
 				audio_PlayStaticTrack( psObj->psDest->x, psObj->psDest->y, iAudioImpactID );

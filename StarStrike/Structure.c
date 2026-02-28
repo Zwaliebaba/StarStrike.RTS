@@ -4866,7 +4866,7 @@ iVector			dv;
                 aDefaultRepair[psBuilding->player])->time);
 
             //add the blue flashing effect for multiPlayer
-            if(bMultiPlayer && ONEINTEN)
+            if(bMultiPlayer && oneIn(10))
 	        {
                 iVector position, *point;
                 SDWORD	realY;
