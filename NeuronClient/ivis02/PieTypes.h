@@ -32,12 +32,13 @@
  *	Global Type Definitions
  */
 /***************************************************************************/
-typedef signed char int8;
-typedef signed short int16;
-typedef int int32;
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
+/* Integer types — aliases of Framework/Types.h types to avoid duplication */
+typedef SBYTE  int8;
+typedef SWORD  int16;
+typedef SDWORD int32;
+typedef UBYTE  uint8;
+typedef UWORD  uint16;
+typedef UDWORD uint32;
 
 
 //
