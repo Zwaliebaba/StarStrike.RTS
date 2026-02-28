@@ -348,7 +348,7 @@ void objmemUpdate(void)
  * del is a pointer to the object to remove
  * type is the type of the object
  */
-#define _DESTROY(list, del, type) \
+#define DESTROY(list, del, type) \
 	ASSERT((PTRVALID((del), sizeof(type)), \
 		"destroyObject: Invalid " #type " pointer")); \
 	if (list[(del)->player] == (del)) \
