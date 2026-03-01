@@ -51,7 +51,7 @@ BOOL pie_SetVideoBufferWidth(UDWORD	width)
 {
 	if (width < 640)
 	{
-		ASSERT((FALSE,"Warning: width too small, clamping to 640"));
+		ASSERT_TEXT(FALSE,"Warning: width too small, clamping to 640");
 		width = 640;
 	}
 	videoBufferWidth = width;
@@ -62,7 +62,7 @@ BOOL pie_SetVideoBufferHeight(UDWORD height)
 {
 	if (height < 480)
 	{
-		ASSERT((FALSE,"Warning: height too small, clamping to 480"));
+		ASSERT_TEXT(FALSE,"Warning: height too small, clamping to 480");
 		height = 480;
 	}
 

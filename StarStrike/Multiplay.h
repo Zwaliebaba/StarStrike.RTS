@@ -6,7 +6,13 @@
 
 #include "Group.h"
 
-// Different Message Structures allowed to be sent between players. 
+// forward declarations
+typedef struct _structure STRUCTURE;
+typedef struct _feature FEATURE;
+typedef struct _droid_template DROID_TEMPLATE;
+typedef struct _power_gen_function POWER_GEN_FUNCTION;
+
+// Different Message Structures allowed to be sent between players.
 // Each message must have type = to one of these.
 typedef enum _msgtype
 {
@@ -255,7 +261,7 @@ extern BOOL sendLasSat			(UBYTE player,STRUCTURE *psStruct, BASE_OBJECT *psObj);
 extern BOOL SendDroid			(DROID_TEMPLATE *pTemplate, UDWORD x, UDWORD y, UBYTE player, UDWORD id);
 extern BOOL SendDestroyDroid	(DROID *d);
 extern BOOL SendDemolishFinished(STRUCTURE *psS,DROID *psD);	
-extern BOOL SendDroidInfo		(DROID *psDroid, SDWORD order, UDWORD x, UDWORD y, BASE_OBJECT *psObj);
+extern BOOL SendDroidInfo		(DROID *psDroid, DROID_ORDER order, UDWORD x, UDWORD y, BASE_OBJECT *psObj);
 extern BOOL SendDroidMove		(DROID *psDroid, UDWORD x, UDWORD y,BOOL bFormation);
 extern BOOL SendGroupOrderSelected	(UBYTE player, UDWORD x, UDWORD y, BASE_OBJECT *psObj);
 extern BOOL SendCmdGroup		(DROID_GROUP *psGroup, UWORD x, UWORD y, BASE_OBJECT *psObj);
@@ -265,7 +271,7 @@ extern BOOL SendGroupOrderGroup(DROID_GROUP *psGroup, DROID_ORDER order,UDWORD x
 
 //extern BOOL SendDroidWaypoint	(UBYTE player, UDWORD	x, UDWORD y);
 //extern BOOL SendSingleDroidWaypoint(DROID *psDroid, UDWORD x,UDWORD y);
-extern BOOL sendDroidSecondary	(DROID *psDroid, SDWORD sec, SDWORD state);
+extern BOOL sendDroidSecondary	(DROID *psDroid, SECONDARY_ORDER sec, SECONDARY_STATE state);
 extern BOOL sendDroidSecondaryAll(DROID *psDroid);
 extern BOOL sendDroidEmbark     (DROID *psDroid);
 extern BOOL sendDroidDisEmbark  (DROID *psDroid);

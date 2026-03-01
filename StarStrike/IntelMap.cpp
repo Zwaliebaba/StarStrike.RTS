@@ -436,7 +436,7 @@ static BOOL intAddMessageForm(BOOL playCurrent)
 		/*if (psMessage->type == MSG_TUTORIAL)
 		{
 			//tutorial cases should never happen
-			ASSERT((FALSE, "Tutorial message in Intelligence screen!"));
+			ASSERT_TEXT(FALSE, "Tutorial message in Intelligence screen!");
 			continue;
 		}*/
 		if (psMessage->type == MSG_PROXIMITY)
@@ -468,7 +468,7 @@ static BOOL intAddMessageForm(BOOL playCurrent)
 		}
 
 		BufferID = GetObjectBuffer();
-		ASSERT((BufferID >= 0,"Unable to acquire object buffer."));
+		ASSERT_TEXT(BufferID >= 0,"Unable to acquire object buffer.");
 		RENDERBUTTON_INUSE(&ObjectBuffers[BufferID]);
 		ObjectBuffers[BufferID].Data = (void*)psMessage;
 		sBFormInit.pUserData = (void*)&ObjectBuffers[BufferID];
@@ -498,7 +498,7 @@ static BOOL intAddMessageForm(BOOL playCurrent)
 			break;
 		}
 
-		ASSERT((sBFormInit.id < (IDINTMAP_MSGEND+1),"Too many message buttons"));
+		ASSERT_TEXT(sBFormInit.id < (IDINTMAP_MSGEND+1),"Too many message buttons");
 
 		sBFormInit.x += OBJ_BUTWIDTH + OBJ_GAP;
 		if (sBFormInit.x + OBJ_BUTWIDTH + OBJ_GAP > INTMAP_MSGWIDTH)
@@ -538,8 +538,8 @@ BOOL intAddMessageView(MESSAGE * psMessage)
 	BOOL			Animate = FALSE;
 	RESEARCH		*psResearch;
 
-	ASSERT((psMessage->type == MSG_RESEARCH, 
-		"intAddMessageView: invalid message type"));
+	ASSERT_TEXT(psMessage->type == MSG_RESEARCH, 
+		"intAddMessageView: invalid message type");
 
 	// Is the form already up?
 	if(widgGetFromID(psWScreen,IDINTMAP_MSGVIEW) != NULL) 
@@ -584,7 +584,7 @@ BOOL intAddMessageView(MESSAGE * psMessage)
 		sFormInit.y = INTMAP_PROXIMITYY;
 		break;
 	default:
-		ASSERT((FALSE, "Unknown message type"));
+		ASSERT_TEXT(FALSE, "Unknown message type");
 		return FALSE;
 	}*/
 
@@ -648,12 +648,12 @@ BOOL intAddMessageView(MESSAGE * psMessage)
 	sLabInit.height = INTMAP_TITLEHEIGHT;
 	//print research name in title bar
 
-	ASSERT((psMessage->type != MSG_PROXIMITY, 
-		"intAddMessageView:Invalid message type for research"));
+	ASSERT_TEXT(psMessage->type != MSG_PROXIMITY, 
+		"intAddMessageView:Invalid message type for research");
 
 	psResearch = getResearchForMsg((VIEWDATA *)psMessage->pViewData);
 
-	ASSERT((psResearch!=NULL,"Research !found"));
+	ASSERT_TEXT(psResearch!=NULL,"Research !found");
 	//sLabInit.pText=psResearch->pName;
 	sLabInit.pText = getStatName(psResearch);
 
@@ -748,8 +748,8 @@ void StartMessageSequences(MESSAGE *psMessage, BOOL Start)
 		return;
 	}
 
-	ASSERT((PTRVALID(psMessage->pViewData, sizeof(VIEWDATA)),
-		"StartMessageSequences: invalid ViewData pointer"));
+	ASSERT_TEXT(PTRVALID(psMessage->pViewData, sizeof(VIEWDATA)),
+		"StartMessageSequences: invalid ViewData pointer");
 
 	if (((VIEWDATA *)psMessage->pViewData)->type == VIEW_RPL)
 	{
@@ -836,8 +836,8 @@ void _intIntelButtonPressed(BOOL proxMsg, UDWORD id)
 
 	UNUSEDPARAMETER(proxMsg);
 
-	ASSERT((proxMsg = TRUE, 
-		"intIntelButtonPressed: Shouldn't be able to get a proximity message!"));
+	ASSERT_TEXT(proxMsg = TRUE, 
+		"intIntelButtonPressed: Shouldn't be able to get a proximity message!");
 
 	/* message button has been pressed - clear the old button && messageView*/
 	if (messageID != 0)
@@ -915,8 +915,8 @@ void _intIntelButtonPressed(BOOL proxMsg, UDWORD id)
 /*
 			if (((VIEW_RESEARCH *)((VIEWDATA *)psMessage->pViewData)->pData)->pAudio != NULL)
 			{
-				ASSERT((strlen(((VIEW_RESEARCH *)((VIEWDATA *)psMessage->pViewData)->
-					pData)->pAudio)<244,"sequence path+name greater than max string"));
+				ASSERT_TEXT(strlen(((VIEW_RESEARCH *)((VIEWDATA *)psMessage->pViewData)->
+					pData)->pAudio)<244,"sequence path+name greater than max string");
 				strcpy(aAudioName,"sequenceAudio\\");
 				strcat(aAudioName,((VIEW_RESEARCH *)((VIEWDATA *)psMessage->
 					pViewData)->pData)->pAudio);
@@ -1148,7 +1148,7 @@ void intDisplayMessageButton(struct _widget *psWidget, UDWORD xOffset,
 		    	}
                 else
                 {
-                    ASSERT((FALSE, "intDisplayMessageButton: invalid stat"));
+                    ASSERT_TEXT(FALSE, "intDisplayMessageButton: invalid stat");
                     IMDType = IMDTYPE_RESEARCH;
                     psResGraphic = (BASE_STATS *)pResearch;
                 }
@@ -1261,7 +1261,7 @@ void intDisplayPIEView(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset,
 
 		if (((VIEWDATA *)psMessage->pViewData)->type != VIEW_RES)
 		{
-			ASSERT((FALSE, "intDisplayPIEView: Invalid message type"));
+			ASSERT_TEXT(FALSE, "intDisplayPIEView: Invalid message type");
 			return;
 		}
 
@@ -1315,7 +1315,7 @@ void intDisplayFLICView(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 	{
 		if (((VIEWDATA *)psMessage->pViewData)->type != VIEW_RES)
 		{
-			ASSERT((FALSE, "intDisplayFLICView: Invalid message type"));
+			ASSERT_TEXT(FALSE, "intDisplayFLICView: Invalid message type");
 			return;
 		}
 
@@ -1376,7 +1376,7 @@ void intDisplayTEXTView(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset
 			//check haven't run out of room first!
 			if (i * linePitch > Form->height)
 			{
-				ASSERT((FALSE, "intDisplayTEXTView: Run out of room!"));
+				ASSERT_TEXT(FALSE, "intDisplayTEXTView: Run out of room!");
 				return;
 			}
 			//need to check the string will fit!
@@ -1463,7 +1463,7 @@ appropriate sized image for the view*/
 		pIntelMapSurface->height = INTMAP_PROXIMITYHEIGHT;
 		break;
 	default:
-		ASSERT((FALSE, "Invalid message type"));
+		ASSERT_TEXT(FALSE, "Invalid message type");
 	}
 }
 */
@@ -1505,7 +1505,7 @@ appropriate sized image for the view*/
 		y = INTMAP_PROXIMITYY + INTMAP_PROXIMITYHEIGHT + indent;// + INTMAP_TEXTWINDOWHEIGHT;// - indent;
 		break;
 	default:
-		ASSERT((FALSE, "Unknown message type"));
+		ASSERT_TEXT(FALSE, "Unknown message type");
 	}
 	
 #ifdef PSX
@@ -1576,7 +1576,7 @@ void setCurrentMsg(void)
 	//	width = INTMAP_PROXIMITYWIDTH;
 	//	break;
 	default:
-		ASSERT((FALSE, "Unknown message type"));
+		ASSERT_TEXT(FALSE, "Unknown message type");
 		return;
 	}
 	
@@ -1704,7 +1704,7 @@ void setCurrentMsg(void)
 	memset(&sBFormInit, 0, sizeof(W_FORMINIT));
 	sBFormInit.formID = 0;
 	sBFormInit.id = IDINTMAP_PROXSTART + inc;
-	ASSERT((sBFormInit.id < IDINTMAP_PROXEND,"Too many message buttons"));
+	ASSERT_TEXT(sBFormInit.id < IDINTMAP_PROXEND,"Too many message buttons");
 	sBFormInit.majorID = 0;
 	sBFormInit.minorID = 0;
 	sBFormInit.style = WFORM_CLICKABLE;
@@ -1741,7 +1741,7 @@ void setCurrentMsg(void)
 
 	// Get the object associated with this widget.
 	psMsg = (MESSAGE *)psButton->pUserData;
-	ASSERT((psMsg->type == MSG_PROXIMITY, "Invalid message type"));
+	ASSERT_TEXT(psMsg->type == MSG_PROXIMITY, "Invalid message type");
 
 	psViewLocation = (VIEW_LOCATION *)psMsg->pViewData->pData;
 
@@ -1842,7 +1842,7 @@ void setCurrentMsg(void)
 		messageHeight = INTMAP_PROXIMITYHEIGHT;
 		break;
 	default:
-		ASSERT((FALSE, "Unknown message type"));
+		ASSERT_TEXT(FALSE, "Unknown message type");
 		return FALSE;
 	}
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Types.h"
+
 
 #define TILE_WIDTH 64
 #define TILE_HEIGHT 64

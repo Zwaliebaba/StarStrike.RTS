@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Types.h"
+
 /*
  * clParse.h
  *
@@ -12,7 +14,7 @@ extern BOOL	clStartWindowed;
 // whether to play the intro video
 extern BOOL	clIntroVideo;
 // parse the commandline
-extern BOOL ParseCommandLine( LPSTR psCmdLineBOOL, BOOL bGlideDllPresent);
+extern BOOL ParseCommandLine( char* psCmdLineBOOL, BOOL bGlideDllPresent);
 
 
 

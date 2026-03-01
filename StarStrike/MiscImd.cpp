@@ -1,5 +1,5 @@
 
-#include <assert.h>
+
 #include "Frame.h"
 #include "Effects.h"
 #include "Structure.h"
@@ -68,16 +68,16 @@ char	name[15];	// hopefully!
 	/* Go thru' the list */
 	while(bMoreToProcess)
 	{
-		sprintf(name,miscImds[i].pName);
+		sprintf(name,"%s",miscImds[i].pName);
 		strcat(name,".pie");
 		/* see if the resource loader can find it */
-		miscImds[i].pImd = resGetData("IMD",name);
+		miscImds[i].pImd = (iIMDShape *)resGetData("IMD",name);
 		/* If it didn't get it then... */
 		if(!miscImds[i].pImd)
 		{
 			/* Say which one && return FALSE */
 			DBERROR(("Can't find misselaneous PIE file : %s",miscImds[i].pName));
-			ASSERT((0,"NULL PIE"));
+			ASSERT_TEXT(0,"NULL PIE");
 			return(FALSE);
 		}
 		/*	If the next one's the end one, then get out now.
@@ -91,7 +91,7 @@ char	name[15];	// hopefully!
 // Returns a pointer to the imd from a #define number passed in - see above
 iIMDShape	*getImdFromIndex(UDWORD	index)
 {
-	ASSERT((index<MI_TOO_MANY,"Out of range index in getImdFromIndex"));
+	ASSERT_TEXT(index<MI_TOO_MANY,"Out of range index in getImdFromIndex");
 
 	return(miscImds[index].pImd);
 }
@@ -120,7 +120,7 @@ iIMDShape	*getRandomDebrisImd( void )
 
 	DebrisIMD = getImdFromIndex(MI_DEBRIS0 + rand()%((MI_DEBRIS4-MI_DEBRIS0)+1));
 
-	ASSERT((DebrisIMD != NULL,"getRandomDebrisImd : NULL PIE"));
+	ASSERT_TEXT(DebrisIMD != NULL,"getRandomDebrisImd : NULL PIE");
 
 	return DebrisIMD;
 }
@@ -145,7 +145,7 @@ BOOL	initMiscImds( void )
 	{
 		sprintf(pieNum, "%d", i+1);
 		facName[5] = *pieNum; 
-		pAssemblyPointIMDs[FACTORY_FLAG][i] = resGetData("IMD", facName);
+		pAssemblyPointIMDs[FACTORY_FLAG][i] = (iIMDShape *)resGetData("IMD", facName);
 		if (!pAssemblyPointIMDs[FACTORY_FLAG][i])
 		{
 			DBERROR(("Can't find assembly point graphic for factory"));
@@ -153,20 +153,20 @@ BOOL	initMiscImds( void )
 		}
 //#ifdef WIN32
 		cybName[6] = *pieNum; 
-		pAssemblyPointIMDs[CYBORG_FLAG][i] = resGetData("IMD", cybName);
+		pAssemblyPointIMDs[CYBORG_FLAG][i] = (iIMDShape *)resGetData("IMD", cybName);
 		if (!pAssemblyPointIMDs[CYBORG_FLAG][i])
 		{
 			DBERROR(("Can't find assembly point graphic for cyborg factory"));
 			return(FALSE);
 		}
 		vtolName[6] = *pieNum; 
-		pAssemblyPointIMDs[VTOL_FLAG][i] = resGetData("IMD", vtolName);
+		pAssemblyPointIMDs[VTOL_FLAG][i] = (iIMDShape *)resGetData("IMD", vtolName);
 		if (!pAssemblyPointIMDs[VTOL_FLAG][i])
 		{
 			DBERROR(("Can't find assembly point graphic for vtol factory"));
 			return(FALSE);
 		}
-		pAssemblyPointIMDs[REPAIR_FLAG][i] = resGetData("IMD", "mirnum1.pie");
+		pAssemblyPointIMDs[REPAIR_FLAG][i] = (iIMDShape *)resGetData("IMD", "mirnum1.pie");
 		if (!pAssemblyPointIMDs[REPAIR_FLAG][i])
 		{
 			DBERROR(("Can't find assembly point graphic for repair facility"));

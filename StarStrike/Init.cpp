@@ -100,6 +100,7 @@ extern BOOL researchInitVars(void);
 extern void	featureInitVars(void);
 extern void radarInitVars(void);
 extern void	initMiscVars( void );
+extern void tpInit(void);
 
 
 
@@ -744,7 +745,7 @@ BOOL systemInitialise(void)
 		WDG_FINDFILE	sFindFile;
 
 		// load the original gamedesc.lev
-		if (!loadFile("GameDesc.lev", &pBuffer, &size))
+		if (!loadFile((char *)"GameDesc.lev", &pBuffer, &size))
 		{
 			return FALSE;
 		}
@@ -784,7 +785,7 @@ BOOL systemInitialise(void)
 		pie_SetDirect3DDeviceName("Direct3D HAL");
 		if (!pie_Initialise(REND_D3D_HAL))
 		{
-			ASSERT((FALSE,"Unable to initialise DirectX HAL, ensure the correct DirectDraw device is selected"));
+			ASSERT_TEXT(FALSE,"Unable to initialise DirectX HAL, ensure the correct DirectDraw device is selected");
 			return FALSE;
 		}
 		break;
@@ -792,7 +793,7 @@ BOOL systemInitialise(void)
 		pie_SetDirect3DDeviceName("RGB Emulation");
 		if (!pie_Initialise(REND_D3D_RGB))
 		{
-			ASSERT((FALSE,"Unable to initialise DirectX RGB Renderer"));
+			ASSERT_TEXT(FALSE,"Unable to initialise DirectX RGB Renderer");
 			return FALSE;
 		}
 		break;
@@ -800,7 +801,7 @@ BOOL systemInitialise(void)
 		pie_SetDirect3DDeviceName("Reference Rasterizer");
 		if (!pie_Initialise(REND_D3D_REF))
 		{
-			ASSERT((FALSE,"Unable to initialise DirectX Reference Renderer"));
+			ASSERT_TEXT(FALSE,"Unable to initialise DirectX Reference Renderer");
 			return FALSE;
 		}
 		break;
@@ -808,7 +809,7 @@ BOOL systemInitialise(void)
 		pie_SetDirect3DDeviceName("Direct3D HAL");
 		if (!pie_Initialise(REND_D3D_HAL))
 		{
-			ASSERT((FALSE,"Unable to initialise DirectX HAL"));
+			ASSERT_TEXT(FALSE,"Unable to initialise DirectX HAL");
 			return FALSE;
 		}
 		break;
@@ -823,7 +824,7 @@ BOOL systemInitialise(void)
 	{
 		displayBufferSize = 1500000;
 	}
-	DisplayBuffer = MALLOC(displayBufferSize);
+	DisplayBuffer = (UBYTE *)MALLOC(displayBufferSize);
 	if (DisplayBuffer == NULL)
 	{
 		DBERROR(("Unable to allocate memory for display buffer"));
@@ -959,8 +960,8 @@ init_ObjectDead( void * psObj )
 	STRUCTURE	*psStructure;
 
 	/* check is valid pointer */
-	ASSERT( (PTRVALID(psBaseObj, sizeof(BASE_OBJECT)),
-			"init_ObjectDead: game object pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(psBaseObj, sizeof(BASE_OBJECT)),
+			"init_ObjectDead: game object pointer invalid\n" );
 
 	if ( psBaseObj->died == TRUE )
 	{

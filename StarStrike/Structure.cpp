@@ -6,7 +6,7 @@
  * Something wicked this way comes. This file is almost as evil as HCI.c
  */
 #include <stdio.h>
-#include <assert.h>
+
 /* extra structures required for demo */
 //#define DEMO
 
@@ -485,7 +485,7 @@ void structureType(STRUCTURE_STATS *pStructure, char *pType)
 		pStructure->type = REF_SAT_UPLINK;
 		return;
 	}
-	ASSERT((FALSE, "Unknown Structure Type"));
+	ASSERT_TEXT(FALSE, "Unknown Structure Type");
 }
 
 
@@ -868,7 +868,7 @@ BOOL loadStructureStats(SBYTE *pStructData, UDWORD bufferSize)
 		}
 
 		//set the struct strength
-		psStructure->strength = getStructStrength(strength);
+		psStructure->strength = (STRUCT_STRENGTH)getStructStrength(strength);
 		if (psStructure->strength == INVALID_STRENGTH)
 		{
 			DBERROR(("loadStructureStats: Unknown structure strength for %s", 
@@ -923,8 +923,8 @@ BOOL loadStructureStats(SBYTE *pStructData, UDWORD bufferSize)
 				pSensorType++;
 			}
 			//check not allocating a turret sensor if have weapons attached
-			ASSERT((psStructure->pSensor != NULL, 
-				"loadStructureStats: should have a sensor attached to %s!", StructureName));
+			ASSERT_TEXT(psStructure->pSensor != NULL, 
+				"loadStructureStats: should have a sensor attached to %s!", StructureName);
 			//if (psStructure->pSensor->location == LOC_TURRET AND psStructure->numWeaps)
             if (psStructure->pSensor->location == LOC_TURRET && numWeaps)
 			{
@@ -1103,8 +1103,8 @@ void setCurrentStructQuantity(BOOL displayError)
 				//check quantity never exceeds the limit
 				if (psStructLimits[inc].currentQuantity > psStructLimits[inc].limit)
 				{
-					ASSERT((FALSE, "There appears to be too many %s on this map!", 
-						getStructName(&asStructureStats[inc] )));
+					ASSERT_TEXT(FALSE, "There appears to be too many %s on this map!", 
+						getStructName(&asStructureStats[inc] ));
 				}
 			}
 		}
@@ -1120,8 +1120,8 @@ void setCurrentStructQuantity(BOOL displayError)
 				//check quantity never exceeds the limit
 				if (psStructLimits[inc].currentQuantity > psStructLimits[inc].limit)
 				{
-					ASSERT((FALSE, "There appears to be too many %s on this map!", 
-						getStructName(&asStructureStats[inc] )));
+					ASSERT_TEXT(FALSE, "There appears to be too many %s on this map!", 
+						getStructName(&asStructureStats[inc] ));
 				}
 			}
 		}
@@ -1358,7 +1358,7 @@ BOOL loadStructureStrengthModifiers(SBYTE *pStrengthModData, UDWORD bufferSize)
 			&weaponEffectName, &strengthName, &modifier);
 
 		//get the weapon effect inc
-		effectInc = getWeaponEffect(weaponEffectName);
+		effectInc = (WEAPON_EFFECT)getWeaponEffect(weaponEffectName);
 		if (effectInc == INVALID_WEAPON_EFFECT)
 		{
 			DBERROR(("loadStructureStrengthModifiers: Invalid Weapon Effect - %s", 
@@ -1366,7 +1366,7 @@ BOOL loadStructureStrengthModifiers(SBYTE *pStrengthModData, UDWORD bufferSize)
 			return FALSE;
 		}
 		//get the propulsion inc
-		strengthInc = getStructStrength(strengthName);
+		strengthInc = (STRUCT_STRENGTH)getStructStrength(strengthName);
 		if (strengthInc == INVALID_STRENGTH)
 		{
 			DBERROR(("loadStructureStrengthModifiers: Invalid Strength type - %s", 
@@ -1438,8 +1438,8 @@ BOOL structureDamage(STRUCTURE *psStructure, UDWORD damage, UDWORD weaponClass,
 
 	UNUSEDPARAMETER(weaponClass);
 
-	ASSERT((PTRVALID(psStructure, sizeof(STRUCTURE)),
-		"structureDamage: Invalid Structure pointer"));
+	ASSERT_TEXT(PTRVALID(psStructure, sizeof(STRUCTURE)),
+		"structureDamage: Invalid Structure pointer");
 
 	DBP1(("structureDamage(%d): body %d armour %d damage: %d\n",
 		psStructure->id, psStructure->body, psStructure->armour, damage));
@@ -1529,14 +1529,14 @@ BOOL structSetManufacture(STRUCTURE *psStruct, DROID_TEMPLATE *psTempl, UBYTE qu
 {
 	FACTORY		*psFact;
 
-	ASSERT((PTRVALID(psStruct, sizeof(STRUCTURE)) && psStruct->type == OBJ_STRUCTURE &&
+	ASSERT_TEXT(PTRVALID(psStruct, sizeof(STRUCTURE)) && psStruct->type == OBJ_STRUCTURE &&
 			(psStruct->pStructureType->type == REF_FACTORY ||
 			psStruct->pStructureType->type == REF_CYBORG_FACTORY ||
 			psStruct->pStructureType->type == REF_VTOL_FACTORY),
-		"structSetManufacture: invalid Factory pointer"));
+		"structSetManufacture: invalid Factory pointer");
 	/* psTempl might be NULL if the build is being cancelled in the middle */
-	ASSERT((psTempl == NULL || PTRVALID(psTempl, sizeof(DROID_TEMPLATE)),
-		"structSetManufacture: invalid Template pointer"));
+	ASSERT_TEXT(psTempl == NULL || PTRVALID(psTempl, sizeof(DROID_TEMPLATE)),
+		"structSetManufacture: invalid Template pointer");
 	
 	//assign it to the Factory
 	psFact = (FACTORY*)psStruct->pFunctionality;
@@ -1857,7 +1857,7 @@ STRUCTURE* buildStructure(STRUCTURE_STATS* pStructureType, UDWORD x, UDWORD y,
         max = pStructureType - asStructureStats;
         if (max > numStructureStats)
         {
-            ASSERT((FALSE, "buildStructure:Invalid structure type"));
+            ASSERT_TEXT(FALSE, "buildStructure:Invalid structure type");
             return NULL;
         }
 
@@ -1871,8 +1871,8 @@ STRUCTURE* buildStructure(STRUCTURE_STATS* pStructureType, UDWORD x, UDWORD y,
                 //NEVER EVER EVER WANT MORE THAN 5 FACTORIES
                 if (asStructLimits[selectedPlayer][max].currentQuantity > MAX_FACTORY)
                 {
-                    ASSERT((FALSE, 
-                        "buildStructure: trying to build too many factories"));
+                    ASSERT_TEXT(FALSE, 
+                        "buildStructure: trying to build too many factories");
                     return NULL;
                 }
             }
@@ -1881,8 +1881,8 @@ STRUCTURE* buildStructure(STRUCTURE_STATS* pStructureType, UDWORD x, UDWORD y,
                 //can only cope with MAX_OBJECTS research facilities
                 if (asStructLimits[selectedPlayer][max].currentQuantity > MAX_OBJECTS)
                 {
-                    ASSERT((FALSE, 
-                        "buildStructure: trying to build too many research facilities"));
+                    ASSERT_TEXT(FALSE, 
+                        "buildStructure: trying to build too many research facilities");
                     return NULL;
                 }
             }
@@ -1897,8 +1897,8 @@ STRUCTURE* buildStructure(STRUCTURE_STATS* pStructureType, UDWORD x, UDWORD y,
             {
                 if (asStructLimits[selectedPlayer][max].currentQuantity > 0)
                 {
-                    ASSERT((FALSE, 
-                        "buildStructure: trying to build too many Sat Uplinks"));
+                    ASSERT_TEXT(FALSE, 
+                        "buildStructure: trying to build too many Sat Uplinks");
                     return NULL;
                 }
             }
@@ -1912,13 +1912,13 @@ STRUCTURE* buildStructure(STRUCTURE_STATS* pStructureType, UDWORD x, UDWORD y,
     	if(((x >> TILE_SHIFT) < TOO_NEAR_EDGE) || ((x >> TILE_SHIFT) > (SDWORD)(
             mapWidth - TOO_NEAR_EDGE)))
         {
-            ASSERT((FALSE, "buildStructure: x coord too near edge"));
+            ASSERT_TEXT(FALSE, "buildStructure: x coord too near edge");
 	    	return NULL;
         }
 	    if(((y >> TILE_SHIFT) < TOO_NEAR_EDGE) || ((y >> TILE_SHIFT) > (SDWORD)(
             mapHeight - TOO_NEAR_EDGE)))
         {
-            ASSERT((FALSE, "buildStructure: y coord too near edge"));
+            ASSERT_TEXT(FALSE, "buildStructure: y coord too near edge");
 		    return NULL;
         }
 
@@ -2023,9 +2023,9 @@ STRUCTURE* buildStructure(STRUCTURE_STATS* pStructureType, UDWORD x, UDWORD y,
 				// end of dodgy stuff
 				else
 				{
-					ASSERT((!(TILE_HAS_STRUCTURE(mapTile(mapX+width,mapY+breadth))),
+					ASSERT_TEXT(!(TILE_HAS_STRUCTURE(mapTile(mapX+width,mapY+breadth))),
 						"buildStructure - structure - %d already found at %d, %d", 
-						psBuilding->id, mapX+width,mapY+breadth));
+						psBuilding->id, mapX+width,mapY+breadth);
 				}
 
 				SET_TILE_STRUCTURE(psTile);
@@ -2412,10 +2412,10 @@ STRUCTURE* buildStructure(STRUCTURE_STATS* pStructureType, UDWORD x, UDWORD y,
                 holdProduction(psBuilding);
 		
 				//quick check not trying to add too much
-				ASSERT((((FACTORY*)psBuilding->pFunctionality)->productionOutput +
+				ASSERT_TEXT(((FACTORY*)psBuilding->pFunctionality)->productionOutput +
 					((PRODUCTION_FUNCTION*)pStructureType->asFuncList[0])->
 					productionOutput < UBYTE_MAX, 
-					"building factory module - productionOutput too big"));
+					"building factory module - productionOutput too big");
 
 				((FACTORY*)psBuilding->pFunctionality)->productionOutput += ((
 					PRODUCTION_FUNCTION*)pStructureType->asFuncList[0])->
@@ -2621,7 +2621,7 @@ void createAssemblyPoint(STRUCTURE* psStruct)
 			setFlagPositionInc(psFactory, psStruct->player, VTOL_FLAG);
 			break;
 		default:
-			ASSERT((FALSE, "setFunctionality: Invalid factory type"));
+			ASSERT_TEXT(FALSE, "setFunctionality: Invalid factory type");
 		}
 		//initialise the assembly point position
 		x = psStruct->x+256 >> TILE_SHIFT;
@@ -2707,7 +2707,7 @@ BOOL setFunctionality(STRUCTURE	*psBuilding, UDWORD functionType)
 				setFlagPositionInc(psFactory, psBuilding->player, VTOL_FLAG);
 				break;
 			default:
-				ASSERT((FALSE, "setFunctionality: Invalid factory type"));
+				ASSERT_TEXT(FALSE, "setFunctionality: Invalid factory type");
 			}
 			//initialise the assembly point position
 			x = psBuilding->x+256 >> TILE_SHIFT;
@@ -3035,7 +3035,7 @@ void assignFactoryCommandDroid(STRUCTURE *psStruct, DROID *psCommander)
 	FLAG_POSITION	*psFlag, *psNext, *psPrev;
 	SDWORD			factoryInc,typeFlag;
 
-	ASSERT((StructIsFactory(psStruct),"assignFactoryCommandUnit: structure !a factory"));
+	ASSERT_TEXT(StructIsFactory(psStruct),"assignFactoryCommandUnit: structure !a factory");
 
 	psFact = (FACTORY *)psStruct->pFunctionality;
 
@@ -3051,7 +3051,7 @@ void assignFactoryCommandDroid(STRUCTURE *psStruct, DROID *psCommander)
 		typeFlag = CYBORG_FLAG;
 		break;
 	default:
-		ASSERT((FALSE,"assignfactorycommandUnit: unknown factory type"));
+		ASSERT_TEXT(FALSE,"assignfactorycommandUnit: unknown factory type");
 		typeFlag = FACTORY_FLAG;
 		break;
 	}
@@ -3062,17 +3062,17 @@ void assignFactoryCommandDroid(STRUCTURE *psStruct, DROID *psCommander)
 		if (typeFlag == FACTORY_FLAG)
 		{
 			secondarySetState(psFact->psCommander, DSO_CLEAR_PRODUCTION,
-					1 << ( psFact->psAssemblyPoint->factoryInc + DSS_ASSPROD_SHIFT) );
+					(SECONDARY_STATE)(1 << ( psFact->psAssemblyPoint->factoryInc + DSS_ASSPROD_SHIFT)) );
 		}
 		else if (typeFlag == CYBORG_FLAG)
 		{
 			secondarySetState(psFact->psCommander, DSO_CLEAR_PRODUCTION,
-					1 << ( psFact->psAssemblyPoint->factoryInc + DSS_ASSPROD_CYBORG_SHIFT) );
+					(SECONDARY_STATE)(1 << ( psFact->psAssemblyPoint->factoryInc + DSS_ASSPROD_CYBORG_SHIFT)) );
 		}
 		else
 		{
 			secondarySetState(psFact->psCommander, DSO_CLEAR_PRODUCTION,
-					1 << ( psFact->psAssemblyPoint->factoryInc + DSS_ASSPROD_VTOL_SHIFT) );
+					(SECONDARY_STATE)(1 << ( psFact->psAssemblyPoint->factoryInc + DSS_ASSPROD_VTOL_SHIFT)) );
 		}
 
 		psFact->psCommander = NULL;
@@ -3112,8 +3112,8 @@ void assignFactoryCommandDroid(STRUCTURE *psStruct, DROID *psCommander)
 			addFlagPosition(psFact->psAssemblyPoint);// add the assembly point back into the list (only temporaryily.)
 		}*/
 
-		ASSERT((!missionIsOffworld(),
-			"assignFactoryCommandDroid: cannot assign a commander to a factory when off world"));
+		ASSERT_TEXT(!missionIsOffworld(),
+			"assignFactoryCommandDroid: cannot assign a commander to a factory when off world");
 
 		
 		factoryInc = psFact->psAssemblyPoint->factoryInc;
@@ -3736,8 +3736,8 @@ void aiUpdateStructure(STRUCTURE *psStructure)
 	DROID_TEMPLATE		*psNextTemplate;
 #endif
 
-	ASSERT((PTRVALID(psStructure, sizeof(STRUCTURE)),
-		"aiUpdateStructure: invalid Structure pointer"));
+	ASSERT_TEXT(PTRVALID(psStructure, sizeof(STRUCTURE)),
+		"aiUpdateStructure: invalid Structure pointer");
 
 	if (psStructure->psTarget &&
 		psStructure->psTarget->died)
@@ -3948,8 +3948,8 @@ void aiUpdateStructure(STRUCTURE *psStructure)
 			/* select next droid if none being repaired */
 			if ( psChosenObj == NULL )
 			{
-				ASSERT( (PTRVALID( psRepairFac->psGroup, sizeof(DROID_GROUP) ),
-					"aiUpdateStructure: invalid repair facility group pointer" ) );
+				ASSERT_TEXT( PTRVALID( psRepairFac->psGroup, sizeof(DROID_GROUP) ),
+					"aiUpdateStructure: invalid repair facility group pointer"  );
 
 				// get droid next in repair queue
 /*				changed this just to scan for the first droid waiting for repair
@@ -4352,8 +4352,8 @@ void aiUpdateStructure(STRUCTURE *psStructure)
             UDWORD  powerCost;//, iPower;
 
 			psDroid = (DROID *) psChosenObj;
-			ASSERT( (PTRVALID(psDroid, sizeof(DROID)),
-					"aiUpdateStructure: invalid droid pointer" ) );
+			ASSERT_TEXT( PTRVALID(psDroid, sizeof(DROID)),
+					"aiUpdateStructure: invalid droid pointer"  );
 			psRepairFac = (REPAIR_FACILITY*)psStructure->pFunctionality;
 
 			if ( psDroid->action == DACTION_WAITDURINGREPAIR &&
@@ -4495,7 +4495,7 @@ void aiUpdateStructure(STRUCTURE *psStructure)
 			 //		bFinishRepair = TRUE;
 
 					// if completely repaired reset order 
-					secondarySetState(psDroid, DSO_RETURN_TO_LOC, 0);
+					secondarySetState(psDroid, DSO_RETURN_TO_LOC, (SECONDARY_STATE)0);
 
 					if ((psDroid->psGroup != NULL) &&
 						(psDroid->psGroup->type == GT_COMMAND) &&
@@ -4553,9 +4553,9 @@ void aiUpdateStructure(STRUCTURE *psStructure)
 			psReArmPad = (REARM_PAD *)psStructure->pFunctionality;
 
 			psDroid = (DROID *)psChosenObj;
-			ASSERT( (PTRVALID(psDroid, sizeof(DROID)),
-					"aiUpdateStructure: invalid droid pointer" ) );
-			ASSERT((vtolDroid(psDroid),"aiUpdateStructure: invalid droid type"));
+			ASSERT_TEXT( PTRVALID(psDroid, sizeof(DROID)),
+					"aiUpdateStructure: invalid droid pointer"  );
+			ASSERT_TEXT(vtolDroid(psDroid),"aiUpdateStructure: invalid droid type");
 
 			//check hasn't died whilst waiting to be rearmed
 			// also clear out any previously repaired droid
@@ -4749,8 +4749,8 @@ UDWORD			widthScatter,breadthScatter;
 UDWORD			percentDamage, emissionInterval, iPointsToAdd, iPointsRequired;
 iVector			dv;
 
-	ASSERT((PTRVALID(psBuilding, sizeof(STRUCTURE)),
-		"structureUpdate: Invalid Structure pointer"));
+	ASSERT_TEXT(PTRVALID(psBuilding, sizeof(STRUCTURE)),
+		"structureUpdate: Invalid Structure pointer");
 
 	//update the manufacture/research of the building once complete
 	if (psBuilding->status == SS_BUILT)
@@ -5152,8 +5152,8 @@ BOOL validLocation(BASE_STATS *psStats, UDWORD x, UDWORD y, UDWORD player,
 				wallDrag.x2 = mouseTileX;
 				wallDrag.y2 = mouseTileY;
 
-				dx = (UWORD)(abs(mouseTileX - wallDrag.x1));
-				dy = (UWORD)(abs(mouseTileY - wallDrag.y1));
+				dx = (UWORD)(abs((int)(mouseTileX - wallDrag.x1)));
+				dy = (UWORD)(abs((int)(mouseTileY - wallDrag.y1)));
 
 				if(dx >= dy) 
                 {
@@ -5968,7 +5968,7 @@ BOOL checkWidth(UDWORD maxRange, UDWORD x, UDWORD y, UDWORD *pDroidX, UDWORD *pD
 				*pDroidX = (x + side) << TILE_SHIFT;
 				*pDroidY = y << TILE_SHIFT;
 			
-				ASSERT((worldOnMap(*pDroidX,*pDroidY),"checkWidth : Insane droid position"));
+				ASSERT_TEXT(worldOnMap(*pDroidX,*pDroidY),"checkWidth : Insane droid position");
 
 				return TRUE;
 			}
@@ -5993,7 +5993,7 @@ BOOL checkLength(UDWORD maxRange, UDWORD x, UDWORD y, UDWORD *pDroidX, UDWORD *p
 				*pDroidX = x << TILE_SHIFT;
 				*pDroidY = (y + side) << TILE_SHIFT;
 
-				ASSERT((worldOnMap(*pDroidX,*pDroidY),"checkHeight : Insane droid position"));
+				ASSERT_TEXT(worldOnMap(*pDroidX,*pDroidY),"checkHeight : Insane droid position");
 
 				return TRUE;
 			}
@@ -6040,8 +6040,8 @@ BOOL removeStruct(STRUCTURE *psDel, BOOL bDestroy)
 	//UDWORD		mapX, mapY;
 	FLAG_POSITION	*psAssemblyPoint=NULL;
 
-	ASSERT( (PTRVALID(psDel, sizeof(STRUCTURE)),
-		"destroyStruct: invalid structure pointer\n") );
+	ASSERT_TEXT( PTRVALID(psDel, sizeof(STRUCTURE)),
+		"destroyStruct: invalid structure pointer\n" );
 
     	
     if (bDestroy)
@@ -6203,8 +6203,8 @@ BOOL destroyStruct(STRUCTURE *psDel)
 	BOOL			bMinor;
 
 	bMinor = FALSE;
-	ASSERT( (PTRVALID(psDel, sizeof(STRUCTURE)),
-		"destroyStruct: invalid structure pointer\n") );
+	ASSERT_TEXT( PTRVALID(psDel, sizeof(STRUCTURE)),
+		"destroyStruct: invalid structure pointer\n" );
 
 
 	if (bMultiPlayer)
@@ -6544,8 +6544,8 @@ BOOL checkSpecificStructExists(UDWORD structInc, UDWORD player)
 	STRUCTURE	*psStructure;
 	BOOL		found = FALSE;
 
-	ASSERT((structInc < numStructureStats, 
-		"checkSpecificStructExists: invalid structure inc"));
+	ASSERT_TEXT(structInc < numStructureStats, 
+		"checkSpecificStructExists: invalid structure inc");
 
 	for (psStructure = apsStructLists[player]; psStructure != NULL; 
 		psStructure = psStructure->psNext)
@@ -6633,7 +6633,7 @@ void findAssemblyPointPosition(UDWORD *pX, UDWORD *pY, UDWORD player)
 	{
 		if (!pickATileGen(pX, pY, LOOK_FOR_EMPTY_TILE,normalPAT))
 		{
-			ASSERT((FALSE, "findAssemblyPointPosition: Unable to find a free location"));
+			ASSERT_TEXT(FALSE, "findAssemblyPointPosition: Unable to find a free location");
 		}
 	}
 	else
@@ -6643,7 +6643,7 @@ void findAssemblyPointPosition(UDWORD *pX, UDWORD *pY, UDWORD player)
 		{
 			if (!pickATileGen(pX, pY, LOOK_FOR_EMPTY_TILE,normalPAT))
 			{
-				ASSERT((FALSE, "findAssemblyPointPosition: Unable to find a free location"));
+				ASSERT_TEXT(FALSE, "findAssemblyPointPosition: Unable to find a free location");
 			}
 		}
 	}*/
@@ -6697,7 +6697,7 @@ void findAssemblyPointPosition(UDWORD *pX, UDWORD *pY, UDWORD player)
         return;
     }
 	/* If we got this far, then we failed - passed in values will be unchanged */
-    ASSERT((FALSE, "findAssemblyPointPosition: unable to find a valid location!"));
+    ASSERT_TEXT(FALSE, "findAssemblyPointPosition: unable to find a valid location!");
 }
 
 /*sets the point new droids go to - x/y in world coords for a Factory
@@ -6705,8 +6705,8 @@ bCheck is set to TRUE for initial placement of the Assembly Point*/
 void setAssemblyPoint(FLAG_POSITION *psAssemblyPoint, UDWORD x, UDWORD y, 
                       UDWORD player, BOOL bCheck)
 {
-	ASSERT((PTRVALID(psAssemblyPoint, sizeof(FLAG_POSITION)),
-		"setAssemblyPoint: invalid AssemblyPoint pointer"));
+	ASSERT_TEXT(PTRVALID(psAssemblyPoint, sizeof(FLAG_POSITION)),
+		"setAssemblyPoint: invalid AssemblyPoint pointer");
 	
 	//check its valid
 	x = x >> TILE_SHIFT;
@@ -6737,7 +6737,7 @@ void setFlagPositionInc(void *pFunctionality, UDWORD player, UBYTE factoryType)
 	char *pType;
 #endif
 
-	ASSERT((player < MAX_PLAYERS, "setFlagPositionInc: invalid player number"));
+	ASSERT_TEXT(player < MAX_PLAYERS, "setFlagPositionInc: invalid player number");
 	//find the first vacant slot
 	for (inc = 0; inc < MAX_FACTORY; inc++)
 	{
@@ -6771,7 +6771,7 @@ void setFlagPositionInc(void *pFunctionality, UDWORD player, UBYTE factoryType)
 			break;
 		}
 #endif
-	    ASSERT((FALSE, "Building more than %d %s for player %d", MAX_FACTORY, pType, player));
+	    ASSERT_TEXT(FALSE, "Building more than %d %s for player %d", MAX_FACTORY, pType, player);
 		inc = 1;
 	}
 
@@ -7074,7 +7074,7 @@ void checkForResExtractors(STRUCTURE *psBuilding)
 
 	if (psBuilding->pStructureType->type != REF_POWER_GEN)
 	{
-		ASSERT((FALSE, "checkForResExtractors: invalid structure type"));
+		ASSERT_TEXT(FALSE, "checkForResExtractors: invalid structure type");
 		return;
 	}
 	psPowerGen = (POWER_GEN *)psBuilding->pFunctionality; 
@@ -7156,7 +7156,7 @@ void checkForPowerGen(STRUCTURE *psBuilding)
 
 	if (psBuilding->pStructureType->type != REF_RESOURCE_EXTRACTOR)
 	{
-		ASSERT((FALSE, "checkForPowerGen: invalid structure type"));
+		ASSERT_TEXT(FALSE, "checkForPowerGen: invalid structure type");
 		return;
 	}
 	psRE = (RES_EXTRACTOR *)psBuilding->pFunctionality;
@@ -7213,7 +7213,7 @@ void informPowerGen(STRUCTURE *psStruct)
 
 	if (psStruct->pStructureType->type != REF_RESOURCE_EXTRACTOR)
 	{
-		ASSERT((FALSE, "informPowerGen: invalid structure type"));
+		ASSERT_TEXT(FALSE, "informPowerGen: invalid structure type");
 		return;
 	}
 	
@@ -7244,7 +7244,7 @@ void releaseResExtractor(STRUCTURE *psRelease)
 
 	if (psRelease->pStructureType->type != REF_RESOURCE_EXTRACTOR)
 	{
-		ASSERT((FALSE, "releaseResExtractor:Invalid structure type"));
+		ASSERT_TEXT(FALSE, "releaseResExtractor:Invalid structure type");
 		return;
 	}
 
@@ -7282,7 +7282,7 @@ void releasePowerGen(STRUCTURE *psRelease)
 
 	if (psRelease->pStructureType->type != REF_POWER_GEN)
 	{
-		ASSERT((FALSE, "releasePowerGen:Invalid structure type"));
+		ASSERT_TEXT(FALSE, "releasePowerGen:Invalid structure type");
 		return;
 	}
 
@@ -7399,8 +7399,8 @@ STRUCTURE_STATS* getModuleStat(STRUCTURE *psStruct)
 	STRUCTURE_STATS		*psStat;
 	//UDWORD				i;
 
-	ASSERT((PTRVALID(psStruct, sizeof(STRUCTURE)),
-		"getModuleStat: Invalid structure pointer"));
+	ASSERT_TEXT(PTRVALID(psStruct, sizeof(STRUCTURE)),
+		"getModuleStat: Invalid structure pointer");
 
 	psStat = NULL;
 	switch (psStruct->pStructureType->type)
@@ -7445,8 +7445,8 @@ void printStructureInfo(STRUCTURE *psStructure)
 	UBYTE		numConnected, i;
 	POWER_GEN	*psPowerGen;
 
-	ASSERT((PTRVALID(psStructure, sizeof(STRUCTURE)),
-		"printStructureInfo: Invalid Structure pointer"));
+	ASSERT_TEXT(PTRVALID(psStructure, sizeof(STRUCTURE)),
+		"printStructureInfo: Invalid Structure pointer");
 
 	switch (psStructure->pStructureType->type)
 	{
@@ -7576,8 +7576,8 @@ BOOL electronicDamage(BASE_OBJECT *psTarget, UDWORD damage, UBYTE attackPlayer)
 	iVector		pos;
 	UDWORD		i;
 
-    ASSERT((attackPlayer < MAX_PLAYERS,
-	    "electronicDamage: invalid player id"));
+    ASSERT_TEXT(attackPlayer < MAX_PLAYERS,
+	    "electronicDamage: invalid player id");
 
     //structure electronic damage
     if (psTarget->type == OBJ_STRUCTURE)
@@ -7585,11 +7585,11 @@ BOOL electronicDamage(BASE_OBJECT *psTarget, UDWORD damage, UBYTE attackPlayer)
         psStructure = (STRUCTURE *)psTarget;
         bCompleted = FALSE;
 
-	    ASSERT((PTRVALID(psStructure, sizeof(STRUCTURE)),
-		    "electronicDamage: Invalid Structure pointer"));
+	    ASSERT_TEXT(PTRVALID(psStructure, sizeof(STRUCTURE)),
+		    "electronicDamage: Invalid Structure pointer");
 
-	    ASSERT((psStructure->pStructureType->resistance != 0, 
-		    "electronicDamage: invalid structure for EW"));
+	    ASSERT_TEXT(psStructure->pStructureType->resistance != 0, 
+		    "electronicDamage: invalid structure for EW");
 
 	    //if resistance is already less than 0 don't do any more 
 	    if (psStructure->resistance < 0)
@@ -7635,15 +7635,15 @@ BOOL electronicDamage(BASE_OBJECT *psTarget, UDWORD damage, UBYTE attackPlayer)
         psDroid = (DROID *)psTarget;
         bCompleted = FALSE;
 
-	    ASSERT((PTRVALID(psDroid, sizeof(DROID)),
-		    "electronicDamage: Invalid Droid pointer"));
+	    ASSERT_TEXT(PTRVALID(psDroid, sizeof(DROID)),
+		    "electronicDamage: Invalid Droid pointer");
 
         //in multiPlayer cannot attack a Transporter with EW
         if (bMultiPlayer)
         {
             if (psDroid->droidType == DROID_TRANSPORTER)
             {
-                ASSERT((FALSE, "electronicDamage: Cannot attack a Transporter in multiPlayer"));
+                ASSERT_TEXT(FALSE, "electronicDamage: Cannot attack a Transporter in multiPlayer");
                 return TRUE;
             }
         }
@@ -7733,8 +7733,8 @@ BOOL validStructResistance(STRUCTURE *psStruct)
 {
     BOOL    bTarget = FALSE;
 
-	ASSERT((PTRVALID(psStruct, sizeof(STRUCTURE)),
-		"invalidStructResistance: invalid structure pointer"));
+	ASSERT_TEXT(PTRVALID(psStruct, sizeof(STRUCTURE)),
+		"invalidStructResistance: invalid structure pointer");
 
 
     if (psStruct->pStructureType->resistance != 0)
@@ -7807,8 +7807,8 @@ UDWORD	structureBaseBody(STRUCTURE *psStructure)
 	UBYTE				player, capacity;
 	UDWORD				body;
 
-	ASSERT((PTRVALID(psStructure, sizeof(STRUCTURE)),
-		"structureBaseBody: invalid structure pointer"));
+	ASSERT_TEXT(PTRVALID(psStructure, sizeof(STRUCTURE)),
+		"structureBaseBody: invalid structure pointer");
 
 	psStats = psStructure->pStructureType;
 	player = psStructure->player;
@@ -7818,8 +7818,8 @@ UDWORD	structureBaseBody(STRUCTURE *psStructure)
 		//modules may be attached
 	case REF_FACTORY:
 	case REF_VTOL_FACTORY:
-		ASSERT((PTRVALID(psStructure->pFunctionality, sizeof(FUNCTIONALITY)),
-			"structureBaseBody: invalid structure functionality pointer"));
+		ASSERT_TEXT(PTRVALID(psStructure->pFunctionality, sizeof(FUNCTIONALITY)),
+			"structureBaseBody: invalid structure functionality pointer");
 		if (((FACTORY *)psStructure->pFunctionality)->capacity > 0)
 		{
 			body = 0;
@@ -7840,8 +7840,8 @@ UDWORD	structureBaseBody(STRUCTURE *psStructure)
 		}
 		break;
 	case REF_RESEARCH:
-		ASSERT((PTRVALID(psStructure->pFunctionality, sizeof(FUNCTIONALITY)),
-			"structureBaseBody: invalid structure functionality pointer"));
+		ASSERT_TEXT(PTRVALID(psStructure->pFunctionality, sizeof(FUNCTIONALITY)),
+			"structureBaseBody: invalid structure functionality pointer");
 		if (((RESEARCH_FACILITY *)psStructure->pFunctionality)->capacity > 0)
 		{
 			body = 0;
@@ -7857,8 +7857,8 @@ UDWORD	structureBaseBody(STRUCTURE *psStructure)
 		}
 		break;
 	case REF_POWER_GEN:
-		ASSERT((PTRVALID(psStructure->pFunctionality, sizeof(FUNCTIONALITY)),
-			"structureBaseBody: invalid structure functionality pointer"));
+		ASSERT_TEXT(PTRVALID(psStructure->pFunctionality, sizeof(FUNCTIONALITY)),
+			"structureBaseBody: invalid structure functionality pointer");
 		if (((POWER_GEN *)psStructure->pFunctionality)->capacity > 0)
 		{
 			body = 0;
@@ -7974,8 +7974,8 @@ BOOL electronicReward(STRUCTURE *psStructure, UBYTE attackPlayer)
         bRewarded = TRUE;
 		break;
 	default:
-		//ASSERT((FALSE, "electronic Reward for a building not catered for - \
-		//	CANCEL will continue the game!"));
+		//ASSERT(FALSE, "electronic Reward for a building not catered for - \
+		//	CANCEL will continue the game!");
         bRewarded = FALSE;
 	}
 
@@ -8273,8 +8273,8 @@ void cancelProduction(STRUCTURE *psBuilding)
 {
 	FACTORY		*psFactory;
 
-	ASSERT((StructIsFactory(psBuilding), 
-		"cancelProduction: structure !a factory"));
+	ASSERT_TEXT(StructIsFactory(psBuilding), 
+		"cancelProduction: structure !a factory");
 
 	psFactory = (FACTORY *)psBuilding->pFunctionality;
 
@@ -8303,8 +8303,8 @@ void holdProduction(STRUCTURE *psBuilding)
 {
 	FACTORY		*psFactory;
 
-	ASSERT((StructIsFactory(psBuilding), 
-		"holdProduction: structure !a factory"));
+	ASSERT_TEXT(StructIsFactory(psBuilding), 
+		"holdProduction: structure !a factory");
 
 	psFactory = (FACTORY *)psBuilding->pFunctionality;
 
@@ -8325,8 +8325,8 @@ void releaseProduction(STRUCTURE *psBuilding)
 {
 	FACTORY		*psFactory;
 
-	ASSERT((StructIsFactory(psBuilding), 
-		"releaseProduction: structure !a factory"));
+	ASSERT_TEXT(StructIsFactory(psBuilding), 
+		"releaseProduction: structure !a factory");
 
 	psFactory = (FACTORY *)psBuilding->pFunctionality;
 
@@ -8348,8 +8348,8 @@ DROID_TEMPLATE * factoryProdUpdate(STRUCTURE *psStructure, DROID_TEMPLATE *psTem
 	UDWORD		inc, factoryType, factoryInc;
 	FACTORY		*psFactory;
 
-	ASSERT((psStructure->player == productionPlayer, 
-		"factoryProdUpdate: called for incorrect player"));
+	ASSERT_TEXT(psStructure->player == productionPlayer, 
+		"factoryProdUpdate: called for incorrect player");
 
 	psFactory = (FACTORY *)psStructure->pFunctionality;
 	factoryType = psFactory->psAssemblyPoint->factoryType;
@@ -8416,8 +8416,8 @@ void factoryProdAdjust(STRUCTURE *psStructure, DROID_TEMPLATE *psTemplate, BOOL 
 	FACTORY		*psFactory;
 	BOOL		bAssigned = FALSE, bCheckForCancel = FALSE;
 
-	ASSERT((psStructure->player == productionPlayer, 
-		"factoryProdAdjust: called for incorrect player"));
+	ASSERT_TEXT(psStructure->player == productionPlayer, 
+		"factoryProdAdjust: called for incorrect player");
 
 	psFactory = (FACTORY *)psStructure->pFunctionality;
 	factoryType = psFactory->psAssemblyPoint->factoryType;
@@ -8546,8 +8546,8 @@ UDWORD	getProductionQuantity(STRUCTURE *psStructure, DROID_TEMPLATE *psTemplate)
 	UDWORD		inc, factoryType, factoryInc;
 	FACTORY		*psFactory;
 
-	//ASSERT((psStructure->player == selectedPlayer, 
-	//	"getProductionQuantity: should only be called for selectedPlayer"));
+	//ASSERT(psStructure->player == selectedPlayer, 
+	//	"getProductionQuantity: should only be called for selectedPlayer");
 
     if (psStructure->player == productionPlayer)
     {
@@ -8576,8 +8576,8 @@ UDWORD	getProductionBuilt(STRUCTURE *psStructure, DROID_TEMPLATE *psTemplate)
 	UDWORD		inc, factoryType, factoryInc;
 	FACTORY		*psFactory;
 
-	//ASSERT((psStructure->player == selectedPlayer, 
-	//	"getProductionBuilt: should only be called for selectedPlayer"));
+	//ASSERT(psStructure->player == selectedPlayer, 
+	//	"getProductionBuilt: should only be called for selectedPlayer");
 
     if (psStructure->player == productionPlayer)
     {
@@ -8607,8 +8607,8 @@ UBYTE checkProductionForCommand(UBYTE player)
 	UBYTE		factoryInc, inc, factoryType;
 	UBYTE		mask = 1, quantity = 0;
 
-	//ASSERT((player == selectedPlayer, 
-	//	"checkProductionForCommand: should only be called for selectedPlayer"));
+	//ASSERT(player == selectedPlayer, 
+	//	"checkProductionForCommand: should only be called for selectedPlayer");
 
     if (player == productionPlayer)
     {
@@ -8648,8 +8648,8 @@ UWORD countAssignableFactories(UBYTE player,UWORD factoryType)
 	UWORD		factoryInc;
 	UBYTE		mask = 1, quantity = 0;
 
-	ASSERT((player == selectedPlayer, 
-		"countAssignableFactories: should only be called for selectedPlayer"));
+	ASSERT_TEXT(player == selectedPlayer, 
+		"countAssignableFactories: should only be called for selectedPlayer");
 
 	for (factoryInc = 0; factoryInc < MAX_FACTORY; factoryInc++)
 	{
@@ -8667,10 +8667,10 @@ UWORD countAssignableFactories(UBYTE player,UWORD factoryType)
 // check whether a factory of a certain number and type exists
 BOOL checkFactoryExists(UDWORD player, UDWORD factoryType, UDWORD inc)
 {
-	ASSERT((player < MAX_PLAYERS,
-		"checkFactoryExists: invalid player"));
-	ASSERT((factoryType < NUM_FACTORY_TYPES,
-		"checkFactoryExists: invalid factoryType"));
+	ASSERT_TEXT(player < MAX_PLAYERS,
+		"checkFactoryExists: invalid player");
+	ASSERT_TEXT(factoryType < NUM_FACTORY_TYPES,
+		"checkFactoryExists: invalid factoryType");
 
 	return (factoryNumFlag[player][factoryType] & (1 << inc)) != 0;
 }
@@ -8702,8 +8702,8 @@ void checkDeliveryPoints(UDWORD version)
 				    psFactory = (FACTORY *)psStruct->pFunctionality;
 				    if (psFactory->psAssemblyPoint == NULL)//need to add one
 				    {
-					    ASSERT((psFactory->psAssemblyPoint != NULL,
-                            "checkDeliveryPoints: no delivery point for factory"));
+					    ASSERT_TEXT(psFactory->psAssemblyPoint != NULL,
+                            "checkDeliveryPoints: no delivery point for factory");
 				    }
 				    else
 				    {
@@ -8719,14 +8719,14 @@ void checkDeliveryPoints(UDWORD version)
 				    {
 					    if (version >= VERSION_19)
 					    {
-						    ASSERT((psRepair->psDeliveryPoint != NULL,"checkDeliveryPoints: no delivery point for repair facility"));
+						    ASSERT_TEXT(psRepair->psDeliveryPoint != NULL,"checkDeliveryPoints: no delivery point for repair facility");
 					    }
 					    else
 					    {
 						    // add an assembly point
 						    if (!createFlagPosition(&psRepair->psDeliveryPoint, psStruct->player))
 						    {
-							    ASSERT((FALSE,"checkDeliveryPoints: unable to create new delivery point for repair facility"));
+							    ASSERT_TEXT(FALSE,"checkDeliveryPoints: unable to create new delivery point for repair facility");
 							    return;
 						    }
 						    addFlagPosition(psRepair->psDeliveryPoint);
@@ -8757,10 +8757,10 @@ void factoryLoopAdjust(STRUCTURE *psStruct, BOOL add)
 {
 	FACTORY		*psFactory;
 
-	ASSERT((StructIsFactory(psStruct), 
-		"factoryLoopAdjust: structure is !a factory"));
-	ASSERT((psStruct->player == selectedPlayer, 
-		"factoryLoopAdjust: should only be called for selectedPlayer"));
+	ASSERT_TEXT(StructIsFactory(psStruct), 
+		"factoryLoopAdjust: structure is !a factory");
+	ASSERT_TEXT(psStruct->player == selectedPlayer, 
+		"factoryLoopAdjust: should only be called for selectedPlayer");
 
 	psFactory = (FACTORY *)psStruct->pFunctionality;
 
@@ -9099,8 +9099,8 @@ STRUCTURE * giftSingleStructure(STRUCTURE *psStructure, UBYTE attackPlayer, BOOL
         //in this version of Warzone, the attack Player can NEVER be the selectedPlayer (unless from the script)
         if (!bFromScript && selectedPlayer == 0 && attackPlayer == selectedPlayer)
         {
-            ASSERT((FALSE, 
-                "giftSingleStructure: EW attack by selectedPlayer on a structure"));
+            ASSERT_TEXT(FALSE, 
+                "giftSingleStructure: EW attack by selectedPlayer on a structure");
             return NULL;
         }
     }
@@ -9188,8 +9188,8 @@ STRUCTURE * giftSingleStructure(STRUCTURE *psStructure, UBYTE attackPlayer, BOOL
         }
 
 
-        //ASSERT((FALSE,
-        //    "giftSingleStructure: EW attack in multiplayer"));
+        //ASSERT(FALSE,
+        //    "giftSingleStructure: EW attack in multiplayer");
         return NULL;
     }
 
@@ -9348,18 +9348,18 @@ BOOL checkStructureStats(void)
         {
             for (inc = 0; inc < asStructureStats[structInc].numFuncs; inc++)
             {
-                ASSERT((PTRVALID(asStructureStats[structInc].asFuncList[inc], 
+                ASSERT_TEXT(PTRVALID(asStructureStats[structInc].asFuncList[inc], 
                     sizeof(FUNCTION *)),"checkStructureStats: \
                     Invalid function for structure %s", 
-                    asStructureStats[structInc].pName));
+                    asStructureStats[structInc].pName);
             }
         }
         else
         {
             if (asStructureStats[structInc].asFuncList != NULL)
             {
-                ASSERT((FALSE, "checkStructureStats:Invalid functions attached to structure %s", 
-                    asStructureStats[structInc].pName));
+                ASSERT_TEXT(FALSE, "checkStructureStats:Invalid functions attached to structure %s", 
+                    asStructureStats[structInc].pName);
                 return FALSE;
             }
         }

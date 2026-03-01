@@ -39,7 +39,7 @@ static SDWORD		mx,my;				// Last mouse coords
 static SDWORD		wx,wy,ww,wh;		// Position and size of button to place tip by
 static SDWORD		tx,ty,tw,th;		// Position and size of the tip box
 static SDWORD		fx,fy;				// Position of the text
-static char *pTip;				// Tip text
+static const char *pTip;				// Tip text
 static UDWORD		*pColours;			// The colours for the tool tip
 static WIDGET		*psWidget;			// The button the tip is for
 //static PROP_FONT	*psFont;			// The font to display the tip with
@@ -70,17 +70,17 @@ void widgSetTipColour(W_SCREEN *psScreen, UBYTE red, UBYTE green, UBYTE blue)
  * tip by.
  */
 //void tipStart(WIDGET *psSource, char *pNewTip, PROP_FONT *psNewFont,
-void tipStart(WIDGET *psSource, char *pNewTip, int NewFontID,
+void tipStart(WIDGET *psSource, const char *pNewTip, int NewFontID,
 					 SDWORD *pNewColours, SDWORD x, SDWORD y, UDWORD width, UDWORD height)
 {
-	ASSERT((PTRVALID(psSource, sizeof(WIDGET)),
-		"tipStart: Invalid widget pointer"));
-//	ASSERT((PTRVALID(pNewTip, WIDG_MAXSTR),
-//		"tipStart: Invalid tip pointer"));
-//	ASSERT((PTRVALID(psNewFont, sizeof(PROP_FONT)),
-//		"tipStart: Invalid font pointer"));
-	ASSERT((PTRVALID(pNewColours, sizeof(UDWORD) * WCOL_MAX),
-		"tipStart: Invalid colours pointer"));
+	ASSERT_TEXT(PTRVALID(psSource, sizeof(WIDGET)),
+		"tipStart: Invalid widget pointer");
+//	ASSERT(PTRVALID(pNewTip, WIDG_MAXSTR),
+//		"tipStart: Invalid tip pointer");
+//	ASSERT(PTRVALID(psNewFont, sizeof(PROP_FONT)),
+//		"tipStart: Invalid font pointer");
+	ASSERT_TEXT(PTRVALID(pNewColours, sizeof(UDWORD) * WCOL_MAX),
+		"tipStart: Invalid colours pointer");
 
 	tipState = TIP_WAIT;
 	startTime = GetTickCount();
@@ -100,8 +100,8 @@ void tipStart(WIDGET *psSource, char *pNewTip, int NewFontID,
  */
 void tipStop(WIDGET *psSource)
 {
-	ASSERT((PTRVALID(psSource, sizeof(WIDGET)),
-		"tipStop: Invalid widget pointer"));
+	ASSERT_TEXT(PTRVALID(psSource, sizeof(WIDGET)),
+		"tipStop: Invalid widget pointer");
 
 	if (tipState != TIP_NONE && psSource == psWidget)
 	{

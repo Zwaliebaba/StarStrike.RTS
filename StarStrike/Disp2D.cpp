@@ -1177,10 +1177,10 @@ static void display2DMap(void)
 	x = (SDWORD)mapX;
 	y = (SDWORD)mapY;
 
-	ASSERT((x < (SDWORD)mapWidth,
-		"displayMap: x coord off map"));
-	ASSERT((y < (SDWORD)mapHeight,
-		"displayMap: y coord off map"));
+	ASSERT_TEXT(x < (SDWORD)mapWidth,
+		"displayMap: x coord off map");
+	ASSERT_TEXT(y < (SDWORD)mapHeight,
+		"displayMap: y coord off map");
 
 	psBack = screenGetSurface();
 	if (psBack == NULL) return;

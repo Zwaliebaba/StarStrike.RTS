@@ -30,6 +30,7 @@
 #include "MultiInt.h"
 #include "Multilimit.h"
 #include "PieMode.h"
+#include "Script.h"
 
 // ////////////////////////////////////////////////////////////////////////////
 // externs
@@ -127,7 +128,7 @@ BOOL startLimitScreen(void)
 		closeLoadingScreen();
 	}
 
-	addSideText(FRONTEND_SIDETEXT1,LIMITSX-2,LIMITSY,"LIMITS");	// draw sidetext...
+	addSideText(FRONTEND_SIDETEXT1,LIMITSX-2,LIMITSY,(char *)"LIMITS");	// draw sidetext...
 
 	memset(&sFormInit, 0, sizeof(W_FORMINIT));				// draw blue form...
 	sFormInit.formID	= FRONTEND_BACKDROP;
@@ -295,7 +296,7 @@ VOID runLimitScreen(void)
 			}
 			else
 			{
-				sendTextMessage("Limits Reset To Default Values",TRUE);	
+				sendTextMessage((char *)"Limits Reset To Default Values",TRUE);
 			}
 
 
@@ -339,8 +340,8 @@ VOID createLimitSet(VOID)
 	}
 
 	//close your eyes now
-	pChanges = MALLOC(numchanges*(sizeof(UDWORD)+sizeof(UBYTE)));	// allocate some mem for this.
-	pEntry = pChanges;
+	pChanges = (UBYTE *)MALLOC(numchanges*(sizeof(UDWORD)+sizeof(UBYTE)));	// allocate some mem for this.
+	pEntry = (UBYTE *)pChanges;
 
 	for(i=0;i<numStructureStats;i++)								// prepare chunk.
 	{
@@ -355,7 +356,7 @@ VOID createLimitSet(VOID)
 	// you can open them again.
 
 	ingame.numStructureLimits	= numchanges;
-	ingame.pStructureLimits		= pChanges;
+	ingame.pStructureLimits		= (UBYTE *)pChanges;
 
 	sendOptions(0,0);
 

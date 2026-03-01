@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Ivisdef.h"
+#include "PieTypes.h"
+#include "Types.h"
 
 typedef struct _atmosParticle
 {

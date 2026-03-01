@@ -135,17 +135,17 @@ queue_Enqueue( QUEUE * pQueue, void * psElement, int iPriority )
 	QUEUE_NODE	*psFreeNode, *psNode, *psNodePrev;
 
 	/* check input */
-	ASSERT( (PTRVALID(pQueue,sizeof(QUEUE)),
-			"queue_Enqueue: queue pointer invalid\n") );
-	ASSERT( (PTRVALID(psElement,pQueue->iElementSize),
-			"queue_Enqueue: element pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(pQueue,sizeof(QUEUE)),
+			"queue_Enqueue: queue pointer invalid\n" );
+	ASSERT_TEXT( PTRVALID(psElement,pQueue->iElementSize),
+			"queue_Enqueue: element pointer invalid\n" );
 
 #if QUEUE_INSERTION_TEST
 	psNode = pQueue->psNodeQHead;
 	while ( psNode != NULL )
 	{
-		ASSERT( (psNode->psElement != psElement,
-				"duplicate element found\n") );
+		ASSERT_TEXT( psNode->psElement != psElement,
+				"duplicate element found\n" );
 
 		psNode = psNode->psNext;
 	}
@@ -226,8 +226,8 @@ queue_Dequeue( QUEUE * pQueue )
 	QUEUE_NODE *	psNode;
 
 	/* check input */
-	ASSERT( (PTRVALID(pQueue,sizeof(QUEUE)),
-			"queue_Dequeue: queue pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(pQueue,sizeof(QUEUE)),
+			"queue_Dequeue: queue pointer invalid\n" );
 
 	if ( pQueue->psNodeQHead != NULL )
 	{
@@ -246,7 +246,7 @@ queue_Dequeue( QUEUE * pQueue )
 		pQueue->iFreeNodes++;
 		pQueue->iQueueNodes--;
 
-		ASSERT( (pQueue->iQueueNodes >= 0, "queue_Dequeue: queue nodes < 0") );
+		ASSERT_TEXT( pQueue->iQueueNodes >= 0, "queue_Dequeue: queue nodes < 0" );
 	}
 
 	return psElement;
@@ -266,10 +266,10 @@ queue_FindElement( QUEUE * pQueue, void * psElement )
 	QUEUE_NODE	*psNode, *psNodePrev;
 
 	/* check input */
-	ASSERT( (PTRVALID(pQueue,sizeof(QUEUE)),
-			"queue_FindElement: queue pointer invalid\n") );
-	ASSERT( (PTRVALID(psElement,pQueue->iElementSize),
-			"queue_FindElement: element pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(pQueue,sizeof(QUEUE)),
+			"queue_FindElement: queue pointer invalid\n" );
+	ASSERT_TEXT( PTRVALID(psElement,pQueue->iElementSize),
+			"queue_FindElement: element pointer invalid\n" );
 
 	/* init pointers to head of queue */
 	psNodePrev = psNode = pQueue->psNodeQHead;
@@ -369,10 +369,10 @@ BOOL
 queue_RemoveNode( QUEUE * pQueue, QUEUE_NODE *psNode )
 {
 	/* check input */
-	ASSERT( (PTRVALID(pQueue,sizeof(QUEUE)),
-			"queue_RemoveNode: queue pointer invalid\n") );
-	ASSERT( (PTRVALID(psNode,sizeof(QUEUE_NODE)),
-			"queue_RemoveNode: node pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(pQueue,sizeof(QUEUE)),
+			"queue_RemoveNode: queue pointer invalid\n" );
+	ASSERT_TEXT( PTRVALID(psNode,sizeof(QUEUE_NODE)),
+			"queue_RemoveNode: node pointer invalid\n" );
 
 	/* if node valid, remove from queue && return to free node list */
 	if ( psNode == NULL )
@@ -433,7 +433,7 @@ queue_RemoveNode( QUEUE * pQueue, QUEUE_NODE *psNode )
 		pQueue->iFreeNodes++;
 		pQueue->iQueueNodes--;
 
-		ASSERT( (pQueue->iQueueNodes >= 0, "queue_RemoveNode: queue nodes < 0") );
+		ASSERT_TEXT( pQueue->iQueueNodes >= 0, "queue_RemoveNode: queue nodes < 0" );
 
 		return TRUE;
 	}
@@ -453,10 +453,10 @@ queue_RemoveElement( QUEUE * pQueue, void * psElement )
 	QUEUE_NODE *psNode;
 
 	/* check input */
-	ASSERT( (PTRVALID(pQueue,sizeof(QUEUE)),
-			"queue_Dequeue: queue pointer invalid\n") );
-	ASSERT( (PTRVALID(psElement,pQueue->iElementSize),
-			"queue_RemoveElement: element pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(pQueue,sizeof(QUEUE)),
+			"queue_Dequeue: queue pointer invalid\n" );
+	ASSERT_TEXT( PTRVALID(psElement,pQueue->iElementSize),
+			"queue_RemoveElement: element pointer invalid\n" );
 
 	if ( (psNode = queue_FindElement( pQueue, psElement )) != NULL )
 	{

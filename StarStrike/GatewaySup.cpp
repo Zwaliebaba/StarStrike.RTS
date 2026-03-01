@@ -146,7 +146,7 @@ skip:
 #else
 	//	GODDAM *#!! LOWERCASE assert IS ABSOLUTELY NO %^$## USE ON THE PC
 //	assert(2+2==5);
-	ASSERT((FALSE, "gwSeedFill disabled"));
+	ASSERT_TEXT(FALSE, "gwSeedFill disabled");
 #endif
 }
 
@@ -497,7 +497,7 @@ BOOL gwCreateBlankZoneMap(void)
 		gwFreeZoneMap();
 	}
 
-	apRLEZones = MALLOC(sizeof(UBYTE *) * gwMapHeight());
+	apRLEZones = (UBYTE **)MALLOC(sizeof(UBYTE *) * gwMapHeight());
 	if (apRLEZones == NULL)
 	{
 		DBERROR(("gwCreateBlankZoneMap: Out of memory"));
@@ -505,7 +505,7 @@ BOOL gwCreateBlankZoneMap(void)
 	}
 	for(i=0; i< gwMapHeight(); i++)
 	{
-		apRLEZones[i] = MALLOC(gwMapWidth() * 2);
+		apRLEZones[i] = (UBYTE *)MALLOC(gwMapWidth() * 2);
 		if (apRLEZones[i] == NULL)
 		{
 			DBERROR(("gwCreateBlankZoneMap: Out of memory"));
@@ -540,8 +540,8 @@ void gwDecompressLine(SDWORD line, UBYTE *pBuffer)
 
 		for(store=0; store < count; store ++)
 		{
-			ASSERT((bufPos < gwMapWidth(),
-				"gwDecompressLine: Invalid RLE code"));
+			ASSERT_TEXT(bufPos < gwMapWidth(),
+				"gwDecompressLine: Invalid RLE code");
 
 			pBuffer[bufPos] = (UBYTE)zone;
 			bufPos += 1;
@@ -580,8 +580,8 @@ void gwSetZone(SDWORD x, SDWORD y, SDWORD zone)
 {
 	UBYTE	aBuffer[GW_MAP_MAXWIDTH];
 
-	ASSERT(((x >= 0) && (x < gwMapWidth()) && (y >= 0) && (y < gwMapHeight()),
-		"gwSetZone: invalid coordinates"));
+	ASSERT_TEXT((x >= 0) && (x < gwMapWidth()) && (y >= 0) && (y < gwMapHeight()),
+		"gwSetZone: invalid coordinates");
 
 	gwDecompressLine(y, aBuffer);
 

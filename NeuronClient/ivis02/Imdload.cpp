@@ -298,7 +298,7 @@ iIMDShape *iV_IMDLoad(char *filename, BOOL palkeep)
 
 
 	strcpy(_IMD_NAME,filename);
-	strlwr(_IMD_NAME);
+	_strlwr(_IMD_NAME);
 
 	_imd_get_path(filename,path);
 
@@ -531,10 +531,10 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 #ifdef PRE_LEVEL_TEXTURELOAD
 		if (bTextured)
 		{
-			texpage = iV_TexLoadNew(IMDpath,texfile,ptype,palkeep,FALSE);
+			texpage = iV_TexLoadNew((char *)IMDpath,texfile,ptype,palkeep,FALSE);
 			if (texpage < 0) 
 			{
-				texpage = iV_TexLoadNew(PCXpath,texfile,ptype,palkeep,FALSE);
+				texpage = iV_TexLoadNew((char *)PCXpath,texfile,ptype,palkeep,FALSE);
 			}
 			if (texpage < 0) 
 			{
@@ -592,9 +592,9 @@ iIMDShape *iV_ProcessIMD(UBYTE **ppFileData, UBYTE *FileDataEnd, UBYTE *IMDpath,
 		if(bTextured)
 		{
 			/* Note call to new texture page loader that doesn't actually load!!!!!!!!!! */
-			texpage = iV_TexLoadNew(IMDpath,texfile,ptype,palkeep,bColourKey);
+			texpage = iV_TexLoadNew((char *)IMDpath,texfile,ptype,palkeep,bColourKey);
 			if (texpage < 0) {
-				texpage = iV_TexLoadNew(PCXpath,texfile,ptype,palkeep,bColourKey);
+				texpage = iV_TexLoadNew((char *)PCXpath,texfile,ptype,palkeep,bColourKey);
 			}
 
 			if (texpage < 0) {
@@ -754,8 +754,8 @@ static BOOL _imd_load_polys(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s
 					return FALSE;
 				}
 
-				ASSERT( (tWidth>0, "_imd_load_polys: texture width = %i", tWidth) );
-				ASSERT( (tHeight>0, "_imd_load_polys: texture height = %i", tHeight) );
+				ASSERT_TEXT( tWidth>0, "_imd_load_polys: texture width = %i", tWidth );
+				ASSERT_TEXT( tHeight>0, "_imd_load_polys: texture height = %i", tHeight );
 
 				poly->pTexAnim->nFrames = nFrames;
 				
@@ -944,26 +944,26 @@ static BOOL _imd_load_bsp(UBYTE **ppFileData, UBYTE *FileDataEnd, iIMDShape *s, 
 		psNode = &(NodeList[Node]);
 
 
-		if ((SDWORD)(psNode->link[LEFT])==-1)
+		if ((SDWORD)(intptr_t)(psNode->link[LEFT])==-1)
 		{
 			psNode->link[LEFT]=0;	// if its zero then its an empty link 
 		}
 		else
 		{
-			NodeID = psNode->link[LEFT];
+			NodeID = (int)(intptr_t)psNode->link[LEFT];
 			psNode->link[LEFT] = &NodeList[NodeID];
 		}		
 
 
-		if ((SDWORD)(psNode->link[RIGHT])==-1)
+		if ((SDWORD)(intptr_t)(psNode->link[RIGHT])==-1)
 		{
 			psNode->link[RIGHT]=0;	// if its zero then its an empty link 
 		}
 		else
 		{
-			NodeID = psNode->link[RIGHT];
+			NodeID = (int)(intptr_t)psNode->link[RIGHT];
 			psNode->link[RIGHT] = &NodeList[NodeID];
-		}		
+		}
 	}
 
 	s->BSPNode=&NodeList[0];	// Set the shape node list to the root node ... this can be used to FREE up the BSP memory if we needed to

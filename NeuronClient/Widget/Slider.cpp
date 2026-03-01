@@ -24,13 +24,13 @@ BOOL sliderCreate(W_SLIDER **ppsWidget, W_SLDINIT *psInit)
 {
 	if (psInit->style & ~(WBAR_PLAIN | WIDG_HIDDEN))
 	{
-		ASSERT((FALSE, "sliderCreate: Unknown style"));
+		ASSERT_TEXT(FALSE, "sliderCreate: Unknown style");
 		return FALSE;
 	}
 
 	if (psInit->orientation < WSLD_LEFT || psInit->orientation > WSLD_BOTTOM)
 	{
-		ASSERT((FALSE, "sliderCreate: Unknown orientation"));
+		ASSERT_TEXT(FALSE, "sliderCreate: Unknown orientation");
 		return FALSE;
 	}
 
@@ -39,13 +39,13 @@ BOOL sliderCreate(W_SLIDER **ppsWidget, W_SLDINIT *psInit)
 		((psInit->orientation == WSLD_TOP || psInit->orientation == WSLD_BOTTOM) &&
 				psInit->numStops > (psInit->height - psInit->barSize)))
 	{
-		ASSERT((FALSE, "sliderCreate: Too many stops for slider length"));
+		ASSERT_TEXT(FALSE, "sliderCreate: Too many stops for slider length");
 		return FALSE;
 	}
 
 	if (psInit->pos > psInit->numStops)
 	{
-		ASSERT((FALSE, "sliderCreate: slider position greater than stops"));
+		ASSERT_TEXT(FALSE, "sliderCreate: slider position greater than stops");
 		return FALSE;
 	}
 
@@ -54,7 +54,7 @@ BOOL sliderCreate(W_SLIDER **ppsWidget, W_SLDINIT *psInit)
 		((psInit->orientation == WSLD_TOP || psInit->orientation == WSLD_BOTTOM) &&
 				psInit->barSize > psInit->height))
 	{
-		ASSERT((FALSE, "sliderCreate: slider bar is larger than slider width"));
+		ASSERT_TEXT(FALSE, "sliderCreate: slider bar is larger than slider width");
 		return FALSE;
 	}
 
@@ -66,7 +66,7 @@ BOOL sliderCreate(W_SLIDER **ppsWidget, W_SLDINIT *psInit)
 	if (!HEAP_ALLOC(psSldHeap, ppsWidget))
 #endif
 	{
-		ASSERT((FALSE, "sliderCreate: Out of memory"));
+		ASSERT_TEXT(FALSE, "sliderCreate: Out of memory");
 		return FALSE;
 	}
 	/* Allocate the memory for the tip && copy it if necessary */
@@ -76,7 +76,7 @@ BOOL sliderCreate(W_SLIDER **ppsWidget, W_SLDINIT *psInit)
 		if (!widgAllocCopyString(&(*ppsWidget)->pTip, psInit->pTip))
 		{
 			/* Out of memory - just carry on without the tip */
-			ASSERT((FALSE, "sliderCreate: Out of memory"));
+			ASSERT_TEXT(FALSE, "sliderCreate: Out of memory");
 			(*ppsWidget)->pTip = NULL;
 		}
 #else
@@ -123,8 +123,8 @@ BOOL sliderCreate(W_SLIDER **ppsWidget, W_SLDINIT *psInit)
 /* Free the memory used by a slider */
 void sliderFree(W_SLIDER *psWidget)
 {
-	ASSERT((PTRVALID(psWidget, sizeof(W_SLIDER)),
-		"sliderFree: Invalid widget pointer"));
+	ASSERT_TEXT(PTRVALID(psWidget, sizeof(W_SLIDER)),
+		"sliderFree: Invalid widget pointer");
 
 #if W_USE_STRHEAP
 	if (psWidget->pTip)
@@ -145,8 +145,8 @@ void sliderFree(W_SLIDER *psWidget)
 /* Initialise a slider widget before running it */
 void sliderInitialise(W_SLIDER *psWidget)
 {
-	ASSERT((PTRVALID(psWidget, sizeof(W_SLIDER)),
-		"sliderInitialise: Invalid slider pointer"));
+	ASSERT_TEXT(PTRVALID(psWidget, sizeof(W_SLIDER)),
+		"sliderInitialise: Invalid slider pointer");
 
 	psWidget->state = 0;
 	psWidget->pos = 0;
@@ -159,8 +159,8 @@ UDWORD widgGetSliderPos(W_SCREEN *psScreen, UDWORD id)
 	WIDGET	*psWidget;
 
 	psWidget = widgGetFromID(psScreen, id);
-	ASSERT((PTRVALID(psWidget, sizeof(W_SLIDER)),
-		"widgGetSliderPos: couldn't find widget from id"));
+	ASSERT_TEXT(PTRVALID(psWidget, sizeof(W_SLIDER)),
+		"widgGetSliderPos: couldn't find widget from id");
 	if (psWidget)
 	{
 		return ((W_SLIDER *)psWidget)->pos;
@@ -175,8 +175,8 @@ void widgSetSliderPos(W_SCREEN *psScreen, UDWORD id, UWORD pos)
 	WIDGET	*psWidget;
 
 	psWidget = widgGetFromID(psScreen, id);
-	ASSERT((PTRVALID(psWidget, sizeof(W_SLIDER)),
-		"widgGetSliderPos: couldn't find widget from id"));
+	ASSERT_TEXT(PTRVALID(psWidget, sizeof(W_SLIDER)),
+		"widgGetSliderPos: couldn't find widget from id");
 	if (psWidget)
 	{
 		if (pos > ((W_SLIDER *)psWidget)->numStops)

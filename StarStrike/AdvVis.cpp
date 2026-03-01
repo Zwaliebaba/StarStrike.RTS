@@ -222,7 +222,7 @@ STRUCTURE	*psStruct;
                     }
                     else
                     {
-                        ASSERT((FALSE, "preProcessVisibility: should be a structure at %d, %d", i, j));
+                        ASSERT_TEXT(FALSE, "preProcessVisibility: should be a structure at %d, %d", i, j);
                     }
 				}*/
 				/*

@@ -14,6 +14,9 @@
 
 #include "Multiplay.h"
 
+extern UDWORD iV_GetMouseFrame(void);
+extern UDWORD getTargetType(void);
+
 #include "WinMain.h"
 #include "HCI.h"
 #include "GTime.h"
@@ -130,7 +133,7 @@ BOOL scrGenExternGet(UDWORD index)
 		val	= game.base;
 		break;
 		default:
-		ASSERT((FALSE, "scrGenExternGet: unknown variable index"));
+		ASSERT_TEXT(FALSE, "scrGenExternGet: unknown variable index");
 		return FALSE;
 		break;
 	}
@@ -164,7 +167,7 @@ BOOL scrGenExternSet(UDWORD index)
 	case EXTID_GAMELEVEL:
 		if (type != VAL_INT)
 		{
-			ASSERT((FALSE,"invalid type for gameLevel"));
+			ASSERT_TEXT(FALSE,"invalid type for gameLevel");
 			return FALSE;
 		}
 		scrGameLevel = val;
@@ -172,7 +175,7 @@ BOOL scrGenExternSet(UDWORD index)
 	case EXTID_TUTORIAL:
 		if (type != VAL_BOOL)
 		{
-			ASSERT((FALSE,"invalid type for inTutorial"));
+			ASSERT_TEXT(FALSE,"invalid type for inTutorial");
 			return FALSE;
 		}
 		bInTutorial = val;
@@ -180,7 +183,7 @@ BOOL scrGenExternSet(UDWORD index)
 	case EXTID_EXTRAVICTORYFLAG:
 		if (type != VAL_BOOL)
 		{
-			ASSERT((FALSE,"invalid type for extraVictoryFlag"));
+			ASSERT_TEXT(FALSE,"invalid type for extraVictoryFlag");
 			return FALSE;
 		}
 		bExtraVictoryFlag = val;
@@ -188,13 +191,13 @@ BOOL scrGenExternSet(UDWORD index)
 	case EXTID_EXTRAFAILFLAG:
 		if (type != VAL_BOOL)
 		{
-			ASSERT((FALSE,"invalid type for extraFailFlag"));
+			ASSERT_TEXT(FALSE,"invalid type for extraFailFlag");
 			return FALSE;
 		}
 		bExtraFailFlag = val;
 		break;
 	default:
-		ASSERT((FALSE, "scrGenExternSet: unknown variable index"));
+		ASSERT_TEXT(FALSE, "scrGenExternSet: unknown variable index");
 		return FALSE;
 		break;
 	}

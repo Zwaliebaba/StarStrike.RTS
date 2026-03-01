@@ -125,7 +125,7 @@ int remakeTileTextures(void)
 
 	w = tilesPCX.width / TILE_WIDTH;
 	h = tilesPCX.height / TILE_HEIGHT;
-	ASSERT((numPCXTiles >= w * h,"remakeTileTextures: New Tertiles larger than existing version"));
+	ASSERT_TEXT(numPCXTiles >= w * h,"remakeTileTextures: New Tertiles larger than existing version");
 
 	//tilesRAW is already set up
 	t = 0;
@@ -199,8 +199,8 @@ iSprite	sprite;
 
 	/* Get enough memory to store one tile */
 	pageNumber = 0;
-	tileStorage = MALLOC(tileWidth*tileHeight);
-	sprite.bmp = MALLOC(TEXTURE_PAGE_SIZE);
+	tileStorage = (unsigned char *)MALLOC(tileWidth*tileHeight);
+	sprite.bmp = (iBitmap *)MALLOC(TEXTURE_PAGE_SIZE);
 	sprite.width = PAGE_WIDTH;
 	sprite.height = PAGE_HEIGHT;
 //	memset(sprite.bmp,0,TEXTURE_PAGE_SIZE);
@@ -235,7 +235,7 @@ iSprite	sprite;
 			{
 				/* If so, download this one && reset to start again */
 				pageId[pageNumber] = pie_AddBMPtoTexPages( 	&sprite, "terrain", 0, TRUE, FALSE);
-				sprite.bmp = MALLOC(TEXTURE_PAGE_SIZE);
+				sprite.bmp = (iBitmap *)MALLOC(TEXTURE_PAGE_SIZE);
 				pageNumber++;
 				presentLoc = sprite.bmp;
 			}
@@ -272,7 +272,7 @@ SDWORD  index;
 
 	/* Get enough memory to store one tile */
 	pageNumber = 0;
-	tileStorage = MALLOC(tileWidth*tileHeight);
+	tileStorage = (unsigned char *)MALLOC(tileWidth*tileHeight);
 //	texturePage = MALLOC(TEXTURE_PAGE_SIZE);
 	sprite.width = PAGE_WIDTH;
 	sprite.height = PAGE_HEIGHT;
@@ -343,7 +343,7 @@ SDWORD  index;
 	}
 
 	//check numTexturePages == pageNumber;
-	ASSERT((numTexturePages >= (SDWORD)pageNumber,"New Tertiles too large"));
+	ASSERT_TEXT(numTexturePages >= (SDWORD)pageNumber,"New Tertiles too large");
 
 exit:
 	FREE(tileStorage);

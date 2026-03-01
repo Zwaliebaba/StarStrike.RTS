@@ -75,7 +75,7 @@ typedef union {
 } YYSTYPE;
 #define TEXT	257
 #define QTEXT	258
-extern int strres_char, yyerrflag;
+extern int strres_char;
 extern YYSTYPE strres_lval;
 #if YYDEBUG
 enum YY_Types { YY_t_NoneDefined, YY_t_sval
@@ -320,11 +320,12 @@ int yyssize = YYSSIZE;
  */
 #define	yyneg(s)	(-((s)+1))
 
-YYSTYPE	yyval;				/* $ */
-YYSTYPE	*yypvt;				/* $n */
+static YYSTYPE	yyval;				/* $ */
+static YYSTYPE	*yypvt;				/* $n */
 YYSTYPE	strres_lval;				/* strres_lex() sets this */
 
-int	strres_char,				/* current token */
+int	strres_char;				/* current token */
+static int
 	yyerrflag,			/* error flag */
 	yynerrs;			/* error count */
 

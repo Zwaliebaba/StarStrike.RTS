@@ -251,6 +251,7 @@ extern BOOL DroidIsRepairing(DROID *Droid);
 BOOL DroidIsBuilding(DROID *Droid);
 STRUCTURE *DroidGetBuildStructure(DROID *Droid);
 BOOL DroidGoingToBuild(DROID *Droid);
+BOOL DroidIsDemolishing(DROID *Droid);
 BASE_STATS *DroidGetBuildStats(DROID *Droid);
 iIMDShape *DroidGetIMD(DROID *Droid);
 UDWORD DroidGetIMDIndex(DROID *Droid);

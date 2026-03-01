@@ -40,14 +40,11 @@ typedef	int	BOOL;
 #define FALSE	(0)
 #endif
 
-/* locale types */
+/* locale types — VOID removed: conflicts with Windows SDK #ifndef VOID guard in winnt.h */
 
 #define LOCAL                   static
 #define STATIC                  static
-#define REGISTER                register
-#define FAST                    register
 #define IMPORT                  extern
-#define VOID                    void
 
 
 

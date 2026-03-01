@@ -376,8 +376,9 @@ static BOOL setupPlayBuffer(VOID)
 
 // ////////////////////////////////////////////////////////////////////////
 
-BOOL NETinitPlaybackBuffer(LPDIRECTSOUND pDs)
+BOOL NETinitPlaybackBuffer(VOID *pDsVoid)
 {
+	LPDIRECTSOUND pDs = (LPDIRECTSOUND)pDsVoid;
 	NetPlay.bAllowCapturePlay	= FALSE;
 	NetPlay.bCaptureInUse		= FALSE;
 

@@ -723,7 +723,7 @@ SDWORD	xPos,yPos,zPos;
 			bGotFlying = TRUE;
 			droidHeight = psDroid->z;
 			mapHeight = map_Height(psDroid->x,psDroid->y);
-			difHeight = abs(droidHeight - mapHeight);
+			difHeight = abs((int)(droidHeight - mapHeight));
 			if(difHeight < MIN_TRACK_HEIGHT)
 			{
 				bTooLow = TRUE;
@@ -1594,8 +1594,8 @@ void	setUpRadarTarget(SDWORD x, SDWORD y)
 void	requestRadarTrack(SDWORD x, SDWORD y)
 {
 /*	
-	ASSERT((x<mapWidth*TILE_UNITS,"Weirdy x coordinate for tracking"));
-	ASSERT((y<mapHeight*TILE_UNITS,"Weirdy y coordinate for tracking"));
+	ASSERT_TEXT(x<mapWidth*TILE_UNITS,"Weirdy x coordinate for tracking");
+	ASSERT_TEXT(y<mapHeight*TILE_UNITS,"Weirdy y coordinate for tracking");
 */
 	
 	radarX = (SWORD)x;

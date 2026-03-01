@@ -277,10 +277,10 @@ extern void	mapWaterProcess( void );
 /* Return a pointer to the tile structure at x,y */
 FUNCINLINE MAPTILE *mapTile(UDWORD x, UDWORD y)
 {
-	ASSERT((x < mapWidth,
-		"mapTile: x coordinate bigger than map width"));
-	ASSERT((y < mapHeight,
-		"mapTile: y coordinate bigger than map height"));
+	ASSERT_TEXT(x < mapWidth,
+		"mapTile: x coordinate bigger than map width");
+	ASSERT_TEXT(y < mapHeight,
+		"mapTile: y coordinate bigger than map height");
 	//return psMapTiles + x + (y << mapShift); //width no longer a power of 2
 	return psMapTiles + x + (y * mapWidth); 
 }
@@ -291,10 +291,10 @@ FUNCINLINE SWORD map_TileHeight(UDWORD x, UDWORD y)
 {
     x = x >= (mapWidth) ? (mapWidth-1) : x;
 	y = y >= (mapHeight) ? (mapHeight-1) : y;
-	ASSERT((x < mapWidth,
-		"mapTile: x coordinate bigger than map width"));
-	ASSERT((y < mapHeight,
-		"mapTile: y coordinate bigger than map height"));
+	ASSERT_TEXT(x < mapWidth,
+		"mapTile: x coordinate bigger than map width");
+	ASSERT_TEXT(y < mapHeight,
+		"mapTile: y coordinate bigger than map height");
 
 //	return ((psMapTiles[x + (y << mapShift)].height) * ELEVATION_SCALE);//width no longer a power of 2
 	return (SWORD)((psMapTiles[x + (y * mapWidth)].height) * ELEVATION_SCALE);
@@ -303,10 +303,10 @@ FUNCINLINE SWORD map_TileHeight(UDWORD x, UDWORD y)
 /*sets the tile height */
 FUNCINLINE void setTileHeight(UDWORD x, UDWORD y, UDWORD height)
 {
-	ASSERT((x < mapWidth,
-		"mapTile: x coordinate bigger than map width"));
-	ASSERT((y < mapHeight,
-		"mapTile: y coordinate bigger than map height"));
+	ASSERT_TEXT(x < mapWidth,
+		"mapTile: x coordinate bigger than map width");
+	ASSERT_TEXT(y < mapHeight,
+		"mapTile: y coordinate bigger than map height");
 	//psMapTiles[x + (y << mapShift)].height = height;//width no longer a power of 2
 	psMapTiles[x + (y * mapWidth)].height = (UBYTE) (height / ELEVATION_SCALE);
 }

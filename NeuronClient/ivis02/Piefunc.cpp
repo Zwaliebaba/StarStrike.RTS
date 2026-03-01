@@ -16,6 +16,7 @@
 #include "PieMatrix.h"
 #include "PieTexture.h"
 #include "PieClip.h"
+#include "GTime.h"
 
 #include "D3drender.h"
 
@@ -50,7 +51,7 @@ static UBYTE	aByteScale[256][256];
 
 void pie_DownLoadBufferToScreen(void *pSrcData, UDWORD destX, UDWORD destY,UDWORD srcWidth,UDWORD srcHeight,UDWORD srcStride)
 {
-	pie_D3DSetupRenderForFlip(destX, destY, pSrcData, srcWidth, srcHeight, srcStride);
+	pie_D3DSetupRenderForFlip(destX, destY, (UWORD *)pSrcData, srcWidth, srcHeight, srcStride);
 	return;
 }
 
@@ -542,7 +543,7 @@ void pie_InitMaths(void)
 		{
 			bigC = a * b;
 			bigC /= UBYTE_MAX;
-			ASSERT((bigC <= UBYTE_MAX,"light_InitMaths; rounding error"));
+			ASSERT_TEXT(bigC <= UBYTE_MAX,"light_InitMaths; rounding error");
 			c = (UBYTE)bigC;
 			aByteScale[a][b] = c;
 		}

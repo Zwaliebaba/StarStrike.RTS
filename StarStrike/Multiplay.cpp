@@ -39,6 +39,10 @@
 #include "Multirecv.h"								// incoming messages stuff
 #include "Multistat.h"
 #include "Multigifts.h"								// gifts and alliances.
+#include "Selection.h"
+#include "Levels.h"
+
+extern void CancelAllResearch(UDWORD pl);
 
 // ////////////////////////////////////////////////////////////////////////////
 // ////////////////////////////////////////////////////////////////////////////
@@ -964,7 +968,7 @@ BOOL sendReseachStatus(STRUCTURE *psBuilding ,UDWORD index, UBYTE player, BOOL b
 	}
 
 	NetAdd(m,0,player);				// player researching
-	NetAdd(m,1,((UBYTE)bStart) );	// start stop..	
+	{ UBYTE tmpStart = (UBYTE)bStart; NetAdd(m,1,tmpStart); }	// start stop..
 	if(psBuilding)
 	{
 		NetAdd(m,2,psBuilding->id);	// res lab.
@@ -1206,7 +1210,7 @@ BOOL recvTemplate(NETMSG * m)
 
 	player = (UBYTE)(m->body[0]);
 
-	ASSERT((player<MAX_PLAYERS,"recvtemplate: invalid player size:%d"));
+	ASSERT_TEXT(player<MAX_PLAYERS,"recvtemplate: invalid player size:%d");
 
 	if(m->size < sizeof(DROID_TEMPLATE))
 	{
@@ -1515,7 +1519,7 @@ BOOL recvMapFileData(NETMSG *pMsg)
 	if(done == 100)
 	{
 		addConsoleMessage("MAP DOWNLOADED!",DEFAULT_JUSTIFY);
-		sendTextMessage("MAP DOWNLOADED",TRUE);					//send
+		sendTextMessage((char *)"MAP DOWNLOADED",TRUE);					//send
 
 		// clear out the old level list.
 		WDG_SetCurrentWDG(NULL);

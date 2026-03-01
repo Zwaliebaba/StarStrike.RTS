@@ -117,7 +117,7 @@ typedef enum _key_code
 
 /* The largest possible scan code (probably a lot less than this but ...) */
 //      but ...    it's not as if it's got to fit into 2meg of mem or anything is it ...
-#define KEY_MAXSCAN  512
+#define KEY_MAXSCAN  ((KEY_CODE)512)
 
 
 /* Converts the key code into an ascii char */

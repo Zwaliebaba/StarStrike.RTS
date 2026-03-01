@@ -105,7 +105,7 @@ void resetRadarRedraw(void) { RadarRedraw = TRUE; }
 
 BOOL InitRadar(void)
 {
-  radarBuffer = MALLOC(RADWIDTH*RADHEIGHT);
+  radarBuffer = (UBYTE *)MALLOC(RADWIDTH*RADHEIGHT);
   if (radarBuffer == NULL)
     return FALSE;
   memset(radarBuffer, 0,RADWIDTH * RADHEIGHT);
@@ -149,7 +149,7 @@ BOOL ShutdownRadar(void)
 
 void SetRadarZoom(UWORD ZoomLevel)
 {
-  ASSERT((ZoomLevel <= MAX_RADARZOOM,"SetRadarZoom: Max radar zoom exceeded"));
+  ASSERT_TEXT(ZoomLevel <= MAX_RADARZOOM,"SetRadarZoom: Max radar zoom exceeded");
 
   if (ZoomLevel != RadarZoom)
   {
@@ -409,7 +409,7 @@ static void DrawRadarTiles(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWORD 
   OffsetX = RadarOffsetX;
   OffsetY = RadarOffsetY;
 
-  ASSERT(( (SizeV!=0) && (SizeV!=0) ,"Zero pixel size" ));
+  ASSERT_TEXT( (SizeV!=0) && (SizeV!=0) ,"Zero pixel size" );
 
   SweepPos = SweepPos & (~(SizeV - 1));
 
@@ -443,7 +443,7 @@ static void DrawRadarTiles(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWORD 
       for (j = 0; j < VisWidth; j += SizeV)
       {
 #ifdef CHECKBUFFER
-        ASSERT(( ((UDWORD)WScr) >= radarBuffer , "WScr Onderflow")); ASSERT(
+        ASSERT_TEXT( ((UDWORD)WScr) >= radarBuffer , "WScr Onderflow"); ASSERT(
           ( ((UDWORD)WScr) < ((UDWORD)radarBuffer)+RADWIDTH*RADHEIGHT , "WScr Overrun"));
 #endif
         if (TEST_TILE_VISIBLE(selectedPlayer, WTile) || godMode)
@@ -484,7 +484,7 @@ static void DrawRadarTiles(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWORD 
             for (d = 0; d < SizeH; d++)
             {
 #ifdef CHECKBUFFER
-              ASSERT(( ((UDWORD)WPtr) >= (UDWORD)radarBuffer , "WPtr Onderflow")); ASSERT(
+              ASSERT_TEXT( ((UDWORD)WPtr) >= (UDWORD)radarBuffer , "WPtr Onderflow"); ASSERT(
                 ( ((UDWORD)WPtr) < ((UDWORD)radarBuffer)+RADWIDTH*RADHEIGHT , "WPtr Overrun"));
 #endif
 
@@ -503,7 +503,7 @@ static void DrawRadarTiles(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWORD 
             for (d = 0; d < SizeH; d++)
             {
 #ifdef CHECKBUFFER
-              ASSERT(( ((UDWORD)WPtr) >= (UDWORD)radarBuffer , "WPtr Onderflow")); ASSERT(
+              ASSERT_TEXT( ((UDWORD)WPtr) >= (UDWORD)radarBuffer , "WPtr Onderflow"); ASSERT(
                 ( ((UDWORD)WPtr) < ((UDWORD)radarBuffer)+RADWIDTH*RADHEIGHT , "WPtr Overrun"));
 #endif
               *WPtr = colBlack; //colGrey;
@@ -603,7 +603,7 @@ static void DrawRadarObjects(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWOR
               for (d = 0; d < SizeH; d++)
               {
 #ifdef CHECKBUFFER
-                ASSERT(( ((UDWORD)WPtr) >= (UDWORD)radarBuffer , "WPtr Onderflow")); ASSERT(
+                ASSERT_TEXT( ((UDWORD)WPtr) >= (UDWORD)radarBuffer , "WPtr Onderflow"); ASSERT(
                   ( ((UDWORD)WPtr) < ((UDWORD)radarBuffer)+RADWIDTH*RADHEIGHT , "WPtr Overrun"));
 #endif
                 *WPtr = col;
@@ -691,7 +691,7 @@ static void DrawRadarObjects(UBYTE* screen, UDWORD Modulus, UWORD boxSizeH, UWOR
             for (d = 0; d < SSizeH; d++)
             {
 #ifdef CHECKBUFFER
-              ASSERT(( ((UDWORD)WPtr) >= (UDWORD)radarBuffer , "WPtr Onderflow")); ASSERT(
+              ASSERT_TEXT( ((UDWORD)WPtr) >= (UDWORD)radarBuffer , "WPtr Onderflow"); ASSERT(
                 ( ((UDWORD)WPtr) < ((UDWORD)radarBuffer)+RADWIDTH*RADHEIGHT , "WPtr Overrun"));
 #endif
               *WPtr = (UBYTE)col;

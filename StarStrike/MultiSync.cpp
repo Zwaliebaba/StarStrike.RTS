@@ -290,7 +290,7 @@ static void packageCheck(UDWORD i, NETMSG *pMsg, DROID *pD)
 		NetAdd2(pMsg,	i+24,		pD->orderX);
 		NetAdd2(pMsg,	i+26,		pD->orderY);
 	}
-	NetAdd2(pMsg,		i+28,		((UWORD)pD->numKills));		// droid kills
+	{ UWORD tmpKills = (UWORD)pD->numKills; NetAdd2(pMsg,		i+28,		tmpKills); }		// droid kills
 
 	pMsg->size =(UWORD)( pMsg->size + 30);
 	
@@ -410,8 +410,8 @@ BOOL recvDroidCheck(NETMSG *m)
 
 		//////////////////////////////////////
 		// now make note of how accurate the world model is for this droid.	// if droid is close then remember.
-		if(    abs(x- pD->x)<(TILE_UNITS*2)
-			|| abs(y- pD->y)<(TILE_UNITS*2))
+		if(    abs((int)(x- pD->x))<(TILE_UNITS*2)
+			|| abs((int)(y- pD->y))<(TILE_UNITS*2))
 		{
 			pD->lastSync	= gameTime;								// note we did a reasonable job.
 		}
@@ -461,8 +461,8 @@ static void highLevelDroidUpdate(DROID *psDroid,UDWORD x, UDWORD y,
 	// offscreen updates will make this ok each time.
 	if(psDroid->order == DORDER_NONE && order == DORDER_NONE)
 	{
-		if(  (abs(x- psDroid->x)>(TILE_UNITS*2))		// if more than 2 tiles wrong.
-		   ||(abs(y- psDroid->y)>(TILE_UNITS*2)) )
+		if(  (abs((int)(x- psDroid->x))>(TILE_UNITS*2))		// if more than 2 tiles wrong.
+		   ||(abs((int)(y- psDroid->y))>(TILE_UNITS*2)) )
 		{
 			turnOffMultiMsg(TRUE);
 			orderDroidLoc(psDroid, DORDER_MOVE,x,y);
@@ -593,7 +593,7 @@ static void offscreenUpdate(DROID *psDroid,
 
 	// snap droid(if on ground)  to terrain level at x,y.
 	psPropStats = asPropulsionStats + psDroid->asBits[COMP_PROPULSION].nStat;
-	ASSERT((PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),"offscreenUpdate: invalid propulsion stats pointer"));
+	ASSERT_TEXT(PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),"offscreenUpdate: invalid propulsion stats pointer");
 	if(	psPropStats->propulsionType != LIFT )		// if not airborne.
 	{
 		psDroid->z = map_Height(psDroid->x, psDroid->y);
@@ -700,20 +700,20 @@ static BOOL sendStructureCheck(VOID)
 		// functionality.
 		if (pS->pStructureType->type == REF_RESEARCH)
 		{	
-			NetAdd(m,19, ((UBYTE)((RESEARCH_FACILITY*)pS->pFunctionality)->capacity ));
+			{ UBYTE tmpCap = (UBYTE)((RESEARCH_FACILITY*)pS->pFunctionality)->capacity; NetAdd(m,19, tmpCap); }
 			m.size +=1;
 		}
 		if (pS->pStructureType->type == REF_FACTORY ||
 //			pS->pStructureType->type == REF_CYBORG_FACTORY OR
 			pS->pStructureType->type == REF_VTOL_FACTORY)
 		{	
-			NetAdd(m,19,((UBYTE)((FACTORY*)pS->pFunctionality)->capacity ) );
+			{ UBYTE tmpCap = (UBYTE)((FACTORY*)pS->pFunctionality)->capacity; NetAdd(m,19,tmpCap); }
 			m.size +=1;
 
 		}
 		if (pS->pStructureType->type == REF_POWER_GEN)
 		{
-			NetAdd(m,19,((UBYTE)((POWER_GEN*)pS->pFunctionality)->capacity) );
+			{ UBYTE tmpCap = (UBYTE)((POWER_GEN*)pS->pFunctionality)->capacity; NetAdd(m,19,tmpCap); }
 			m.size +=1;
 		}
 		
@@ -881,7 +881,7 @@ BOOL recvStructureCheck( NETMSG *m)
 				
 				default:
 					j=0;
-					ASSERT((FALSE,"Unknown Upgrade in structure checking!"));
+					ASSERT_TEXT(FALSE,"Unknown Upgrade in structure checking!");
 					return TRUE;
 					break;
 				}

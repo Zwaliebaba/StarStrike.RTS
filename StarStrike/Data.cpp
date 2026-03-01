@@ -5,7 +5,7 @@
  *
  */
 
-#include <assert.h>
+
 
 
 #include "Frame.h"
@@ -62,6 +62,11 @@ BOOL	saveFlag = FALSE;
 extern STRING	aCurrResDir[255];		// Arse
 
 UDWORD	cheatHash[CHEAT_MAXCHEAT];
+
+// forward declarations for functions not declared in headers
+extern void adjustMaxDesignStats(void);
+extern void tpAddPIE(char *FileName, struct iIMDShape *pIMD);
+extern void SetLastResourceHash(char *fname);
 
 /**********************************************************
  *
@@ -862,12 +867,12 @@ BOOL dataIMGPAGELoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 
 	UNUSEDPARAMETER(size);
 
-	psSprite = MALLOC(sizeof(iSprite));
+	psSprite = (iSprite *)MALLOC(sizeof(iSprite));
 	if (!psSprite)	{
 		return FALSE;
 	}
 
-	if(!iV_PCXLoadMem((SBYTE *)pBuffer,psSprite,NULL)) 
+	if(!iV_PCXLoadMem((SBYTE *)pBuffer,psSprite,NULL))
 	{
 		DBERROR(("IMGPAGE load failed"));
 		FREE(psSprite);
@@ -882,7 +887,7 @@ BOOL dataIMGPAGELoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 
 void dataIMGPAGERelease(void *pData)
 {
-	iSprite *psSprite = pData;
+	iSprite *psSprite = (iSprite *)pData;
 	FREE(psSprite->bmp);
 	FREE(psSprite);
 }
@@ -957,7 +962,7 @@ BOOL dataTERTILESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 
 void dataTERTILESRelease(void *pData)
 {
-	iSprite *psSprite = pData;
+	iSprite *psSprite = (iSprite *)pData;
 	
 	freeTileTextures();
 	FREE(psSprite->bmp);
@@ -1029,7 +1034,7 @@ BOOL dataHWTERTILESLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 
 void dataHWTERTILESRelease(void *pData)
 {
-	iSprite *psSprite = pData;
+	iSprite *psSprite = (iSprite *)pData;
 	
 	freeTileTextures();
 	FREE(psSprite->bmp);
@@ -1131,21 +1136,21 @@ BOOL bufferTexPageLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 	{
 		// replace the old texture page with the new one
 		id = pie_ReloadTexPage(texfile,(UBYTE *)pBuffer);
-		ASSERT((id >=0,"pie_ReloadTexPage failed"));
+		ASSERT_TEXT(id >=0,"pie_ReloadTexPage failed");
 		*ppData = NULL;
 	}
 	else
 	{
-		NewTexturePage = MALLOC(sizeof(TEXTUREPAGE));
+		NewTexturePage = (TEXTUREPAGE *)MALLOC(sizeof(TEXTUREPAGE));
 		if (!NewTexturePage) return FALSE;
 
 		NewTexturePage->Texture=NULL;
 		NewTexturePage->Palette=NULL;
 
-		psPal=MALLOC(sizeof(iPalette));
+		psPal=(iPalette *)MALLOC(sizeof(iPalette));
 		if (!psPal) return FALSE;
 
-		psSprite = MALLOC(sizeof(iSprite));
+		psSprite = (iSprite *)MALLOC(sizeof(iSprite));
 		if (!psSprite)
 		{
 			return FALSE;
@@ -1164,7 +1169,7 @@ BOOL bufferTexPageLoad(UBYTE *pBuffer, UDWORD size, void **ppData)
 //Hack mar8 to load	textures in order	
 /*	for(i=0;i<_TEX_INDEX;i++)
 	{	
-		if (stricmp(texfile,_TEX_PAGE[i].name) != 0)
+		if (_stricmp(texfile,_TEX_PAGE[i].name) != 0)
 		{
 			bFound = TRUE;
 			break;
@@ -1208,7 +1213,7 @@ BOOL bufferTexPageLoadHardOnly(UBYTE *pBuffer, UDWORD size, void **ppData)
 /* Release an iSprite */
 void dataISpriteRelease(void *pData)
 {
-	iSprite		*psSprite = pData;
+	iSprite		*psSprite = (iSprite *)pData;
 
 	FREE(psSprite->bmp);
 	FREE(psSprite);
@@ -1250,7 +1255,7 @@ BOOL dataAudioLoad( UBYTE *pBuffer, UDWORD size, void **ppData )
 		*ppData = NULL;
 		return TRUE;
 	}
-	else if ( (psTrack = audio_LoadTrackFromBuffer( pBuffer, size )) == NULL )
+	else if ( (psTrack = (TRACK *)audio_LoadTrackFromBuffer( pBuffer, size )) == NULL )
 	{
 		return FALSE;
 	}
@@ -1271,8 +1276,8 @@ void dataAudioRelease( void *pData )
 	{
 		TRACK	*psTrack = (TRACK *) pData;
 
-		ASSERT( (PTRVALID(psTrack, sizeof(TRACK)),
-				"dataAudioRelease: invalid track pointer") );
+		ASSERT_TEXT( PTRVALID(psTrack, sizeof(TRACK)),
+				"dataAudioRelease: invalid track pointer" );
 
 		audio_ReleaseTrack( psTrack );
 		FREE( psTrack );
@@ -1334,7 +1339,7 @@ BOOL dataAnimCfgLoad( UBYTE *pBuffer, UDWORD size, void **ppData )
 
 void dataAnimRelease( void *pData )
 {
-	anim_ReleaseAnim(pData);
+	anim_ReleaseAnim((BASEANIM *)pData);
 }
 
 /* Load a string resource file */
@@ -1574,7 +1579,7 @@ BOOL dataSaveGameLoad(char *pFile, void **ppData)
 // this is also defined in frameresource.c - needs moving to a .h file
 typedef struct
 {
-	char *aType;				// points to the string defining the type (e.g. SCRIPT) - NULL indicates end of list
+	const char *aType;				// points to the string defining the type (e.g. SCRIPT) - NULL indicates end of list
 	RES_BUFFERLOAD buffLoad;	// routine to process the data for this type 
 	RES_FREE release;			// routine to release the data (NULL indicates none)
 	void *ResourceData;			// Linked list of data - set to null initially

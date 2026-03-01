@@ -177,7 +177,7 @@ void DrawEnd(void)
 	if(EnableLocks) {
 		LockRefs--;
 
-		ASSERT((LockRefs >= 0,"Inbalanced DrawEnd()"));
+		ASSERT_TEXT(LockRefs >= 0,"Inbalanced DrawEnd()");
 
 		if(LockRefs == 0) {
 			pie_LocalRenderEnd();

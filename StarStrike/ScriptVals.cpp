@@ -80,13 +80,13 @@ BOOL scrvAddContext(char *pID, SCRIPT_CONTEXT *psContext, SCRV_TYPE type)
 {
 	SCRV_STORE		*psNew;
 
-	psNew = MALLOC(sizeof(SCRV_STORE));
+	psNew = (SCRV_STORE *)MALLOC(sizeof(SCRV_STORE));
 	if (!psNew)
 	{
 		DBERROR(("scrvAddContext: Out of memory"));
 		return FALSE;
 	}
-	psNew->pIDString = MALLOC(strlen(pID) + 1);
+	psNew->pIDString = (char *)MALLOC(strlen(pID) + 1);
 	if (!psNew->pIDString)
 	{
 		DBERROR(("scrvAddContext: Out of memory"));
@@ -149,7 +149,7 @@ void scrvUpdateBasePointers(void)
 		if (asBasePointers[i] != NULL)
 		{
 			psVal = asBasePointers[i];
-			psObj = psVal->v.oval;
+				psObj = (BASE_OBJECT *)psVal->v.oval;
 
 			if (psObj && psObj->died && psObj->died != NOT_CURRENT_LIST)
 			{
@@ -173,7 +173,7 @@ BOOL scrvNewGroup(INTERP_VAL *psVal)
 	// increment the refcount so the group doesn't get automatically freed when empty
 	grpJoin(psGroup, NULL);
 
-	psVal->v.oval = psGroup;
+	psVal->v.oval = (void*)psGroup;
 
 	return TRUE;
 }
@@ -184,11 +184,11 @@ void scrvReleaseGroup(INTERP_VAL *psVal)
 {
 	DROID_GROUP		*psGroup;
 
-	psGroup = psVal->v.oval;
+	psGroup = (DROID_GROUP *)psVal->v.oval;
 	grpReset(psGroup);
 
-	ASSERT((psGroup->refCount == 1,
-		"scrvReleaseGroup: ref count is wrong"));
+	ASSERT_TEXT(psGroup->refCount == 1,
+		"scrvReleaseGroup: ref count is wrong");
 
 	// do a final grpLeave to free the group
 	grpLeave(psGroup, NULL);

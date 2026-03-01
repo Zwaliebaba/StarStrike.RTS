@@ -105,7 +105,7 @@ typedef struct {
 	SECONDARY_ORDER Order;					// The droid order.
 	UDWORD StateMask;						// It's state mask.
 	ORDBUTTONTYPE ButType;					// The group type.
-	ORDBUTTONJUSTIFY ButJustify;			// Button justification.
+	UDWORD ButJustify;			// Button justification.
 	UDWORD ButBaseID;						// Starting widget ID for buttons
 	UWORD NumButs;							// Number of buttons ( = number of states )
 	UWORD AcNumButs;						// Actual bumber of buttons enabled.
@@ -113,7 +113,7 @@ typedef struct {
 	UWORD ButGreyID[MAX_ORDER_BUTS];		// Image ID's for each button ( greyed ).
 	UWORD ButHilightID[MAX_ORDER_BUTS];		// Image ID's for each button ( hilight overlay ).
 	UWORD ButTips[MAX_ORDER_BUTS];			// Tip string id for each button.
-	SECONDARY_STATE States[MAX_ORDER_BUTS];	// Order state relating to each button.
+	UDWORD States[MAX_ORDER_BUTS];	// Order state relating to each button.
 } ORDERBUTTONS;
 
 
@@ -131,7 +131,7 @@ ORDERBUTTONS OrderButtons[NUM_ORDERS]=
 		DSO_ATTACK_RANGE,
 		DSS_ARANGE_MASK,
 		ORD_BTYPE_RADIO,
-		ORD_JUSTIFY_CENTER | ORD_JUSTIFY_NEWLINE,
+		(ORDBUTTONJUSTIFY)(ORD_JUSTIFY_CENTER | ORD_JUSTIFY_NEWLINE),
 		IDORDER_ATTACK_RANGE,
 		3,0,
 		{IMAGE_ORD_RANGE3UP,	IMAGE_ORD_RANGE1UP,	IMAGE_ORD_RANGE2UP},
@@ -145,7 +145,7 @@ ORDERBUTTONS OrderButtons[NUM_ORDERS]=
 		DSO_REPAIR_LEVEL,
 		DSS_REPLEV_MASK,
 		ORD_BTYPE_RADIO,
-		ORD_JUSTIFY_CENTER | ORD_JUSTIFY_NEWLINE,
+		(ORDBUTTONJUSTIFY)(ORD_JUSTIFY_CENTER | ORD_JUSTIFY_NEWLINE),
 		IDORDER_REPAIR_LEVEL,
 		3,0,
 		{IMAGE_ORD_REPAIR3UP,	IMAGE_ORD_REPAIR2UP,	IMAGE_ORD_REPAIR1UP},
@@ -387,7 +387,7 @@ extern void intDisplayPlainForm(struct _widget *psWidget, UDWORD xOffset, UDWORD
 
 static BOOL BuildSelectedDroidList(void);
 //static BOOL factorySelected(void);
-static BOOL SetSecondaryState(SECONDARY_ORDER sec, SECONDARY_STATE State);
+static BOOL SetSecondaryState(SECONDARY_ORDER sec, UDWORD State);
 static BOOL BuildDroidOrderList(void);
 static BOOL BuildStructureOrderList(STRUCTURE *psStructure);
 static SDWORD GetSecondaryStates(SECONDARY_ORDER sec);
@@ -433,7 +433,7 @@ BOOL _intAddOrder(BASE_OBJECT *psObj)
 	W_FORMINIT			sFormInit;
 	W_BUTINIT			sButInit;
 	BOOL Animate = TRUE;
-	SECONDARY_STATE State;
+	SDWORD State;
 	UWORD i,j;//,k;
 	UWORD OrdIndex;
 	W_FORM *Form;
@@ -477,7 +477,7 @@ BOOL _intAddOrder(BASE_OBJECT *psObj)
         }
         else
         {
-            ASSERT((FALSE, "_intAddOrder: Invalid object type"));
+            ASSERT_TEXT(FALSE, "_intAddOrder: Invalid object type");
             Droid = NULL;
             psStructure =  NULL;
         }
@@ -1104,7 +1104,7 @@ static BOOL BuildSelectedDroidList(void)
 // Set the secondary order state for all currently selected droids. And Factory (if one selected)
 // Returns TRUE if succesfull.
 //
-static BOOL SetSecondaryState(SECONDARY_ORDER sec, SECONDARY_STATE State)
+static BOOL SetSecondaryState(SECONDARY_ORDER sec, UDWORD State)
 {
 	UWORD i;
 
@@ -1113,20 +1113,20 @@ static BOOL SetSecondaryState(SECONDARY_ORDER sec, SECONDARY_STATE State)
 		{
 			//Only set the state if it's not a transporter.
 			if(SelectedDroids[i]->droidType != DROID_TRANSPORTER) {
-				if(!secondarySetState(SelectedDroids[i], sec, State)) {
+				if(!secondarySetState(SelectedDroids[i], sec, (SECONDARY_STATE)State)) {
 					return FALSE;
 				}
 			}
 		}
 	}
-    //set the Factory settings
-    if (psSelectedFactory)
-    {
-        if (!setFactoryState(psSelectedFactory, sec, State))
-        {
-            return FALSE;
-        }
-    }
+	//set the Factory settings
+	if (psSelectedFactory)
+	{
+		if (!setFactoryState(psSelectedFactory, sec, (SECONDARY_STATE)State))
+		{
+			return FALSE;
+		}
+	}
 
 	return TRUE;
 }
@@ -1201,7 +1201,7 @@ static BOOL BuildStructureOrderList(STRUCTURE *psStructure)
     //only valid for Factories (at the moment)
     if (!StructIsFactory(psStructure))
     {
-        ASSERT((FALSE, "BuildStructureOrderList: structure is !a factory"));
+        ASSERT_TEXT(FALSE, "BuildStructureOrderList: structure is !a factory");
         return FALSE;
     }
 
@@ -1242,7 +1242,7 @@ static BOOL CheckObjectOrderList(void)
         //only valid for Factories (at the moment)
         if (!StructIsFactory(psSelectedFactory))
         {
-            ASSERT((FALSE, "CheckObjectOrderList: structure is !a factory"));
+            ASSERT_TEXT(FALSE, "CheckObjectOrderList: structure is !a factory");
             return FALSE;
         }
 
@@ -1330,7 +1330,7 @@ static BOOL CheckObjectOrderList(void)
 static BOOL intRefreshOrderButtons(void)
 {
 	BOOL Animate = TRUE;
-	SECONDARY_STATE State;
+	SDWORD State;
 	UWORD i,j;//,k;
 	UWORD OrdIndex;
 	UWORD NumButs;
@@ -1414,7 +1414,7 @@ static SDWORD GetSecondaryStates(SECONDARY_ORDER sec)
     //handle a factory being selected - AB 22/04/99
     if (psSelectedFactory)
     {
-        if (getFactoryState(psSelectedFactory, sec, &currState))
+		if (getFactoryState(psSelectedFactory, sec, (SECONDARY_STATE *)&currState))
         {
             state = currState;
         }

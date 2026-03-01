@@ -109,6 +109,9 @@ BOOL GetInFastPlay(void)
 extern BOOL firstcall;
 extern IMAGEFILE *FrontImages;
 
+/* The actual definition of titleMode (declared extern in FrontEnd.h) */
+tMode titleMode;
+
 // ////////////////////////////////////////////////////////////////////////////
 // Function Definitions
 

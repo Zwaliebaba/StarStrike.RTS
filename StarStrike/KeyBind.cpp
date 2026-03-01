@@ -307,9 +307,9 @@ void	kf_FrameRate( void )
  	 	 	CONPRINTF(ConsoleString,(ConsoleString,"GLIDE fps - %d; PIEs - %d; polys - %d; Terr. polys - %d; States %d",
 				frameGetFrameRate(),loopPieCount,loopPolyCount,loopTileCount,loopStateChanges));
 		}
-//		ASSERT((war_GetFog(),"Fog is Disabled"));
-//		ASSERT((war_GetTranslucent(),"Transparency is Disabled"));
-//		ASSERT((war_GetAdditive(),"Additive Transpaency is Disabled"));
+//		ASSERT(war_GetFog(),"Fog is Disabled");
+//		ASSERT(war_GetTranslucent(),"Transparency is Disabled");
+//		ASSERT(war_GetAdditive(),"Additive Transpaency is Disabled");
 		DBPRINTF(("GLIDE fps - %d; PIEs - %d; polys - %d; Terr. polys - %d; States %d;",
 			frameGetFrameRate(),loopPieCount,loopPolyCount,loopTileCount,loopStateChanges));
 	}
@@ -1176,9 +1176,9 @@ UDWORD	entry;
 	{
 		entry = getLastSubKey();
 //		CONPRINTF(ConsoleString,(ConsoleString,"Restoring map position %d:%d",getMarkerX(entry),getMarkerY(entry)));
-		player.p.x = getMarkerX(entry);
-		player.p.z = getMarkerY(entry);
-		player.r.y = getMarkerSpin(entry);
+		player.p.x = getMarkerX((KEY_CODE)entry);
+		player.p.z = getMarkerY((KEY_CODE)entry);
+		player.r.y = getMarkerSpin((KEY_CODE)entry);
 		/* A fix to stop the camera continuing when marker code is called */
 		if(getWarCamStatus())
 		{
@@ -1250,7 +1250,7 @@ if(bMultiPlayer && (NetPlay.bComms != 0) )
 		}
 		if(bMultiPlayer)
 		{
-			sendTextMessage("Presses Debug. CHEAT",TRUE);
+			sendTextMessage((char *)"Presses Debug. CHEAT",TRUE);
 		}
 
 	}
@@ -2092,8 +2092,8 @@ DROID	*psDroid;
 		if(!psDroid->selected)
 		{
 			psPropStats = asPropulsionStats + psDroid->asBits[COMP_PROPULSION].nStat;
-			ASSERT( (PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),
-					"moveUpdateDroid: invalid propulsion stats pointer") );
+			ASSERT_TEXT( PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),
+					"moveUpdateDroid: invalid propulsion stats pointer" );
 			if ( psPropStats->propulsionType == propType )
 			{
 				psDroid->selected = TRUE;

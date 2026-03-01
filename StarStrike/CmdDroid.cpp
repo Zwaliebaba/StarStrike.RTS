@@ -1,10 +1,3 @@
-/*
- * CmdDroid.c
- *
- * Code for command droids
- *
- */
-
 #include "Frame.h"
 #include "Objects.h"
 #include "CmdDroidDef.h"
@@ -83,10 +76,10 @@ void cmdDroidAddDroid(DROID *psCommander, DROID *psDroid)
 		psDroid->group = UBYTE_MAX;
 
 		// set the secondary states for the unit
-		secondarySetState(psDroid, DSO_ATTACK_RANGE, psCommander->secondaryOrder & DSS_ARANGE_MASK);
-		secondarySetState(psDroid, DSO_REPAIR_LEVEL, psCommander->secondaryOrder & DSS_REPLEV_MASK);
-		secondarySetState(psDroid, DSO_ATTACK_LEVEL, psCommander->secondaryOrder & DSS_ALEV_MASK);
-		secondarySetState(psDroid, DSO_HALTTYPE, psCommander->secondaryOrder & DSS_HALT_MASK);
+		secondarySetState(psDroid, DSO_ATTACK_RANGE, (SECONDARY_STATE)(psCommander->secondaryOrder & DSS_ARANGE_MASK));
+		secondarySetState(psDroid, DSO_REPAIR_LEVEL, (SECONDARY_STATE)(psCommander->secondaryOrder & DSS_REPLEV_MASK));
+		secondarySetState(psDroid, DSO_ATTACK_LEVEL, (SECONDARY_STATE)(psCommander->secondaryOrder & DSS_ALEV_MASK));
+		secondarySetState(psDroid, DSO_HALTTYPE, (SECONDARY_STATE)(psCommander->secondaryOrder & DSS_HALT_MASK));
 
 		orderDroidObj(psDroid, DORDER_GUARD, (BASE_OBJECT *)psCommander);
 	}
@@ -211,8 +204,8 @@ void cmdDroidUpdateKills(DROID *psKiller)
 {
 	DROID	*psCommander;
 
-	ASSERT((PTRVALID(psKiller, sizeof(DROID)),
-		"cmdUnitUpdateKills: invalid Unit pointer"));
+	ASSERT_TEXT(PTRVALID(psKiller, sizeof(DROID)),
+		"cmdUnitUpdateKills: invalid Unit pointer");
 
 	if ( (psKiller->psGroup != NULL) &&
 		 (psKiller->psGroup->type == GT_COMMAND) )
@@ -227,8 +220,8 @@ SDWORD cmdGetCommanderLevel(DROID *psDroid)
 {
 	DROID	*psCommander;
 
-	ASSERT((PTRVALID(psDroid, sizeof(DROID)),
-		"cmdGetCommanderLevel: invalid droid pointer"));
+	ASSERT_TEXT(PTRVALID(psDroid, sizeof(DROID)),
+		"cmdGetCommanderLevel: invalid droid pointer");
 
 	if ( (psDroid->psGroup != NULL) &&
 		 (psDroid->psGroup->type == GT_COMMAND) )
@@ -262,10 +255,10 @@ DROID	*psCurr;
 // set the number of command droids for a player
 void cmdDroidSetAvailable(SDWORD player, SDWORD num)
 {
-	ASSERT(((player >= 0) && (player < MAX_PLAYERS),
-		"cmdUnitSetAvailable: invalid player number"));
-	ASSERT(((num > 0) && (num < MAX_CMDDROIDS),
-		"cmdUnitSetAvailable: invalid player number"));
+	ASSERT_TEXT((player >= 0) && (player < MAX_PLAYERS),
+		"cmdUnitSetAvailable: invalid player number");
+	ASSERT_TEXT((num > 0) && (num < MAX_CMDDROIDS),
+		"cmdUnitSetAvailable: invalid player number");
 
 	UNUSEDPARAMETER(player);
 	UNUSEDPARAMETER(num);

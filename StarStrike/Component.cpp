@@ -38,9 +38,12 @@
 #include "E3Demo.h"
 #include "Transporter.h"
 #include "Projectile.h"
+#include "Bspfunc.h"
+#include "Loop.h"
 
 void unsetMatrix(void);
 void setMatrix(iVector *Position,iVector *Rotation,iVector *CameraPos,BOOL RotXYZ);
+extern void SetBSPObjectRot(SDWORD Yaw, SDWORD Pitch);
 
 #define MAX_GROUP_SIZE	10
 
@@ -928,8 +931,8 @@ void displayCompObj(BASE_OBJECT *psObj,iVector *mountRotation, BOOL bButton)
 
 	/* get propulsion stats */
 	psPropStats = asPropulsionStats + psDroid->asBits[COMP_PROPULSION].nStat;
-	ASSERT( (PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),
-			"moveUpdateUnit: invalid propulsion stats pointer") );
+	ASSERT_TEXT( PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),
+			"moveUpdateUnit: invalid propulsion stats pointer" );
 
 	/* render vtol jet if flying - horrible hack - GJ */
 	if (((psPropStats->propulsionType == LIFT) &&
@@ -1248,7 +1251,7 @@ void displayCompObj(BASE_OBJECT *psObj,iVector *mountRotation, BOOL bButton)
 				// no extra mounts for people
 				break;
 			default:
-				ASSERT((FALSE, "Whoa! Weirdy type of droid found in drawComponentObject!!!"));
+				ASSERT_TEXT(FALSE, "Whoa! Weirdy type of droid found in drawComponentObject!!!");
 				break;
 			}
 		}

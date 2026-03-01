@@ -330,8 +330,8 @@ audio_QueueSample( SDWORD iTrack )
 		return NULL;
 	}
 
-	ASSERT( ( sound_CheckTrack( iTrack ) == TRUE,
-			"audio_QueueSample: track %i outside limits\n", iTrack ) );
+	ASSERT_TEXT(  sound_CheckTrack( iTrack ) == TRUE,
+			"audio_QueueSample: track %i outside limits\n", iTrack  );
 
 	/* reject track if too many of same ID already in queue */
 	if ( audio_CheckSameQueueTracksPlaying( iTrack ) == FALSE )
@@ -897,7 +897,7 @@ audio_PlayObjDynamicTrack( void * psObj, int iTrack,
 /***************************************************************************/
 
 BOOL
-audio_PlayStream( char szFileName[], SDWORD iVol,
+audio_PlayStream( const char szFileName[], SDWORD iVol,
 					AUDIO_CALLBACK pUserCallback )
 {
 	AUDIO_SAMPLE	*psSample;
@@ -917,7 +917,7 @@ audio_PlayStream( char szFileName[], SDWORD iVol,
 		psSample->bRemove   = FALSE;
 
 		audio_Set3DVolume( AUDIO_VOL_MAX );
-		if ( sound_PlayStream( psSample, szFileName, iVol ) == TRUE )
+		if ( sound_PlayStream( psSample, (char *)szFileName, iVol ) == TRUE )
 		{
 			return TRUE;
 		}

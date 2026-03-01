@@ -169,7 +169,7 @@ static BOOL LoadTextureFile(char *FileName,iSprite *pSprite,int *texPageID)
 	/* Have we already loaded this one then? */
 	while (i<_TEX_INDEX) 
 	{
-		if (stricmp(FileName,_TEX_PAGE[i].name) == 0)
+		if (_stricmp(FileName,_TEX_PAGE[i].name) == 0)
 		{
 			*texPageID = i;
 			return TRUE;

@@ -31,6 +31,7 @@
 #include "MultiInt.h"			// for force name.
 #include "MultiMenu.h"			// for multimenu
 #include "Multistat.h"
+#include "Loop.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -590,7 +591,7 @@ VOID  technologyGiveAway(STRUCTURE *pS)
 		y = (pS->y >> TILE_SHIFT); 
 		if (!pickATileGen(&x,&y,LOOK_FOR_EMPTY_TILE,zonedPAT))
 		{
-			ASSERT((FALSE, "technologyGiveAway: Unable to find a free location"));
+			ASSERT_TEXT(FALSE, "technologyGiveAway: Unable to find a free location");
 		}
 		
 		for(i=0; (i<numFeatureStats) && (asFeatureStats[i].subType != FEAT_GEN_ARTE); i++);
@@ -607,10 +608,10 @@ VOID  technologyGiveAway(STRUCTURE *pS)
 		NetAdd(m,m.size,type);
 		m.size += sizeof(type);
 
-		NetAdd(m,m.size,((UWORD)x));
+		{ UWORD tmpX = (UWORD)x; NetAdd(m,m.size,tmpX); };
 		m.size += sizeof(UWORD);
 
-		NetAdd(m,m.size,((UWORD)y));
+		{ UWORD tmpY = (UWORD)y; NetAdd(m,m.size,tmpY); };
 		m.size += sizeof(UWORD);
 		
 		NetAdd(m,m.size,pF->id);
@@ -683,15 +684,15 @@ void addLoserGifts(void)
 			y = apsStructLists[selectedPlayer]->y >> TILE_SHIFT; 
 			if (!pickATileGen(&x,&y,LOOK_FOR_EMPTY_TILE,zonedPAT))
 			{
-				ASSERT((FALSE, "addlosergifts: Unable to find a free location"));
+				ASSERT_TEXT(FALSE, "addlosergifts: Unable to find a free location");
 			}
 
 			NETlogEntry("gift",0,0);
 
 			pF = buildFeature((asFeatureStats+i),x<<TILE_SHIFT, y<<TILE_SHIFT,FALSE);	
 		
-			NetAdd(m,m.size,((UWORD)x));		m.size += sizeof(UWORD);
-			NetAdd(m,m.size,((UWORD)y));		m.size += sizeof(UWORD);
+			{ UWORD tmpX = (UWORD)x; NetAdd(m,m.size,tmpX); };		m.size += sizeof(UWORD);
+			{ UWORD tmpY = (UWORD)y; NetAdd(m,m.size,tmpY); };		m.size += sizeof(UWORD);
 			NetAdd(m,m.size,pF->id);			m.size += sizeof(pF->id);
 
 			m.body[m.size]  = ONEPLAYER;
@@ -770,8 +771,8 @@ VOID  addMultiPlayerRandomArtifacts(UDWORD quantity,SDWORD type)
 
 	for(i=0; (i<numFeatureStats) && (asFeatureStats[i].subType != type); i++);
 
-	ASSERT((mapWidth>20,"map !big enough"));
-	ASSERT((mapHeight>20,"map !big enough"));
+	ASSERT_TEXT(mapWidth>20,"map !big enough");
+	ASSERT_TEXT(mapHeight>20,"map !big enough");
 
 	for(count = 0;count<quantity;count++)
 	{
@@ -779,14 +780,14 @@ VOID  addMultiPlayerRandomArtifacts(UDWORD quantity,SDWORD type)
 		y = (rand()% (mapHeight-20))+10 ;
 		if (!pickATileGen(&x,&y,LOOK_FOR_EMPTY_TILE,zonedPAT))
 		{
-			ASSERT((FALSE, "addMultiPlayerRandomArtifacts: Unable to find a free location"));
+			ASSERT_TEXT(FALSE, "addMultiPlayerRandomArtifacts: Unable to find a free location");
 		}
 
 		pF = buildFeature((asFeatureStats+i),x<<TILE_SHIFT, y<<TILE_SHIFT,FALSE);	
 		
-		NetAdd(m,m.size,((UWORD)x));
+		{ UWORD tmpX = (UWORD)x; NetAdd(m,m.size,tmpX); };
 		m.size += sizeof(UWORD);
-		NetAdd(m,m.size,((UWORD)y));
+		{ UWORD tmpY = (UWORD)y; NetAdd(m,m.size,tmpY); };
 		m.size += sizeof(UWORD);
 
 		NetAdd(m,m.size,pF->id);

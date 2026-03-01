@@ -63,7 +63,7 @@ static BOOL		bConsoleDisplayEnabled;
 static UDWORD	consoleVisibleLines;
 
 /* Whether new messages are allowed to be added */
-static allowNewMessages;
+static SDWORD allowNewMessages;
 
 /* What's the default justification */
 static CONSOLE_TEXT_JUSTIFICATION	defJustification;
@@ -77,7 +77,7 @@ char ConsoleString[MAX_CONSOLE_TMP_STRING_LENGTH];
 /* MODULE CONSOLE PROTOTYPES */
 void	consolePrintf				( SBYTE *layout, ... );
 void	setConsoleSizePos			( UDWORD x, UDWORD y, UDWORD width );
-BOOL	addConsoleMessage			( char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType );
+BOOL	addConsoleMessage			( const char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType );
 void	updateConsoleMessages		( void );
 void	displayConsoleMessages		( void );
 void	initConsoleMessages			( void );
@@ -182,7 +182,7 @@ void	toggleConsoleDrop( void )
 
 
 /* Adds a string to the console. */
-static BOOL _addConsoleMessage(char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
+static BOOL _addConsoleMessage(const char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
 {
 UDWORD			textLength;
 CONSOLE_MESSAGE	*psMessage;
@@ -202,8 +202,8 @@ CONSOLE_MESSAGE	*psMessage;
 	/* Is the string too long? */
 	textLength = strlen(messageText);
 
-	ASSERT(( textLength<MAX_CONSOLE_STRING_LENGTH,
-		"Attempt to add a message to the console that exceeds MAX_CONSOLE_STRING_LENGTH"));
+	ASSERT_TEXT( textLength<MAX_CONSOLE_STRING_LENGTH,
+		"Attempt to add a message to the console that exceeds MAX_CONSOLE_STRING_LENGTH");
  
 
 	/* Are we using a defualt justification? */
@@ -276,7 +276,7 @@ CONSOLE_MESSAGE	*psMessage;
 }
 
 
-BOOL addConsoleMessage(char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
+BOOL addConsoleMessage(const char *messageText, CONSOLE_TEXT_JUSTIFICATION jusType)
 {
 	return _addConsoleMessage(messageText,jusType);
 }
@@ -731,7 +731,7 @@ BOOL	mouseOverConsoleBox( void )
 /* Sets up how many lines are allowed && how many are visible */
 void	setConsoleLineInfo(UDWORD vis)
 {
-	ASSERT((vis<=MAX_CONSOLE_MESSAGES,"Request for more visible lines in the console than exist"));
+	ASSERT_TEXT(vis<=MAX_CONSOLE_MESSAGES,"Request for more visible lines in the console than exist");
 	consoleVisibleLines = vis;
 }
 

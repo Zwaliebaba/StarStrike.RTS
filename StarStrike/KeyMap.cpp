@@ -20,7 +20,7 @@
 // ----------------------------------------------------------------------------------
 /* Function Prototypes */
 KEY_MAPPING	*keyAddMapping		( KEY_STATUS status, KEY_CODE metaCode, KEY_CODE subcode, 
-								 KEY_ACTION action, void (*pKeyMapFunc)(void), char *name );
+								 KEY_ACTION action, void (*pKeyMapFunc)(void), const char *name );
 BOOL	keyRemoveMapping		( KEY_CODE metaCode, KEY_CODE subCode );
 BOOL	keyRemoveMappingPt		( KEY_MAPPING *psToRemove );
 KEY_MAPPING *keyFindMapping		( KEY_CODE metaCode, KEY_CODE subCode );
@@ -471,7 +471,7 @@ if(bAllowDebugMode)
 /* Adds a new mapping to the list */
 //BOOL	keyAddMapping(KEY_CODE metaCode, KEY_CODE subCode, KEY_ACTION action,void *function, char *name)
 KEY_MAPPING *keyAddMapping(KEY_STATUS status,KEY_CODE metaCode, KEY_CODE subCode, KEY_ACTION action,
-					  void (*pKeyMapFunc)(void), char *name)
+					  void (*pKeyMapFunc)(void), const char *name)
 {
 KEY_MAPPING	*newMapping;
 BLOCK_HEAP  *psHeap;
@@ -482,13 +482,13 @@ BLOCK_HEAP  *psHeap;
 	/* Get some memory for our binding */
 	newMapping = (KEY_MAPPING*)MALLOC(sizeof(KEY_MAPPING));
 
-	ASSERT(((int)newMapping,"Couldn't allocate memory for a key mapping"));
+	ASSERT_TEXT((int)newMapping,"Couldn't allocate memory for a key mapping");
 
 	/* Plus one for the terminator */
 
 
 	newMapping->pName = (char *)MALLOC(strlen(name)+1);
-	ASSERT(((int)newMapping->pName,"Couldn't allocate the memory for the string in a mapping"));
+	ASSERT_TEXT((int)newMapping->pName,"Couldn't allocate the memory for the string in a mapping");
 
 	memSetBlockHeap(psHeap);
 
@@ -882,28 +882,28 @@ UDWORD	i;
 
 	for(i = KEY_Q; i <= KEY_P; i++)
 	{
-		if(keyPressed(i))
+		if(keyPressed((KEY_CODE)i))
 		{
-			return(i);	// top row key pressed
+			return((KEY_CODE)i);	// top row key pressed
 		}
 	}
 
 	for(i = KEY_A; i <= KEY_L; i++)
 	{
-		if(keyPressed(i))
+		if(keyPressed((KEY_CODE)i))
 		{
-			return(i);	// middle row key pressed 
+			return((KEY_CODE)i);	// middle row key pressed 
 		}
 	}
 
 	for(i = KEY_Z; i <= KEY_M; i++)
 	{
-		if(keyPressed(i))
+		if(keyPressed((KEY_CODE)i))
 		{
-			return(i);	// bottomw row key pressed
+			return((KEY_CODE)i);	// bottomw row key pressed
 		}					
 	}
-	return(0);			// no ascii key pressed
+	return((KEY_CODE)0);			// no ascii key pressed
 }
 
 // ----------------------------------------------------------------------------------
@@ -914,15 +914,15 @@ UDWORD	asciiKeyCodeToTable(KEY_CODE code)
 {
 	if(code<=KEY_P)
 	{
-		code = code - KEY_Q;  // q is the first of the ascii scan codes
+		code = (KEY_CODE)(code - KEY_Q);  // q is the first of the ascii scan codes
 	}
 	else if(code <=KEY_L)
 	{
-		code = (code - KEY_A) + 10;	// ten keys from q to p
+		code = (KEY_CODE)((code - KEY_A) + 10);	// ten keys from q to p
 	}
 	else if(code<=KEY_M)
 	{
-		code = (code - KEY_Z) + 19;	// 19 keys before, the 10 from q..p and the 9 from a..l
+		code = (KEY_CODE)((code - KEY_Z) + 19);	// 19 keys before, the 10 from q..p and the 9 from a..l
 	}
 
 	return((UDWORD) code);

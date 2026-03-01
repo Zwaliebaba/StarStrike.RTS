@@ -8,7 +8,7 @@
 /* Allow frame header files to be singly included */
 #define FRAME_LIB_INCLUDE
 
-#include <assert.h>
+
 #include "Types.h"
 #include "Debug.h"
 #include "Mem.h"
@@ -209,8 +209,8 @@ FRACT trigIntSqrt(UDWORD val)
 	}
 
 	// now generate the fractional part for the lookup table
-	ASSERT((val < SQRT_ACCURACY,
-		"trigIntSqrt: aargh - table index out of range"));
+	ASSERT_TEXT(val < SQRT_ACCURACY,
+		"trigIntSqrt: aargh - table index out of range");
 	return aSqrt[val] * (FRACT)((UDWORD)1 << ((UDWORD)exp/2));
 }
 

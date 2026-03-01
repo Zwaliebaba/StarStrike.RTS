@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ivisdef.h"
 
 #define FILLRED 16
 #define FILLGREEN 16
@@ -7,7 +8,7 @@
 #define FILLTRANS 128
 
 // Sprite image structure.
-typedef struct {
+struct IMAGE {
 	UDWORD BMPNum;	// Source bitmap index.
 	UDWORD Offset;	// byte offset within source bitmap.
 	UDWORD Width;	// Width of image.
@@ -15,8 +16,7 @@ typedef struct {
 	UDWORD Modulus;	// Width of source bitmap.
 	SDWORD XOffset;	// X offset for drawing.
 	SDWORD YOffset;	// Y offset for drawing.
-} IMAGE;
-
+};
 
 enum {
 	FR_IGNORE,	// Fill rect is ignored.

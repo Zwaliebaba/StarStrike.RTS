@@ -5,7 +5,7 @@
  *
  */
 #include <stdio.h>
-#include <assert.h>
+
 
 #include "Frame.h"
 #include "Objects.h"
@@ -138,8 +138,8 @@ static	char NotUsedString[50];	// Dummy area for scanf
 
 /* Macro to allocate memory for a set of stats */
 #define ALLOC_STATS(numEntries, list, listSize, type) \
-	ASSERT(((numEntries) < REF_RANGE, \
-	"allocStats: number of stats entries too large for " #type ));\
+	ASSERT_TEXT((numEntries) < REF_RANGE, \
+	"allocStats: number of stats entries too large for " #type );\
 	(list) = (type *)MALLOC(sizeof(type) * (numEntries)); \
 	if ((list) == NULL) \
 	{ \
@@ -297,8 +297,8 @@ BOOL statsShutDown(void)
  * index the correct array entry
  */
 #define SET_STATS(stats, list, index, type, refStart) \
-	ASSERT(( ((stats)->ref >= (refStart)) && ((stats)->ref < (refStart) + REF_RANGE), \
-		"setStats: Invalid " #type " ref number")); \
+	ASSERT_TEXT( ((stats)->ref >= (refStart)) && ((stats)->ref < (refStart) + REF_RANGE), \
+		"setStats: Invalid " #type " ref number"); \
 	memcpy((list) + (index), (stats), sizeof(type))
 
 
@@ -704,21 +704,21 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		}
 
 		//set the subClass
-		psStats->weaponSubClass = getWeaponSubClass(weaponSubClass);
+		psStats->weaponSubClass = (WEAPON_SUBCLASS)getWeaponSubClass(weaponSubClass);
 		if (psStats->weaponSubClass == INVALID_SUBCLASS)
 		{
 			return FALSE;
 		}
 
 		//set the movement model
-		psStats->movementModel = getMovementModel(movement);
+		psStats->movementModel = (MOVEMENT_MODEL)getMovementModel(movement);
 		if (psStats->movementModel == INVALID_MOVEMENT)
 		{
 			return FALSE;
 		}
 
 		//set the weapon effect
-		psStats->weaponEffect = getWeaponEffect(weaponEffect);
+		psStats->weaponEffect = (WEAPON_EFFECT)getWeaponEffect(weaponEffect);
 		if (psStats->weaponEffect == INVALID_WEAPON_EFFECT)
 		{
 			DBERROR(("loadWepaonStats: Invalid weapon effect for weapon %s", 
@@ -772,8 +772,8 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		//set the effect size
 		if (effectSize > UBYTE_MAX)
 		{
-			ASSERT((FALSE,"loadWeaponStats: effectSize is greater than 255 for weapon %s",
-				getStatName(psStats)));
+			ASSERT_TEXT(FALSE,"loadWeaponStats: effectSize is greater than 255 for weapon %s",
+				getStatName(psStats));
 			return FALSE;
 		}
 		psStats->effectSize = (UBYTE)effectSize;
@@ -781,8 +781,8 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		//set the rotate angle
 		if (rotate > UBYTE_MAX)
 		{
-			ASSERT((FALSE,"loadWeaponStats: rotate is greater than 255 for weapon %s",
-				getStatName(psStats)));
+			ASSERT_TEXT(FALSE,"loadWeaponStats: rotate is greater than 255 for weapon %s",
+				getStatName(psStats));
 			return FALSE;
 		}
 		psStats->rotate = (UBYTE)rotate;
@@ -790,8 +790,8 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		//set the minElevation
 		if (minElevation > SBYTE_MAX || minElevation < SBYTE_MIN)
 		{
-			ASSERT((FALSE,"loadWeaponStats: minElevation is outside of limits for weapon %s",
-				getStatName(psStats)));
+			ASSERT_TEXT(FALSE,"loadWeaponStats: minElevation is outside of limits for weapon %s",
+				getStatName(psStats));
 			return FALSE;
 		}
 		psStats->minElevation = (SBYTE)minElevation;
@@ -799,8 +799,8 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		//set the maxElevation
 		if (maxElevation > UBYTE_MAX)
 		{
-			ASSERT((FALSE,"loadWeaponStats: maxElevation is outside of limits for weapon %s",
-				getStatName(psStats)));
+			ASSERT_TEXT(FALSE,"loadWeaponStats: maxElevation is outside of limits for weapon %s",
+				getStatName(psStats));
 			return FALSE;
 		}
 		psStats->maxElevation = (UBYTE)maxElevation;
@@ -808,8 +808,8 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		//set the surfaceAir 
 		if (surfaceToAir > UBYTE_MAX)
 		{
-			ASSERT((FALSE, "loadWeaponStats: Surface to Air is outside of limits for weapon %s",
-				getStatName(psStats)));
+			ASSERT_TEXT(FALSE, "loadWeaponStats: Surface to Air is outside of limits for weapon %s",
+				getStatName(psStats));
 			return FALSE;
 		}
         if (surfaceToAir == 0)
@@ -828,8 +828,8 @@ BOOL loadWeaponStats(SBYTE *pWeaponData, UDWORD bufferSize)
 		//set the attackRuns for VTOLs
 		if (numAttackRuns > UBYTE_MAX)
 		{
-			ASSERT((FALSE, "loadWeaponStats: num of attack runs is outside of limits for weapon %s",
-				getStatName(psStats)));
+			ASSERT_TEXT(FALSE, "loadWeaponStats: num of attack runs is outside of limits for weapon %s",
+				getStatName(psStats));
 			return FALSE;
 		}
 		psStats->vtolAttackRuns = (UBYTE)numAttackRuns;
@@ -955,8 +955,8 @@ BOOL loadBodyStats(SBYTE *pBodyData, UDWORD bufferSize)
 
 		if (!getBodySize(size, &psStats->size))
 		{
-			ASSERT((FALSE, "loadBodyStats: unknown body size for %s", 
-				getStatName(psStats)));
+			ASSERT_TEXT(FALSE, "loadBodyStats: unknown body size for %s", 
+				getStatName(psStats));
 			return FALSE;
 		}
 
@@ -1466,7 +1466,7 @@ BOOL loadSensorStats(SBYTE *pSensorData, UDWORD bufferSize)
 		}
 		else
 		{
-			ASSERT((FALSE, "Invalid Sensor location"));
+			ASSERT_TEXT(FALSE, "Invalid Sensor location");
 		}
 
 		if (!strcmp(type,"STANDARD"))
@@ -1491,7 +1491,7 @@ BOOL loadSensorStats(SBYTE *pSensorData, UDWORD bufferSize)
 		}
 		else
 		{
-			ASSERT((FALSE, "Invalid Sensor type"));
+			ASSERT_TEXT(FALSE, "Invalid Sensor type");
 		}
 
 		//multiply time stats
@@ -1634,7 +1634,7 @@ BOOL loadECMStats(SBYTE *pECMData, UDWORD bufferSize)
 		}
 		else
 		{
-			ASSERT((FALSE, "Invalid ECM location"));
+			ASSERT_TEXT(FALSE, "Invalid ECM location");
 		}
 
 		//set design flag
@@ -1766,7 +1766,7 @@ BOOL loadRepairStats(SBYTE *pRepairData, UDWORD bufferSize)
 		}
 		else
 		{
-			ASSERT((FALSE, "Invalid Repair location"));
+			ASSERT_TEXT(FALSE, "Invalid Repair location");
 		}
 
 		//multiply time stats
@@ -1775,8 +1775,8 @@ BOOL loadRepairStats(SBYTE *pRepairData, UDWORD bufferSize)
         //check its not 0 since we will be dividing by it at a later stage
         if (psStats->time == 0)
         {
-            ASSERT((FALSE, "loadRepairStats: the delay time cannot be zero for %s", 
-                psStats->pName));
+            ASSERT_TEXT(FALSE, "loadRepairStats: the delay time cannot be zero for %s", 
+                psStats->pName);
             psStats->time = 1;
         }
 
@@ -2091,14 +2091,14 @@ BOOL loadPropulsionTypes(SBYTE *pPropTypeData, UDWORD bufferSize)
 		}
 		else
 		{
-			ASSERT((FALSE, "Invalid travel type for Propulsion"));
+			ASSERT_TEXT(FALSE, "Invalid travel type for Propulsion");
 		}
 		
         //don't care about this anymore! AB FRIDAY 13/11/98
         //want it back again! AB 27/11/98
         if (multiplier > UWORD_MAX)
         {
-            ASSERT((FALSE, "loadPropulsionTypes: power Ratio multiplier too high"));
+            ASSERT_TEXT(FALSE, "loadPropulsionTypes: power Ratio multiplier too high");
             //set to a default value since not life threatening!
             multiplier = 100;
         }
@@ -2262,8 +2262,8 @@ BOOL loadBodyPropulsionIMDs(SBYTE *pData, UDWORD bufferSize)
 	BOOL				found;
 	//check that the body and propulsion stats have already been read in
 
-	ASSERT((asBodyStats != NULL, "Body Stats have !been set up"));
-	ASSERT((asPropulsionStats != NULL, "Propulsion Stats have !been set up"));
+	ASSERT_TEXT(asBodyStats != NULL, "Body Stats have !been set up");
+	ASSERT_TEXT(asPropulsionStats != NULL, "Propulsion Stats have !been set up");
 
 	psBodyStat = asBodyStats;
 	psPropulsionStat = asPropulsionStats;
@@ -2437,7 +2437,7 @@ BOOL loadWeaponSounds(SBYTE *pSoundData, UDWORD bufferSize)
 	
 	NumRecords = numCR((UBYTE *)pSoundData, bufferSize);
 
-	ASSERT((asWeaponStats != NULL, "loadWeaponSounds: Weapon stats !loaded"));
+	ASSERT_TEXT(asWeaponStats != NULL, "loadWeaponSounds: Weapon stats !loaded");
 
 	for (i=0; i < NumRecords; i++)
 	{
@@ -2516,7 +2516,7 @@ BOOL loadWeaponModifiers(SBYTE *pWeapModData, UDWORD bufferSize)
 			(char*)&weaponEffectName, (char*)&propulsionName, &modifier);
 
 		//get the weapon effect inc
-		effectInc = getWeaponEffect(weaponEffectName);
+		effectInc = (WEAPON_EFFECT)getWeaponEffect(weaponEffectName);
 		if (effectInc == INVALID_WEAPON_EFFECT)
 		{
 			DBERROR(("loadWeaponModifiers: Invalid Weapon Effect - %s", 
@@ -2524,7 +2524,7 @@ BOOL loadWeaponModifiers(SBYTE *pWeapModData, UDWORD bufferSize)
 			return FALSE;
 		}
 		//get the propulsion inc
-		propInc = getPropulsionType(propulsionName);
+		propInc = (PROPULSION_TYPE)getPropulsionType(propulsionName);
 		if (propInc == INVALID_PROP_TYPE)
 		{
 			DBERROR(("loadWeaponModifiers: Invalid Propulsion type - %s", 
@@ -2562,8 +2562,8 @@ BOOL loadPropulsionSounds(SBYTE *pPropSoundData, UDWORD bufferSize)
 	
 	NumRecords = numCR((UBYTE *)pPropSoundData, bufferSize);
 
-	ASSERT((asPropulsionTypes != NULL, 
-		"loadPropulsionSounds: Propulsion type stats !loaded"));
+	ASSERT_TEXT(asPropulsionTypes != NULL, 
+		"loadPropulsionSounds: Propulsion type stats !loaded");
 
 	for (i=0; i < NumRecords; i++)
 	{
@@ -2689,8 +2689,8 @@ void statsSetConstruct(CONSTRUCT_STATS	*psStats, UDWORD index)
 WEAPON_STATS *statsGetWeapon(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_WEAPON_START) && (ref < REF_WEAPON_START + REF_RANGE),
-		"statsGetWeapon: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_WEAPON_START) && (ref < REF_WEAPON_START + REF_RANGE),
+		"statsGetWeapon: Invalid reference number: %x", ref);
 		
 	for (index = 0; index < numWeaponStats; index++)
 	{
@@ -2699,15 +2699,15 @@ WEAPON_STATS *statsGetWeapon(UDWORD ref)
 			return &asWeaponStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetWeapon: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetWeapon: Reference number !found in list: %x", ref);
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
 /*ARMOUR_STATS *statsGetArmour(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_ARMOUR_START) && (ref < REF_ARMOUR_START + REF_RANGE),
-		"statsGetArmour: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_ARMOUR_START) && (ref < REF_ARMOUR_START + REF_RANGE),
+		"statsGetArmour: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numArmourStats; index++)
 	{
@@ -2716,14 +2716,14 @@ WEAPON_STATS *statsGetWeapon(UDWORD ref)
 			return &asArmourStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetArmour: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetArmour: Reference number !found in list: %x", ref);
 }*/
 
 BODY_STATS *statsGetBody(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_BODY_START) && (ref < REF_BODY_START + REF_RANGE),
-		"statsGetBody: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_BODY_START) && (ref < REF_BODY_START + REF_RANGE),
+		"statsGetBody: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numBodyStats; index++)
 	{
@@ -2732,15 +2732,15 @@ BODY_STATS *statsGetBody(UDWORD ref)
 			return &asBodyStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetBody: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetBody: Reference number !found in list: %x", ref);
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
 BRAIN_STATS *statsGetBrain(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_BRAIN_START) && (ref < REF_BRAIN_START + REF_RANGE),
-		"statsGetBrain: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_BRAIN_START) && (ref < REF_BRAIN_START + REF_RANGE),
+		"statsGetBrain: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numBrainStats; index++)
 	{
@@ -2749,15 +2749,15 @@ BRAIN_STATS *statsGetBrain(UDWORD ref)
 			return &asBrainStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetBrain: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetBrain: Reference number !found in list: %x", ref);
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
 /*POWER_STATS *statsGetPower(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_POWER_START) && (ref < REF_POWER_START + REF_RANGE),
-		"statsGetPower: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_POWER_START) && (ref < REF_POWER_START + REF_RANGE),
+		"statsGetPower: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numPowerStats; index++)
 	{
@@ -2766,15 +2766,15 @@ BRAIN_STATS *statsGetBrain(UDWORD ref)
 			return &asPowerStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetPower: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetPower: Reference number !found in list: %x", ref);
 }*/
 
 PROPULSION_STATS *statsGetPropulsion(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_PROPULSION_START) && (ref < REF_PROPULSION_START + 
+	ASSERT_TEXT( (ref >= REF_PROPULSION_START) && (ref < REF_PROPULSION_START + 
 		REF_RANGE),
-		"statsGetPropulsion: Invalid reference number: %x", ref));
+		"statsGetPropulsion: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numPropulsionStats; index++)
 	{
@@ -2783,15 +2783,15 @@ PROPULSION_STATS *statsGetPropulsion(UDWORD ref)
 			return &asPropulsionStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetPropulsion: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetPropulsion: Reference number !found in list: %x", ref);
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
 SENSOR_STATS *statsGetSensor(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_SENSOR_START) && (ref < REF_SENSOR_START + REF_RANGE),
-		"statsGetSensor: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_SENSOR_START) && (ref < REF_SENSOR_START + REF_RANGE),
+		"statsGetSensor: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numSensorStats; index++)
 	{
@@ -2800,15 +2800,15 @@ SENSOR_STATS *statsGetSensor(UDWORD ref)
 			return &asSensorStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetSensor: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetSensor: Reference number !found in list: %x", ref);
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
 ECM_STATS *statsGetECM(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_ECM_START) && (ref < REF_ECM_START + REF_RANGE),
-		"statsGetECM: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_ECM_START) && (ref < REF_ECM_START + REF_RANGE),
+		"statsGetECM: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numECMStats; index++)
 	{
@@ -2817,15 +2817,15 @@ ECM_STATS *statsGetECM(UDWORD ref)
 			return &asECMStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetECM: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetECM: Reference number !found in list: %x", ref);
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
 REPAIR_STATS *statsGetRepair(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_REPAIR_START) && (ref < REF_REPAIR_START + REF_RANGE),
-		"statsGetRepair: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_REPAIR_START) && (ref < REF_REPAIR_START + REF_RANGE),
+		"statsGetRepair: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numRepairStats; index++)
 	{
@@ -2834,15 +2834,15 @@ REPAIR_STATS *statsGetRepair(UDWORD ref)
 			return &asRepairStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetRepair: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetRepair: Reference number !found in list: %x", ref);
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
 /*PROGRAM_STATS *statsGetProgram(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_PROGRAM_START) && (ref < REF_PROGRAM_START + REF_RANGE),
-		"statsGetProgram: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_PROGRAM_START) && (ref < REF_PROGRAM_START + REF_RANGE),
+		"statsGetProgram: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numProgramStats; index++)
 	{
@@ -2851,14 +2851,14 @@ REPAIR_STATS *statsGetRepair(UDWORD ref)
 			return &asProgramStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetProgram: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetProgram: Reference number !found in list: %x", ref);
 }*/
 
 CONSTRUCT_STATS *statsGetConstruct(UDWORD ref)
 {
 	UDWORD index;
-	ASSERT(( (ref >= REF_CONSTRUCT_START) && (ref < REF_CONSTRUCT_START + REF_RANGE),
-		"statsGetConstruct: Invalid reference number: %x", ref));
+	ASSERT_TEXT( (ref >= REF_CONSTRUCT_START) && (ref < REF_CONSTRUCT_START + REF_RANGE),
+		"statsGetConstruct: Invalid reference number: %x", ref);
 
 	for (index = 0; index < numConstructStats; index++)
 	{
@@ -2867,7 +2867,7 @@ CONSTRUCT_STATS *statsGetConstruct(UDWORD ref)
 			return &asConstructStats[index];
 		}
 	}
-	ASSERT(( FALSE, "statsGetConstruct: Reference number !found in list: %x", ref));
+	ASSERT_TEXT( FALSE, "statsGetConstruct: Reference number !found in list: %x", ref);
 	return NULL;	// should never get here, but this stops the compiler complaining.
 }
 
@@ -2914,8 +2914,8 @@ void storeSpeedFactor(UDWORD terrainType, UDWORD propulsionType, UDWORD speedFac
 	TERRAIN_TABLE *pTerrainTable = asTerrainTable;
 
 	//ASSERT((propulsionType < numPropulsionTypes, 
-	ASSERT((propulsionType < NUM_PROP_TYPES, 
-		"The propulsion type is too large"));
+	ASSERT_TEXT(propulsionType < NUM_PROP_TYPES, 
+		"The propulsion type is too large");
 
 	//pTerrainTable += terrainType*numPropulsionTypes + propulsionType;
 	pTerrainTable += (terrainType * NUM_PROP_TYPES + propulsionType);
@@ -2929,8 +2929,8 @@ UDWORD getSpeedFactor(UDWORD type, UDWORD propulsionType)
 	TERRAIN_TABLE *pTerrainTable = asTerrainTable;
 
 	//ASSERT((propulsionType < numPropulsionTypes, 
-	ASSERT((propulsionType < NUM_PROP_TYPES, 
-		"The propulsion type is too large"));
+	ASSERT_TEXT(propulsionType < NUM_PROP_TYPES, 
+		"The propulsion type is too large");
 	
 /*	switch (terrainType)
 	{
@@ -2956,7 +2956,7 @@ UDWORD getSpeedFactor(UDWORD type, UDWORD propulsionType)
 		}
 		default:
 		{
-			ASSERT((FALSE, "The terrain type is unknown"));
+			ASSERT_TEXT(FALSE, "The terrain type is unknown");
 			return 0;
 		}
 	 }*/
@@ -3027,7 +3027,7 @@ UDWORD statType(UDWORD ref)
 		return COMP_CONSTRUCT;
 	}
 	//else
-	ASSERT((FALSE, "Invalid stat pointer - cannot determine Stat Type"));
+	ASSERT_TEXT(FALSE, "Invalid stat pointer - cannot determine Stat Type");
 	return COMP_UNKNOWN;
 }
 
@@ -3143,7 +3143,7 @@ UDWORD componentType(char* pType)
 	{
 		return COMP_CONSTRUCT;
 	}
-	ASSERT((FALSE, "Unknown Component Type"));
+	ASSERT_TEXT(FALSE, "Unknown Component Type");
 
 	return 0;	// Should never get here.
 }
@@ -3374,7 +3374,7 @@ BOOL setTechLevel(BASE_STATS *psStats, char *pLevel)
 	//invalid tech level passed in
 	else
 	{
-		ASSERT((FALSE, "Unknown Technology Level - %s", pLevel));
+		ASSERT_TEXT(FALSE, "Unknown Technology Level - %s", pLevel);
 		return FALSE;
 	}
 
@@ -3397,7 +3397,7 @@ BOOL setTechLevel(BASE_STATS *psStats, char *pLevel)
 	}
 	else
 	{
-		ASSERT((FALSE, "Invalid stat id for %s", psStats->pName));
+		ASSERT_TEXT(FALSE, "Invalid stat id for %s", psStats->pName);
 		return FALSE;
 	}
 	return TRUE;
@@ -3511,7 +3511,7 @@ SDWORD	getWeaponSubClass(char *pSubClass)
     }
 
     //problem if we've got to here
-	ASSERT((FALSE, "Invalid weapon sub class - %s", pSubClass));
+	ASSERT_TEXT(FALSE, "Invalid weapon sub class - %s", pSubClass);
 	return INVALID_SUBCLASS;
 }
 
@@ -3543,7 +3543,7 @@ SDWORD	getMovementModel(char *pMovement)
 		return MM_SWEEP;
 	}
 	//problem if we've got to here
-	ASSERT((FALSE, "Invalid movement model - ", pMovement));
+	ASSERT_TEXT(FALSE, "Invalid movement model - ", pMovement);
 	return INVALID_MOVEMENT;
 }
 
@@ -3662,7 +3662,7 @@ UDWORD	val;
 	//---
 	val =  (psStats->radiusDamage + (psStats->radiusDamage * asWeaponUpgrade[player][
 		psStats->weaponSubClass].radiusDamage)/100);
-	ASSERT((val<512,"Big range!!!!"));
+	ASSERT_TEXT(val<512,"Big range!!!!");
 	return(val);
 }
 */
@@ -3743,7 +3743,7 @@ UDWORD	bodyArmour(BODY_STATS *psStats, UBYTE player, UBYTE bodyType,
 		break;
 	}
 
-	ASSERT((FALSE,"bodyArmour() : Unknown weapon class"));
+	ASSERT_TEXT(FALSE,"bodyArmour() : Unknown weapon class");
 	return 0;	// Should never get here.
 }
 

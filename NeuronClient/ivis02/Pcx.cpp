@@ -200,7 +200,7 @@ BOOL pie_PCXLoadToBuffer(char *file, iSprite *s, iColour* pal)
 
 	if (pal)
 	{
-//		ASSERT((FALSE,"warning palette is being loaded for %s",file));
+//		ASSERT(FALSE,"warning palette is being loaded for %s",file);
  		_load_palette(pal);
 	}
 
@@ -265,7 +265,7 @@ BOOL iV_PCXLoad(char *file, iSprite *s, iColour *pal)
 
 	if (pal)
 	{
-		ASSERT((FALSE,"warning palette is being loaded for %s",file));
+		ASSERT_TEXT(FALSE,"warning palette is being loaded for %s",file);
  		_load_palette(pal);
 	}
 
@@ -318,7 +318,7 @@ BOOL iV_PCXLoadMem(int8 *pcximge, iSprite *s, iColour *pal)
 
 	if (pal)
 	{
-		ASSERT((FALSE,"warning palette is being loaded in iV_PCXLoadMem"));
+		ASSERT_TEXT(FALSE,"warning palette is being loaded in iV_PCXLoadMem");
  		_load_palette_mem(pal);
 	}
 
@@ -373,7 +373,7 @@ BOOL pie_PCXLoadMemToBuffer(int8 *pcximge, iSprite *s, iColour *pal)
 
 	if (pal)
 	{
-		ASSERT((FALSE,"warning palette is being loaded in iV_PCXLoadMem"));
+		ASSERT_TEXT(FALSE,"warning palette is being loaded in iV_PCXLoadMem");
  		_load_palette_mem(pal);
 	}
 

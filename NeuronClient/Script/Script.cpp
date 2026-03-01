@@ -6,7 +6,7 @@
 
 #include "Frame.h"
 #include "Script.h"
-#include <assert.h>
+
 							
 
 // Flags for storing function indexes
@@ -257,8 +257,8 @@ BOOL scriptSaveProg(SCRIPT_CODE *psProg, UDWORD *pSize, UBYTE **ppData)
 
 
 	// Save the code
-	ASSERT(((pPos - *ppData) % 4 == 0,
-		"scriptSaveProg: data !DWORD aligned"));
+	ASSERT_TEXT((pPos - *ppData) % 4 == 0,
+		"scriptSaveProg: data !DWORD aligned");
 	memcpy(pPos, psProg->pCode, psProg->size);
 
 	// Now search the code for function pointers and replace
@@ -302,7 +302,7 @@ BOOL scriptSaveProg(SCRIPT_CODE *psProg, UDWORD *pSize, UBYTE **ppData)
 					}
 				}
 			}
-			ASSERT((MatchFound==TRUE,"scriptSaveProg: No Function match"));
+			ASSERT_TEXT(MatchFound==TRUE,"scriptSaveProg: No Function match");
 			*(ip+1) = saveFunc;
 			break;
 		case OP_VARCALL:
@@ -343,7 +343,7 @@ BOOL scriptSaveProg(SCRIPT_CODE *psProg, UDWORD *pSize, UBYTE **ppData)
 					break;
 				}
 			}
-			ASSERT((MatchFound==TRUE,"scriptSaveProg: No var match"));
+			ASSERT_TEXT(MatchFound==TRUE,"scriptSaveProg: No var match");
 			*(ip+1) = saveFunc;			
 			break;
 		default:
@@ -607,8 +607,8 @@ BOOL scriptLoadProg(UDWORD size, UBYTE *pData, SCRIPT_CODE **ppsProg)
 //	DBPRINTF(("new=%p\n",pPos));
 
 	// Load the code
-	ASSERT(((pPos - pData) % 4 == 0,
-		"scriptLoadProg: data !DWORD aligned"));
+	ASSERT_TEXT((pPos - pData) % 4 == 0,
+		"scriptLoadProg: data !DWORD aligned");
 
 
 

@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <assert.h>
+
 
 #define iV_DEBUG_FILE	"IVI.LOG"
 

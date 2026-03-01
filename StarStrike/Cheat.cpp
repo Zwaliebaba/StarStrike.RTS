@@ -10,7 +10,7 @@ static	BOOL	bAllowCheatCodes = TRUE;
 
 typedef struct _cheat_entry
 {
-char *pName;
+const char *pName;
 void (*function)(void);	// pointer to void* function
 } CHEAT_ENTRY;
 
@@ -92,9 +92,9 @@ unsigned char	*xored;
  
 	while(cheatCodes[index].function!=NULL)
 	{
-		strcpy(cheatString,cheatCodes[index].pName);
+		strcpy((char *)cheatString,cheatCodes[index].pName);
 		xored = xorString(cheatString);
-		if(strcmp(pName,xored) == FALSE)	// strcmp oddity
+		if(strcmp(pName,(const char *)xored) == FALSE)	// strcmp oddity
 		{
 			/* We've got our man... */
 			cheatCodes[index].function();	// run it

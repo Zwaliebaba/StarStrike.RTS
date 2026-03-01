@@ -35,6 +35,7 @@
 #include "Bucket3d.h"
 #include "Display3D.h"
 #include "Multiplay.h" //ajl
+#include "Multijoin.h"
 #include "Script.h"
 #include "ScriptTabs.h"
 #include "Levels.h"
@@ -570,7 +571,7 @@ GAMECODE gameLoop(void)
 							}
 							else
 							{
-								ASSERT((FALSE,"Mission Results: saveGame Failed"));
+								ASSERT_TEXT(FALSE,"Mission Results: saveGame Failed");
 								deleteSaveGame(sRequestResult);
 							}
 						}
@@ -582,13 +583,13 @@ GAMECODE gameLoop(void)
 							}
 							else
 							{
-								ASSERT((FALSE,"Mid Mission: saveGame Failed"));
+								ASSERT_TEXT(FALSE,"Mid Mission: saveGame Failed");
 								deleteSaveGame(sRequestResult);
 							}
       					}
 						else
 						{
-							ASSERT((FALSE, "Attempt to save game with incorrect load/save mode"));
+							ASSERT_TEXT(FALSE, "Attempt to save game with incorrect load/save mode");
 						}
 					}
 				}
@@ -859,7 +860,7 @@ GAMECODE gameLoop(void)
 		return GAMECODE_LOADGAME;
 		break;
 	default:
-		ASSERT((FALSE, "unknown loopMissionState"));
+		ASSERT_TEXT(FALSE, "unknown loopMissionState");
 		break;
 	}
 
@@ -1123,7 +1124,7 @@ void loop_ClearVideoPlaybackMode(void)
 	{
 		screenToggleVideoPlaybackMode();
 	}
-	ASSERT((videoMode == 0,"loop_ClearVideoPlaybackMode: out of sync."));
+	ASSERT_TEXT(videoMode == 0,"loop_ClearVideoPlaybackMode: out of sync.");
 }
 
 SDWORD loop_GetVideoMode(void)

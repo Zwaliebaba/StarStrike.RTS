@@ -244,9 +244,9 @@ static DWORD WINAPI cursorThreadUpdate(LPVOID param)
 								psFront, &sScreenRect,
 								psCursorSave, &sSaveRect,
 								DDBLT_WAIT, NULL);
-				ASSERT((ddrval == DD_OK,
+				ASSERT_TEXT(ddrval == DD_OK,
 					"cursorThread: save buffer restore failed:\n%s",
-					DDErrorToString(ddrval)));
+					DDErrorToString(ddrval));
 			}
 
 			LeaveCriticalSection(&sScreenFlipCritical);
@@ -268,9 +268,9 @@ static DWORD WINAPI cursorThreadUpdate(LPVOID param)
 						psCursorSave, &sSaveRect,
 						psFront, &sScreenRect,
 						DDBLT_WAIT, NULL);
-			ASSERT((ddrval == DD_OK,
+			ASSERT_TEXT(ddrval == DD_OK,
 				"cursorThread: save buffer copy failed:\n%s",
-				DDErrorToString(ddrval)));
+				DDErrorToString(ddrval));
 			saveX = mx;
 			saveY = my;
 			saveValid = TRUE;
@@ -311,9 +311,9 @@ static DWORD WINAPI cursorThreadUpdate(LPVOID param)
 								psFront, &sScreenRect,
 								psCursorSurface, &sCursorRect,
 								DDBLT_WAIT | DDBLT_KEYSRCOVERRIDE, &sBltFX);
-				ASSERT((ddrval == DD_OK,
+				ASSERT_TEXT(ddrval == DD_OK,
 					"cursorThread: cursor blit failed:\n%s",
-					DDErrorToString(ddrval)));
+					DDErrorToString(ddrval));
 			}
 		}
 		LeaveCriticalSection(&sSurfaceCritical);

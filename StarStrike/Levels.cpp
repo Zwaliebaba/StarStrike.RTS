@@ -16,11 +16,16 @@
 #include "Levels.h"
 #include "Mission.h"
 #include "LevelInt.h"
+
+/* The actual definition of LTOKEN_TYPE (declared extern in LevelInt.h) */
+enum _token_type LTOKEN_TYPE;
+
 #include "Game.h"
 #include "Lighting.h"
 #include "PieState.h"
 #include "Data.h"
 #include "MultiWDG.h"
+#include "Ivi.h"
 
 //#ifdef DEBUG
 #include "Script.h"
@@ -126,7 +131,7 @@ void levError(const char *pError)
 	levGetErrorData(&line, &pText);
 
 #ifdef DEBUG
-	ASSERT((FALSE, "Level File parse error:\n%s at line %d text %s\n", pError, line, pText));
+	ASSERT_TEXT(FALSE, "Level File parse error:\n%s at line %d text %s\n", pError, line, pText);
 #else
 	DBERROR(("Level File parse error:\n%s at line %d text %s\n", pError, line, pText));
 #endif
@@ -180,7 +185,7 @@ BOOL levParse(UBYTE *pBuffer, SDWORD size)
 			if (state == LP_START || state == LP_WAITDATA)
 			{
 				// start a new level data set
-				psDataSet = MALLOC(sizeof(LEVEL_DATASET));
+				psDataSet = (LEVEL_DATASET *)MALLOC(sizeof(LEVEL_DATASET));
 				if (!psDataSet)
 				{
 					levError("Out of memory");
@@ -228,7 +233,7 @@ BOOL levParse(UBYTE *pBuffer, SDWORD size)
 					break;
 #endif
 				default:
-					ASSERT((FALSE,"eh?"));
+					ASSERT_TEXT(FALSE,"eh?");
 					break;
 				}
 			}
@@ -358,7 +363,7 @@ BOOL levParse(UBYTE *pBuffer, SDWORD size)
 				}
 #endif
 				// store the level name
-				psDataSet->pName = MALLOC(strlen(pLevToken) + 1);
+				psDataSet->pName = (char *)MALLOC(strlen(pLevToken) + 1);
 				if (!psDataSet->pName)
 				{
 					levError("Out of memory");
@@ -399,7 +404,7 @@ BOOL levParse(UBYTE *pBuffer, SDWORD size)
 				}
 
 				// store the data name
-				psDataSet->apDataFiles[currData] = MALLOC(strlen(pLevToken) + 1);
+				psDataSet->apDataFiles[currData] = (char *)MALLOC(strlen(pLevToken) + 1);
 				if (!psDataSet->apDataFiles[currData])
 				{
 					levError("Out of memory");
@@ -670,7 +675,7 @@ BOOL levLoadData(char *pName, char *pSaveName, SDWORD saveType)
 	}
 
 	/* Keep a copy of the present level name */
-	strcpy(currentLevelName,pName);
+	strcpy((char *)currentLevelName,pName);
 
     bCamChangeSaveGame = FALSE;
     if (pSaveName && saveType == GTYPE_SAVE_START)
@@ -808,8 +813,8 @@ BOOL levLoadData(char *pName, char *pSaveName, SDWORD saveType)
 	{
 //#ifndef COVERMOUNT
 
-		ASSERT((psNewLevel->type == LDS_BETWEEN,
-			"levLoadData: only BETWEEN missions do !need a .gam file"));
+		ASSERT_TEXT(psNewLevel->type == LDS_BETWEEN,
+			"levLoadData: only BETWEEN missions do !need a .gam file");
 //#endif
 		DBP0(("levLoadData: no .gam file for level: BETWEEN mission\n"));
 		if (pSaveName != NULL)
@@ -1055,8 +1060,8 @@ iV_Reset(FALSE);//unload font, to avoid crash on 8th load... ajl 15/sep/99
 					break;
 #endif
 				default:
-					ASSERT((psNewLevel->type >= MULTI_TYPE_START,
-						"levLoadData: Unexpected mission type"));
+					ASSERT_TEXT(psNewLevel->type >= MULTI_TYPE_START,
+						"levLoadData: Unexpected mission type");
 					DBPRINTF(("MULTIPLAYER\n"));
 					//if (!startMission(MISSION_CAMPSTART, psNewLevel->apDataFiles[i]))
 					if (!startMission(LDS_CAMSTART, psNewLevel->apDataFiles[i]))

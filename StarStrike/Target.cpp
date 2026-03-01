@@ -4,7 +4,7 @@
 //
 
 #include <stdio.h>
-#include <assert.h>
+
 #include <frame.h>
 #include <gtime.h>
 #include <animobj.h>
@@ -131,8 +131,8 @@ BASE_OBJECT *targetAquireNearestView(SWORD x,SWORD y,UWORD TargetType)
 
 	for(i=0; i<NumTargets; i++) {
 		psObj = TargetList[i].psObj;
-		dx = abs(psObj->sDisplay.screenX - x);
-		dy = abs(psObj->sDisplay.screenY - y);
+		dx = abs((int)(psObj->sDisplay.screenX - x));
+		dy = abs((int)(psObj->sDisplay.screenY - y));
 //		Dsq = dx*dx+dy*dy*4;
 		dx += dy/2;
 		if(dx < NearestDx) {

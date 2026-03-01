@@ -540,9 +540,9 @@ passed through the object lists each cycle whilst there is some*/
 		warning++;
 		if (warning > 1000)
 		{
-			ASSERT((FALSE, 
+			ASSERT_TEXT(FALSE, 
 				"spreading power round more than 1000 buildings for player %d?", 
-				player));
+				player);
 			warning = 0;
 		}
 
@@ -805,7 +805,7 @@ BOOL accruePower(BASE_OBJECT *psObject)
         }
         break;
     default:
-        ASSERT((FALSE, "accruePower: Invalid object type"));
+        ASSERT_TEXT(FALSE, "accruePower: Invalid object type");
     }
     
 	return bPowerUsed;
@@ -825,7 +825,7 @@ void powerDestroyObject(BASE_OBJECT *psObject)
 /*checks if the Object to be powered next - returns TRUE if power*/
 BOOL getLastPowered(BASE_OBJECT *psObject)
 {
-	ASSERT((psObject != NULL, "getLastPowered - invalid object"));
+	ASSERT_TEXT(psObject != NULL, "getLastPowered - invalid object");
 
 	if (asPower[psObject->player]->psLastPowered == NULL)
 	{
@@ -888,8 +888,8 @@ BOOL structUsesPower(STRUCTURE *psStruct)
 {
     BOOL    bUsesPower = FALSE;
 
-	ASSERT((PTRVALID(psStruct, sizeof(STRUCTURE)),
-		"structUsesPower: Invalid Structure pointer"));
+	ASSERT_TEXT(PTRVALID(psStruct, sizeof(STRUCTURE)),
+		"structUsesPower: Invalid Structure pointer");
     
     switch(psStruct->pStructureType->type)
     {
@@ -913,8 +913,8 @@ BOOL droidUsesPower(DROID *psDroid)
 {
     BOOL    bUsesPower = FALSE;
 
-	ASSERT((PTRVALID(psDroid, sizeof(DROID)),
-		"unitUsesPower: Invalid unit pointer"));
+	ASSERT_TEXT(PTRVALID(psDroid, sizeof(DROID)),
+		"unitUsesPower: Invalid unit pointer");
     
     switch(psDroid->droidType)
     {
@@ -959,7 +959,7 @@ void powerCheck(BOOL bBeforePowerUsed, UBYTE player)
         if (psLastPowered != NULL && psLastPowered == asPower[player]->
             psLastPowered && bPowerBefore)
         {
-            ASSERT((FALSE, "powerCheck: trouble at mill!"));
+            ASSERT_TEXT(FALSE, "powerCheck: trouble at mill!");
             //initialise so something can have some power next cycle
             asPower[player]->psLastPowered = NULL;
         }

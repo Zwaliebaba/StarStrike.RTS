@@ -12,7 +12,7 @@
 
 /** include files **/
 
-#include <assert.h>
+
 
 #include "Frame.h"
 #include "Wdg.h"

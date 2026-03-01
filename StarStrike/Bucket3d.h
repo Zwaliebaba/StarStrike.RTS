@@ -2,6 +2,8 @@
 
 /* bucket3D.h */
 
+#include "Types.h"
+
 
 #define		BUCKET
 

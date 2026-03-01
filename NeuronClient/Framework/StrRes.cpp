@@ -99,8 +99,8 @@ void strresReleaseIDStrings(STR_RES *psRes)
 {
 	STR_ID		*psID;
 
-	ASSERT((PTRVALID(psRes, sizeof(STR_RES)),
-		"strresLoadFixedID: Invalid string res pointer"));
+	ASSERT_TEXT(PTRVALID(psRes, sizeof(STR_RES)),
+		"strresLoadFixedID: Invalid string res pointer");
 
 	for(psID = (STR_ID *)TREAP_GETSMALLEST(psRes->psIDTreap); psID;
 		psID = (STR_ID *)TREAP_GETSMALLEST(psRes->psIDTreap))
@@ -121,8 +121,8 @@ void strresDestroy(STR_RES *psRes)
 	STR_BLOCK	*psBlock, *psNext = NULL;
 	UDWORD		i;
 
-	ASSERT((PTRVALID(psRes, sizeof(STR_RES)),
-		"strresLoadFixedID: Invalid string res pointer"));
+	ASSERT_TEXT(PTRVALID(psRes, sizeof(STR_RES)),
+		"strresLoadFixedID: Invalid string res pointer");
 
 	// Free the string id's
 	strresReleaseIDStrings(psRes);
@@ -171,13 +171,13 @@ BOOL strresLoadFixedID(STR_RES *psRes, STR_ID *psID, UDWORD numID)
 {
 	UDWORD	i;
 
-	ASSERT((PTRVALID(psRes, sizeof(STR_RES)),
-		"strresLoadFixedID: Invalid string res pointer"));
+	ASSERT_TEXT(PTRVALID(psRes, sizeof(STR_RES)),
+		"strresLoadFixedID: Invalid string res pointer");
 
 	for (i=0; i<numID; i++)
 	{
-		ASSERT((psID->id == psRes->nextID,
-			"strresLoadFixedID: id out of sequence"));
+		ASSERT_TEXT(psID->id == psRes->nextID,
+			"strresLoadFixedID: id out of sequence");
 
 		// Store the ID string
 		if (!TREAP_ADD(psRes->psIDTreap, (UDWORD)psID->pIDStr, psID))
@@ -199,8 +199,8 @@ BOOL strresGetIDNum(STR_RES *psRes, char *pIDStr, UDWORD *pIDNum)
 {
 	STR_ID	*psID;
 
-	ASSERT((PTRVALID(psRes, sizeof(STR_RES)),
-		"strresLoadFixedID: Invalid string res pointer"));
+	ASSERT_TEXT(PTRVALID(psRes, sizeof(STR_RES)),
+		"strresLoadFixedID: Invalid string res pointer");
 
 	psID = (STR_ID *)TREAP_FIND(psRes->psIDTreap, (UDWORD)pIDStr);
 	if (!psID)
@@ -226,8 +226,8 @@ BOOL strresGetIDString(STR_RES *psRes, char *pIDStr, char **ppStoredID)
 {
 	STR_ID	*psID;
 
-	ASSERT((PTRVALID(psRes, sizeof(STR_RES)),
-		"strresLoadFixedID: Invalid string res pointer"));
+	ASSERT_TEXT(PTRVALID(psRes, sizeof(STR_RES)),
+		"strresLoadFixedID: Invalid string res pointer");
 
 	psID = (STR_ID *)TREAP_FIND(psRes->psIDTreap, (UDWORD)pIDStr);
 	if (!psID)
@@ -250,8 +250,8 @@ BOOL strresStoreString(STR_RES *psRes, char *pID, char *pString)
 	STR_BLOCK	*psBlock;
 	UDWORD		id;
 
-	ASSERT((PTRVALID(psRes, sizeof(STR_RES)),
-		"strresLoadFixedID: Invalid string res pointer"));
+	ASSERT_TEXT(PTRVALID(psRes, sizeof(STR_RES)),
+		"strresLoadFixedID: Invalid string res pointer");
 
 	// Find the id for the string
 	psID = (STR_ID *)TREAP_FIND(psRes->psIDTreap, (UDWORD)pID);
@@ -321,8 +321,8 @@ char *strresGetString(STR_RES *psRes, UDWORD id)
 {
 	STR_BLOCK	*psBlock;
 
-	ASSERT((PTRVALID(psRes, sizeof(STR_RES)),
-		"strresLoadFixedID: Invalid string res pointer"));
+	ASSERT_TEXT(PTRVALID(psRes, sizeof(STR_RES)),
+		"strresLoadFixedID: Invalid string res pointer");
 
 	// find the block the string is in
 	for(psBlock = psRes->psStrings; psBlock && psBlock->idEnd < id;
@@ -331,13 +331,13 @@ char *strresGetString(STR_RES *psRes, UDWORD id)
 
 	if (!psBlock)
 	{
-		ASSERT((FALSE, "strresGetString: String !found"));
+		ASSERT_TEXT(FALSE, "strresGetString: String !found");
 		// Return the default string
 		return psRes->psStrings->apStrings[0];
 	}
 
-	ASSERT((psBlock->apStrings[id - psBlock->idStart] != NULL,
-		"strresGetString: String !found"));
+	ASSERT_TEXT(psBlock->apStrings[id - psBlock->idStart] != NULL,
+		"strresGetString: String !found");
 
 #ifdef DEBUG
 	psBlock->aUsage[id - psBlock->idStart] += 1;
@@ -396,8 +396,8 @@ UDWORD strresGetIDfromString(STR_RES *psRes, char *pString)
 	STR_BLOCK	*psBlock, *psNext = NULL;
 	UDWORD		i;
 
-	ASSERT((PTRVALID(psRes, sizeof(STR_RES)),
-		"strresGetID: Invalid string res pointer"));
+	ASSERT_TEXT(PTRVALID(psRes, sizeof(STR_RES)),
+		"strresGetID: Invalid string res pointer");
 
 	// Search through all the blocks to find the string
 	for(psBlock = psRes->psStrings; psBlock; psBlock=psNext)

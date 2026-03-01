@@ -1,35 +1,30 @@
-/*
- *multiint.h
- * Interface defines/externs for warzone frontend.
- * Alex Lee, pumpkin Studios.
- */
+#pragma once
 
-extern	VOID	runConnectionScreen		(VOID);
-extern	BOOL	startConnectionScreen	(VOID);
-extern	VOID	intProcessConnection	(UDWORD id);
+#include "widgBase.h"
 
-extern	VOID	runGameFind				(VOID);
-extern	VOID	startGameFind			(VOID);
+extern VOID runConnectionScreen(VOID);
+extern BOOL startConnectionScreen(VOID);
+extern VOID intProcessConnection(UDWORD id);
 
-extern	VOID	runMultiOptions			(VOID);
-extern	BOOL	startMultiOptions		(BOOL bReenter);
-extern	VOID	frontendMultiMessages	(VOID);
+extern VOID runGameFind(VOID);
+extern VOID startGameFind(VOID);
 
-extern	VOID	runForceSelect			(VOID);
-extern	BOOL	startForceSelect		(VOID);
+extern VOID runMultiOptions(VOID);
+extern BOOL startMultiOptions(BOOL bReenter);
+extern VOID frontendMultiMessages(VOID);
 
-extern	BOOL	chooseColour			(UDWORD);
+extern VOID runForceSelect(VOID);
+extern BOOL startForceSelect(VOID);
 
-extern	BOOL	addMultiBut				(W_SCREEN *screen, UDWORD formid,UDWORD id,UDWORD x, UDWORD y,
-										 UDWORD width, UDWORD height, UDWORD tipres,
-										 UDWORD norm,UDWORD hi,BOOL showmouseover);
-extern  char	sForceName[256];
-extern	UBYTE	sPlayer[128];
+extern BOOL chooseColour(UDWORD);
 
+extern BOOL addMultiBut(W_SCREEN* screen, UDWORD formid, UDWORD id, UDWORD x, UDWORD y, UDWORD width, UDWORD height, UDWORD tipres,
+                        UDWORD norm, UDWORD hi, BOOL showmouseover);
+extern char sForceName[256];
+extern UBYTE sPlayer[128];
 
 // ////////////////////////////////////////////////////////////////
 // Force Select Screen
-
 
 #define	FORCE_LOAD				10300
 #define FORCE_LOADX				73
@@ -57,7 +52,7 @@ extern	UBYTE	sPlayer[128];
 #define FORCE_STATSHEIGHT		255
 
 #define FORCE_DROID				10304
-#define FORCE_DROIDX			70	
+#define FORCE_DROIDX			70
 #define FORCE_DROIDY			220
 
 //#define FORCE_LO				10304							
@@ -91,8 +86,7 @@ extern	UBYTE	sPlayer[128];
 // ////////////////////////////////////////////////////////////////
 // CONNECTION SCREEN
 
-
-#define CON_CONTYPES		10103				
+#define CON_CONTYPES		10103
 #define CON_CONTYPESWIDTH	290
 #define CON_CONTYPES_FORM	10104
 #define CON_TYPESID_START	10105
@@ -104,7 +98,7 @@ extern	UBYTE	sPlayer[128];
 #define CON_SETTINGSX		220
 #define	CON_SETTINGSY		190
 #define CON_SETTINGSWIDTH	200
-#define CON_SETTINGSHEIGHT	100 
+#define CON_SETTINGSHEIGHT	100
 
 #define CON_OK				10101
 #define CON_OKX				CON_SETTINGSWIDTH-MULTIOP_OKW-3
@@ -151,7 +145,6 @@ extern	UBYTE	sPlayer[128];
 #define CON_11520			10141
 #define CON_11520X			142
 #define CON_11520Y			42
-
 
 // ////////////////////////////////////////////////////////////////
 // GAME FIND SCREEN
@@ -217,7 +210,6 @@ extern	UBYTE	sPlayer[128];
 #define MULTIOP_TEAMPLAY		10262
 #define MULTIOP_SKIRMISH		10263
 
-
 #define MULTIOP_TECH_LOW		10264
 #define MULTIOP_TECH_MED		10265
 #define MULTIOP_TECH_HI			10266
@@ -226,7 +218,7 @@ extern	UBYTE	sPlayer[128];
 #define MULTIOP_BASE			10268
 #define MULTIOP_DEFENCE			10269
 
-#define MULTIOP_ALLIANCE_N		10270	
+#define MULTIOP_ALLIANCE_N		10270
 #define MULTIOP_ALLIANCE_Y		10271
 
 #define MULTIOP_POWLEV_LOW		10272
@@ -238,7 +230,7 @@ extern	UBYTE	sPlayer[128];
 #define MULTIOP_REFRESHY		453
 
 #define MULTIOP_HOST			10276
-#define MULTIOP_HOSTX			5			
+#define MULTIOP_HOSTX			5
 #define MULTIOP_HOSTY			MROW3+3
 
 #define MULTIOP_STRUCTLIMITS	10277
@@ -257,10 +249,10 @@ extern	UBYTE	sPlayer[128];
 #define MULTIOP_CHATBOXH		115
 
 #define MULTIOP_CHATEDIT		10279
-#define MULTIOP_CHATEDITX		4 
+#define MULTIOP_CHATEDITX		4
 #define	MULTIOP_CHATEDITY		MULTIOP_CHATBOXH-14
 #define	MULTIOP_CHATEDITW		MULTIOP_CHATBOXW-8
-#define MULTIOP_CHATEDITH		9 
+#define MULTIOP_CHATEDITH		9
 
 #define MULTIOP_COLCHOOSER_FORM	10280
 #define MULTIOP_COLCHOOSER		10281
@@ -270,9 +262,8 @@ extern	UBYTE	sPlayer[128];
 #define MULTIOP_FRAGLIMIT		10290
 #define MULTIOP_TIMELIMIT		10291
 
-
 #define MULTIOP_LIMIT			10292	// 2 for this (+label)
-#define MULTIOP_GAMETYPE		10294	
+#define MULTIOP_GAMETYPE		10294
 #define MULTIOP_POWER			10296
 #define MULTIOP_ALLIANCES		10298
 #define MULTIOP_BASETYPE		10300
@@ -315,4 +306,4 @@ extern	UBYTE	sPlayer[128];
 #define MULTIOP_OKH				24
 
 #define MULTIOP_BUTW			35
-#define MULTIOP_BUTH			24	
+#define MULTIOP_BUTH			24

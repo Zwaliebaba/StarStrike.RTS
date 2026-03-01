@@ -1,13 +1,9 @@
 #pragma once
 
-/*
- * Order.h
- *
- * Function prototypes for giving droids orders
- *
- */
-
 #include "Orderdef.h"
+
+// forward declarations
+typedef struct _structure STRUCTURE;
 
 //turn off the build queue availability until desired release date!
 //#define DISABLE_BUILD_QUEUE
@@ -180,6 +176,10 @@ void orderSelectedStatsLoc(UDWORD player, DROID_ORDER order,
 extern void orderDroidStatsLocAdd(DROID *psDroid, DROID_ORDER order,
 						BASE_STATS *psStats, UDWORD x, UDWORD y);
 
+/* add an order with two locations && a stat to the droids order list*/
+extern void orderDroidStatsTwoLocAdd(DROID *psDroid, DROID_ORDER order,
+						BASE_STATS *psStats, UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2);
+
 /* order all selected droids with two a locations && a stat */
 void orderSelectedStatsTwoLoc(UDWORD player, DROID_ORDER order,
         BASE_STATS *psStats, UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2, BOOL add);
@@ -188,7 +188,7 @@ void orderSelectedStatsTwoLoc(UDWORD player, DROID_ORDER order,
 extern BOOL secondarySupported(DROID *psDroid, SECONDARY_ORDER sec);
 
 // get the state of a secondary order, return FALSE if unsupported
-extern BOOL secondaryGetState(DROID *psDroid, SECONDARY_ORDER sec, SECONDARY_STATE *pState);
+extern BOOL secondaryGetState(DROID *psDroid, SECONDARY_ORDER sec, SDWORD *pState);
 
 // set the state of a secondary order, return FALSE if failed.
 extern BOOL secondarySetState(DROID *psDroid, SECONDARY_ORDER sec, SECONDARY_STATE State);

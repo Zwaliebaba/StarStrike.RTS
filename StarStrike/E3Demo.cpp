@@ -360,8 +360,8 @@ STRUCTURE_STATS	*pStructureType;
 			if(TILE_HAS_STRUCTURE(psTile))
 			{
 				psStructure = getTileStructure(i,j);
-				ASSERT( (psStructure != NULL,
-					"demoProcessTilesIn: no structure at tile %i %i\n", i, j) );
+				ASSERT_TEXT( psStructure != NULL,
+					"demoProcessTilesIn: no structure at tile %i %i\n", i, j );
 				if(psStructure)
 				{
 					pStructureType = psStructure->pStructureType;

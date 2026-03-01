@@ -52,6 +52,8 @@ extern BOOL		bHosted;
 extern BOOL		multiRequestUp;
 // ////////////////////////////////////////////////////////////////////////////
 //external functions
+extern VOID kickPlayer(DPID dpid);
+extern UDWORD addPlayerBox(BOOL players);
 
 // ////////////////////////////////////////////////////////////////////////////
 // Local Functions
@@ -136,11 +138,11 @@ BOOL intDisplayMultiJoiningStatus(UBYTE joinCount)
 	RenderWindowFrame(&FrameNormal, x, y ,w, h);		// draw a wee blu box.
 
 	// display how far done..
-	pie_DrawText((UCHAR*)strresGetString(psStringRes,STR_GAM_JOINING),
+	pie_DrawText((const char*)strresGetString(psStringRes,STR_GAM_JOINING),
 					x+(w/2)-(iV_GetTextWidth(strresGetString(psStringRes,STR_GAM_JOINING))/2),
 					y+(h/2)-8 );
 	sprintf(sTmp,"%d%%", PERCENT((NetPlay.playercount-joinCount),NetPlay.playercount) );
-	pie_DrawText((UCHAR*)sTmp ,x+(w/2)-10,y+(h/2)+10 );
+	pie_DrawText((const char*)sTmp ,x+(w/2)-10,y+(h/2)+10 );
 
 	return TRUE;
 }
@@ -311,7 +313,7 @@ BOOL MultiPlayerJoin(DPID dpid)
 				return TRUE;
 			}
 		}
-		ASSERT((NetPlay.playercount<=MAX_PLAYERS,"Too many players!"));
+		ASSERT_TEXT(NetPlay.playercount<=MAX_PLAYERS,"Too many players!");
 
 		// setup data for this player, then broadcast it to the other players.
 

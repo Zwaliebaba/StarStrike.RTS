@@ -141,8 +141,8 @@ BOOL fpathGroundBlockingTile(SDWORD x, SDWORD y)
 		}
 	}
 
-	ASSERT(( !(x <1 || y < 1 ||	x >= (SDWORD)mapWidth-1 || y >= (SDWORD)mapHeight-1),
-		"fpathBlockingTile: off map" ));
+	ASSERT_TEXT( !(x <1 || y < 1 ||	x >= (SDWORD)mapWidth-1 || y >= (SDWORD)mapHeight-1),
+		"fpathBlockingTile: off map" );
 
 	psTile = mapTile((UDWORD)x, (UDWORD)y);
 /*
@@ -190,8 +190,8 @@ BOOL fpathHoverBlockingTile(SDWORD x, SDWORD y)
 		return TRUE;
 	}
 
-	ASSERT(( !(x <1 || y < 1 ||	x >= (SDWORD)mapWidth-1 || y >= (SDWORD)mapHeight-1),
-		"fpathBlockingTile: off map" ));
+	ASSERT_TEXT( !(x <1 || y < 1 ||	x >= (SDWORD)mapWidth-1 || y >= (SDWORD)mapHeight-1),
+		"fpathBlockingTile: off map" );
 
 	psTile = mapTile((UDWORD)x, (UDWORD)y);
 
@@ -211,10 +211,10 @@ BOOL fpathLiftBlockingTile(SDWORD x, SDWORD y)
 	SDWORD		iLiftHeight, iBlockingHeight;
 	DROID		*psDroid = (DROID *) g_psObjRoute;
 
-	ASSERT( (PTRVALID(g_psObjRoute, sizeof(BASE_OBJECT)),
-		"fpathLiftBlockingTile: invalid object pointer") );
-	ASSERT( (PTRVALID(psDroid, sizeof(DROID)),
-		"fpathLiftBlockingTile: invalid droid pointer") );
+	ASSERT_TEXT( PTRVALID(g_psObjRoute, sizeof(BASE_OBJECT)),
+		"fpathLiftBlockingTile: invalid object pointer" );
+	ASSERT_TEXT( PTRVALID(psDroid, sizeof(DROID)),
+		"fpathLiftBlockingTile: invalid droid pointer" );
 
 	if (psDroid->droidType == DROID_TRANSPORTER )
 	{
@@ -244,8 +244,8 @@ BOOL fpathLiftBlockingTile(SDWORD x, SDWORD y)
 		return TRUE;
 	}
 
-	ASSERT(( !(x <1 || y < 1 ||	x >= (SDWORD)mapWidth-1 || y >= (SDWORD)mapHeight-1),
-			"fpathLiftBlockingTile: off map" ));
+	ASSERT_TEXT( !(x <1 || y < 1 ||	x >= (SDWORD)mapWidth-1 || y >= (SDWORD)mapHeight-1),
+			"fpathLiftBlockingTile: off map" );
 
 	/* no tiles are blocking if returning to rearm */
 	if( psDroid->action == DACTION_MOVETOREARM )
@@ -320,10 +320,10 @@ SDWORD fpathDistToTile(SDWORD tileX,SDWORD tileY, SDWORD pointX, SDWORD pointY)
 	xdiff = tileX - (pointX >> TILE_SHIFT);
 	ydiff = tileY - (pointY >> TILE_SHIFT);
 
-	ASSERT(((xdiff >= -1 && xdiff <= 1 && ydiff >= -1 && ydiff <= 1),
-		"fpathDistToTile: points are more than one tile apart"));
-	ASSERT((xdiff != 0 || ydiff != 0,
-		"fpathDistToTile: points are on same tile"));
+	ASSERT_TEXT((xdiff >= -1 && xdiff <= 1 && ydiff >= -1 && ydiff <= 1),
+		"fpathDistToTile: points are more than one tile apart");
+	ASSERT_TEXT(xdiff != 0 || ydiff != 0,
+		"fpathDistToTile: points are on same tile");
 
 	// not the most elegant solution but it works
 	switch (xdiff + ydiff * 10)
@@ -361,7 +361,7 @@ SDWORD fpathDistToTile(SDWORD tileX,SDWORD tileY, SDWORD pointX, SDWORD pointY)
 		dist = tx > ty ? tx + ty/2 : tx/2 + ty;
 		break;
 	default:
-		ASSERT((FALSE, "fpathDistToTile: unexpected point relationship"));
+		ASSERT_TEXT(FALSE, "fpathDistToTile: unexpected point relationship");
 		dist = TILE_UNITS;
 		break;
 	}
@@ -407,8 +407,8 @@ void fpathSetDirectRoute( BASE_OBJECT *psObj, SDWORD targetX, SDWORD targetY )
 {
 	MOVE_CONTROL *psMoveCntl;
 
-	ASSERT( (PTRVALID(psObj, sizeof(BASE_OBJECT)),
-			"fpathSetDirectRoute: invalid object pointer\n") );
+	ASSERT_TEXT( PTRVALID(psObj, sizeof(BASE_OBJECT)),
+			"fpathSetDirectRoute: invalid object pointer\n" );
 
 	if ( psObj->type == OBJ_DROID )
 	{
@@ -1140,8 +1140,8 @@ FPATH_RETVAL fpathRoute(BASE_OBJECT *psObj, MOVE_CONTROL *psMoveCntl,
 	{
 		psDroid = (DROID *)psObj;
 		psPropStats = asPropulsionStats + psDroid->asBits[COMP_PROPULSION].nStat;
-		ASSERT( (PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),
-			"fpathRoute: invalid propulsion stats pointer") );
+		ASSERT_TEXT( PTRVALID(psPropStats, sizeof(PROPULSION_STATS)),
+			"fpathRoute: invalid propulsion stats pointer" );
 
 		fpathSetBlockingTile( psPropStats->propulsionType );
 
@@ -1268,16 +1268,16 @@ FPATH_RETVAL fpathRoute(BASE_OBJECT *psObj, MOVE_CONTROL *psMoveCntl,
 		}
 	}
 
-	ASSERT((startX >= 0 && startX < (SDWORD)mapWidth*TILE_UNITS &&
+	ASSERT_TEXT(startX >= 0 && startX < (SDWORD)mapWidth*TILE_UNITS &&
 			startY >= 0 && startY < (SDWORD)mapHeight*TILE_UNITS,
-			"fpathRoute: start coords off map"));
-	ASSERT((targetX >= 0 && targetX < (SDWORD)mapWidth*TILE_UNITS &&
+			"fpathRoute: start coords off map");
+	ASSERT_TEXT(targetX >= 0 && targetX < (SDWORD)mapWidth*TILE_UNITS &&
 			targetY >= 0 && targetY < (SDWORD)mapHeight*TILE_UNITS,
-			"fpathRoute: target coords off map"));
-	ASSERT((fpathBlockingTile == fpathGroundBlockingTile ||
+			"fpathRoute: target coords off map");
+	ASSERT_TEXT(fpathBlockingTile == fpathGroundBlockingTile ||
 			fpathBlockingTile == fpathHoverBlockingTile ||
 			fpathBlockingTile == fpathLiftBlockingTile,
-			"fpathRoute: invalid blocking function"));
+			"fpathRoute: invalid blocking function");
 
 	if (astarInner > FPATH_LOOP_LIMIT)
 	{
@@ -1306,14 +1306,14 @@ FPATH_RETVAL fpathRoute(BASE_OBJECT *psObj, MOVE_CONTROL *psMoveCntl,
 	DBP0(("Unit %d: ", psObj->id));
 	if (psPartialRouteObj == NULL)
 	{
-		retVal = fpathGatewayRoute(psObj, ASR_NEWROUTE, GWTerrain,
+		retVal = (FPATH_RETVAL)fpathGatewayRoute(psObj, ASR_NEWROUTE, GWTerrain,
 						startX,startY, targetX,targetY, psMoveCntl);
 	}
 	else
 	{
 //		DBPRINTF(("Partial Route: %d\n", psDroid->id));
 		psPartialRouteObj = NULL;
-		retVal = fpathGatewayRoute(psObj, ASR_CONTINUE, GWTerrain,
+		retVal = (FPATH_RETVAL)fpathGatewayRoute(psObj, ASR_CONTINUE, GWTerrain,
 						startX,startY, targetX,targetY, psMoveCntl);
 	}
 	if (retVal == FPR_WAIT)
@@ -1359,7 +1359,7 @@ exit:
 		{
 			if (psTile->tileInfoBits & BITS_FPATHBLOCK)
 			{
-				ASSERT((FALSE,"fpathRoute: blocking flags still in the map"));
+				ASSERT_TEXT(FALSE,"fpathRoute: blocking flags still in the map");
 			}
 			psTile += 1;
 		}

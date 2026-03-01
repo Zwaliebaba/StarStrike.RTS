@@ -123,8 +123,8 @@ void surfRelease(LPDIRECTDRAWSURFACE4	psSurface)
 		{
 			psPrev = psCurr;
 		}
-		ASSERT((psCurr != NULL,
-			"surfRelease: Couldn't find surface"));
+		ASSERT_TEXT(psCurr != NULL,
+			"surfRelease: Couldn't find surface");
 		if (psCurr != NULL)
 		{
 			psPrev->psNext = psCurr->psNext;
@@ -168,7 +168,7 @@ BOOL surfRecreate(LPDIRECTDRAWSURFACE4 *ppsSurface)
 	ddrval = (*ppsSurface)->lpVtbl->GetSurfaceDesc(*ppsSurface, &ddsd);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "Couldn't get surface description:\n%s", DDErrorToString(ddrval)));
+		ASSERT_TEXT(FALSE, "Couldn't get surface description:\n%s", DDErrorToString(ddrval));
 		return FALSE;
 	}
 
@@ -203,7 +203,7 @@ BOOL surfRecreate(LPDIRECTDRAWSURFACE4 *ppsSurface)
 				NULL);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "Create surface failed:\n%s", DDErrorToString(ddrval)));
+		ASSERT_TEXT(FALSE, "Create surface failed:\n%s", DDErrorToString(ddrval));
 		return FALSE;
 	}
 
@@ -213,7 +213,7 @@ BOOL surfRecreate(LPDIRECTDRAWSURFACE4 *ppsSurface)
 	ddrval = (*ppsSurface)->lpVtbl->GetSurfaceDesc(*ppsSurface, &ddsd);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "Couldn't get surface description:\n%s", DDErrorToString(ddrval)));
+		ASSERT_TEXT(FALSE, "Couldn't get surface description:\n%s", DDErrorToString(ddrval));
 		return FALSE;
 	}
 	DBP1(("New bpp for surface : %d\n", ddsd.ddpfPixelFormat.dwRGBBitCount));
@@ -261,7 +261,7 @@ BOOL surfLoadFromSurface(
 	ddrval = psDest->lpVtbl->GetSurfaceDesc(psDest, &ddsdDest);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "Couldn't get surface description:\n%s", DDErrorToString(ddrval)));
+		ASSERT_TEXT(FALSE, "Couldn't get surface description:\n%s", DDErrorToString(ddrval));
 		return FALSE;
 	}
 	sDestRect.left = 0;
@@ -275,7 +275,7 @@ BOOL surfLoadFromSurface(
 	ddrval = psSrc->lpVtbl->GetSurfaceDesc(psSrc, &ddsdSrc);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "Couldn't get surface description:\n%s", DDErrorToString(ddrval)));
+		ASSERT_TEXT(FALSE, "Couldn't get surface description:\n%s", DDErrorToString(ddrval));
 		return FALSE;
 	}
 	sSrcRect.left = 0;
@@ -300,7 +300,7 @@ BOOL surfLoadFromSurface(
 								 DDBLT_WAIT, NULL);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "Couldn't do the blit:\n%s", DDErrorToString(ddrval)));
+		ASSERT_TEXT(FALSE, "Couldn't do the blit:\n%s", DDErrorToString(ddrval));
 		return FALSE;
 	}
 
@@ -378,11 +378,11 @@ BOOL surfLoadFrom8Bit(
 
 
 	/* Validate the arguments */
-	ASSERT((psSurf != NULL, "NULL surface pointer"));
-	ASSERT((PTRVALID(pImageData, width*height),
-			"Invalid image data pointer."));
-	ASSERT((PTRVALID(psPalette, NUM_8BIT_PAL_ENTRIES*sizeof(PALETTEENTRY)),
-			"Invalid palette pointer."));
+	ASSERT_TEXT(psSurf != NULL, "NULL surface pointer");
+	ASSERT_TEXT(PTRVALID(pImageData, width*height),
+			"Invalid image data pointer.");
+	ASSERT_TEXT(PTRVALID(psPalette, NUM_8BIT_PAL_ENTRIES*sizeof(PALETTEENTRY)),
+			"Invalid palette pointer.");
 
 	/* Get the DD object */
 	psDD = screenGetDDObject();
@@ -404,8 +404,8 @@ BOOL surfLoadFrom8Bit(
 		return FALSE;
 	}
 
-	ASSERT((sPixelFormat.dwRGBBitCount >= 8,
-		"surfLoadFrom8Bit: less than 8 bit palettised !yet implemented"));
+	ASSERT_TEXT(sPixelFormat.dwRGBBitCount >= 8,
+		"surfLoadFrom8Bit: less than 8 bit palettised !yet implemented");
 
 	/* Create a palette for the texture if necessary */
 	if (sPixelFormat.dwRGBBitCount <= 8)

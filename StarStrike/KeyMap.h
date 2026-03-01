@@ -21,7 +21,7 @@ KEYMAP_ALWAYS_PROCESS,
 KEYMAP___HIDE
 }KEY_STATUS;
 
-#define KEY_IGNORE	5190
+#define KEY_IGNORE	((KEY_CODE)5190)
 
 typedef struct _keyMapping
 {
@@ -40,7 +40,7 @@ struct _keyMapping	*psNext;
 //extern BOOL	keyAddMapping			( UDWORD functionId, KEY_CODE metaCode, KEY_CODE subCode );
 //extern BOOL	keyAddMapping			( KEY_CODE metaCode, KEY_CODE subcode, KEY_ACTION action, void *function, char *name );
 extern KEY_MAPPING	*keyAddMapping			( KEY_STATUS status, KEY_CODE metaCode, KEY_CODE subcode, 
-									 KEY_ACTION action, void (*pKeyMapFunc)(void), char *name );
+									 KEY_ACTION action, void (*pKeyMapFunc)(void), const char *name );
 extern BOOL	keyRemoveMapping		( KEY_CODE metaCode, KEY_CODE subCode );
 extern	KEY_MAPPING	*keyGetMappingFromFunction(void	*function);
 extern BOOL	keyRemoveMappingPt		( KEY_MAPPING *psToRemove );

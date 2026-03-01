@@ -14,6 +14,7 @@
 #include "Dx6TexMan.h"
 #include "Tex.h"
 #include "Texd3d.h"
+#include "Rendfunc.h"
 
 
 /***************************************************************************/
@@ -216,13 +217,9 @@ BOOL	pie_Hardware(void)
 
 /***************************************************************************/
 /***************************************************************************/
-void pie_SetDirect3DDeviceName(char* pD3DDeviceName)
+void pie_SetDirect3DDeviceName(const char* pD3DDeviceName)
 {
-	ASSERT((strlen(pD3DDeviceName) < 255,"Direct3D device string exceeds max string length."));
-	if (strlen(pD3DDeviceName) >= 255)
-	{
-		pD3DDeviceName[255] = 0;
-	}
+	ASSERT_TEXT(strlen(pD3DDeviceName) < 255,"Direct3D device string exceeds max string length.");
 	strcpy((char*)(rendStates.D3DDriverName),pD3DDeviceName);
 }
 

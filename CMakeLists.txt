@@ -18,6 +18,11 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Use /permissive (non-conformance mode) for MSVC to allow legacy C++ patterns.
+if (MSVC)
+  add_compile_options(/permissive)
+endif()
+
 # Include sub-projects in dependency order:
 #   NeuronCore  (no dependencies)
 #   NeuronClient (depends on NeuronCore)

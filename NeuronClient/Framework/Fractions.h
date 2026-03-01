@@ -24,8 +24,8 @@
 
 #ifdef DEBUG
 
-SDWORD PercentFunc(char *File,UDWORD Line,SDWORD a,SDWORD b);
-SDWORD PerNumFunc(char *File,UDWORD Line,SDWORD range,SDWORD a,SDWORD b);
+SDWORD PercentFunc(const char *File,UDWORD Line,SDWORD a,SDWORD b);
+SDWORD PerNumFunc(const char *File,UDWORD Line,SDWORD range,SDWORD a,SDWORD b);
 
 #define PERCENT(a,b) PercentFunc(__FILE__,__LINE__,a,b)
 #define PERNUM(range,a,b) PerNumFunc(__FILE__,__LINE__,range,a,b)

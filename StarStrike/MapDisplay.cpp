@@ -98,8 +98,8 @@ static	SDWORD mapGridWidth, mapGridHeight, mapGridMidX, mapGridMidY;
 static	SDWORD mapGridX, mapGridZ;
 static	SDWORD gridDivX, gridDivZ;
 static	iVector tileScreenCoords[MAX_MAP_GRID][MAX_MAP_GRID];
-POINT 	sP1,sP2,sP3,sP4;
-POINT	*psP1,*psP2,*psP3,*psP4,*psPTemp;
+static POINT 	sP1,sP2,sP3,sP4;
+static POINT	*psP1,*psP2,*psP3,*psP4,*psPTemp;
 
 /*Flag to switch code for bucket sorting in renderFeatures etc 
   for the renderMapToBuffer code */
@@ -130,13 +130,13 @@ iSurface	*pMapSurface;
 	memset(bufSpace, 0, (width*height));
 
 	/* Exit if we can't get it! */
-	ASSERT((bufSpace!=NULL,"Can't get the memory for the map buffer"));
+	ASSERT_TEXT(bufSpace!=NULL,"Can't get the memory for the map buffer");
 
 	/* Build our new surface */
-	pMapSurface = iV_SurfaceCreate(REND_SURFACE_USR, width, height, 10, 10,bufSpace);
+	pMapSurface = iV_SurfaceCreate(REND_SURFACE_USR, width, height, 10, 10,(uint8 *)bufSpace);
 
 	/* Exit if we can't get it! */
-	ASSERT((pMapSurface!=NULL,"Whoa - can't make surface for map"));
+	ASSERT_TEXT(pMapSurface!=NULL,"Whoa - can't make surface for map");
 
 	//set up the intel colours
 	//setUpIntelColours();
@@ -726,7 +726,7 @@ void renderResearchToBuffer(iSurface *pSurface, RESEARCH *psResearch,
 		    }
             else
             {
-                ASSERT((FALSE, "intDisplayMessageButton: invalid stat"));
+                ASSERT_TEXT(FALSE, "intDisplayMessageButton: invalid stat");
                 IMDType = IMDTYPE_RESEARCH;
                 psResGraphic = (BASE_STATS *)psResearch;
             }
@@ -771,7 +771,7 @@ void renderResearchToBuffer(iSurface *pSurface, RESEARCH *psResearch,
 		displayStructureStatButton((STRUCTURE_STATS *)psResGraphic,selectedPlayer,&Rotation,
             &Position,TRUE, scale);
 	} else {
-		ASSERT((FALSE, "renderResearchToBuffer: Unknown PIEType"));
+		ASSERT_TEXT(FALSE, "renderResearchToBuffer: Unknown PIEType");
 	}
 
 

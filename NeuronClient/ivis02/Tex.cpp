@@ -129,7 +129,7 @@ int iV_TexLoadNew(char* path, char* filename, int type,
 
 
     /* Ensure upper case for tex file names */
-    ASSERT((strlen(filename)<MAX_FILE_PATH,"Texture file path too long"));
+    ASSERT_TEXT(strlen(filename)<MAX_FILE_PATH,"Texture file path too long");
 
     /* Get a copy of the name */
     // if we convert it to upper case ... the resource loading will not work
@@ -149,7 +149,7 @@ int iV_TexLoadNew(char* path, char* filename, int type,
     /* Have we already loaded this one then? */
     while (i < _TEX_INDEX)
     {
-        if (stricmp(fname, _TEX_PAGE[i].name) == 0)
+        if (_stricmp(fname, _TEX_PAGE[i].name) == 0)
         {
             /* Otherwise send back the software one */
             return i;
@@ -171,7 +171,7 @@ int pie_ReloadTexPage(char* filename, UBYTE* pBuffer)
     iSprite s;
 
     /* Ensure upper case for tex file names */
-    ASSERT((strlen(filename)<MAX_FILE_PATH,"Texture file path too long"));
+    ASSERT_TEXT(strlen(filename)<MAX_FILE_PATH,"Texture file path too long");
 
     /* Get a copy of the name */
     // if we convert it to upper case ... the resource loading will not work
@@ -185,7 +185,7 @@ int pie_ReloadTexPage(char* filename, UBYTE* pBuffer)
     /* Back to beginning */
     i = 0;
     /* Have we already loaded this one then? */
-    while (stricmp(fname, _TEX_PAGE[i].name) != 0)
+    while (_stricmp(fname, _TEX_PAGE[i].name) != 0)
     {
         i++;
         if (i >= _TEX_INDEX)
@@ -199,7 +199,7 @@ int pie_ReloadTexPage(char* filename, UBYTE* pBuffer)
     s.height = _TEX_PAGE[i].tex.height;
     s.bmp = _TEX_PAGE[i].tex.bmp;
 
-    pie_PCXLoadMemToBuffer(pBuffer, &s,NULL);
+    pie_PCXLoadMemToBuffer((int8 *)pBuffer, &s,NULL);
 
     dtm_LoadTexSurface(&_TEX_PAGE[i].tex, i);
 
@@ -215,7 +215,7 @@ int iV_TexLoad(char* path, char* filename, int type,
     //	iPalette		pal, *pPal;
 
     // ensure upper case for tex file names
-    ASSERT((strlen(filename)<MAX_FILE_PATH,"Texture file path too long"));
+    ASSERT_TEXT(strlen(filename)<MAX_FILE_PATH,"Texture file path too long");
 
     for (i = 0; i < (int)strlen(filename); i++)
         fname[i] = filename[i];
@@ -225,7 +225,7 @@ int iV_TexLoad(char* path, char* filename, int type,
 
     while (i < _TEX_INDEX)
     {
-        if (stricmp(fname, _TEX_PAGE[i].name) == 0)
+        if (_stricmp(fname, _TEX_PAGE[i].name) == 0)
         {
             return i;
         }

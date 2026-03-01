@@ -1,6 +1,8 @@
 # CMakeLists.txt : NeuronCore static library
 # No upstream dependencies - this is the foundation layer.
 
+find_package(cppwinrt CONFIG REQUIRED)
+
 add_library (NeuronCore STATIC
     "NeuronCore.cpp"
     "NeuronCore.h"
@@ -12,4 +14,14 @@ add_library (NeuronCore STATIC
 target_include_directories (NeuronCore
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_precompile_headers (NeuronCore
+    PRIVATE
+        pch.h
+)
+
+target_link_libraries(NeuronCore
+    PUBLIC
+        Microsoft::CppWinRT
 )

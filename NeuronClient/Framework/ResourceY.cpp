@@ -79,7 +79,7 @@ typedef union {
 #define QTEXT	258
 #define DIRECTORY	259
 #define FILETOKEN	260
-extern int res_char, yyerrflag;
+extern int res_char;
 extern YYSTYPE res_lval;
 #if YYDEBUG
 enum YY_Types { YY_t_NoneDefined, YY_t_sval
@@ -332,11 +332,12 @@ int yyssize = YYSSIZE;
  */
 #define	yyneg(s)	(-((s)+1))
 
-YYSTYPE	yyval;				/* $ */
-YYSTYPE	*yypvt;				/* $n */
+static YYSTYPE	yyval;				/* $ */
+static YYSTYPE	*yypvt;				/* $n */
 YYSTYPE	res_lval;				/* res_lex() sets this */
 
-int	res_char,				/* current token */
+int	res_char;				/* current token */
+static int
 	yyerrflag,			/* error flag */
 	yynerrs;			/* error count */
 

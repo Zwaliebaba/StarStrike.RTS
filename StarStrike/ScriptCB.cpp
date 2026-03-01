@@ -79,7 +79,7 @@ BOOL scrCBNewDroid(void)
 	if (psScrCBNewDroid == NULL)
 	{
 		// eh? got called without setting the new droid
-		ASSERT((FALSE, "scrCBNewUnit: no unit has been set"));
+		ASSERT_TEXT(FALSE, "scrCBNewUnit: no unit has been set");
 		triggered = FALSE;
 		*ppsDroid = NULL;
 		*ppsStructure  = NULL;
@@ -116,7 +116,7 @@ BOOL scrCBStructAttacked(void)
 
 	if (psLastStructHit == NULL)
 	{
-		ASSERT((FALSE, "scrCBStructAttacked: no target has been set"));
+		ASSERT_TEXT(FALSE, "scrCBStructAttacked: no target has been set");
 		triggered = FALSE;
 		*ppsAttacker = NULL;
 		*ppsTarget = NULL;
@@ -159,7 +159,7 @@ BOOL scrCBDroidAttacked(void)
 
 	if (psLastDroidHit == NULL)
 	{
-		ASSERT((FALSE, "scrCBUnitAttacked: no target has been set"));
+		ASSERT_TEXT(FALSE, "scrCBUnitAttacked: no target has been set");
 		triggered = FALSE;
 		*ppsAttacker = NULL;
 		*ppsTarget = NULL;
@@ -202,7 +202,7 @@ BOOL scrCBAttacked(void)
 
 	if (psScrCBTarget == NULL)
 	{
-		ASSERT((FALSE, "scrCBAttacked: no target has been set"));
+		ASSERT_TEXT(FALSE, "scrCBAttacked: no target has been set");
 		triggered = FALSE;
 		*ppsAttacker = NULL;
 		*ppsTarget = NULL;
@@ -267,8 +267,8 @@ BOOL scrCBDroidSelected(void)
 		return FALSE;
 	}
 
-	ASSERT((PTRVALID(psCBSelectedDroid, sizeof(DROID)),
-		"scrSCUnitSelected: invalid unit pointer"));
+	ASSERT_TEXT(PTRVALID(psCBSelectedDroid, sizeof(DROID)),
+		"scrSCUnitSelected: invalid unit pointer");
 
 	*ppsDroid = psCBSelectedDroid;
 
@@ -437,7 +437,7 @@ BOOL scrCBObjectSeen(SDWORD callback)
 
 	if (psScrCBObjSeen == NULL)
 	{
-		ASSERT((FALSE,"scrCBObjectSeen: no object set"));
+		ASSERT_TEXT(FALSE,"scrCBObjectSeen: no object set");
 		return FALSE;
 	}
 
@@ -618,7 +618,7 @@ BOOL scrCBVtolOffMap(void)
 
 	if (psScrCBVtolOffMap == NULL)
 	{
-		ASSERT((FALSE, "scrCBVtolAtBase: NULL vtol pointer"));
+		ASSERT_TEXT(FALSE, "scrCBVtolAtBase: NULL vtol pointer");
 		return FALSE;
 	}
 
@@ -651,7 +651,7 @@ BOOL scrCBResCompleted(void)
 
 	if (psCBLastResearch == NULL)
 	{
-		ASSERT((FALSE, "scrCBResCompleted: no research has been set"));
+		ASSERT_TEXT(FALSE, "scrCBResCompleted: no research has been set");
         retVal = FALSE;
         *ppsResearch = NULL;
     }

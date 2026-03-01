@@ -96,7 +96,7 @@ void dbg_printf(const char *pFormat, ...)
  */
 void dbg_SetOutputFile(const char *pFilename)
 {
-	ASSERT((pFilename != NULL, "dbg_SetOutputFile passed NULL filename"));
+	ASSERT_TEXT(pFilename != NULL, "dbg_SetOutputFile passed NULL filename");
 
 	if (pDebugFile)
 	{

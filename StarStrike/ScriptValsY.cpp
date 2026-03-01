@@ -499,7 +499,7 @@ BOOL scrvLookUpType(STRING *pIdent, INTERP_TYPE *pType)
 	{
 		if (strcmp(psCurr->pIdent, pIdent) == 0)
 		{
-			*pType = psCurr->typeID;
+			*pType = (INTERP_TYPE)psCurr->typeID;
 			return TRUE;
 		}
 	}
@@ -997,20 +997,20 @@ case YYr7: {	/* script_name :  SCRIPT QTEXT */
 					{
 						if (resPresent("BLO",stringname)==TRUE)
 						{
-							psCurrScript=resGetData("BLO",stringname);				
+							psCurrScript=(SCRIPT_CODE *)resGetData("BLO",stringname);				
 						}
 						else
 						{
 							// change extension to "slo"
 							stringname[extpos]='s';
-							psCurrScript=resGetData("SCRIPT",stringname);				
+							psCurrScript=(SCRIPT_CODE *)resGetData("SCRIPT",stringname);				
 						}
 					}
 					else if (strncmp(&stringname[extpos],"slo",3)==0)
 					{
 						if (resPresent("SCRIPT",stringname)==TRUE)
 						{
-							psCurrScript=resGetData("SCRIPT",stringname);				
+							psCurrScript=(SCRIPT_CODE *)resGetData("SCRIPT",stringname);				
 						}
 					}
 

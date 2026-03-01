@@ -1,10 +1,10 @@
 #pragma once
 
-//
-// orderdef.h 
-//
-// order releated structures.
+#include "Base.h"
+#include "StatsDef.h"
 
+// forward declaration
+typedef struct _droid DROID;
 
 // data for barbarians retreating
 typedef struct _run_data
@@ -18,8 +18,6 @@ typedef struct _run_data
 typedef struct _droid_order_data
 {
 	SDWORD			order;
-	//UDWORD			x,y;
-	//UDWORD			x2,y2;
 	UWORD			x,y;
 	UWORD			x2,y2;
 	BASE_OBJECT		*psObj;

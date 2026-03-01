@@ -58,6 +58,8 @@
 
 #include "Levels.h"
 
+extern void bufferTo16Bit(UBYTE *origBuffer, UWORD *newBuffer, BOOL b3DFX);
+
 #include <initguid.h>
 // GUID for MPlayer service provider. Will This Change???
 //{D8D29744-208A-11d0-BC9D-00A0242967B6}
@@ -73,14 +75,14 @@ extern BOOL					bSendingMap;
 extern void intDisplayTemplateButton(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDWORD *pColours);
 extern BOOL intAddTemplateButtons(UDWORD formID, UDWORD formWidth, UDWORD formHeight,
 								  UDWORD butWidth, UDWORD butHeight, UDWORD gap,
-								  DROID_TEMPLATE *psSelected, BOOL blankButton);
+								  DROID_TEMPLATE *psSelected);
 
 extern BOOL plotStructurePreview(iSprite *backDropSprite,UBYTE scale,UDWORD offX,UDWORD offY);
 
 
 BOOL						bHosted			= FALSE;				//we have set up a game
 UBYTE						sPlayer[128];							// player name (to be used)
-UBYTE						buildTime[8]	 = __TIME__ ;
+char						buildTime[16]	 = __TIME__ ;
 static BOOL					bColourChooserUp= FALSE;
 static SWORD				SettingsUp		= 0;
 static UBYTE				InitialProto	= 0;
@@ -365,7 +367,7 @@ void displayMapPreview()
 //sets sWRFILE form game.map
 static void decideWRF(void)
 {
-	HANDLE pFileHandle;
+	FILE *pFileHandle;
 
 	// try and load it from the maps directory first,
 	strcpy(pLevelName, "multiplay\\customMaps\\");			
@@ -526,8 +528,6 @@ static BOOL OptionsInet(UDWORD parentID)			//internet options
 	sEdInit.height = CON_NAMEBOXHEIGHT;
 	sEdInit.pText = "";									//strresGetString(psStringRes, STR_MUL_IPADDR);
 	sEdInit.FontID = WFont;
-//	sEdInit.pUserData = (void*)PACKDWORD_TRI(0,IMAGE_DES_EDITBOXLEFTH , IMAGE_DES_EDITBOXLEFT);
-//	sEdInit.pBoxDisplay = intDisplayButtonHilight;
 	sEdInit.pBoxDisplay = intDisplayEditBox;
 	if (!widgAddEditBox(psConScreen, &sEdInit))
 	{
@@ -626,27 +626,27 @@ static void addConnections(UDWORD begin)
 			return;
 		}
 
-		if (IsEqualGUID(&(NetPlay.protocols[i].guid), &DPSPGUID_MODEM))
+		if (IsEqualGUID((NetPlay.protocols[i].guid), DPSPGUID_MODEM))
 		{
 			addTextButton(CON_TYPESID_START+i,FRONTEND_POS1X,pos, strresGetString(psStringRes,STR_CON_MODEM),FALSE,FALSE);
 		}
-		else if (IsEqualGUID(&(NetPlay.protocols[i].guid), &DPSPGUID_TCPIP))
+		else if (IsEqualGUID((NetPlay.protocols[i].guid), DPSPGUID_TCPIP))
 		{
 			addTextButton(CON_TYPESID_START+i,FRONTEND_POS1X,pos, strresGetString(psStringRes,STR_CON_INTERNET),FALSE,FALSE);
 		}
 
-		else if (IsEqualGUID(&(NetPlay.protocols[i].guid), &DPSPGUID_IPX))
+		else if (IsEqualGUID((NetPlay.protocols[i].guid), DPSPGUID_IPX))
 		{
 			addTextButton(CON_TYPESID_START+i,FRONTEND_POS1X,pos, strresGetString(psStringRes,STR_CON_LAN),FALSE,FALSE);
 		}
 
-		else if (IsEqualGUID(&(NetPlay.protocols[i].guid), &DPSPGUID_SERIAL))
+		else if (IsEqualGUID((NetPlay.protocols[i].guid), DPSPGUID_SERIAL))
 		{
 			addTextButton(CON_TYPESID_START+i,FRONTEND_POS1X,pos, strresGetString(psStringRes,STR_CON_CABLE),FALSE,FALSE);
 		}
-		else if (IsEqualGUID(&(NetPlay.protocols[i].guid), &SPGUID_MPLAYER))
+		else if (IsEqualGUID((NetPlay.protocols[i].guid), SPGUID_MPLAYER))
 		{
-			addTextButton(CON_TYPESID_START+i,FRONTEND_POS1X,pos, "Play on EidosGames.com",FALSE,FALSE);
+			addTextButton(CON_TYPESID_START+i,FRONTEND_POS1X,pos, (char *)"Play on EidosGames.com",FALSE,FALSE);
 		}
 		else
 		{
@@ -707,25 +707,25 @@ VOID runConnectionScreen(void )
 	if(  SettingsUp==0 &&  (id >= CON_TYPESID_START) && (id<=CON_TYPESID_END) )
 	{
 
-		if (IsEqualGUID(&(NetPlay.protocols[id-CON_TYPESID_START].guid), &DPSPGUID_MODEM))
+		if (IsEqualGUID((NetPlay.protocols[id-CON_TYPESID_START].guid), DPSPGUID_MODEM))
 		{	
 			chosenproto =1;
 			OptionsModem(id);
 		}
 
-		else if (IsEqualGUID(&(NetPlay.protocols[id-CON_TYPESID_START].guid), &DPSPGUID_TCPIP))
+		else if (IsEqualGUID((NetPlay.protocols[id-CON_TYPESID_START].guid), DPSPGUID_TCPIP))
 		{
 			chosenproto =2;
 			OptionsInet(id);
 		}
 
-		else if (IsEqualGUID(&(NetPlay.protocols[id-CON_TYPESID_START].guid), &DPSPGUID_IPX))
+		else if (IsEqualGUID((NetPlay.protocols[id-CON_TYPESID_START].guid), DPSPGUID_IPX))
 		{
 			chosenproto =3;
 			OptionsIPX(id);
 		}
 
-		else if (IsEqualGUID(&(NetPlay.protocols[id-CON_TYPESID_START].guid), &DPSPGUID_SERIAL))
+		else if (IsEqualGUID((NetPlay.protocols[id-CON_TYPESID_START].guid), DPSPGUID_SERIAL))
 		{
 			chosenproto =4;
 			baud = 19200;
@@ -735,7 +735,7 @@ VOID runConnectionScreen(void )
 			widgSetButtonState(psConScreen, CON_19200,WBUT_LOCK);
 		}
 	
-		else if(IsEqualGUID(&(NetPlay.protocols[id-CON_TYPESID_START].guid), &SPGUID_MPLAYER) ) // mplayer
+		else if(IsEqualGUID((NetPlay.protocols[id-CON_TYPESID_START].guid), SPGUID_MPLAYER) ) // mplayer
 		{
 			if(system("multiplay\\MplayNow\\mplaynow.exe") != -1) 		// launch gizmo, if present. If not, tough...
 			{
@@ -851,7 +851,7 @@ VOID runConnectionScreen(void )
 			game.packetsPerSec			= IPXPACKETS;
 			safeSearch = TRUE;
 			for(i=0;
-				i<MaxProtocols && !IsEqualGUID(&(NetPlay.protocols[i].guid), &DPSPGUID_IPX);
+				i<MaxProtocols && !IsEqualGUID((NetPlay.protocols[i].guid), DPSPGUID_IPX);
 				i++);
 			finalconnection = NetPlay.protocols[i].connection;
 			break;
@@ -1051,7 +1051,7 @@ FAIL:
 	if(safeSearch)
 	{
 		iV_SetFont(FEFont);
-		pie_DrawText((UCHAR*)strresGetString(psStringRes,STR_MUL_SEARCHING),D_W+260,D_H+460);
+		pie_DrawText((const char*)strresGetString(psStringRes,STR_MUL_SEARCHING),D_W+260,D_H+460);
 	}
 
 	DrawEnd();
@@ -1488,7 +1488,7 @@ static VOID addColourChooser(UDWORD player)
 	widgDelete(psWScreen,MULTIOP_PLAYER_START+player);
 
 	// add form.
-	addBlueForm(MULTIOP_PLAYERS,MULTIOP_COLCHOOSER_FORM,"",
+	addBlueForm(MULTIOP_PLAYERS,MULTIOP_COLCHOOSER_FORM,(char *)"",
 				10,
 				((MULTIOP_PLAYERHEIGHT+5)*player)+4,
 				MULTIOP_PLAYERWIDTH,MULTIOP_PLAYERHEIGHT);
@@ -2007,7 +2007,7 @@ static void processMultiopWidgets(UDWORD id)
 			widgDelete(psWScreen,MULTIOP_PLAYERS);
 			widgDelete(psWScreen,FRONTEND_SIDETEXT2);					// del text too,
 
-			addMultiRequest("\\multiplay\\customMaps\\*.wrf",MULTIOP_MAP,1);
+			addMultiRequest((char *)"\\multiplay\\customMaps\\*.wrf",MULTIOP_MAP,1);
 			break;
 	
 
@@ -2283,20 +2283,20 @@ static void processMultiopWidgets(UDWORD id)
 	case MULTIOP_FNAME_ICON:
 		widgDelete(psWScreen,MULTIOP_PLAYERS);
 		widgDelete(psWScreen,FRONTEND_SIDETEXT2);					// del text too,
-		addMultiRequest("\\multiplay\\forces\\*.for",MULTIOP_FNAME,0);
+		addMultiRequest((char *)"\\multiplay\\forces\\*.for",MULTIOP_FNAME,0);
 		break;
 	
 	case MULTIOP_PNAME:			
 		strcpy((char *)sPlayer,widgGetString(psWScreen, MULTIOP_PNAME));
 
 		// chop to 15 chars..
-		while(strlen(sPlayer) > 15)	// clip name.
+		while(strlen((const char *)sPlayer) > 15)	// clip name.
 		{
-			sPlayer[strlen(sPlayer)-1]='\0';
+			sPlayer[strlen((const char *)sPlayer)-1]='\0';
 		}
 
 		// update string.
-		widgSetString(psWScreen, MULTIOP_PNAME,sPlayer);
+		widgSetString(psWScreen, MULTIOP_PNAME,(const char *)sPlayer);
 
 
 		removeWildcards((char *)sPlayer);
@@ -2314,7 +2314,7 @@ static void processMultiopWidgets(UDWORD id)
 		widgDelete(psWScreen,MULTIOP_PLAYERS);
 		widgDelete(psWScreen,FRONTEND_SIDETEXT2);					// del text too,
 
-		addMultiRequest("\\multiplay\\players\\*.sta",MULTIOP_PNAME,0);
+		addMultiRequest((char *)"\\multiplay\\players\\*.sta",MULTIOP_PNAME,0);
 		break;
 
 	case MULTIOP_HOST:
@@ -3008,7 +3008,7 @@ static VOID CurrentForce(VOID)
 		sButInit.pTip = getTemplateName(pF->pTempl);
 
 		BufferID = GetObjectBuffer();
-		ASSERT((BufferID >= 0,"Unable to aquire Obj Buffer."));
+		ASSERT_TEXT(BufferID >= 0,"Unable to aquire Obj Buffer.");
 		RENDERBUTTON_INUSE(&ObjectBuffers[BufferID]);
 		ObjectBuffers[BufferID].Data = (void*)pF->pTempl;
 		sButInit.pUserData = (void*)&ObjectBuffers[BufferID];
@@ -3113,7 +3113,7 @@ static VOID AvailableForces(VOID)
 	intAddTemplateButtons(IDDES_TEMPLFORM, FORCE_AVAILABLEWIDTH ,
 							   FORCE_AVAILABLEHEIGHT,
 							   OBJ_BUTWIDTH,OBJ_BUTHEIGHT,2,
-							   NULL, FALSE);
+							   NULL);
 
 
 }
@@ -3544,7 +3544,7 @@ BOOL addWhiteBoard()
 	sFormInit.y =(SWORD)( WHITEY-D_H);
 	sFormInit.width = WHITEW;
 	sFormInit.height = WHITEH;
-	sFormInit.pDisplay = displayWhiteBoard;
+	sFormInit.pDisplay = (WIDGET_DISPLAY)displayWhiteBoard;
 	widgAddForm(psWhiteScreen, &sFormInit);
 	
 	bWhiteBoardUp = TRUE;
@@ -3641,7 +3641,7 @@ void displayRemoteGame(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset,
 	{
 		NetPlay.games[i].name[strlen(NetPlay.games[i].name)-1]='\0';
 	}
-	iV_DrawText((UCHAR*)NetPlay.games[i].name,x+100,y+24);								// name
+	iV_DrawText((const char*)NetPlay.games[i].name,x+100,y+24);								// name
 
 	// get game info.
 	if(	   (NetPlay.games[i].desc.dwFlags & DPSESSION_JOINDISABLED)
@@ -3658,9 +3658,9 @@ void displayRemoteGame(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset,
 	}
 	else
 	{
-		iV_DrawText((UCHAR*)strresGetString(psStringRes,STR_MUL_PLAYERS),x+5,y+18);
+		iV_DrawText((const char*)strresGetString(psStringRes,STR_MUL_PLAYERS),x+5,y+18);
 		sprintf(tmp,"%d/%d",NetPlay.games[i].desc.dwCurrentPlayers,NetPlay.games[i].desc.dwMaxPlayers);
-		iV_DrawText((UCHAR*)tmp,x+17,y+33);
+		iV_DrawText((const char*)tmp,x+17,y+33);
 	}	
 
 	AddCursorSnap(&InterfaceSnap,
@@ -3731,7 +3731,7 @@ void displayPlayer(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDW
 		{
 			NetPlay.players[i].name[strlen(NetPlay.players[i].name)-1]='\0';
 		}
-		iV_DrawText((UCHAR*)NetPlay.players[i].name,x+65,y+22);							
+		iV_DrawText((const char*)NetPlay.players[i].name,x+65,y+22);							
 	
 		// ping rating
 		if(ingame.PingTimes[j] >= PING_LO && ingame.PingTimes[j] < PING_MED)

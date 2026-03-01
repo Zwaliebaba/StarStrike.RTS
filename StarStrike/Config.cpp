@@ -1,13 +1,5 @@
-/*
- *Config.c  saves your favourite options to the Registry.
- * 
- */
-
 #include "Frame.h"
-
-#include "ObjMem.h"
 #include "Display.h"	// gamma
-#include "Track.h"		// audio
 #include "PieState.h"	// setgamma.
 #include "WarzoneConfig.h"	// renderMode
 #include "Component.h"
@@ -21,7 +13,6 @@
 #include "AdvVis.h"
 #include "Mixer.h"
 #include "HCI.h"
-#include "FPath.h"
 #include "D3drender.h"
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -35,12 +26,12 @@
 // ////////////////////////////////////////////////////////////////////////////
 BOOL openWarzoneKey			(VOID);
 BOOL closeWarzoneKey		(VOID);
-BOOL getWarzoneKeyNumeric	(char *pName,DWORD  *val);
-BOOL getWarzoneKeyString	(char *pName,char *pString);
-BOOL getWarzoneKeyBinary	(char *pName,UCHAR  *pData,UDWORD *pSize);
-BOOL setWarzoneKeyNumeric	(char *pName,DWORD val);
-BOOL setWarzoneKeyString	(char *pName,char *pString);
-BOOL setWarzoneKeyBinary	(char *pName, VOID *pData, UDWORD size);
+BOOL getWarzoneKeyNumeric	(const char *pName,DWORD  *val);
+BOOL getWarzoneKeyString	(const char *pName,char *pString);
+BOOL getWarzoneKeyBinary	(const char *pName,UCHAR  *pData,UDWORD *pSize);
+BOOL setWarzoneKeyNumeric	(const char *pName,DWORD val);
+BOOL setWarzoneKeyString	(const char *pName,char *pString);
+BOOL setWarzoneKeyBinary	(const char *pName, VOID *pData, UDWORD size);
 BOOL loadRenderMode			(VOID);
 BOOL loadConfig				(BOOL bResourceAvailable);
 BOOL saveConfig				(VOID);
@@ -147,7 +138,7 @@ BOOL loadConfig(BOOL bResourceAvailable)
 	// sequences
 	if(getWarzoneKeyNumeric("sequences",&val))		
 	{
-		war_SetSeqMode(val);
+		war_SetSeqMode((SEQ_MODE)val);
 	}
 	else
 	{
@@ -170,7 +161,7 @@ BOOL loadConfig(BOOL bResourceAvailable)
 
 	if(getWarzoneKeyNumeric("difficulty",&val))		
 	{
-		setDifficultyLevel(val);
+		setDifficultyLevel((DIFFICULTY_LEVEL)val);
 	}
 	else
 	{
@@ -462,7 +453,7 @@ BOOL loadRenderMode()
 			// Old RGB(2)->new RGB(0), old HAL(3)->new HAL(1), old HAL2(4)->new HAL2(2), old REF(5)->new REF(3)
 			val = val - 2;
 		}
-		war_SetRendMode(val);
+		war_SetRendMode((WAR_REND_MODE)val);
 		if (val == REND_MODE_HAL)//d3d
 		{
 			if(getWarzoneKeyNumeric("d3dFog",&val))
@@ -724,7 +715,7 @@ BOOL closeWarzoneKey()
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL getWarzoneKeyNumeric	(char *pName,DWORD *val)
+BOOL getWarzoneKeyNumeric	(const char *pName,DWORD *val)
 {
 	UCHAR	result[16];			// buffer
 	DWORD	resultsize=16;		// buffersize
@@ -748,7 +739,7 @@ BOOL getWarzoneKeyNumeric	(char *pName,DWORD *val)
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL getWarzoneKeyString	(char *pName,char *pString)
+BOOL getWarzoneKeyString	(const char *pName,char *pString)
 {
 	UCHAR	result[255];		// buffer
 	DWORD	resultsize=255;		// buffersize
@@ -772,7 +763,7 @@ BOOL getWarzoneKeyString	(char *pName,char *pString)
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL getWarzoneKeyBinary	(char *pName,UCHAR *pData,UDWORD *pSize)
+BOOL getWarzoneKeyBinary	(const char *pName,UCHAR *pData,UDWORD *pSize)
 {
 	UCHAR	result[2048];		// buffer
 	DWORD	resultsize=2048;	// buffersize
@@ -802,7 +793,7 @@ BOOL getWarzoneKeyBinary	(char *pName,UCHAR *pData,UDWORD *pSize)
 
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL setWarzoneKeyNumeric(char *pName,DWORD val)
+BOOL setWarzoneKeyNumeric(const char *pName,DWORD val)
 {
 
 	RegSetValueEx(ghWarzoneKey, pName ,0,REG_DWORD ,(UBYTE*) &val, sizeof(val) );
@@ -810,15 +801,15 @@ BOOL setWarzoneKeyNumeric(char *pName,DWORD val)
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL setWarzoneKeyString(char *pName, char *pString)
+BOOL setWarzoneKeyString(const char *pName, char *pString)
 {
 	RegSetValueEx(ghWarzoneKey, pName ,0, REG_SZ, (UBYTE*)pString, strlen(pString) );
 	return TRUE;
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL setWarzoneKeyBinary(char *pName, VOID *pData, UDWORD size)
+BOOL setWarzoneKeyBinary(const char *pName, VOID *pData, UDWORD size)
 {
-	RegSetValueEx(ghWarzoneKey, pName ,0, REG_BINARY, pData, size );
+	RegSetValueEx(ghWarzoneKey, pName ,0, REG_BINARY, (UBYTE*)pData, size );
 	return TRUE;
 }

@@ -93,7 +93,7 @@ BOOL saveMidMission(void)
 }
 
 // ////////////////////////////////////////////////////////////////////////////
-BOOL addLoadSave(LOADSAVE_MODE mode,CHAR *sSearchPath,CHAR *sExtension, CHAR *title)
+BOOL addLoadSave(LOADSAVE_MODE mode, const CHAR *sSearchPath, const CHAR *sExtension, CHAR *title)
 {
 BOOL bLoad;
 
@@ -116,7 +116,7 @@ BOOL bLoad;
 	}
 
 
-	return _addLoadSave(bLoad,sSearchPath,sExtension,title);
+	return _addLoadSave(bLoad,(CHAR *)sSearchPath,(CHAR *)sExtension,title);
 }
 
 
@@ -351,7 +351,7 @@ void deleteSaveGame(char* saveGameName)
 	WIN32_FIND_DATA	found;	
 	HANDLE			dir;
 
-	ASSERT((strlen(saveGameName) < MAX_STR_LENGTH,"deleteSaveGame; save game name too long"));
+	ASSERT_TEXT(strlen(saveGameName) < MAX_STR_LENGTH,"deleteSaveGame; save game name too long");
 
 	DeleteFile(saveGameName);					// remove old file.
 

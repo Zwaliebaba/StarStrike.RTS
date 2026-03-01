@@ -260,11 +260,11 @@ void rayCast(UDWORD x, UDWORD y, UDWORD ray, UDWORD length, RAY_CALLBACK callbac
 		vDist = length;
 	}
 
-	ASSERT((hDist != 0 && vDist != 0,
-		"rayCast: zero distance"));
-	ASSERT(((hDist == (SDWORD)length || hdInc > 0) &&
+	ASSERT_TEXT(hDist != 0 && vDist != 0,
+		"rayCast: zero distance");
+	ASSERT_TEXT((hDist == (SDWORD)length || hdInc > 0) &&
 			(vDist == (SDWORD)length || vdInc > 0),
-		"rayCast: negative (|| 0) distance increment"));
+		"rayCast: negative (|| 0) distance increment");
 
 #if RAY_CLIP == 0
 	while(hDist < clipLen ||
@@ -299,8 +299,8 @@ void rayCast(UDWORD x, UDWORD y, UDWORD ray, UDWORD length, RAY_CALLBACK callbac
 			sVert.y += rayDY[ray];
 			vDist += vdInc;
 		}
-		ASSERT((hDist != 0 && vDist != 0,
-			"rayCast: zero distance"));
+		ASSERT_TEXT(hDist != 0 && vDist != 0,
+			"rayCast: zero distance");
 	}
 #elif RAY_CLIP == 1
 	while(hDist < (SDWORD)length ||
@@ -349,8 +349,8 @@ void rayCast(UDWORD x, UDWORD y, UDWORD ray, UDWORD length, RAY_CALLBACK callbac
 			sVert.y += rayDY[ray];
 			vDist += vdInc;
 		}
-		ASSERT((hDist != 0 && vDist != 0,
-			"rayCast: zero distance"));
+		ASSERT_TEXT(hDist != 0 && vDist != 0,
+			"rayCast: zero distance");
 	}
 #endif
 }
@@ -370,8 +370,8 @@ UDWORD rayPointsToAngle(SDWORD x1,SDWORD y1, SDWORD x2,SDWORD y2)
 	angle += NUM_RAYS/2;
 	angle = angle % NUM_RAYS;
 
-	ASSERT((angle >= 0 && angle < NUM_RAYS,
-		"rayPointsToAngle: angle out of range"));
+	ASSERT_TEXT(angle >= 0 && angle < NUM_RAYS,
+		"rayPointsToAngle: angle out of range");
 
 	return (UDWORD)angle;
 }

@@ -10,6 +10,8 @@
 #include "Frame.h"
 #include "WarzoneConfig.h"
 #include "PieState.h"
+#include "Objects.h"
+#include "AdvVis.h"
 
 
 /***************************************************************************/
@@ -157,7 +159,7 @@ SEQ_MODE war_GetSeqMode(void)
 /***************************************************************************/
 void war_SetDirectDrawDeviceName(char* pDDDeviceName)
 {
-	ASSERT((strlen(pDDDeviceName) < 255,"DirectDraw device string exceeds max string length."));
+	ASSERT_TEXT(strlen(pDDDeviceName) < 255,"DirectDraw device string exceeds max string length.");
 	if (strlen(pDDDeviceName) >= 255)
 	{
 		pDDDeviceName[255] = 0;
@@ -174,7 +176,7 @@ char* war_GetDirectDrawDeviceName(void)
 /***************************************************************************/
 void war_SetDirect3DDeviceName(char* pD3DDeviceName)
 {
-	ASSERT((strlen(pD3DDeviceName) < 255,"Direct3D device string exceeds max string length."));
+	ASSERT_TEXT(strlen(pD3DDeviceName) < 255,"Direct3D device string exceeds max string length.");
 	if (strlen(pD3DDeviceName) >= 255)
 	{
 		pD3DDeviceName[255] = 0;

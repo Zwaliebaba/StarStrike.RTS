@@ -13,7 +13,7 @@
 
 /* map line printf's */
 //#define DEBUG_GROUP1
-#include <assert.h>
+
 #include "Frame.h"
 #include "FrameInt.h"
 #define DEFINE_MAPINLINE	// defines the inline functions in this module
@@ -423,7 +423,7 @@ BOOL mapLoadV3(UBYTE *pFileData, UDWORD fileSize)
 	psGateHeader = (GATEWAY_SAVEHEADER*)psTileData;
 	psGate = (GATEWAY_SAVE*)(psGateHeader+1);
 
-	ASSERT((psGateHeader->version == 1,"Invalid gateway version"));
+	ASSERT_TEXT(psGateHeader->version == 1,"Invalid gateway version");
 
 	for(i=0; i<psGateHeader->numGateways; i++) {
 		if (!gwNewGateway(psGate->x0,psGate->y0, psGate->x1,psGate->y1)) {
@@ -447,8 +447,8 @@ BOOL mapLoadV3(UBYTE *pFileData, UDWORD fileSize)
 //#else
 	psZoneHeader = (ZONEMAP_SAVEHEADER*)psGate;
 
-	ASSERT(( (psZoneHeader->version == 1) || (psZoneHeader->version == 2),
-			"Invalid zone map version"));
+	ASSERT_TEXT( (psZoneHeader->version == 1) || (psZoneHeader->version == 2),
+			"Invalid zone map version");
 
 	if(!gwNewZoneMap()) {
 		return FALSE;
@@ -816,7 +816,7 @@ BOOL mapSave(UBYTE **ppFileData, UDWORD *pFileSize)
 		}
 	}
 	
-	ASSERT(( ( ((UDWORD)psLastZone) - ((UDWORD)*ppFileData) ) < *pFileSize,"Buffer overflow saving map"));
+	ASSERT_TEXT( ( ((UDWORD)psLastZone) - ((UDWORD)*ppFileData) ) < *pFileSize,"Buffer overflow saving map");
 
 	return TRUE;
 }
@@ -895,10 +895,10 @@ extern SWORD map_Height(UDWORD x, UDWORD y)
 	//SDWORD	lowerHeightOffset,upperHeightOffset;
 	SDWORD dx, dy, ox, oy;
 	BOOL	bWaterTile = FALSE;
-/*	ASSERT((x < (mapWidth << TILE_SHIFT),
-		"mapHeight: x coordinate bigger than map width"));
-	ASSERT((y < (mapHeight<< TILE_SHIFT),
-		"mapHeight: y coordinate bigger than map height"));
+/*	ASSERT_TEXT(x < (mapWidth << TILE_SHIFT),
+		"mapHeight: x coordinate bigger than map width");
+	ASSERT_TEXT(y < (mapHeight<< TILE_SHIFT),
+		"mapHeight: y coordinate bigger than map height");
 */
     x = x > SDWORD_MAX ? 0 : x;//negative SDWORD passed as UDWORD
     x = x >= (mapWidth << TILE_SHIFT) ? ((mapWidth-1) << TILE_SHIFT) : x;
@@ -938,10 +938,10 @@ extern SWORD map_Height(UDWORD x, UDWORD y)
 
 	
 
-	ASSERT((ox < TILE_UNITS, "mapHeight: x offset too big"));
-	ASSERT((oy < TILE_UNITS, "mapHeight: y offset too big"));
-	ASSERT((ox >= 0, "mapHeight: x offset too small"));
-	ASSERT((oy >= 0, "mapHeight: y offset too small"));
+	ASSERT_TEXT(ox < TILE_UNITS, "mapHeight: x offset too big");
+	ASSERT_TEXT(oy < TILE_UNITS, "mapHeight: y offset too big");
+	ASSERT_TEXT(ox >= 0, "mapHeight: x offset too small");
+	ASSERT_TEXT(oy >= 0, "mapHeight: y offset too small");
 
 	//different code for 4 different triangle cases
 	if (psMapTiles[tileX + tileYOffset].texture & TILE_TRIFLIP)
@@ -964,7 +964,7 @@ extern SWORD map_Height(UDWORD x, UDWORD y)
 			dy = ((hx - hxy) * oy )/ TILE_UNITS;
 
 			retVal = (SDWORD)(((hxy + dx + dy)) * ELEVATION_SCALE);
-			ASSERT((retVal<MAX_HEIGHT,"Map height's gone weird!!!"));
+			ASSERT_TEXT(retVal<MAX_HEIGHT,"Map height's gone weird!!!");
 			return ((SWORD)retVal);
 		}
 		else //tile split top right to bottom left object if in top left half
@@ -983,7 +983,7 @@ extern SWORD map_Height(UDWORD x, UDWORD y)
 			dy = ((hy - h0) * oy )/ TILE_UNITS;
 
 			retVal = (SDWORD)((h0 + dx + dy) * ELEVATION_SCALE);
-			ASSERT((retVal<MAX_HEIGHT,"Map height's gone weird!!!"));
+			ASSERT_TEXT(retVal<MAX_HEIGHT,"Map height's gone weird!!!");
 			return ((SWORD)retVal);
 		}
 	}
@@ -1004,7 +1004,7 @@ extern SWORD map_Height(UDWORD x, UDWORD y)
 			dx = ((hx - h0) * ox )/ TILE_UNITS;
 			dy = ((hxy - hx) * oy )/ TILE_UNITS;
 			retVal = (SDWORD)(((h0 + dx + dy)) * ELEVATION_SCALE);
-			ASSERT((retVal<MAX_HEIGHT,"Map height's gone weird!!!"));
+			ASSERT_TEXT(retVal<MAX_HEIGHT,"Map height's gone weird!!!");
 			return ((SWORD)retVal);
 		}
 		else //tile split topleft to bottom right object if in bottom left half
@@ -1023,7 +1023,7 @@ extern SWORD map_Height(UDWORD x, UDWORD y)
 			dy = ((hy - h0) * oy )/ TILE_UNITS;
 
 			retVal = (SDWORD)((h0 + dx + dy) * ELEVATION_SCALE);
-			ASSERT((retVal<MAX_HEIGHT,"Map height's gone weird!!!"));
+			ASSERT_TEXT(retVal<MAX_HEIGHT,"Map height's gone weird!!!");
 			return ((SWORD)retVal);
 		}
 	}

@@ -255,7 +255,7 @@ UDWORD	resWidth;	//n.b. resolution width implies resolution height...!
 		return(200);
 		break;
 	default:
-		ASSERT((FALSE,"Unsupported resolution"));
+		ASSERT_TEXT(FALSE,"Unsupported resolution");
 		return(100);		// default to 640
 		break;
 	}

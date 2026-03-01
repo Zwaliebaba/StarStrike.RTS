@@ -170,8 +170,8 @@ audio_GetObjectPos( void *psObj, SDWORD *piX, SDWORD *piY, SDWORD *piZ )
 	BASE_OBJECT	*psBaseObj = (BASE_OBJECT *) psObj;
 
 	/* check is valid pointer */
-	ASSERT( (PTRVALID(psBaseObj, sizeof(BASE_OBJECT)),
-			"audio_GetObjectPos: game object pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(psBaseObj, sizeof(BASE_OBJECT)),
+			"audio_GetObjectPos: game object pointer invalid\n" );
 
 	*piX = psBaseObj->x;
 	*piZ = map_TileHeight( psBaseObj->x >> TILE_SHIFT,
@@ -205,13 +205,13 @@ audio_GetClusterCentre( void *psClusterObj, SDWORD *piX, SDWORD *piY, SDWORD *pi
 	BOOL	bDroidInClusterMoving = FALSE;
 
 	/* check valid pointer */
-	ASSERT( (PTRVALID(psDroid, sizeof(DROID)),
-			"audio_GetClusterCentre: game object pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(psDroid, sizeof(DROID)),
+			"audio_GetClusterCentre: game object pointer invalid\n" );
 
 	iNumObj = *piX = *piY = *piZ = 0;
 
 	/* clustGetClusterID returns 0 if cluster is empty || no droids moving */
-	iClusterID = clustGetClusterID( psClusterObj );
+	iClusterID = clustGetClusterID( (BASE_OBJECT *)psClusterObj );
 	if ( iClusterID == 0 )
 	{
 		DBPRINTF( ("audio_GetClusterCentre: empty cluster!\n") );
@@ -263,8 +263,8 @@ audio_GetNewClusterObject( void **psClusterObj, SDWORD iClusterID )
 	DROID	*psDroid = (DROID *) *psClusterObj;
 
 	/* check valid pointer */
-	ASSERT( (PTRVALID(psDroid, sizeof(DROID)),
-			"audio_GetNewClusterObject: game object pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(psDroid, sizeof(DROID)),
+			"audio_GetNewClusterObject: game object pointer invalid\n" );
 
 	/* return if droid !dead */
 	if ( !psDroid->died )
@@ -302,7 +302,7 @@ BOOL
 audio_ClusterEmpty( void * psClusterObj )
 {
 	/* clustGetClusterID returns 0 if cluster is empty */
-	if ( clustGetClusterID( psClusterObj ) == 0 )
+	if ( clustGetClusterID( (BASE_OBJECT *)psClusterObj ) == 0 )
 	{
 		return TRUE;
 	}
@@ -317,7 +317,7 @@ audio_ClusterEmpty( void * psClusterObj )
 SDWORD
 audio_GetClusterIDFromObj( void *psClusterObj )
 {
-	return clustGetClusterID( psClusterObj );
+	return clustGetClusterID( (BASE_OBJECT *)psClusterObj );
 }
 
 /***************************************************************************/

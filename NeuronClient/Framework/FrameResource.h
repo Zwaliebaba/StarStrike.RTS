@@ -91,7 +91,7 @@ extern void resSetBaseDir(char *pResDir);
 
 /* Parse the res file */
 struct _block_heap;
-extern BOOL resLoad(char *pResFile, SDWORD blockID,
+extern BOOL resLoad(const char *pResFile, SDWORD blockID,
 			 UBYTE *pLoadBuffer, SDWORD bufferSize,
 			 struct _block_heap *psMemHeap);
 
@@ -105,11 +105,11 @@ extern void resReleaseBlockData(SDWORD blockID);
 extern void resReleaseAllData(void);
 
 /* Add a buffer load && release function for a file type */
-extern BOOL	resAddBufferLoad(char *pType, RES_BUFFERLOAD buffLoad,
+extern BOOL	resAddBufferLoad(const char *pType, RES_BUFFERLOAD buffLoad,
 							 RES_FREE release);
 
 /* Add a file name load && release function for a file type */
-extern BOOL	resAddFileLoad(char *pType, RES_FILELOAD fileLoad,
+extern BOOL	resAddFileLoad(const char *pType, RES_FILELOAD fileLoad,
 						   RES_FREE release);
 
 /* Call the load function for a file */

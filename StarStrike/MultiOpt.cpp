@@ -31,6 +31,9 @@
 #include "MultiInt.h"
 #include "Multilimit.h"
 #include "Multigifts.h"
+
+extern void loadMapPreview(void);
+
 // ////////////////////////////////////////////////////////////////////////////
 // GUID for warzone lobby and MPATH stuff.  i hate this stuff.
 #include <INITGUID.h>
@@ -199,7 +202,7 @@ void recvOptions(NETMSG *pMsg)
 	pos += sizeof(ingame.numStructureLimits);
 	if(ingame.numStructureLimits)
 	{
-		ingame.pStructureLimits = MALLOC(ingame.numStructureLimits*(sizeof(UDWORD)+sizeof(UBYTE)));	// malloc some room
+		ingame.pStructureLimits = (UBYTE *)MALLOC(ingame.numStructureLimits*(sizeof(UDWORD)+sizeof(UBYTE)));	// malloc some room
 		memcpy(ingame.pStructureLimits, &(pMsg->body[pos]) ,ingame.numStructureLimits*(sizeof(UDWORD)+sizeof(UBYTE)));	
 	}
 
@@ -515,7 +518,7 @@ BOOL sendLeavingMsg(VOID)
 	// send a leaving message, This resolves a problem with tcpip which
 	// occasionally doesn't automatically notice a player leaving.
 	NetAdd(m,0,player2dpid[selectedPlayer]);
-	NetAdd(m,4,((UBYTE)NetPlay.bHost));
+	{ UBYTE tmp = (UBYTE)NetPlay.bHost; NetAdd(m,4,tmp); }
 	m.size = 5;
 	m.type = NET_LEAVING ;
 	NETbcast(&m,TRUE);

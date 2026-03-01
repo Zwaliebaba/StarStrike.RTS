@@ -11,7 +11,7 @@
 //#define DEBUG_GROUP1
 // summary info printf's
 //#define DEBUG_GROUP2
-#include <assert.h>
+
 
 #include "Frame.h"
 
@@ -130,7 +130,7 @@ BOOL astarInitialise(void)
 	}
 
 #if OPEN_LIST == 2
-	apsNodes = MALLOC(sizeof(FP_NODE *) * FPATH_TABLESIZE);
+	apsNodes = (FP_NODE **)MALLOC(sizeof(FP_NODE *) * FPATH_TABLESIZE);
 	if (!apsNodes)
 	{
 		return FALSE;
@@ -490,8 +490,8 @@ void fpathOpenRemove(FP_NODE *psNode)
 				psCurr = psCurr->psRight;
 			}
 		}
-		ASSERT((psCurr != NULL,
-			"fpathOpenRemove: couldn't find node"));
+		ASSERT_TEXT(psCurr != NULL,
+			"fpathOpenRemove: couldn't find node");
 	}
 
 	// Find the node to take the deleted nodes place in the tree
@@ -709,7 +709,7 @@ void fpathOpenRemove(FP_NODE *psNode)
 
 	if (psOpen == NULL)
 	{
-		ASSERT((FALSE, "fpathOpenRemove: NULL list"));
+		ASSERT_TEXT(FALSE, "fpathOpenRemove: NULL list");
 		return;
 	}
 	else if (psNode == psOpen)
@@ -732,7 +732,7 @@ void fpathOpenRemove(FP_NODE *psNode)
 		}
 		else
 		{
-			ASSERT((FALSE, "fpathOpenRemove: failed to find node"));
+			ASSERT_TEXT(FALSE, "fpathOpenRemove: failed to find node");
 			return;
 		}
 	}
@@ -870,8 +870,8 @@ void fpathOptimise(FP_NODE *psRoute)
 	FP_NODE	*psCurr, *psSearch, *psTest;
 	BOOL	los;
 
-	ASSERT((psRoute != NULL,
-		"fpathOptimise: NULL route pointer"));
+	ASSERT_TEXT(psRoute != NULL,
+		"fpathOptimise: NULL route pointer");
 
 	psCurr = psRoute;
 	do
@@ -980,8 +980,8 @@ BOOL fpathAStarRoute(ASTAR_ROUTE *psRoutePoints,
 
 			// See if this is in the closed list
 			psCFound = fpathHashCondRemove(apsClosed, x,y, currDist);
-			ASSERT((!(psOFound && psCFound),
-				"fpathAStarRoute: found point in open && closed lists"));
+			ASSERT_TEXT(!(psOFound && psCFound),
+				"fpathAStarRoute: found point in open && closed lists");
 			if (psCFound && psCFound->dist <= currDist)
 			{
 				// already in the closed list by a shorter route
@@ -1027,12 +1027,12 @@ BOOL fpathAStarRoute(ASTAR_ROUTE *psRoutePoints,
 			}
 			else
 			{
-				ASSERT((FALSE,"fpathAStarRoute: the open && closed lists are f***ed"));
+				ASSERT_TEXT(FALSE,"fpathAStarRoute: the open && closed lists are f***ed");
 			}
 		}
 
-//		ASSERT((fpathValidateTree(psOpen),
-//			"fpathAStarRoute: Invalid open tree"));
+//		ASSERT(fpathValidateTree(psOpen),
+//			"fpathAStarRoute: Invalid open tree");
 
 		// add the current point to the closed nodes
 		fpathHashRemove(apsOpen, psCurr->x, psCurr->y);
@@ -1235,12 +1235,12 @@ static 	FP_NODE		*psNearest, *psRoute;
 			}
 			else
 			{
-				ASSERT((FALSE,"fpathAStarRoute: the open && closed lists are f***ed"));
+				ASSERT_TEXT(FALSE,"fpathAStarRoute: the open && closed lists are f***ed");
 			}
 		}
 
-//		ASSERT((fpathValidateTree(psOpen),
-//			"fpathAStarRoute: Invalid open tree"));
+//		ASSERT(fpathValidateTree(psOpen),
+//			"fpathAStarRoute: Invalid open tree");
 
 		// add the current point to the closed nodes
 //		fpathHashRemove(apsOpen, psCurr->x, psCurr->y);

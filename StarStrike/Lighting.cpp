@@ -126,7 +126,7 @@ void initLighting(UDWORD x1, UDWORD y1, UDWORD x2, UDWORD y2)
     //quick check not trying to go off the map - don't need to check for < 0 since UWORD's!!
     if (x1 > mapWidth || x2 > mapWidth || y1 > mapHeight || y2 > mapHeight)
     {
-        ASSERT((FALSE, "initLighting: coords off edge of map"));
+        ASSERT_TEXT(FALSE, "initLighting: coords off edge of map");
         return;
     }
     
@@ -411,7 +411,7 @@ SDWORD	rMod,drMod,dMod,nMod;
 		}
 		break;
 	default:
-		ASSERT((FALSE,"Invalid quadrant in lighting code"));
+		ASSERT_TEXT(FALSE,"Invalid quadrant in lighting code");
 	} // end switch
 }
 
@@ -502,7 +502,7 @@ UDWORD	percent;
                         xIndex < (SDWORD)visibleXTiles && 
                         yIndex < (SDWORD)visibleYTiles)
 					{
-						colourTile(xIndex,yIndex,psLight->colour, (UBYTE)(2*percent));
+						colourTile(xIndex,yIndex,(LIGHT_COLOUR)psLight->colour, (UBYTE)(2*percent));
 					}
 				}
 
@@ -549,9 +549,9 @@ UDWORD	total;
 	y2 = pos->y;
 	z2 = pos->z;
 
-	xDif = abs(x1-x2);
-	yDif = abs(y1-y2);
-	zDif = abs(z1-z2);
+	xDif = abs(static_cast<SDWORD>(x1-x2));
+	yDif = abs(static_cast<SDWORD>(y1-y2));
+	zDif = abs(static_cast<SDWORD>(z1-z2));
 
 	total = (xDif*xDif) + (yDif*yDif) + (zDif*zDif);
 	return((UDWORD)sqrt(total));
@@ -561,10 +561,10 @@ UDWORD	total;
 void	colourTile(SDWORD xIndex, SDWORD yIndex, LIGHT_COLOUR colour, UBYTE percent)
 {
 
-	ASSERT((xIndex<LAND_XGRD,"X Colour Value out of range (above) for lighting"));
-	ASSERT((yIndex<LAND_YGRD,"Y Colour Value out of range (above)for lighting"));
-	ASSERT((xIndex>=0,"X Colour Value out of range (below) for lighting"));
-	ASSERT((yIndex>=0,"Y Colour Value out of range (below )for lighting"));
+	ASSERT_TEXT(xIndex<LAND_XGRD,"X Colour Value out of range (above) for lighting");
+	ASSERT_TEXT(yIndex<LAND_YGRD,"Y Colour Value out of range (above)for lighting");
+	ASSERT_TEXT(xIndex>=0,"X Colour Value out of range (below) for lighting");
+	ASSERT_TEXT(yIndex>=0,"Y Colour Value out of range (below )for lighting");
 
 
 	switch(colour)
@@ -631,7 +631,7 @@ void	colourTile(SDWORD xIndex, SDWORD yIndex, LIGHT_COLOUR colour, UBYTE percent
  			}
 		break;
 		default:
-			ASSERT((FALSE,"Weirdy colour of light attempted"));
+			ASSERT_TEXT(FALSE,"Weirdy colour of light attempted");
 			break;
 	}
 }

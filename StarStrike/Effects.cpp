@@ -18,7 +18,7 @@
 */
 
 #include <stdio.h>
-#include <assert.h>
+
 #include "Frame.h"
 #include "Ivisdef.h" //ivis matrix code
 #include "Piedef.h" //ivis matrix code
@@ -482,7 +482,7 @@ BOOL	bSmoke;
 			effectSetUpFirework(&asEffectsList[freeEffect]);
 			break;
 		default:
-			ASSERT((FALSE,"Weirdy group type for an effect"));
+			ASSERT_TEXT(FALSE,"Weirdy group type for an effect");
 			break;
 	}
 
@@ -497,14 +497,14 @@ BOOL	bSmoke;
 
 	/* Looks like we didn't establish an imd for the effect */
 	/*
-	ASSERT((asEffectsList[freeEffect].imd != NULL || group == EFFECT_DESTRUCTION || group == EFFECT_FIRE || group == EFFECT_SAT_LASER,
-		"null effect imd"));
+	ASSERT_TEXT(asEffectsList[freeEffect].imd != NULL || group == EFFECT_DESTRUCTION || group == EFFECT_FIRE || group == EFFECT_SAT_LASER,
+		"null effect imd");
 	*/
 
 #ifdef DEBUG
 	if(validatePie(group,type,asEffectsList[freeEffect].imd) == FALSE)
 	{
-		ASSERT((FALSE,"No PIE found || specified for an effect"));
+		ASSERT_TEXT(FALSE,"No PIE found || specified for an effect");
 	}
 #endif
 
@@ -1270,7 +1270,7 @@ if (pie_Hardware())//pc only on hardware, always on PSX
 	{
 		percent = 100;
 	}
-	range = 50 - abs(50-percent);
+	range = 50 - abs(static_cast<int>(50-percent));
 #ifdef DOLIGHTS
 	light.position.x = MAKEINT(psEffect->position.x);
 	light.position.y = MAKEINT(psEffect->position.y);
@@ -1355,7 +1355,7 @@ if (pie_Hardware())//pc only on hardware, always on PSX
 			heightScatter = TILE_UNITS/6;
 			break;
 		default:
-			ASSERT((FALSE,"Weirdy destruction type effect"));
+			ASSERT_TEXT(FALSE,"Weirdy destruction type effect");
 			break;
 		}
 		
@@ -1825,7 +1825,7 @@ void	renderExplosionEffect(EFFECT *psEffect)
 
 	if(psEffect->type == EXPLOSION_TYPE_LAND_LIGHT)
 	{
-		if(rejectLandLight(psEffect->specific))
+		if(rejectLandLight((LAND_LIGHT_SPEC)psEffect->specific))
 		{
 			return;
 		}
@@ -2273,7 +2273,7 @@ void	effectSetupSmoke(EFFECT *psEffect)
 		psEffect->baseScale = 25;
 		break;
 	default:
-		ASSERT((FALSE,"Weird smoke type"));
+		ASSERT_TEXT(FALSE,"Weird smoke type");
 		break;
 	}
 
@@ -2321,7 +2321,7 @@ void	effectSetupGraviton(EFFECT *psEffect)
 		psEffect->velocity.y = GRAVITON_INIT_VEL_Y;
 		break;
 	default:
-		ASSERT((FALSE,"Weirdy type of graviton"));
+		ASSERT_TEXT(FALSE,"Weirdy type of graviton");
 		break;
 
 	}

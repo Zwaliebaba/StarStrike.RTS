@@ -303,8 +303,8 @@ void eventPrintTriggerInfo(ACTIVE_TRIGGER *psTrigger)
 // Initialise the create/release function array - specify the maximum value type
 BOOL eventInitValueFuncs(SDWORD maxType)
 {
-	ASSERT((asReleaseFuncs == NULL,
-		"eventInitValueFuncs: array already initialised"));
+	ASSERT_TEXT(asReleaseFuncs == NULL,
+		"eventInitValueFuncs: array already initialised");
 
 	asCreateFuncs = (VAL_CREATE_FUNC *)MALLOC(sizeof(VAL_CREATE_FUNC) * maxType);
 	if (!asCreateFuncs)
@@ -362,8 +362,8 @@ BOOL eventNewContext(SCRIPT_CODE *psCode, CONTEXT_RELEASE release,
 	SDWORD		val, storeIndex, type, arrayNum, i, arraySize;
 	VAL_CHUNK	*psNewChunk, *psNextChunk;
 
-	ASSERT((PTRVALID(psCode, sizeof(SCRIPT_CODE)),
-		"eventNewContext: Invalid code pointer"));
+	ASSERT_TEXT(PTRVALID(psCode, sizeof(SCRIPT_CODE)),
+		"eventNewContext: Invalid code pointer");
 
 	// Get a new context
 	if (!HEAP_ALLOC(psContHeap, &psContext))
@@ -465,8 +465,8 @@ BOOL eventCopyContext(SCRIPT_CONTEXT *psContext, SCRIPT_CONTEXT **ppsNew)
 	SDWORD			val;
 	VAL_CHUNK		*psChunk, *psOChunk;
 
-	ASSERT((PTRVALID(psContext, sizeof(SCRIPT_CONTEXT)),
-		"eventCopyContext: Invalid context pointer"));
+	ASSERT_TEXT(PTRVALID(psContext, sizeof(SCRIPT_CONTEXT)),
+		"eventCopyContext: Invalid context pointer");
 
 	// Get a new context
 	if (!eventNewContext(psContext->psCode, (CONTEXT_RELEASE)psContext->release, &psNew))
@@ -502,8 +502,8 @@ BOOL eventRunContext(SCRIPT_CONTEXT *psContext, UDWORD time)
 	TRIGGER_DATA	*psData;
 	SCRIPT_CODE		*psCode;
 
-	ASSERT((PTRVALID(psContext, sizeof(SCRIPT_CONTEXT)),
-		"eventNewObject: Invalid context pointer"));
+	ASSERT_TEXT(PTRVALID(psContext, sizeof(SCRIPT_CONTEXT)),
+		"eventNewObject: Invalid context pointer");
 
 	// Now setup all the triggers
 	psContext->triggerCount = 0;
@@ -600,8 +600,8 @@ void eventRemoveContext(SCRIPT_CONTEXT *psContext)
 			{
 				chunkStart += CONTEXT_VALS;
 				psCChunk = psCChunk->psNext;
-				ASSERT((psCChunk != NULL,
-					"eventRemoveContext: !enough value chunks"));
+				ASSERT_TEXT(psCChunk != NULL,
+					"eventRemoveContext: !enough value chunks");
 			}
 			psVal = psCChunk->asVals + (i - chunkStart);
 			if (psVal->type < numFuncs && asReleaseFuncs[psVal->type] != NULL)
@@ -639,7 +639,7 @@ void eventRemoveContext(SCRIPT_CONTEXT *psContext)
 		}
 		else
 		{
-			ASSERT((FALSE, "eventRemoveContext: context !found"));
+			ASSERT_TEXT(FALSE, "eventRemoveContext: context !found");
 		}
 	}
 }
@@ -658,7 +658,7 @@ BOOL eventGetContextVal(SCRIPT_CONTEXT *psContext, UDWORD index, INTERP_VAL **pp
 	}
 	if (!psChunk)
 	{
-		ASSERT((FALSE, "eventGetContextVal: Variable !found"));
+		ASSERT_TEXT(FALSE, "eventGetContextVal: Variable !found");
 		return FALSE;
 	}
 
@@ -680,7 +680,7 @@ BOOL eventSetContextVar(SCRIPT_CONTEXT *psContext, UDWORD index,
 
 	if (psVal->type != type)
 	{
-		ASSERT((FALSE, "eventSetContextVar: Variable type mismatch"));
+		ASSERT_TEXT(FALSE, "eventSetContextVar: Variable type mismatch");
 		return FALSE;
 	}
 
@@ -751,10 +751,10 @@ static BOOL eventInitTrigger(ACTIVE_TRIGGER **ppsTrigger, SCRIPT_CONTEXT *psCont
 	TRIGGER_DATA	*psTrigData;
 	UDWORD			testTime;
 
-	ASSERT((event < psContext->psCode->numEvents,
-		"eventAddTrigger: Event out of range"));
-	ASSERT((trigger < psContext->psCode->numTriggers,
-		"eventAddTrigger: Trigger out of range"));
+	ASSERT_TEXT(event < psContext->psCode->numEvents,
+		"eventAddTrigger: Event out of range");
+	ASSERT_TEXT(trigger < psContext->psCode->numTriggers,
+		"eventAddTrigger: Trigger out of range");
 	if (trigger == -1)
 	{
 		return FALSE;
@@ -789,10 +789,10 @@ BOOL eventLoadTrigger(UDWORD time, SCRIPT_CONTEXT *psContext,
 	ACTIVE_TRIGGER	*psNewTrig;
 	TRIGGER_DATA	*psTrigData;
 
-	ASSERT((event < psContext->psCode->numEvents,
-		"eventLoadTrigger: Event out of range"));
-	ASSERT((trigger < psContext->psCode->numTriggers,
-		"eventLoadTrigger: Trigger out of range"));
+	ASSERT_TEXT(event < psContext->psCode->numEvents,
+		"eventLoadTrigger: Event out of range");
+	ASSERT_TEXT(trigger < psContext->psCode->numTriggers,
+		"eventLoadTrigger: Trigger out of range");
 
 	// Get a trigger object
 	if (!HEAP_ALLOC(psTrigHeap, &psNewTrig))
@@ -823,8 +823,8 @@ BOOL eventAddPauseTrigger(SCRIPT_CONTEXT *psContext, UDWORD event, UDWORD offset
 	ACTIVE_TRIGGER	*psNewTrig;
 	SDWORD			trigger;
 
-	ASSERT((event < psContext->psCode->numEvents,
-		"eventAddTrigger: Event out of range"));
+	ASSERT_TEXT(event < psContext->psCode->numEvents,
+		"eventAddTrigger: Event out of range");
 
 	// Get a trigger object
 	if (!HEAP_ALLOC(psTrigHeap, &psNewTrig))
@@ -883,7 +883,7 @@ static void eventFreeTrigger(ACTIVE_TRIGGER *psTrigger)
 
 
 // Activate a callback trigger
-void eventFireCallbackTrigger(TRIGGER_TYPE callback)
+void eventFireCallbackTrigger(SDWORD callback)
 {
 	ACTIVE_TRIGGER	*psPrev,*psCurr,*psNext;
 	TRIGGER_DATA	*psTrigDat;
@@ -891,8 +891,8 @@ void eventFireCallbackTrigger(TRIGGER_TYPE callback)
 
 	if (interpProcessorActive())
 	{
-		ASSERT((FALSE,
-			"eventFireCallbackTrigger: script interpreter is already running"));
+		ASSERT_TEXT(FALSE,
+			"eventFireCallbackTrigger: script interpreter is already running");
 		return;
 	}
 
@@ -909,9 +909,9 @@ void eventFireCallbackTrigger(TRIGGER_TYPE callback)
 			fired = FALSE;
 			if (psCurr->type != TR_PAUSE)
 			{
-				ASSERT((psCurr->trigger >= 0 &&
+				ASSERT_TEXT(psCurr->trigger >= 0 &&
 						psCurr->trigger < psCurr->psContext->psCode->numTriggers,
-					"eventFireCallbackTrigger: invalid trigger number"));
+					"eventFireCallbackTrigger: invalid trigger number");
 				psTrigDat = psCurr->psContext->psCode->psTriggerData + psCurr->trigger;
 			}
 			else
@@ -923,15 +923,15 @@ void eventFireCallbackTrigger(TRIGGER_TYPE callback)
 				if (!interpRunScript(psCurr->psContext, IRT_TRIGGER,
 							psCurr->trigger, 0))
 				{
-					ASSERT((FALSE, "eventFireCallbackTrigger: trigger %s: code failed",
-							eventGetTriggerID(psCurr->psContext->psCode, psCurr->trigger)));
+					ASSERT_TEXT(FALSE, "eventFireCallbackTrigger: trigger %s: code failed",
+							eventGetTriggerID(psCurr->psContext->psCode, psCurr->trigger));
 					psPrev = psCurr;
 					continue;
 				}
 				if (!stackPopParams(1, VAL_BOOL, &fired))
 				{
-					ASSERT((FALSE, "eventFireCallbackTrigger: trigger %s: code failed",
-							eventGetTriggerID(psCurr->psContext->psCode, psCurr->trigger)));
+					ASSERT_TEXT(FALSE, "eventFireCallbackTrigger: trigger %s: code failed",
+							eventGetTriggerID(psCurr->psContext->psCode, psCurr->trigger));
 					psPrev = psCurr;
 					continue;
 				}
@@ -962,8 +962,8 @@ void eventFireCallbackTrigger(TRIGGER_TYPE callback)
 				if (!interpRunScript(psCurr->psContext,
 								IRT_EVENT, psCurr->event, psCurr->offset)) // this could set triggerChanged
 				{
-					ASSERT((FALSE, "eventFireCallbackTrigger: event %s: code failed",
-						eventGetEventID(psCurr->psContext->psCode, psCurr->event)));
+					ASSERT_TEXT(FALSE, "eventFireCallbackTrigger: event %s: code failed",
+						eventGetEventID(psCurr->psContext->psCode, psCurr->event));
 				}
 				if (triggerChanged)
 				{
@@ -1016,8 +1016,8 @@ static BOOL eventFireTrigger(ACTIVE_TRIGGER *psTrigger)
 		if (!interpRunScript(psTrigger->psContext,
 						IRT_TRIGGER, psTrigger->trigger, 0))
 		{
-			ASSERT((FALSE, "eventFireTrigger: trigger %s: code failed",
-					eventGetTriggerID(psTrigger->psContext->psCode, psTrigger->trigger)));
+			ASSERT_TEXT(FALSE, "eventFireTrigger: trigger %s: code failed",
+					eventGetTriggerID(psTrigger->psContext->psCode, psTrigger->trigger));
 			return FALSE;
 		}
 		// Get the result
@@ -1041,8 +1041,8 @@ static BOOL eventFireTrigger(ACTIVE_TRIGGER *psTrigger)
 		if (!interpRunScript(psTrigger->psContext,
 						IRT_EVENT, psTrigger->event, psTrigger->offset))
 		{
-			ASSERT((FALSE, "eventFireTrigger: event %s: code failed",
-				eventGetEventID(psTrigger->psContext->psCode, psTrigger->event)));
+			ASSERT_TEXT(FALSE, "eventFireTrigger: event %s: code failed",
+				eventGetEventID(psTrigger->psContext->psCode, psTrigger->event));
 			DB_TRACE(("\n\n********  script failed  *********\n"), 0);
 			DB_TRIGINF(psTrigger,0);
 			DB_TRACE(("\n"),0);

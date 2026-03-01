@@ -43,8 +43,8 @@ static UDWORD		fontColour;
 /* Set the current font */
 void fontSet(PROP_FONT *psFont)
 {
-	ASSERT((PTRVALID(psFont, sizeof(PROP_FONT)),
-		"fontSet: Invalid font pointer"));
+	ASSERT_TEXT(PTRVALID(psFont, sizeof(PROP_FONT)),
+		"fontSet: Invalid font pointer");
 
 	psCurrFont = psFont;
 }
@@ -80,8 +80,8 @@ UWORD fontGetCharIndex(UWORD code)
 	UDWORD			i;
 	PROP_PRINTABLE	*psOffset;
 
-	ASSERT((PTRVALID(psCurrFont, sizeof(PROP_FONT)),
-		"fontGetCharIndex: Invalid font pointer"));
+	ASSERT_TEXT(PTRVALID(psCurrFont, sizeof(PROP_FONT)),
+		"fontGetCharIndex: Invalid font pointer");
 
 	/* If there is no offset data return the code */
 	if (psCurrFont->numOffset == 0)
@@ -118,8 +118,8 @@ UDWORD fontPixelWidth(char *pString)
 	char *pCurr;
 	UDWORD	width;
 
-	ASSERT((PTRVALID(psCurrFont, sizeof(PROP_FONT)),
-		"fontPixelWidth: Invalid font pointer"));
+	ASSERT_TEXT(PTRVALID(psCurrFont, sizeof(PROP_FONT)),
+		"fontPixelWidth: Invalid font pointer");
 
 	width = 0;
 	for(pCurr = pString; *pCurr != '\0'; pCurr ++)
@@ -149,8 +149,8 @@ void fontPrint(SDWORD x, SDWORD y, char *pFormat, ...)
 	va_start(pArgs, pFormat);
 	vsprintf(aTxtBuff, pFormat, pArgs);
 
-	ASSERT((PTRVALID(psCurrFont, sizeof(PROP_FONT)),
-		"fontPrint: Invalid font pointer"));
+	ASSERT_TEXT(PTRVALID(psCurrFont, sizeof(PROP_FONT)),
+		"fontPrint: Invalid font pointer");
 
 	/* See if the string is offscreen */
 	if ((y < 0) || (y >= (SDWORD)screenHeight - (SDWORD)psCurrFont->height))
@@ -200,7 +200,7 @@ void fontPrint(SDWORD x, SDWORD y, char *pFormat, ...)
 	ddrval = psBack->lpVtbl->Lock(psBack, NULL, &sDDSD, DDLOCK_WAIT, NULL);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "fontPrint: Couldn't lock back buffer"));
+		ASSERT_TEXT(FALSE, "fontPrint: Couldn't lock back buffer");
 		return;
 	}
 
@@ -275,20 +275,20 @@ void fontPrint(SDWORD x, SDWORD y, char *pFormat, ...)
 		}
 		break;
 	case 24:
-		ASSERT((FALSE, "24 bit text output !implemented"));
+		ASSERT_TEXT(FALSE, "24 bit text output !implemented");
 		break;
 	case 32:
-		ASSERT((FALSE, "32 bit text output !implemented"));
+		ASSERT_TEXT(FALSE, "32 bit text output !implemented");
 		break;
 	default:
-		ASSERT((FALSE, "Unknown display pixel format"));
+		ASSERT_TEXT(FALSE, "Unknown display pixel format");
 		break;
 	}
 
 	ddrval = psBack->lpVtbl->Unlock(psBack, sDDSD.lpSurface);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "fontPrint: Couldn;t unlock back buffer"));
+		ASSERT_TEXT(FALSE, "fontPrint: Couldn;t unlock back buffer");
 		return;
 	}
 }
@@ -302,11 +302,11 @@ void fontPrintChar(SDWORD x,SDWORD y, PROP_CHAR *psChar, UDWORD height)
 	UWORD		*p16Dest;
 	UDWORD		px,py, bit;
 
-	ASSERT((PTRVALID(psChar, sizeof(PROP_CHAR)),
-		"fontPrintChar: Invalid character pointer"));
+	ASSERT_TEXT(PTRVALID(psChar, sizeof(PROP_CHAR)),
+		"fontPrintChar: Invalid character pointer");
 	/* The data buffer may well be bigger than this, but the test is easier this way */
-	ASSERT((PTRVALID(psChar->pData, height),
-		"fontPrintChar: Invalid character data pointer"));
+	ASSERT_TEXT(PTRVALID(psChar->pData, height),
+		"fontPrintChar: Invalid character data pointer");
 
 	/* See if the character is on screen */
 	if (psBack == NULL) return;
@@ -324,7 +324,7 @@ void fontPrintChar(SDWORD x,SDWORD y, PROP_CHAR *psChar, UDWORD height)
 	ddrval = psBack->lpVtbl->Lock(psBack, NULL, &sDDSD, DDLOCK_WAIT, NULL);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "fontPrintChar: Couldn't lock back buffer"));
+		ASSERT_TEXT(FALSE, "fontPrintChar: Couldn't lock back buffer");
 		return;
 	}
 
@@ -371,20 +371,20 @@ void fontPrintChar(SDWORD x,SDWORD y, PROP_CHAR *psChar, UDWORD height)
 		}
 		break;
 	case 24:
-		ASSERT((FALSE, "24 bit text output !implemented"));
+		ASSERT_TEXT(FALSE, "24 bit text output !implemented");
 		break;
 	case 32:
-		ASSERT((FALSE, "32 bit text output !implemented"));
+		ASSERT_TEXT(FALSE, "32 bit text output !implemented");
 		break;
 	default:
-		ASSERT((FALSE, "Unknown display pixel format"));
+		ASSERT_TEXT(FALSE, "Unknown display pixel format");
 		break;
 	}
 
 	ddrval = psBack->lpVtbl->Unlock(psBack, sDDSD.lpSurface);
 	if (ddrval != DD_OK)
 	{
-		ASSERT((FALSE, "screenTextOut: Couldn;t unlock back buffer"));
+		ASSERT_TEXT(FALSE, "screenTextOut: Couldn;t unlock back buffer");
 		return;
 	}
 }
@@ -399,12 +399,12 @@ BOOL fontSave(PROP_FONT *psFont, UBYTE **ppFileData, UDWORD *pFileSize)
 	PROP_CHAR		*psCurrC, *psSaveC;
 	UBYTE			*pData, *pSave;
 	
-	ASSERT((PTRVALID(psFont, sizeof(PROP_FONT)),
-		"fontSave: Invalid font pointer"));
-	ASSERT((PTRVALID(psFont->psOffset, sizeof(PROP_PRINTABLE)*psFont->numOffset),
-		"fontSave: Invalid offset data"));
-	ASSERT((PTRVALID(psFont->psChars, sizeof(PROP_CHAR) * psFont->numChars),
-		"fontSave: Invalid character data"));
+	ASSERT_TEXT(PTRVALID(psFont, sizeof(PROP_FONT)),
+		"fontSave: Invalid font pointer");
+	ASSERT_TEXT(PTRVALID(psFont->psOffset, sizeof(PROP_PRINTABLE)*psFont->numOffset),
+		"fontSave: Invalid offset data");
+	ASSERT_TEXT(PTRVALID(psFont->psChars, sizeof(PROP_CHAR) * psFont->numChars),
+		"fontSave: Invalid character data");
 
 	/* First off calculate the size of the font file */
 	*pFileSize = sizeof(FONT_SAVEHDR);
@@ -461,8 +461,8 @@ BOOL fontSave(PROP_FONT *psFont, UBYTE **ppFileData, UDWORD *pFileSize)
 		psCurrC++;
 	}
 
-	ASSERT((pSave == *ppFileData + *pFileSize,
-		"fontSave: Incorrect file size"));
+	ASSERT_TEXT(pSave == *ppFileData + *pFileSize,
+		"fontSave: Incorrect file size");
 
 	return TRUE;
 }
@@ -476,8 +476,8 @@ BOOL fontLoad(UBYTE *pFileData, UDWORD fileSize, PROP_FONT **ppsFont)
 	UBYTE			*pData, *pLoad;
 
 	(void)fileSize;
-	ASSERT((PTRVALID(pFileData, fileSize),
-		"fontLoad: Invalid file data pointer"));
+	ASSERT_TEXT(PTRVALID(pFileData, fileSize),
+		"fontLoad: Invalid file data pointer");
 
 	*ppsFont = NULL;
 

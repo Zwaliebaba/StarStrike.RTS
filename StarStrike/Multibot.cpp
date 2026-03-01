@@ -127,7 +127,7 @@ BOOL sendVtolRearm(DROID *psDroid,STRUCTURE *psStruct, UBYTE chosen)
 		return FALSE;
 	}
 
-	NetAdd(msg,0,(UBYTE)(psDroid->player));
+	{ UBYTE tmp = (UBYTE)(psDroid->player); NetAdd(msg,0,tmp); }
 	NetAdd(msg,1,psDroid->id);
 	NetAdd(msg,5,chosen);
 	if(psStruct)
@@ -139,8 +139,8 @@ BOOL sendVtolRearm(DROID *psDroid,STRUCTURE *psStruct, UBYTE chosen)
 		NetAdd(msg,6,blank);
 	}
 
-	NetAdd(msg,10,((UBYTE)(psDroid->sMove.iAttackRuns)) );
-	NetAdd(msg,11,((UBYTE)(psDroid->asWeaps[0].ammo)) );
+	{ UBYTE tmp1 = (UBYTE)(psDroid->sMove.iAttackRuns); NetAdd(msg,10,tmp1); }
+	{ UBYTE tmp2 = (UBYTE)(psDroid->asWeaps[0].ammo); NetAdd(msg,11,tmp2); }
 
 	msg.size = 12;
 	msg.type = NET_VTOLREARM;
@@ -506,8 +506,8 @@ BOOL SendDroidMove(DROID *pDroid, UDWORD x, UDWORD y,BOOL bFormation)
 		NetAdd(m,0,pDroid->id);						//droid to move
 		NetAdd(m,4,x);								//x pos
 		NetAdd(m,8,y);								//y pos
-		NetAdd(m,12,(char)pDroid->player);			//owner of droid(for speed!)
-		NetAdd(m,13,(char)bFormation);				//use a formation?
+		{ char tmp = (char)pDroid->player; NetAdd(m,12,tmp); }			//owner of droid(for speed!)
+		{ char tmp2 = (char)bFormation; NetAdd(m,13,tmp2); }				//use a formation?
 		m.size = 14;
 		m.type = NET_DROIDMOVE;
 		NETbcast(&m,FALSE);
@@ -814,7 +814,7 @@ BOOL recvGroupOrder(NETMSG *pMsg)
 
 	bCmdOr = pMsg->body[10];
 	
-	order = pMsg->body[12];
+	order = (DROID_ORDER)pMsg->body[12];
 
 	NetGet(pMsg,9,droidcount);
 	if(pMsg->body[8] == 1)											// it's target is an object
@@ -829,7 +829,7 @@ BOOL recvGroupOrder(NETMSG *pMsg)
 		NetGet(pMsg,0,x);											// x coord
 		NetGet(pMsg,4,y);											// y coord
 		destid=0;
-		desttype=0;
+		desttype=(OBJECT_TYPE)0;
 	}
 
 	// for each droid
@@ -939,7 +939,7 @@ BOOL recvDroidInfo(NETMSG *pMsg)
 	{
 		NetGet(pMsg,8,x);											// x coord
 		NetGet(pMsg,12,y);											// y coord
-		ProcessDroidOrder(psDroid,order,x,y,0,0);
+		ProcessDroidOrder(psDroid,order,x,y,(OBJECT_TYPE)0,0);
 	}
 	return TRUE;
 }
@@ -958,8 +958,8 @@ static VOID ProcessDroidOrder(DROID *psDroid, DROID_ORDER order,UDWORD x,		 UDWO
 
 	if(destid==0 && desttype==0)							// target is a location
 	{
-		if(    abs(psDroid->x - x )< (TILE_UNITS/2)  
-			&& abs(psDroid->y - y )< (TILE_UNITS/2) )		// don't bother if close.
+		if(    abs((int)(psDroid->x - x))< (TILE_UNITS/2)  
+			&& abs((int)(psDroid->y - y))< (TILE_UNITS/2) )		// don't bother if close.
 		{
 			return;
 		}
@@ -1243,7 +1243,7 @@ BOOL receiveWholeDroid(NETMSG *m)
 		NetGet(m,sizecount,pD->psTarStats);			sizecount+=sizeof(pD->psTarStats);	//later!
 
 		//store the droid for later.
-		tempDroid = MALLOC(sizeof(DROIDSTORE));
+		tempDroid = (DROIDSTORE *)MALLOC(sizeof(DROIDSTORE));
 		tempDroid->psDroid  = pD;
 		tempDroid->psNext	= tempDroidList;	
 		tempDroidList		= tempDroid;

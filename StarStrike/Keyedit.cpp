@@ -20,6 +20,8 @@
 #include "BitImage.h"
 #include "IntDisplay.h"
 #include "AudioId.h"
+#include "MultiInt.h"
+#include "PieBlitFunc.h"
 
 // ////////////////////////////////////////////////////////////////////////////
 // defines
@@ -70,7 +72,7 @@ extern char	buildTime[8];
 
 static BOOL pushedKeyMap(UDWORD key)
 {
-	selectedKeyMap = widgGetFromID(psWScreen,key)->pUserData;
+	selectedKeyMap = (KEY_MAPPING *)widgGetFromID(psWScreen,key)->pUserData;
 	if(selectedKeyMap && selectedKeyMap->status != KEYMAP_ASSIGNABLE)
 	{
 		selectedKeyMap = NULL;
@@ -87,7 +89,7 @@ static BOOL pushedKeyCombo(UDWORD subkey)
 {
 	KEY_CODE	metakey=KEY_IGNORE;
 	KEY_MAPPING	*pExist;
-   	KEY_MAPPING	*psMapping;
+	KEY_MAPPING	*psMapping;
 	KEY_CODE	alt;
    //	void (*function)(void);
    //	KEY_ACTION	action;
@@ -96,7 +98,7 @@ static BOOL pushedKeyCombo(UDWORD subkey)
 
 	// check for
 	// alt
-	alt = 0;
+	alt = (KEY_CODE)0;
 	if( keyDown(KEY_RALT) || keyDown(KEY_LALT) )
 	{
 		metakey= KEY_LALT;
@@ -118,7 +120,7 @@ static BOOL pushedKeyCombo(UDWORD subkey)
 	}
 	
 	// check if bound to a fixed combo.
-	pExist = keyFindMapping(  metakey,  subkey );
+	pExist = keyFindMapping(  metakey,  (KEY_CODE)subkey );
 	if(pExist && (pExist->status == KEYMAP_ALWAYS || pExist->status == KEYMAP_ALWAYS_PROCESS))
 	{
 		selectedKeyMap = NULL;	// unhighlght selected.
@@ -126,17 +128,17 @@ static BOOL pushedKeyCombo(UDWORD subkey)
 	}
 
 	/* Clear down mappings using these keys... But only if it isn't unassigned */
-	keyReAssignMapping( metakey, subkey, KEY_IGNORE, KEY_MAXSCAN );
+	keyReAssignMapping( metakey, (KEY_CODE)subkey, KEY_IGNORE, (KEY_CODE)KEY_MAXSCAN );
 
 	/* Try && see if its there already - damn well should be! */
 	psMapping = keyGetMappingFromFunction(selectedKeyMap->function);
 
 	/* Cough if it's !there */
-	ASSERT((psMapping!=NULL,"Trying to patch a non-existant function mapping - whoop whoop!!!"));
+	ASSERT_TEXT(psMapping!=NULL,"Trying to patch a non-existant function mapping - whoop whoop!!!");
 
 	/* Now alter it to the new values */
 	psMapping->metaKeyCode = metakey;
-	psMapping->subKeyCode = subkey;
+	psMapping->subKeyCode = (KEY_CODE)subkey;
 	psMapping->status == KEYMAP_ASSIGNABLE; //must be
 	if(alt)
 	{
@@ -180,7 +182,7 @@ static UDWORD scanKeyBoardForBinding()
 	UDWORD i;
 	for(i = KEY_1; i <= KEY_DELETE; i++)
 	{
-		if(keyPressed(i))
+		if(keyPressed((KEY_CODE)i))
 		{
 			if(i !=	KEY_RALT			// exceptions
 			&& i !=	KEY_LALT
@@ -293,11 +295,11 @@ VOID displayKeyMap(struct _widget *psWidget, UDWORD xOffset, UDWORD yOffset, UDW
 	iV_SetFont(WFont);											// font
 	iV_SetTextColour(-1);										//colour
 
-	pie_DrawText((UCHAR*)psMapping->pName, x+2, y+(psWidget->height/2)+3);
+	pie_DrawText((const char*)psMapping->pName, x+2, y+(psWidget->height/2)+3);
 
 	// draw binding
 	keyMapToString(sKey,psMapping);
-	pie_DrawText((UCHAR*)sKey, x+370, y+(psWidget->height/2)+3);
+	pie_DrawText((const char*)sKey, x+370, y+(psWidget->height/2)+3);
 
 	return;
 }
@@ -600,7 +602,7 @@ BOOL loadKeyMap(void)
 		fclose(pFileHandle);
 		return FALSE;
 	}
-	if(strncmp(&ver,buildTime,8) != 0)	// check 
+	if(strncmp(ver,buildTime,8) != 0)	// check 
 	{
 		fclose(pFileHandle);
 		return FALSE;	

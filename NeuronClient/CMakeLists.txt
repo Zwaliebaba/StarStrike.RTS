@@ -85,6 +85,11 @@ target_compile_definitions (NeuronClient
         YY_STATIC
 )
 
+target_precompile_headers (NeuronClient
+    PRIVATE
+        pch.h
+)
+
 # PUBLIC: NeuronCore's headers and lib are forwarded transitively to StarStrike.
 target_link_libraries (NeuronClient
     PUBLIC

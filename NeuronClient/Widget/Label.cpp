@@ -23,12 +23,12 @@ BOOL labelCreate(W_LABEL **ppsWidget, W_LABINIT *psInit)
 	if (psInit->style & ~(WLAB_PLAIN | WLAB_ALIGNLEFT |
 						   WLAB_ALIGNRIGHT | WLAB_ALIGNCENTRE | WIDG_HIDDEN))
 	{
-		ASSERT((FALSE, "Unknown button style"));
+		ASSERT_TEXT(FALSE, "Unknown button style");
 		return FALSE;
 	}
 
-//	ASSERT((PTRVALID(psInit->psFont, sizeof(PROP_FONT)),
-//		"labelCreate: Invalid font pointer"));
+//	ASSERT(PTRVALID(psInit->psFont, sizeof(PROP_FONT)),
+//		"labelCreate: Invalid font pointer");
 
 	/* Allocate the required memory */
 #if W_USE_MALLOC
@@ -38,7 +38,7 @@ BOOL labelCreate(W_LABEL **ppsWidget, W_LABINIT *psInit)
 	if (!HEAP_ALLOC(psLabHeap, ppsWidget))
 #endif
 	{
-		ASSERT((FALSE, "Out of memory"));
+		ASSERT_TEXT(FALSE, "Out of memory");
 		return FALSE;
 	}
 	/* Allocate the memory for the tip && copy it if necessary */
@@ -48,7 +48,7 @@ BOOL labelCreate(W_LABEL **ppsWidget, W_LABINIT *psInit)
 		if (!widgAllocCopyString(&(*ppsWidget)->pTip, psInit->pTip))
 		{
 			/* Out of memory - just carry on without the tip */
-			ASSERT((FALSE, "buttonCreate: Out of memory"));
+			ASSERT_TEXT(FALSE, "buttonCreate: Out of memory");
 			(*ppsWidget)->pTip = NULL;
 		}
 #else
@@ -106,8 +106,8 @@ void labelFree(W_LABEL *psWidget)
 	}
 #endif
 
-	ASSERT((PTRVALID(psWidget, sizeof(W_LABEL)),
-		"labelFree: Invalid label pointer"));
+	ASSERT_TEXT(PTRVALID(psWidget, sizeof(W_LABEL)),
+		"labelFree: Invalid label pointer");
 
 #if W_USE_MALLOC
 	FREE(psWidget);

@@ -166,13 +166,13 @@ BOOL seq_SetupVideoBuffers(void)
 	UBYTE r,g,b;
 	//assume 320 * 240 * 16bit playback surface
 	mallocSize = (RPL_WIDTH*RPL_HEIGHT*RPL_DEPTH);
-	if ((pVideoBuffer = MALLOC(mallocSize)) == NULL)
+	if ((pVideoBuffer = (char *)MALLOC(mallocSize)) == NULL)
 	{
 		return FALSE;
 	}
 
 	mallocSize = 1<<(RPL_BITS_555);//palette only used in 555mode
-	if ((pVideoPalette = MALLOC(mallocSize)) == NULL)
+	if ((pVideoPalette = (char *)MALLOC(mallocSize)) == NULL)
 	{
 		return FALSE;
 	}
@@ -288,10 +288,10 @@ static SDWORD lastX;
 
 	iV_SetFont(WFont);
 
-	ASSERT((aSeqList[currentSeq].currentText < MAX_TEXT_OVERLAYS,
-		"seq_AddTextForVideo: too many text lines"));
+	ASSERT_TEXT(aSeqList[currentSeq].currentText < MAX_TEXT_OVERLAYS,
+		"seq_AddTextForVideo: too many text lines");
 
-	sourceLength = strlen(pText); 
+	sourceLength = strlen((const char *)pText); 
 	currentLength = sourceLength;
 	currentText = &(aSeqList[currentSeq].aText[aSeqList[currentSeq].currentText].pText[0]);
 
@@ -399,13 +399,13 @@ BOOL seq_ClearTextForVideo(void)
 
 BOOL	seq_AddTextFromFile(char *pTextName, BOOL bJustify)
 {
-	UBYTE *pTextBuffer, *pCurrentLine, *pText;
+	char *pTextBuffer, *pCurrentLine, *pText;
 	UDWORD fileSize;
 	HANDLE	fileHandle;
 	WIN32_FIND_DATA findData;
 	BOOL endOfFile = FALSE;
 	SDWORD xOffset, yOffset, startFrame, endFrame;
-	UBYTE* seps	= "\n";
+	char* seps	= "\n";
 
 	strcpy(aTextName,"sequenceAudio\\");
 	strcat(aTextName,pTextName);
@@ -423,7 +423,7 @@ BOOL	seq_AddTextFromFile(char *pTextName, BOOL bJustify)
 		return FALSE;
 	}
 
-	pTextBuffer = DisplayBuffer;
+	pTextBuffer = (char *)DisplayBuffer;
 	pCurrentLine = strtok(pTextBuffer,seps);
 	while(pCurrentLine != NULL)
 	{
@@ -442,7 +442,7 @@ BOOL	seq_AddTextFromFile(char *pTextName, BOOL bJustify)
 				ASSERT ((pText != NULL,"seq_AddTextFromFile error parsing text file"));
 				if (pText != NULL)
 				{
-					seq_AddTextForVideo(&pText[1], xOffset, yOffset, startFrame, endFrame, bJustify,0);
+					seq_AddTextForVideo((UBYTE *)&pText[1], xOffset, yOffset, startFrame, endFrame, bJustify,0);
 				}
 			}
 		}
@@ -469,7 +469,7 @@ void seq_ClearSeqList(void)
 }
 
 //add a sequence to the list to be played
-void seq_AddSeqToList(char *pSeqName, char *pAudioName, char *pTextName, BOOL bLoop, UDWORD PSXSeqNumber)
+void seq_AddSeqToList(const char *pSeqName, const char *pAudioName, const char *pTextName, BOOL bLoop, UDWORD PSXSeqNumber)
 {
 	SDWORD strLen;
 	currentSeq++;
@@ -477,7 +477,7 @@ void seq_AddSeqToList(char *pSeqName, char *pAudioName, char *pTextName, BOOL bL
 
 	if ((currentSeq) >=  MAX_SEQ_LIST)
 	{
-		ASSERT((FALSE, "seq_AddSeqToList: too many sequences"));
+		ASSERT_TEXT(FALSE, "seq_AddSeqToList: too many sequences");
 		return;
 	}
 #ifdef SEQ_LOOP
@@ -485,19 +485,19 @@ void seq_AddSeqToList(char *pSeqName, char *pAudioName, char *pTextName, BOOL bL
 #endif
 
 	//OK so add it to the list
-	aSeqList[currentSeq].pSeq = pSeqName;
-	aSeqList[currentSeq].pAudio = pAudioName;
+	aSeqList[currentSeq].pSeq = (char *)pSeqName;
+	aSeqList[currentSeq].pAudio = (char *)pAudioName;
 	aSeqList[currentSeq].bSeqLoop = bLoop;
 	if (pTextName != NULL)
 	{
-		seq_AddTextFromFile(pTextName, FALSE);//SEQ_TEXT_POSITION);//ordinary text not justified
+		seq_AddTextFromFile((char *)pTextName, FALSE);
 	}
 
 	if (bSeqSubtitles)
 	{
 		//check for a subtitle file
 		strLen = strlen(pSeqName);
-		ASSERT((strLen < MAX_STR_LENGTH,"seq_AddSeqToList: sequence name error"));
+		ASSERT_TEXT(strLen < MAX_STR_LENGTH,"seq_AddSeqToList: sequence name error");
 		strcpy(aSubtitleName,pSeqName);
 		aSubtitleName[strLen - 4] = 0;
 		strcat(aSubtitleName,".txt");

@@ -21,7 +21,7 @@ typedef struct _w_label
 	STRING		aText[WIDG_MAXSTR];		// Text on the label
 //	PROP_FONT	*psFont;				// Font for the label
 	int FontID;
-	char *pTip;					// The tool tip for the button
+	const char *pTip;					// The tool tip for the button
 } W_LABEL;
 
 /* Create a button widget data structure */

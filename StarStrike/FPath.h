@@ -89,8 +89,8 @@ FPATH_INLINE BOOL fpathBlockingTile(SDWORD x, SDWORD y)
 		return TRUE;
 	}
 
-	ASSERT(( !(x <1 || y < 1 ||	x >= (SDWORD)mapWidth-1 || y >= (SDWORD)mapHeight-1),
-		"fpathBlockingTile: off map" ));
+	ASSERT_TEXT( !(x <1 || y < 1 ||	x >= (SDWORD)mapWidth-1 || y >= (SDWORD)mapHeight-1),
+		"fpathBlockingTile: off map" );
 
 	psTile = mapTile((UDWORD)x, (UDWORD)y);
 

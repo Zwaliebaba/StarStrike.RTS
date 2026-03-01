@@ -112,8 +112,8 @@ animObj_HashFreeElementFunc( void * psElement )
 {
 	ANIM_OBJECT	*psObj = (ANIM_OBJECT *) psElement;
 
-	ASSERT( (PTRVALID(psObj, sizeof(ANIM_OBJECT)),
-		"animObj_HashFreeElementFunc: object pointer invalid\n") );
+	ASSERT_TEXT( PTRVALID(psObj, sizeof(ANIM_OBJECT)),
+		"animObj_HashFreeElementFunc: object pointer invalid\n" );
 }
 
 /***************************************************************************/
@@ -184,8 +184,8 @@ animObj_Add( void *pParentObj, int iAnimID,
 	BASEANIM		*psAnim = anim_GetAnim( (UWORD) iAnimID );
 	UWORD			i, uwObj;
 
-	ASSERT( (psAnim != NULL,
-			"anim_AddAnimObject: anim id %i !found\n", iAnimID ) );
+	ASSERT_TEXT( psAnim != NULL,
+			"anim_AddAnimObject: anim id %i !found\n", iAnimID  );
 
 
 	/* get object from table */
@@ -267,8 +267,8 @@ animObj_GetFirst( void )
 
 	psObj = (ANIM_OBJECT *) hashTable_GetFirst( g_pAnimObjTable );
 
-	ASSERT( (psObj == NULL || PTRVALID(psObj, sizeof(ANIM_OBJECT)),
-		"animObj_GetFirst: object pointer !valid\n") );
+	ASSERT_TEXT( psObj == NULL || PTRVALID(psObj, sizeof(ANIM_OBJECT)),
+		"animObj_GetFirst: object pointer !valid\n" );
 
 	return psObj;
 }

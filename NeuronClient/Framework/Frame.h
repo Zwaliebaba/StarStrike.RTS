@@ -1,18 +1,5 @@
 #pragma once
 
-/*
- * Frame.h
- *
- * The framework library initialisation && shutdown routines.
- *
- */
-
-#pragma warning (disable : 4201 4214 4115 4514)
-#include <windows.h>
-#pragma warning (default : 4201 4214 4115)
-
-
-#include "Types.h"
 #include "Debug.h"
 #include "Mem.h"
 #include "Screen.h"
@@ -33,6 +20,13 @@
 #include "Block.h"
 #include "ListMacs.h"
 
+#ifndef max
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+
 /* Initialise the frame work library */
 extern BOOL frameInitialise(HINSTANCE hInstance,		// The windows application instance
 					 char *pWindowName,	// The text to appear in the window title bar
@@ -40,8 +34,7 @@ extern BOOL frameInitialise(HINSTANCE hInstance,		// The windows application ins
 					 UDWORD height,			// The display height
 					 UDWORD bitDepth,		// The display bit depth
 					 BOOL	fullScreen,		// Whether to start full screen or windowed
-					 BOOL	bVidMem,	 	// Whether to put surfaces in video memory
-					 BOOL	bGlide );		// Whether to create surfaces
+					 BOOL	bVidMem);		 
 
 /* Shut down the framework library.
  * This clears up all the Direct Draw stuff && ensures

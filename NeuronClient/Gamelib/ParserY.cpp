@@ -85,7 +85,7 @@ typedef union {
 #define AUDIO_MODULE	269
 #define ANIM_MODULE	270
 #define ANIMOBJECT	271
-extern int audp_char, yyerrflag;
+extern int audp_char;
 extern YYSTYPE audp_lval;
 #if YYDEBUG
 enum YY_Types { YY_t_NoneDefined, YY_t_fval, YY_t_ival, YY_t_sval
@@ -452,11 +452,12 @@ int yyssize = YYSSIZE;
  */
 #define	yyneg(s)	(-((s)+1))
 
-YYSTYPE	yyval;				/* $ */
-YYSTYPE	*yypvt;				/* $n */
+static YYSTYPE	yyval;				/* $ */
+static YYSTYPE	*yypvt;				/* $n */
 YYSTYPE	audp_lval;				/* audp_lex() sets this */
 
-int	audp_char,				/* current token */
+int	audp_char;				/* current token */
+static int
 	yyerrflag,			/* error flag */
 	yynerrs;			/* error count */
 

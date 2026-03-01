@@ -108,7 +108,7 @@ BOOL DInpMouseAcc(UDWORD aquireType)
 			hr = psDIMouse->Acquire();
 			if (FAILED(hr))
 			{
-				ASSERT((FALSE, "DInpMouseAcc: failed to aquire mouse"));
+				ASSERT_TEXT(FALSE, "DInpMouseAcc: failed to aquire mouse");
 				return FALSE;
 			}
 			DIMouseAcquired = TRUE;
@@ -120,14 +120,14 @@ BOOL DInpMouseAcc(UDWORD aquireType)
 			hr = psDIMouse->Unacquire();
 			if (FAILED(hr))
 			{
-				ASSERT((FALSE, "DInpMouseAcc: failed to unaquire mouse"));
+				ASSERT_TEXT(FALSE, "DInpMouseAcc: failed to unaquire mouse");
 				return FALSE;
 			}
 			DIMouseAcquired = FALSE;
 		}
 		break;
 	default:
-		ASSERT((FALSE, "DInpMouseAcc: unknown aquire type"));
+		ASSERT_TEXT(FALSE, "DInpMouseAcc: unknown aquire type");
 		return FALSE;
 	}
 	return TRUE;
@@ -151,8 +151,8 @@ BOOL DInpGetMouseState(SDWORD *pX, SDWORD *pY, SDWORD *pButtons)
 	}
 	if (FAILED(hr))
 	{
-		ASSERT((FALSE, "DInpGetMouseState: failed to get mouse state\n%s",
-				DIErrorToString(hr)));
+		ASSERT_TEXT(FALSE, "DInpGetMouseState: failed to get mouse state\n%s",
+				DIErrorToString(hr));
 		return FALSE;
 	}
 

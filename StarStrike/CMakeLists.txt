@@ -17,6 +17,11 @@ target_compile_definitions (StarStrike
         YY_STATIC
 )
 
+target_precompile_headers (StarStrike
+    PRIVATE
+        pch.h
+)
+
 # PRIVATE: StarStrike is the final executable; nothing consumes it downstream.
 target_link_libraries (StarStrike
     PRIVATE

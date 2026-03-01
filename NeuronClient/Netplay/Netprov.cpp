@@ -15,10 +15,10 @@
 // Prototypes.
 BOOL NETsetupGeneric	(LPDPCOMPOUNDADDRESSELEMENT LPelements, DWORD count, LPVOID * LPaddr);
 BOOL NETsetupIPX		(LPVOID *addr);
-BOOL NETsetupTCPIP		(LPVOID *addr, char *machine);
+BOOL NETsetupTCPIP		(LPVOID *addr, const char *machine);
 BOOL NETsetupSerial	(LPVOID *addr,DWORD ComPort,DWORD BaudRate, DWORD StopBits, DWORD Parity, DWORD FlowControl);
 
-BOOL NETsetupModem		(LPVOID *addr, char *Phoneno, UDWORD modemToUse );
+BOOL NETsetupModem		(LPVOID *addr, const char *Phoneno, UDWORD modemToUse );
 BOOL NETchooseModem		(UBYTE mod);
 
 
@@ -89,7 +89,7 @@ BOOL NETsetupIPX(LPVOID *addr)
 // ////////////////////////////////////////////////////////////////////////
 // Internet Stuff
 // pass an ip address to this in order to avoid the popup dialog on the client.
-BOOL NETsetupTCPIP(LPVOID *addr, char *machine)
+BOOL NETsetupTCPIP(LPVOID *addr, const char *machine)
 {
 	DPCOMPOUNDADDRESSELEMENT elements[2];
 	DWORD	count=0;
@@ -104,7 +104,7 @@ BOOL NETsetupTCPIP(LPVOID *addr, char *machine)
 	// and the destination address is.....
 	elements[count].guidDataType = DPAID_INet;
 	elements[count].dwDataSize = lstrlen(machine) + 1;
-	elements[count].lpData = machine;
+	elements[count].lpData = (LPVOID)machine;
 	count++;
 
 	return NETsetupGeneric( ((DPCOMPOUNDADDRESSELEMENT *)&elements),count, addr);
@@ -185,7 +185,7 @@ static BOOL FAR PASCAL enumModemAddress(REFGUID guidDataType,  DWORD dwDataSize,
 	return TRUE;
 }
 
-BOOL NETsetupModem(LPVOID *addr, char *Phoneno, UDWORD modemToUse )
+BOOL NETsetupModem(LPVOID *addr, const char *Phoneno, UDWORD modemToUse )
 {
 	DPCOMPOUNDADDRESSELEMENT elements[3];
 	DWORD	count=0;
@@ -258,7 +258,7 @@ BOOL NETsetupModem(LPVOID *addr, char *Phoneno, UDWORD modemToUse )
 	// Phone Number
 	elements[count].guidDataType = DPAID_Phone;
 	elements[count].dwDataSize = lstrlen(Phoneno) + 1;				// +1 for terminal
-	elements[count].lpData = Phoneno;
+	elements[count].lpData = (LPVOID)Phoneno;
 	count++;
 
 	result = NETsetupGeneric(((DPCOMPOUNDADDRESSELEMENT *)&elements),count,addr);

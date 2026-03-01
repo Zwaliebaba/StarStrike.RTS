@@ -1,53 +1,5 @@
 #pragma once
 
-/***************************************************************************************
- *
- *	File : Debug.h
- *
- *  John Elliot		11/96
- *
- *	Function:	Provides a large number of macros for debugging output.
- *
- *	Comments:	The basic macros : DBPRINTF, DBMB, DBMONOPRINTF, etc are turned on if
- *				either DEBUG is defined || a MSVC Debug build is specified.  They are
- *				turned off by default && if NODEBUG is defined || a MSVC Release build
- *				is specified.  Debugging can be forced to be included on a Release build
- *				by defining FORCEDEBUG.
- *
- *				The conditional versions of these macros : DBP0 - DBP9, DBMB0 - DBMB9,
- *				DBMONOP0 - DBMONOP9, etc. are turned on by defining the appropriate
- *				macro from DEBUG_GROUP0 - DEBUG_GROUP9.
- *
- *	Global Macros:
- *			DBPRINTF(x)
- *			DBOUTPUTFILE(x)
- *			DBNOOUTPUTFILE()
- * 			DBSETOUTPUTSTRING()
- *			DBNOOUTPUTSTRING()
- *			DBMB(x)
- *			ASSERT(x)
- * 
- *			DBMONOPRINTF(x)
- * 			DBMONOCLEAR()
- *			DBMONOCLEARRECT(x,y,width,height)
- * 
- *			DBP0 - DBP9
- *			DBMB0 - DBMB9
- *			DBMONOP0 - DBMONOP9
- *			DBMONOC0 - DBMONOC9
- *			DBMONOCR0 - DBMONOCR9
- *
- ***************************************************************************************
- */
-
-//#define ALWAYS_ASSERT	// Define this to always process ASSERT even on release builds.
-
-/* Check the header files have been included from frame.h if they
- * are used outside of the framework library.
- */
-
-#include <stdio.h>
-
 /* Turn on basic debugging if a MSVC debug build && NODEBUG has !been defined */
 #ifdef _DEBUG
 #ifndef NODEBUG
@@ -78,7 +30,6 @@
 #define MONODEBUG
 #endif
 
-#include <stdarg.h>
 #include "Types.h"
 
 /* Include the mono printing stuff */
@@ -126,10 +77,6 @@ extern void dbg_SetErrorBoxCallback(DB_MBCALLBACK callback);
 
 // Set the assert box callback
 extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
-
-/* Get PCLint to check the printf args of these functions */
-/*lint -printf(1,dbg_printf,dbg_MessageBox,dbg_ErrorBox) */
-/*lint -printf(2,dbg_Assert) */
 
 
 #ifdef DEBUG
@@ -192,19 +139,6 @@ extern void dbg_SetAssertCallback(DB_MBCALLBACK callback);
  * Arguments are as for DBPRINTF.
  */
 #define DBMB(x)					dbg_MessageBox x
-
-/*
- *
- * ASSERT
- *
- * Rewritten version of assert that allows a printf format text string to be passed
- * to ASSERT along with the condition.
- *
- * Arguments:	ASSERT((condition, "Format string with variables: %d, %d", var1, var2));
- */
-#define ASSERT(x) \
-	dbg_AssertPosition(__FILE__, __LINE__), \
-	dbg_Assert x
 
 /*
  *
