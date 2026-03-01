@@ -63,7 +63,12 @@ extern BOOL strresGetIDString(STR_RES *psRes, char *pIDStr, char **ppStoredID);
 /* Get the string from an ID number */
 extern char *strresGetString(STR_RES *psRes, UDWORD id);
 
-/* Load a string resource file */
+/* Store a string value for a given key (key must already be registered via strresLoadFixedID,
+ * or a new numeric ID will be allocated automatically for unknown keys).
+ */
+extern BOOL strresStoreString(STR_RES *psRes, char *pID, char *pString);
+
+/* Load a string resource file (no-op: strings are now loaded from resources.pri) */
 extern BOOL strresLoad(STR_RES *psRes, UBYTE *pData, UDWORD size);
 
 /* Return the the length of a char */

@@ -3,6 +3,7 @@
  *
  */
 #include <direct.h>
+#include <winrt/base.h>
 #include "Frame.h"
 #include "Widget.h"
 #include "Script.h"
@@ -113,6 +114,9 @@ int WINAPI WinMain(
 	(void)nShowCmd;
 //	(void)lpCmdLine;
 	(void)hPrevInstance;
+
+	// Initialise the WinRT apartment before any Windows App SDK / ResourceManager calls.
+	winrt::init_apartment(winrt::apartment_type::single_threaded);
 
 	// initialise all the command line states
 	clStartWindowed = FALSE;
@@ -629,6 +633,7 @@ init://jump here from the end if re_initialising
 
 	if (reInit) goto init;
 
+	winrt::uninit_apartment();
 	PostQuitMessage(0);
 
 	return 0;
@@ -643,6 +648,7 @@ exit:
 
 	frameShutDown();
 
+	winrt::uninit_apartment();
 	PostQuitMessage(1);
 
 	return 1;

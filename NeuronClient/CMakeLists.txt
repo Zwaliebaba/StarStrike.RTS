@@ -16,6 +16,10 @@ file(GLOB FRAMEWORK_SRC CONFIGURE_DEPENDS
 )
 # Resource.cpp is obsolete and replaced by FrameResource.cpp; it contains #error.
 list(FILTER FRAMEWORK_SRC EXCLUDE REGEX "Framework/Resource\\.cpp$")
+# StrResL.cpp / StrResY.cpp are lex/yacc generated files for the old string parser.
+# Strings are now loaded from resources.pri via Windows App SDK ResourceManager.
+list(FILTER FRAMEWORK_SRC EXCLUDE REGEX "Framework/StrResL\\.cpp$")
+list(FILTER FRAMEWORK_SRC EXCLUDE REGEX "Framework/StrResY\\.cpp$")
 
 file(GLOB GAMELIB_SRC CONFIGURE_DEPENDS
     "Gamelib/*.cpp"
