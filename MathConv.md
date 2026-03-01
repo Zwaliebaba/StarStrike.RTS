@@ -97,6 +97,7 @@ result = (v.x * M.col0 + v.y * M.col1 + v.z * M.col2 + M.translation) >> FP12_SH
 3. **Precision loss in pie_VectorNormalise**: Uses octahedral approximation (`size = max_component + (mid >> 2) + (min >> 2)`) instead of true Euclidean length — an artifact of avoiding `sqrt` on PSX.
 4. **Dual angle systems**: `DEG_360=65536` system (PieMatrix SIN/COS table, 16-bit wrap) vs `TRIG_DEGREES=360` system (Framework Trig.cpp lookup) — callers use both; must be unified.
 5. **Integer overflow risk**: In `pie_MatCreate`, terms like `(sry * srx) >> FP12_SHIFT` involve products of two 12.12 values (each up to ±4096), producing up to ±4096² ≈ ±16M before the shift — within `int32` range, but the subsequent multiplied again can overflow in deeply nested expressions.
+6. **Entity-field angle storage (intentionally remains in degrees):** `BASE_ELEMENTS1` stores `direction` (UWORD), `pitch` (SWORD), `roll` (SWORD) as integer 0–360 degrees. Game-logic files write to these via `RAD_TO_DEG(atan2(...))` and read from them by converting manually at the use site (e.g., `(PI * direction) / 180.0` in `Move.cpp`). These patterns are **correct and must not change** during the DirectXMath migration. Entity fields are game-simulation data; the math layer operates on radians internally.
 
 ---
 
@@ -130,6 +131,18 @@ XMStoreFloat3(&myFloat3, v);            // SIMD register → storage
 ```
 
 ### 3.3 Angle Space Conversion
+
+The codebase has **three distinct angle tiers** that each require different treatment:
+
+```
+Tier 1 — Math layer internal: radians (float)         ← DirectXMath native
+Tier 2 — Math layer API input: 65536-unit or 0–360°   ← converted by AngleToRadians()
+Tier 3 — Game logic / entity storage: 0–360 integer°  ← stays unchanged; converted at use site
+```
+
+- **Tier 1** is what DirectXMath functions (`XMMatrixRotationY`, `XMScalarSin`, etc.) consume.
+- **Tier 2** is the existing call-site convention. `pie_MatRotX/Y/Z` accept 65536-unit angles; `trigSin`/`trigCos` accept 0–359 integer degrees. Both are converted to radians inside the math layer via `AngleToRadians()` (Phase 1 bridge header) — callers do not change.
+- **Tier 3** is game-simulation state. Fields like `psDroid->direction`, `psObj->pitch`, `psWeapon->turretRotation` are written via `RAD_TO_DEG(atan2(...))` and read by manual `(PI * direction) / 180.0` expressions. These never enter the SIMD pipeline directly and **must remain unchanged** throughout the migration.
 
 The existing system uses `DEG_360 = 65536` units per revolution.
 
@@ -707,6 +720,35 @@ inline int IsPointOnPlane(PSPLANE *psPlane, iVector *vP) {
 }
 ```
 
+#### 6f. Files with RAD_TO_DEG write-backs (NO CHANGE REQUIRED)
+
+The following files compute angles via `atan2()` and write to entity fields in degrees using
+`RAD_TO_DEG`. These patterns are correct and must **not** be changed during the DirectXMath
+migration. The entity fields (`direction`, `pitch`, `roll`, `turretRotation`) remain integer
+degrees throughout — they are game-simulation state, not math-layer inputs.
+
+| File | Lines | Pattern |
+|---|---|---|
+| `StarStrike/Projectile.cpp` | 365–370, 380–385, 441, 449, 787 | `psObj->direction = (UWORD)(RAD_TO_DEG(atan2(dx,dy)))` |
+| `StarStrike/Action.cpp` | 627 | `RAD_TO_DEG(atan2(dz, fR))` |
+| `StarStrike/RayCast.cpp` | 473, 530 | `gHPitch = RAD_TO_DEG(atan2(...))` |
+| `StarStrike/WarCAM.cpp` | 1306, 1378 | camera angle write-backs via `RAD_TO_DEG` |
+| `StarStrike/OptimisePath.cpp` | 75 | `angle = RAD_TO_DEG(atan2(xVec, yVec))` |
+| `StarStrike/Mission.cpp` | 794 | `RAD_TO_DEG(fR)` |
+| `StarStrike/Geometry.cpp` | 78–79 | `angle = (double)(180*(angle/pi))` |
+
+The following files read entity-field degrees and convert to radians **at the point of use**.
+These patterns are also correct and must not change:
+
+| File | Lines | Pattern |
+|---|---|---|
+| `StarStrike/Move.cpp` | 853–856 | `direction = (PI * psDroid->direction) / 180.0` |
+| `StarStrike/Display.cpp` | 1340–1342 | `radians = (((float)pi/180)*(direction))` |
+
+The wrapping helpers in `Geometry.cpp` (`adjustDirection`, `directionDiff`) operate on 0–360
+integer degrees with `% 360` normalization and -180 to 180 clamping. These are correct and
+must not change.
+
 #### 6e. fastRoot macro
 
 ```cpp
@@ -771,6 +813,32 @@ Run the game with a known scenario (formation movement, unit rotation, camera pa
 - Projection (no visible swim or scale shift)
 - Formation angles
 
+### 5.4 Angle Tier Boundary Verification
+
+After Phase 2 (matrix rotation) and Phase 4 (trig table replacement), verify that the tier
+boundary has not been crossed incorrectly:
+
+1. **No bare entity field passed to pie_MatRotX/Y/Z without conversion.** The entity fields
+   (`direction`, `pitch`, `roll`) are 0–360 integer degrees. `pie_MatRotX/Y/Z` expect 0–65535
+   angle units. Passing `psDroid->direction` directly without `DEG()` or `AngleToRadians()`
+   would silently produce a rotation 182× too small. Search for:
+   ```
+   pie_MatRot[XYZ](.*->direction|.*->pitch|.*->roll)
+   ```
+   — no matches should exist after migration.
+
+2. **No bare entity field passed to SIN/COS macros without conversion.** The `SIN`/`COS`
+   macros (before Phase 4) indexed into the 5120-entry table via `(uint16)(X) >> 4`. A raw
+   0–360 integer degree value would be read as nearly zero (indices 0–22 of 4096). Search for:
+   ```
+   SIN\(.*direction|COS\(.*direction
+   ```
+   — no matches should exist.
+
+3. **Verify `trigSin` replacement round-trip.** After Phase 4, confirm numeric equivalence:
+   `trigSin(0)=0`, `trigSin(90)=1`, `trigSin(180)≈0`, `trigSin(270)=-1` (the old table had
+   quantization error; the new float version is more accurate — the values above should be exact).
+
 ### 5.3 Numeric Regression for Game Logic
 
 Log-compare the outputs of `trigSin(angle)`, `trigCos(angle)` for angles 0, 90, 180, 270 (in legacy units) before and after `Trig.cpp` deletion. The table-based version had quantization error; the new float version is more accurate — this is intentional and correct.
@@ -814,7 +882,15 @@ Log-compare the outputs of `trigSin(angle)`, `trigCos(angle)` for angles 0, 90, 
 | `StarStrike/Findpath.cpp` | **MODIFY** — simplify FRACT arithmetic |
 | `StarStrike/Droid.cpp` | **MODIFY** — simplify FRACTdiv/FRACTmul |
 | `StarStrike/Move.cpp` | **MINOR MODIFY** — FRACTCONST → float literals |
-| `StarStrike/Projectile.cpp` | **MODIFY** — trig call updates |
+| `StarStrike/Projectile.cpp` | **MODIFY** — trigSin/trigCos call sites updated (Phase 4); `RAD_TO_DEG` write-backs to `direction`/`pitch` entity fields **unchanged** |
+| `StarStrike/Action.cpp` | **MINOR MODIFY** — `MAKEINT` update only; `RAD_TO_DEG` angle write-backs **unchanged** |
+| `StarStrike/RayCast.cpp` | **NO CHANGE TO ANGLES** — `RAD_TO_DEG` write-backs to `gHPitch` and similar fields **unchanged** |
+| `StarStrike/WarCAM.cpp` | **NO CHANGE TO ANGLES** — `RAD_TO_DEG` camera angle write-backs **unchanged** |
+| `StarStrike/OptimisePath.cpp` | **NO CHANGE TO ANGLES** — `RAD_TO_DEG` write-backs **unchanged** |
+| `StarStrike/Mission.cpp` | **NO CHANGE TO ANGLES** — `RAD_TO_DEG` write-backs **unchanged** |
+| `StarStrike/Geometry.cpp` | **NO CHANGE** — `adjustDirection`/`directionDiff` operate on 0–360 integer degrees and must stay that way |
+| `StarStrike/Move.cpp` | **MINOR MODIFY** — `FRACTCONST` → float literals; manual `(PI * direction)/180.0` reads **unchanged** |
+| `StarStrike/Display.cpp` | **NO CHANGE TO ANGLES** — manual `(pi/180)*direction` read **unchanged** |
 | `NeuronClient/CMakeLists.txt` | **MINOR MODIFY** — optional DirectXMath vcpkg hook |
 
 ---
