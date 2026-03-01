@@ -18,10 +18,6 @@
 #include "Heap.h"
 #include "Treap.h"
 #include "StrRes.h"
-#include "StrResLY.h"
-
-/* The string resource currently being loaded */
-STR_RES	*psCurrRes;
 
 /* The id number of ID strings allocated by the system is ORed with this */
 #define ID_ALLOC	0x80000000
@@ -353,16 +349,16 @@ char *strresGetString(STR_RES *psRes, UDWORD id)
 }
 
 
-/* Load a string resource file */
+/* Load a string resource file.
+ * Strings are now loaded at startup from resources.pri in stringsInitialise().
+ * The WRF STR_RES entries that previously drove this call are kept for
+ * backward compatibility but are now silently ignored.
+ */
 BOOL strresLoad(STR_RES *psRes, UBYTE *pData, UDWORD size)
 {
-	psCurrRes = psRes;
-	strresSetInputBuffer(pData, size);
-	if (strres_parse() != 0)
-	{
-		return FALSE;
-	}
-
+	UNUSEDPARAMETER(psRes);
+	UNUSEDPARAMETER(pData);
+	UNUSEDPARAMETER(size);
 	return TRUE;
 }
 

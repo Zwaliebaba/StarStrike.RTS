@@ -4,6 +4,9 @@
  * String management functions
  */
 
+#include <string>
+#include <winrt/base.h>
+#include <winrt/Windows.ApplicationModel.Resources.Core.h>
 #include "Frame.h"
 #include "Text.h"
 
@@ -524,6 +527,48 @@ BOOL stringsInitialise(void)
 
 	if (!strresLoadFixedID(psStringRes, asFixedID, STR_MAX_ID))
 	{
+		return FALSE;
+	}
+
+	// Load string values from resources.pri (Windows App SDK Package Resource Index).
+	// The .pri is compiled from GameData/strings/en-US/Resources.resw at build time by makepri.exe.
+	// We locate resources.pri next to the running executable.
+	wchar_t exePath[MAX_PATH];
+	GetModuleFileNameW(NULL, exePath, MAX_PATH);
+	wchar_t *lastSlash = wcsrchr(exePath, L'\\');
+	if (lastSlash)
+	{
+		*(lastSlash + 1) = L'\0';
+	}
+	wcscat_s(exePath, MAX_PATH, L"resources.pri");
+
+	try
+	{
+		using namespace winrt::Windows::ApplicationModel::Resources::Core;
+
+		ResourceManager mgr({ winrt::hstring(exePath) });
+		auto map = mgr.MainResourceMap().TryGetSubtree(L"Resources");
+		if (!map)
+		{
+			DBERROR(("stringsInitialise: No 'Resources' subtree found in resources.pri"));
+			return FALSE;
+		}
+
+		for (auto const& pair : map)
+		{
+			std::string key    = winrt::to_string(pair.Key());
+			auto candidate     = pair.Value().Resolve();
+			if (!candidate)
+			{
+				continue;
+			}
+			std::string value  = winrt::to_string(candidate.ValueAsString());
+			strresStoreString(psStringRes, key.c_str(), value.c_str());
+		}
+	}
+	catch (...)
+	{
+		DBERROR(("stringsInitialise: Failed to load resources.pri from '%ls'", exePath));
 		return FALSE;
 	}
 
