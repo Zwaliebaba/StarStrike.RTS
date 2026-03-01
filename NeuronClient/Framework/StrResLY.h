@@ -3,27 +3,11 @@
 /*
  * StrResLY.h
  *
- * Interface to the string resource lex && yacc functions.
+ * Previously the interface to the string resource lex/yacc functions.
+ * The lex/yacc parser (StrResL.cpp / StrResY.cpp) has been removed;
+ * strings are now loaded from resources.pri via Windows App SDK ResourceManager
+ * in stringsInitialise() (StarStrike/Text.cpp).
+ *
+ * This header is retained as an empty placeholder so that any translation
+ * units that still include it do not fail to compile.
  */
-
-/* Maximum number of characters in a directory entry */
-#define FILE_MAXCHAR		255
-
-/* Maximum number of TEXT items in any one Yacc rule */
-#define TEXT_BUFFERS	10
-
-/* The string resource currently being loaded */
-extern STR_RES	*psCurrRes;
-
-/* Set the current input buffer for the lexer - used by strresLoad */
-extern void strresSetInputBuffer(UBYTE *pBuffer, UDWORD size);
-
-/* Give access to the line number && current text for error messages */
-extern void strresGetErrorData(int *pLine, char **ppText);
-
-/* Call the yacc parser */
-extern int strres_parse(void);
-
-/* Store a char */
-extern BOOL strresStoreString(STR_RES *psRes, char *pID, char *pString);
-

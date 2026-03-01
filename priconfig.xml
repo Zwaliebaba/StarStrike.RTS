@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<priconfig version="1.0.0">
+  <packaging>
+    <autoResourcePackage qualifier="Language"/>
+  </packaging>
+  <resources targetOsVersion="10.0.0">
+    <resource uri="ms-resource:///Resources/" />
+  </resources>
+</priconfig>
