@@ -1,0 +1,1442 @@
+# StarStrike.RTS — 12-Week Implementation Plan
+
+**Document Created:** March 5, 2026  
+**Last Updated:** March 5, 2026  
+**Target Timeline:** 8–12 weeks to MVP  
+**Current Status:** Phase 1 Complete — Phase 2 next  
+**Primary Reference:** StarStrike.md, ARCHITECTURE_RECOMMENDATIONS.md  
+
+---
+
+## Overview
+
+This plan guides incremental implementation of a persistent voxel-based isometric RTS MMO from architecture to playable MVP. Each of 6 phases leaves the project buildable, linkable, and runnable. The plan prioritizes forward declarations to minimize PCH thrashing, respects the Neuron library architecture (NeuronCore → Neuron → {GameLogic, NeuronClient, NeuronServer}), and integrates WinSock2 for Windows networking from the start.
+
+**Success Criteria:**
+- Phase 1–3: Systems build and run independently (no gameplay yet)
+- Phase 4: 50 concurrent players, ships moving, 60 Hz tick maintained
+- Phase 5: Combat, mining, voxel destruction replicated to all clients
+- Phase 6: Full persistence, graceful shutdown, observability
+- Final: MVP ships with <$50/month server hosting cost, 60 FPS+ client
+
+---
+
+## Requirements
+
+### Functional Requirements
+- **Network:** Server-authoritative UDP (WinSock2) at 7777, 60 Hz tick, 20 Hz client snapshots
+- **Voxel World:** 4×4 sectors, 32×32×32 chunks, visible destruction for all players
+- **Combat:** Ship-to-ship targeting, projectile weapons, hit detection, damage & respawn
+- **Mining:** Voxel extraction, resource collection, cargo system
+- **Persistence:** PostgreSQL with RLE compression, voxel event log, player ship state
+- **Rendering:** DirectX 12, greedy-meshed voxels, pixelated post-process, bloom glow
+- **Concurrency:** ≥50 simultaneous players without tick rate degradation
+
+### Performance Targets
+- **Server Tick:** < 16.67 ms @ 60 Hz (100% utilization at 50 players)
+- **Network:** ~1.5 KB/s inbound, ~14 KB/s outbound per player
+- **Client Frame:** 60+ FPS with 200 visible chunks on Windows x64 (mid-range GPU)
+- **Memory:** Server 4 GB, Client 2 GB
+- **Persistence:** Voxel events flushed every 1 sec, chunks every 30 sec
+
+### Architecture Constraints
+- **No Exceptions/RTTI** in GameLogic (game code)
+- **C++23** (MSVC v145 toolset minimum)
+- **CMake 3.24+** for modern features, precompiled headers, vcpkg
+- **WinSock2** on Windows, POSIX sockets on Linux (Neuron platform layer abstracts)
+- **Library Layering:** NeuronCore (deps: none) → Neuron (platform) → {GameLogic, engines}
+
+---
+
+## Architecture Changes Summary
+
+### New Files & Directories
+
+| File / Path | Project | Purpose | Dependencies |
+|---|---|---|---|
+| **shared/include/types.h** | NeuronCore | EntityID, ChunkID, Vec3, Quat typedefs | none |
+| **shared/include/constants.h** | NeuronCore | Chunk sizes, tick rate, sector grid | none |
+| **server/src/transport/socket.cpp/.h** | Neuron | UDP socket manager, WinSock2 wrapper | winsock2.lib on Windows |
+| **server/src/simulation/engine.cpp/.h** | NeuronServer | 60 Hz tick loop, 6 phases | Neuron, GameLogic |
+| **server/src/world/entity_system.cpp/.h** | GameLogic | ECS-lite, array-of-structs | NeuronCore |
+| **server/src/world/voxel_system.cpp/.h** | GameLogic | Chunk storage, RLE serialization | NeuronCore, PostgreSQL |
+| **server/src/persistence/database.cpp/.h** | NeuronServer | PostgreSQL connection pool | libpq |
+| **client/src/rendering/dx12_device.cpp/.h** | NeuronClient | DX12 device, command queues | dxgi, d3d12, directxmath |
+| **client/src/rendering/voxel_renderer.cpp/.h** | NeuronClient | Greedy meshing, VB/IB upload | NeuronCore |
+| **client/src/network/snapshot_decoder.cpp/.h** | NeuronClient | Deserialize snapshots | shared packet types |
+| **client/shaders/*.hlsl** | NeuronClient | Voxel, entity, post-process shaders | DirectXMath |
+
+### Modified Files
+
+| File | Changes | Impact |
+|---|---|---|
+| CMakeLists.txt (root) | Add subdirectories; vcpkg + precompiled headers | Build system setup |
+| vcpkg.json | Add PostgreSQL, libjpeg-turbo, zstd, spdlog | Dependency management |
+| server/CMakeLists.txt | Link ws2_32.lib on Windows; PCH headers | Server network I/O |
+| client/CMakeLists.txt | PCH includes windows.h, winsock2.h, d3d12.h | Client build optimization |
+
+---
+
+## Implementation Steps
+
+### Phase 1: Core Foundation & Types (Weeks 1–1.5, ~12 files) ✅ COMPLETE
+
+**Status:** Completed March 5, 2026. All 12 files created; CMake configures and builds with zero errors on MSVC 19.50. VerifyPhase1.exe passes all static assertions and runs cleanly.
+
+**Goal:** Establish NeuronCore library with types and constants; verify cmake + vcpkg + PCH.
+
+#### Step 1.1: Initialize CMake & vcpkg ✅
+- **File:** Root `CMakeLists.txt`, `CMakePresets.json`, `vcpkg.json`, `shared/config.h.in`
+- **Action:** Set up CMake 3.24+ with presets for x64-debug/release/linux-server; configure vcpkg manifest mode with dependencies (libpq, yaml-cpp, spdlog, zstd, nlohmann-json). Created `config.h.in` template for compile-time constants generated by CMake.
+- **Actual:** CMake 4.1.2 (bundled with VS 18) + Ninja. Config generates `config.h` with version, server config, voxel system, rendering, feature flags, and platform detection.
+- **Why:** Enables deterministic, reproducible builds across platforms
+- **Dependencies:** None (new files)
+- **Build Impact:** Low (configuration only, no compilation yet)
+- **Risk:** Low (standard CMake patterns)
+
+#### Step 1.2: Create NeuronCore Library (Header-Only Base Types) ✅
+- **File:** `shared/include/NeuronCore/Types.h`, `shared/include/NeuronCore/Constants.h`
+- **Action:** Defined `EntityID` (u32), `PlayerID` (u16), `ChunkID` (u64) with `INVALID_*` sentinels and `makeChunkID()` encoder. Math primitives: `Vec2`, `Vec3` (with operator+/-/*/+=), `Vec3i` (with `==`), `Quat`, `AABB` (with `contains()`/`overlaps()`). Enums: `EntityType`, `VoxelType` (empty + 8 terrain/special types), `ActionType`, `ShipType`, `PacketType` (client→server + server→client). Constants: tick rate (60 Hz), chunk/sector geometry, network limits (magic, MTU, rate limits), persistence intervals, physics AABB sizes, rendering budgets.
+- **Why:** Establishes shared vocabulary for both server and client; no dependencies
+- **Dependencies:** C++ standard library only
+- **Build Impact:** Zero (header only)
+- **Risk:** Low
+
+#### Step 1.3: Set Up NeuronCore CMakeLists.txt ✅
+- **File:** `shared/CMakeLists.txt`, `shared/pch.h`
+- **Action:** Created `NeuronCore` as INTERFACE library with public include directories and PCH propagation (17 STL headers). Created `Neuron` as INTERFACE library linking NeuronCore with ws2_32 on Windows. Added `shared/pch.h` precompiled header consuming all STL + NeuronCore headers.
+- **Why:** Centralizes PCH generation; 60–70% rebuild speedup on subsequent changes
+- **Dependencies:** None (headers only)
+- **Build Impact:** Medium (triggers once at project setup)
+- **Risk:** Low (standard CMake practice)
+
+#### Step 1.4: Stub Out Neuron Platform Library Structure ✅
+- **File:** `shared/include/Neuron/Socket.h`, `FileSystem.h`, `Threading.h`, `Timer.h`
+- **Action:** Created full API-designed header stubs (declarations only, no .cpp):
+  - **Socket.h:** `UDPSocket` class — `bind()`, `sendTo()`, `recvFrom()` (returns `optional<Datagram>`), cross-platform (`SOCKET` on Windows, `int` fd on POSIX), move-only.
+  - **FileSystem.h:** `FileSystem` class — `setHomeDirectory()`, `readBinaryFile()`, `readTextFile()`, `writeBinaryFile()`, `exists()` using `std::filesystem`.
+  - **Threading.h:** `ThreadPool` class — `enqueue()`, `waitAll()`, `shutdown()`, PIMPL pattern.
+  - **Timer.h:** `Timer` class — `tick()` (returns delta seconds), `elapsedSec()`, `elapsedUs()`, fully implemented inline using `steady_clock`.
+- **Why:** Prevents circular includes; sketches interface early
+- **Dependencies:** NeuronCore headers
+- **Build Impact:** Very low (headers only)
+- **Risk:** Low
+
+#### Step 1.5: Verify Build & CMake Presets ✅
+- **File:** `shared/tests/VerifyPhase1.cpp`
+- **Action:** Created verification executable with 15+ `static_assert` checks covering: constant values (tick rate, chunk size, sector count, player count), ChunkID encoding, enum sizes, Vec3 arithmetic, AABB containment/overlap, and a runtime Timer smoke test. Built and ran successfully.
+- **Build Result:** MSVC 19.50.35725.0, Ninja, 3/3 targets compiled with zero errors, zero warnings. `VerifyPhase1.exe` exits with code 0. Generated `config.h` verified correct.
+- **Why:** Catch CMake configuration issues early before many files depend on it
+- **Dependencies:** Steps 1.1–1.4
+- **Build Impact:** Zero (verification only)
+- **Risk:** Very low
+
+**Deliverables:**
+- ✅ CMake 3.24+ configured with vcpkg — `CMakeLists.txt`, `CMakePresets.json`, `vcpkg.json`
+- ✅ NeuronCore (types, constants) builds — `shared/include/NeuronCore/Types.h`, `Constants.h`
+- ✅ Neuron platform stubs in place — `shared/include/Neuron/Socket.h`, `FileSystem.h`, `Threading.h`, `Timer.h`
+- ✅ PCH strategy implemented — `shared/pch.h` with 17 STL headers + NeuronCore, propagated via CMake INTERFACE
+- ✅ Config header generation — `shared/config.h.in` → `generated/config.h`
+- ✅ Verification test — `shared/tests/VerifyPhase1.cpp` passes (15+ static_asserts + runtime)
+
+**Success Criteria:** ✅ MET
+```bash
+cmake -S . -B out/build/x64-debug -G Ninja   # Configures with 0 errors
+cmake --build out/build/x64-debug              # 3/3 targets, 0 errors
+./out/build/x64-debug/shared/VerifyPhase1.exe  # Exit code 0
+```
+
+---
+
+### Phase 2: Server Network & Database Foundation (Weeks 1.5–3, ~18 files)
+
+**Goal:** UDP socket listening, PostgreSQL connection pool, packet codec. Server runs (empty tick loop).
+
+#### Step 2.1: Implement Neuron::UDPSocket (WinSock2 + POSIX)
+- **File:** shared/src/network/socket.cpp/h
+- **Action:** Implement cross-platform UDPSocket wrapper:
+  ```cpp
+  // shared/include/network/socket.h
+  namespace Neuron {
+    class UDPSocket {
+      bool Bind(const std::string& addr, uint16_t port);
+      Packet RecvFrom();  // Returns packet + sender IP:port
+      bool SendTo(const Packet& p, const std::string& addr, uint16_t port);
+    #ifdef _WIN32
+      SOCKET m_sock;  // WinSock2
+    #else
+      int m_sock;     // POSIX fd
+    #endif
+    };
+  }
+  ```
+  - Windows: Include `<winsock2.h>`, `<ws2def.h>` (added to PCH)
+  - Linux: POSIX `<sys/socket.h>`
+  - Non-blocking I/O: WSAAsyncSelect (Windows) / fcntl O_NONBLOCK (Linux)
+- **Why:** Centralizes OS-specific socket code; enables client & server to use same interface
+- **Dependencies:** NeuronCore (for types); WinSock2 on Windows (ws2_32.lib link)
+- **Build Impact:** Low (new translation unit)
+- **Risk:** Medium (OS-specific; test on both Windows and Linux)
+
+#### Step 2.2: PostgreSQL Database Connection Pool
+- **File:** server/src/persistence/database.cpp/h
+- **Action:** Implement connection pool wrapper around libpq. Methods: Connect(), Execute(), Query(), Disconnect().
+  ```cpp
+  // server/persistence/database.h
+  class Database {
+    bool Connect(const std::string& connstring, int pool_size);
+    std::vector<std::vector<std::string>> Query(const std::string& sql);
+    void Execute(const std::string& sql);
+    void BeginTransaction(); void Commit();
+  };
+  ```
+  - Use RAII: connections released on ~PgConnection()
+  - Pool: pre-allocate N connections, reuse via lock-free queue or mutex
+- **Why:** Essential for persistence; connection pooling avoids latency spikes
+- **Dependencies:** libpq-fe.h (from vcpkg)
+- **Build Impact:** Low (new translation unit, links PostgreSQL lib)
+- **Risk:** Medium (database errors can cascade; add error logging)
+
+#### Step 2.3: Packet Codec (Serialization/Deserialization)
+- **File:** shared/src/serialization/packet_codec.cpp/h
+- **Action:** Binary serialization utilities. Define packet types (CMD_INPUT, SNAP_STATE, etc.):
+  ```cpp
+  // shared/packet_types.h
+  struct CmdInput {
+    uint32_t cmd_type = CMD_INPUT;
+    uint32_t player_id;
+    uint8_t action;  // 1=move, 2=attack, 3=mine
+    float target_x, target_y, target_z;
+    uint16_t target_entity_id;
+  };
+  
+  // shared/serialization/packet_codec.h
+  bool Serialize(const CmdInput& cmd, std::vector<uint8_t>& bytes);
+  bool Deserialize(const std::vector<uint8_t>& bytes, CmdInput& cmd);
+  ```
+  - Little-endian byte order; include magic number + CRC for validation
+- **Why:** Unifies encoding/decoding logic; prevents bugs
+- **Dependencies:** NeuronCore (types)
+- **Build Impact:** Very low (header-heavy)
+- **Risk:** Low (stateless utilities)
+
+#### Step 2.4: Server Main & Config Parsing
+- **File:** server/src/main.cpp, config.cpp/h
+- **Action:** Entry point: parse YAML config, initialize spdlog for logging, spin up server. Config loads tick_rate, max_players, db_url, port.
+  ```cpp
+  // server/src/main.cpp
+  int main(int argc, char* argv[]) {
+    auto config = LoadConfig("server.yaml");
+    InitLogging(config.log_level);
+    Database db;
+    db.Connect(config.database_url, config.db_pool_size);
+    
+    while (!g_shutdown_requested) {
+      // Placeholder: empty tick
+      std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
+    db.Disconnect();
+    return 0;
+  }
+  ```
+- **Why:** Launches server; config enables production deployment
+- **Dependencies:** yaml-cpp, spdlog, Neuron (logging), Database
+- **Build Impact:** Low (new executables compile linking prior libs)
+- **Risk:** Low (straightforward initialization)
+
+#### Step 2.5: Skeletal Server Tick Loop
+- **File:** server/src/simulation/engine.cpp/h
+- **Action:** Implement 60 Hz tick loop (6 phases) as stubs. Currently does nothing except advance tick counter and measure time.
+  ```cpp
+  // server/simulation/engine.h
+  class SimulationEngine {
+    void Tick(uint64_t tick_num);  // Called every 16.67 ms
+  private:
+    void Phase1_InputProcessing() { /* stub */ }
+    void Phase2_VoxelUpdate() { /* stub */ }
+    void Phase3_Physics() { /* stub */ }
+    void Phase4_Combat() { /* stub */ }
+    void Phase5_Mining() { /* stub */ }
+    void Phase6_Effects() { /* stub */ }
+  };
+  ```
+- **Why:** Skeleton for later gameplay logic; verifies timing
+- **Dependencies:** None yet (stubs)
+- **Build Impact:** Very low (functions empty)
+- **Risk:** Very low
+
+#### Step 2.6: Server Network Transport (Socket Recv Loop)
+- **File:** server/src/transport/socket_manager.cpp/h, updated server main loop
+- **Action:** Create SocketManager that:
+  - Binds Neuron::UDPSocket to 0.0.0.0:7777
+  - Receives up to 100 datagrams per tick (non-blocking)
+  - Validates & deserializes packets using packet codec
+  - Enqueues validated commands
+  ```cpp
+  // server/transport/socket_manager.h
+  class SocketManager {
+    bool Init(uint16_t port);
+    void RecvPackets(std::vector<ReceivedPacket>& outPackets);  // Called once per tick
+  private:
+    Neuron::UDPSocket m_socket;
+    std::vector<uint8_t> m_recv_buffer;
+  };
+  ```
+  - **WinSock2 specific:** Use WSAAsyncSelect or WSAEventSelect for non-blocking
+  - Add to server main loop: `socketMgr.RecvPackets(packets);` before tick
+- **Why:** Core I/O path; non-blocking design prevents tick stalls
+- **Dependencies:** Neuron::UDPSocket, packet_codec, server logging
+- **Build Impact:** Low (links ws2_32 on Windows)
+- **Risk:** Medium (non-blocking I/O is tricky; test packet loss scenarios)
+
+#### Step 2.7: Verify Build & Test Basic Server Start
+- **File:** Build & run tests
+- **Action:** Build server; run with config pointing to test PostgreSQL; verify:
+  - Server logs "Initialized"
+  - Tick loop runs at 60 Hz (logs tick count every 1 sec)
+  - TCP/UDP port 7777 listens (use netstat)
+  - Database connection succeeds (SELECT 1)
+- **Why:** Catch linkage & runtime issues early
+- **Dependencies:** Steps 2.1–2.6
+- **Build Impact:** Zero (verification)
+- **Risk:** Low
+
+**Deliverables:**
+- ✅ Server binary compiles (empty tick loop)
+- ✅ UDP socket listens on 7777 with WinSock2
+- ✅ PostgreSQL connection pool initialized
+- ✅ Packet codec (de)serializes commands
+- ✅ Server logs to stdout + file (spdlog)
+- ✅ Config YAML loads correctly
+
+**Success Criteria:**
+```bash
+cd server && ./NeuronServer --config ../config/server.yaml
+# Output: "Server initialized. Listening on 0.0.0.0:7777"
+# Tick count increments every 1 sec: "Tick 60, 120, 180, ..."
+# netstat -an | grep 7777  shows LISTENING
+```
+
+---
+
+### Phase 3: Entity System & Voxel Storage (Weeks 3–4, ~16 files)
+
+**Goal:** ECS-lite entity management, voxel chunk serialization, database schema loaded. Server spawns test entities.
+
+#### Step 3.1: ECS-Lite Entity System (Array-of-Structs)
+- **File:** server/src/world/entity_system.cpp/h
+- **Action:** Implement entity management:
+  ```cpp
+  // server/world/entity_system.h
+  struct Entity {
+    EntityID id;
+    Vec3 pos, vel, accel; Quat rot;
+    uint8_t type;  // EntityType enum
+    uint16_t owner_player_id;
+    uint32_t hp, max_hp;
+    EntityID target_id;
+    uint64_t last_update_tick;
+  };
+  
+  class EntitySystem {
+    EntityID SpawnEntity(const Entity& e);
+    void DestroyEntity(EntityID id);
+    Entity* GetEntity(EntityID id);
+    void TickUpdate();  // Iterate all entities once (iterate vectors, not map)
+  private:
+    std::vector<Entity> m_entities;
+    std::unordered_map<EntityID, size_t> m_entity_lookup;  // Fast lookup by ID
+    std::vector<EntityID> m_free_pool;  // Reuse IDs to avoid ID exhaustion
+  };
+  ```
+  - Emphasis: Contiguous arrays for cache coherency; one iteration per phase
+  - No pointers between entities (use IDs + lookup map)
+- **Why:** High-performance entity iteration (critical for 60 Hz @ 50 players)
+- **Dependencies:** NeuronCore (EntityID, Vec3, Quat)
+- **Build Impact:** Low (new translation unit)
+- **Risk:** Low (straightforward dynamic array management)
+
+#### Step 3.2: Voxel Chunk Structure & Serialization
+- **File:** server/src/world/voxel_system.cpp/h
+- **Action:** Implement chunk storage and RLE serialization:
+  ```cpp
+  // server/world/voxel_system.h
+  struct VoxelChunk {
+    Vec3i min;                       // Min corner in world coords
+    uint8_t voxels[32][32][32];     // 32 KB per chunk
+    bool dirty;
+    uint64_t version;
+    uint64_t modified_tick;
+  };
+  
+  class VoxelSystem {
+    void SetVoxel(const Vec3i& world_pos, uint8_t type);
+    uint8_t GetVoxel(const Vec3i& world_pos) const;
+    std::vector<uint8_t> SerializeChunk(const VoxelChunk& chunk) const;
+    VoxelChunk DeserializeChunk(const std::vector<uint8_t>& data) const;
+    
+  private:
+    std::unordered_map<ChunkID, VoxelChunk> m_chunks;
+    std::vector<VoxelDelta> m_delta_buffer;  // Flushed to DB periodically
+  };
+  
+  // RLE codec (inside .cpp)
+  // Serialize: iterate voxels; emit (count, type) runs
+  // Deserialize: read (count, type) pairs; expand back to grid
+  ```
+  - Serialization achieves ~4–6 KB per chunk (rocky terrain ≈ 75% empty)
+  - Paired with zstd compression for additional 20% reduction if needed
+- **Why:** Efficient storage; enables fast chunk swapping on server/client
+- **Dependencies:** NeuronCore (Vec3i, types)
+- **Build Impact:** Low (new translation unit)
+- **Risk:** Medium (RLE codec has edge cases; unit test thoroughly with sparse/dense chunks)
+
+#### Step 3.3: PostgreSQL Schema Creation
+- **File:** config/schema.sql
+- **Action:** Create tables for voxel_chunks, voxel_events, players, ships, sectors. Include indices on chunk_id, sector_id, player_id.
+  ```sql
+  CREATE TABLE voxel_chunks (
+    chunk_id BYTEA PRIMARY KEY,
+    sector_id VARCHAR(10),
+    voxel_data BYTEA,
+    version INT DEFAULT 1,
+    modified_at TIMESTAMP DEFAULT NOW()
+  );
+  CREATE INDEX idx_chunks_sector ON voxel_chunks(sector_id);
+  
+  -- ... (see StarStrike.md Persistence section for full schema)
+  ```
+- **Why:** Defines data model; allows server to persist world state
+- **Dependencies:** PostgreSQL 14+
+- **Build Impact:** Zero (data only, run psql < schema.sql)
+- **Risk:** Low (standard SQL)
+
+#### Step 3.4: Chunk Persistence Layer (Load/Save to DB)
+- **File:** server/src/persistence/chunk_store.cpp/h
+- **Action:** Wrap Database class; implement:
+  ```cpp
+  // server/persistence/chunk_store.h
+  class ChunkStore {
+    VoxelChunk LoadChunk(ChunkID id);
+    void SaveChunk(const VoxelChunk& chunk);
+    void FlushDirtyChunks();  // Called every 30 sec
+    void AppendVoxelEvent(const VoxelDelta& delta);
+  private:
+    Database& m_db;
+    std::vector<VoxelDelta> m_event_buffer;  // Batch inserts
+  };
+  ```
+  - LoadChunk: SELECT & decompress RLE data
+  - SaveChunk: INSERT or UPDATE with version check
+  - FlushDirtyChunks: batch UPDATE all dirty chunks
+  - AppendVoxelEvent: buffer deltas; flush via batch INSERT every 1 sec
+- **Why:** Abstracts SQL details; centralizes persistence logic
+- **Dependencies:** Database, VoxelSystem
+- **Build Impact:** Low (new translation unit, links PostgreSQL)
+- **Risk:** Medium (transaction isolation; test concurrent writes)
+
+#### Step 3.5: Sector Manager
+- **File:** server/src/world/sector.cpp/h
+- **Action:** Manage 4×4 grid of sectors; each sector owns ~4,096 chunks.
+  ```cpp
+  // server/world/sector.h
+  class Sector {
+    Vec3i GetBounds() const;  // Min/max corners
+    ChunkID WorldPosToChunkID(const Vec3i& world_pos) const;
+    bool IsInBounds(const Vec3i& world_pos) const;
+  };
+  
+  class SectorManager {
+    Sector& GetSector(int grid_x, int grid_y);
+    void Init(int grid_width, int grid_height);
+  private:
+    std::vector<Sector> m_sectors;  // 16 for MVP
+  };
+  ```
+- **Why:** Partitions world; enables interest-based culling later
+- **Dependencies:** NeuronCore (Vec3i, ChunkID)
+- **Build Impact:** Very low (mostly logic)
+- **Risk:** Low
+
+#### Step 3.6: World Manager (Top-Level Orchestrator)
+- **File:** server/src/world/world_manager.cpp/h
+- **Action:** Central point for entity, voxel, chunk management:
+  ```cpp
+  class WorldManager {
+    void Init(const WorldConfig& cfg);
+    void Tick();  // Called by SimulationEngine each tick
+    
+    EntitySystem& GetEntitySystem() { return m_entity_system; }
+    VoxelSystem& GetVoxelSystem() { return m_voxel_system; }
+    SectorManager& GetSectorManager() { return m_sector_mgr; }
+    ChunkStore& GetChunkStore() { return m_chunk_store; }
+  private:
+    EntitySystem m_entity_system;
+    VoxelSystem m_voxel_system;
+    SectorManager m_sector_mgr;
+    ChunkStore m_chunk_store;
+  };
+  ```
+- **Why:** Single coherent interface; simplifies server main loop coupling
+- **Dependencies:** EntitySystem, VoxelSystem, SectorManager, ChunkStore
+- **Build Impact:** Very low (delegation)
+- **Risk:** Very low
+
+#### Step 3.7: Test Entity & Chunk Initialization
+- **File:** server/src/main.cpp (updated)
+- **Action:** In server main loop, after WorldManager::Init():
+  - Load all voxel_chunks from DB into memory
+  - Spawn 1 test asteroid per sector (EntityType::ASTEROID)
+  - Spawn 1 test ship (EntityType::SHIP) at sector (0,0)
+  - Log entity IDs and chunk counts
+- **Why:** Verifies WorldManager initialization; catches database loading issues
+- **Dependencies:** Steps 3.1–3.6
+- **Build Impact:** Zero (logic changes only)
+- **Risk:** Low
+
+**Deliverables:**
+- ✅ EntitySystem (ECS-lite array-of-structs) implemented
+- ✅ VoxelSystem with RLE serialization
+- ✅ PostgreSQL schema created (voxel_chunks, voxel_events, etc.)
+- ✅ ChunkStore persistence layer
+- ✅ SectorManager for world partitioning
+- ✅ WorldManager orchestrator
+- ✅ Server loads & spawns test entities
+
+**Success Criteria:**
+```bash
+./NeuronServer
+# Logs:
+# "Loaded 16 chunks from database"
+# "Spawned test asteroid at (256, 256, 128)"
+# "Spawned test ship at (0, 0, 0)"
+# Tick counter increments
+```
+
+---
+
+### Phase 4: Client Foundation & Input (Weeks 4–6, ~20 files)
+
+**Goal:** Client connects to server, receives and displays entities. Input processing skeleton. Still no voxel rendering yet.
+
+#### Step 4.1: DirectX 12 Device Initialization
+- **File:** client/src/rendering/dx12_device.cpp/h
+- **Action:** Implement DX12 device, command queue, swap chain:
+  ```cpp
+  // client/rendering/dx12_device.h
+  class DX12Device {
+    bool Initialize(HWND hwnd, uint32_t width, uint32_t height);
+    void BeginFrame();
+    ID3D12GraphicsCommandList* GetCommandList() { return m_cmd_list; }
+    void Present();
+    
+    ID3D12Device* GetDevice() { return m_device.Get(); }
+    ID3D12CommandQueue* GetQueue() { return m_cmd_queue.Get(); }
+  private:
+    ComPtr<ID3D12Device> m_device;
+    ComPtr<ID3D12CommandQueue> m_cmd_queue;
+    ComPtr<IDXGISwapChain4> m_swap_chain;
+    ComPtr<ID3D12Resource> m_render_targets[2];  // Double-buffered
+    ComPtr<ID3D12DescriptorHeap> m_rtv_heap;
+  };
+  ```
+  - Feature level 12_1 minimum
+  - Debug layer enabled in Debug builds
+  - Fence synchronization for present
+  - Force WARP (software) fallback for CI if no GPU
+- **Why:** Mandatory for rendering; establishes GPU command pipeline
+- **Dependencies:** d3d12.lib, dxgi.lib, directxmath.lib (Windows SDK)
+- **Build Impact:** Medium (DirectX SDK linking; must handle missing GPU in CI)
+- **Risk:** High (GPU driver issues; mitigate with fallback to WARP)
+
+#### Step 4.2: Client Network Socket & Snapshot Decoder
+- **File:** client/src/network/client_socket.cpp/h, snapshot_decoder.cpp/h
+- **Action:** Client-side UDP socket; deserialize snapshots:
+  ```cpp
+  // client/network/client_socket.h
+  class ClientSocket {
+    bool Connect(const std::string& server_addr, uint16_t port);
+    bool SendCommand(const CmdInput& cmd);
+    bool RecvSnapshot(SnapshotState& snapshot);  // Non-blocking
+  private:
+    Neuron::UDPSocket m_socket;
+    std::vector<uint8_t> m_recv_buffer;
+  };
+  
+  // client/network/snapshot_decoder.h
+  struct SnapshotState {
+    uint64_t tick;
+    std::vector<EntityDelta> entity_deltas;
+    std::vector<VoxelDelta> voxel_deltas;
+  };
+  bool DeserializeSnapshot(const std::vector<uint8_t>& bytes, SnapshotState& snap);
+  ```
+  - Deserialize entity deltas (pos, rot, vel, hp, despawn)
+  - Deserialize voxel deltas (world pos + type)
+- **Why:** Client receives server state; core gameplay loop dependency
+- **Dependencies:** Neuron::UDPSocket, packet_codec, NeuronCore types
+- **Build Impact:** Low (new translation units)
+- **Risk:** Medium (packet format mismatches between server/client codecs)
+
+#### Step 4.3: Client Entity Cache (Local AoS Storage)
+- **File:** client/src/world/entity_cache.cpp/h
+- **Action:** Mirror server entity array on client (for rendering):
+  ```cpp
+  // client/world/entity_cache.h
+  struct ClientEntity {
+    EntityID id;
+    Vec3 pos, vel, rotation;
+    uint8_t type;
+    uint16_t hp, max_hp;
+    uint64_t last_snapshot_tick;
+  };
+  
+  class EntityCache {
+    void UpdateFromSnapshot(const std::vector<EntityDelta>& deltas);
+    void DestroyEntity(EntityID id);
+    const std::vector<ClientEntity>& GetAll() const { return m_entities; }
+  private:
+    std::vector<ClientEntity> m_entities;
+    std::unordered_map<EntityID, size_t> m_lookup;
+  };
+  ```
+  - Apply deltas from snapshots
+  - Remove despawned entities
+  - Smooth motion via linear interpolation (client prediction)
+- **Why:** Enables rendering of all visible entities
+- **Dependencies:** NeuronCore (EntityID, Vec3)
+- **Build Impact:** Very low (straightforward arrays)
+- **Risk:** Low
+
+#### Step 4.4: Client Input System (Keyboard/Mouse)
+- **File:** client/src/input/input_system.cpp/h
+- **Action:** Capture Win32 keyboard/mouse events; translate to commands:
+  ```cpp
+  // client/input/input_system.h
+  class InputSystem {
+    void ProcessWindowMessage(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
+    std::vector<CmdInput> GetPendingCommands();  // Called once per frame
+  private:
+    bool m_keys_pressed[256];  // Key states
+    Vec2 m_mouse_pos, m_mouse_delta;
+  };
+  
+  // client/input/command_translator.h
+  CmdInput TranslateInputToCommand(const InputState& input);
+  // WASD -> move commands; click -> target; R -> attack, M -> mine
+  ```
+  - Queue up to 60 commands/sec (one per frame)
+  - Each command includes target position or entity ID
+- **Why:** Core gameplay loop feedback; links player input to server state
+- **Dependencies:** Windows.h, client event system
+- **Build Impact:** Very low (Win32 message handling)
+- **Risk:** Low
+
+#### Step 4.5: Client Camera Controller
+- **File:** client/src/rendering/camera.cpp/h
+- **Action:** Isometric camera; pan (WASD/mouse drag) and zoom (mouse wheel):
+  ```cpp
+  // client/rendering/camera.h
+  class Camera {
+    void Update(const InputState& input, float dt);
+    Mat4x4 GetViewMatrix() const;
+    Mat4x4 GetProjectionMatrix() const;
+    
+    void Pan(Vec2 delta);
+    void Zoom(float factor);  // Mouse wheel
+    void LookAt(Vec3 target);  // Optional: follow entity
+  private:
+    Vec3 m_pos;  // Camera position
+    float m_yaw = 45.0f, m_pitch = 45.0f;  // Fixed isometric angles
+    float m_zoom = 1.0f;   // 4x to 64x magnification
+  };
+  ```
+  - Fixed pitch/yaw (isometric); only pan and zoom change
+  - Frustum culling: only render chunks within view bounds
+- **Why:** Allows player to see the world; critical for usability
+- **Dependencies:** DirectXMath, input_system, NeuronCore (Vec3, Mat4x4)
+- **Build Impact:** Very low
+- **Risk:** Low
+
+#### Step 4.6: Client Main Loop & Networking Integration
+- **File:** client/src/main.cpp (updated), client/src/app.cpp/h
+- **Action:** Implement game app class:
+  ```cpp
+  class GameApp {
+    bool Initialize(const std::string& server_addr, uint16_t port);
+    void Frame(float delta_time);  // Called at 60 FPS
+    bool IsRunning() const;
+    
+  private:
+    DX12Device m_dx12;
+    ClientSocket m_socket;
+    EntityCache m_entity_cache;
+    InputSystem m_input;
+    Camera m_camera;
+    
+    uint64_t m_local_tick = 0;
+  };
+  
+  // client/src/main.cpp
+  int main() {
+    GameApp app;
+    app.Initialize("127.0.0.1", 7777);
+    
+    while (app.IsRunning()) {
+      app.Frame(frame_delta);  // ~16 ms @ 60 FPS
+    }
+    return 0;
+  }
+  ```
+  - Main loop:
+    1. Process OS messages (input)
+    2. Serialize & send commands to server
+    3. Recv snapshot (non-blocking)
+    4. Update entity cache
+    5. Update camera
+    6. Render (placeholder clear screen)
+    7. Present
+- **Why:** Unified entry point; orchestrates all client subsystems
+- **Dependencies:** All prior client components
+- **Build Impact:** Low (executable)
+- **Risk:** Medium (main loop timing is critical; jitter = visual artifacts)
+
+#### Step 4.7: Verify Client Connectivity & Input Relay
+- **File:** Integration test/manual test
+- **Action:** Run server & client; verify:
+  - Client connects without error (no "connection refused")
+  - Keyboard input captured and logged (WASD key presses)
+  - Snapshot received (non-blocking; log tick numbers)
+  - Entity cache updates (log entity position changes)
+  - Camera responds to mouse wheel (zoom changes)
+  - DX12 window renders solid color (swap chain present works)
+- **Why:** Catch network/input/rendering integration issues before moving to graphics
+- **Dependencies:** Steps 4.1–4.6
+- **Build Impact:** Zero (testing)
+- **Risk:** Low
+
+**Deliverables:**
+- ✅ DirectX 12 device initialized, swap chain created
+- ✅ Client connects to server via UDP
+- ✅ Snapshots received and entity cache updated
+- ✅ Keyboard/mouse input captured
+- ✅ Camera (pan/zoom) responds to input
+- ✅ Main game loop runs at 60 FPS
+
+**Success Criteria:**
+```bash
+./NeuronServer
+./NeuronClient --server 127.0.0.1:7777
+# Window opens (solid color)
+# Log: "Connected to server tick 123"
+# Log: "Snapshot received, 2 entities"
+# Log: "Input: W pressed"
+# Camera zooms in/out with mouse wheel
+```
+
+---
+
+### Phase 5: Rendering & Gameplay Systems (Weeks 6–9, ~24 files)
+
+**Goal:** Voxel rendering (greedy mesh), entity sprites, basic HUD. Combat, mining, voxel destruction working end-to-end.
+
+#### Step 5.1: Greedy Mesh Generation
+- **File:** client/src/rendering/voxel_renderer.cpp/h (includes mesh generation)
+- **Action:** Implement greedy meshing algorithm:
+  ```cpp
+  // client/rendering/voxel_renderer.h
+  struct MeshVertex {
+    int16_t x, y, z;       // Local coords
+    uint8_t normal_packed; // Normal (octahedron-encoded)
+    uint8_t voxel_type;    // Material/color lookup
+    uint8_t ao;            // Ambient occlusion 0–3
+  };
+  
+  struct ChunkMesh {
+    std::vector<MeshVertex> vertices;
+    std::vector<uint16_t> indices;
+    AABB bounds;
+    uint64_t cached_hash;
+  };
+  
+  class VoxelRenderer {
+    ChunkMesh GenerateMesh(const VoxelChunk& chunk);
+    // Greedy algorithm:
+    // For each axis (X, Y, Z):
+    //   Scan plane-by-plane
+    //   Extend rectangles greedily
+    //   Output quad (4 verts + 2 tri indices)
+  };
+  ```
+  - Result: ~40,000 triangles per chunk (vs. 520,000 naive)
+  - Octahedron-encode normals to 1 byte (6 directions)
+  - Cache mesh hash; regenerate only on chunk dirty flag
+- **Why:** Critical for performance; enables rendering of large voxel worlds
+- **Dependencies:** NeuronCore, voxel data structure
+- **Build Impact:** Medium (complex algorithm, may take time to optimize)
+- **Risk:** High (greedy mesh is finicky; off-by-one errors common; extensive unit test)
+
+#### Step 5.2: VB/IB Creation & GPU Upload
+- **File:** client/src/rendering/mesh_pool.cpp/h
+- **Action:** Allocate vertex/index buffers on GPU; upload meshes:
+  ```cpp
+  class MeshPool {
+    struct ChunkMeshGPU {
+      ComPtr<ID3D12Resource> vertex_buffer;
+      ComPtr<ID3D12Resource> index_buffer;
+      uint32_t index_count;
+      D3D12_VERTEX_BUFFER_VIEW vbv;
+      D3D12_INDEX_BUFFER_VIEW ibv;
+    };
+    
+    ChunkMeshGPU UploadMesh(const ChunkMesh& mesh, DX12Device& device);
+    void EvictOldestChunkMesh();  // LRU when memory constrained
+  private:
+    std::unordered_map<ChunkID, ChunkMeshGPU> m_chunk_meshes;
+    size_t m_total_vram_mb = 0;
+    static const size_t MAX_VRAM_MB = 512;  // Limit GPU VRAM usage
+  };
+  ```
+  - Use D3D12 copy queue for async upload (non-blocking, one per-frame batch)
+  - LRU eviction when pool exhausted
+- **Why:** Separates CPU mesh generation from GPU resource management; enables non-blocking mesh uploads
+- **Dependencies:** DX12Device, ChunkMesh
+- **Build Impact:** Low (GPU resource management)
+- **Risk:** Medium (GPU memory fragmentation; test with 200+ chunks loaded)
+
+#### Step 5.3: Voxel Shaders (HLSL)
+- **File:** client/shaders/voxel.hlsl (vertex + pixel)
+- **Action:** Implement voxel rendering shaders:
+  ```hlsl
+  // Vertex Shader
+  cbuffer SceneConstants : register(b0) {
+    float4x4 view_proj;  // Pre-multiplied view * projection
+    float3 camera_pos;
+    float padding;
+  };
+  
+  struct VS_INPUT {
+    int3 pos : POSITION;        // Local voxel coords
+    uint normal_packed : NORMAL;
+    uint voxel_type : TEXCOORD0;
+    uint ao : TEXCOORD1;
+  };
+  
+  struct VS_OUTPUT {
+    float4 pos_clip : SV_POSITION;
+    float3 normal_world : NORMAL;
+    uint voxel_type : TEXCOORD1;
+    uint ao : TEXCOORD2;
+  };
+  
+  VS_OUTPUT main(VS_INPUT input, uint instance_id : SV_InstanceID) {
+    // Unpack normal
+    float3 normal = UnpackNormal(input.normal_packed);
+    
+    // Apply chunk instance offset
+    float3 chunk_offset = GetChunkOffset(instance_id);
+    float3 pos_world = chunk_offset + float3(input.pos);
+    
+    // Project
+    VS_OUTPUT output;
+    output.pos_clip = mul(float4(pos_world, 1.0), view_proj);
+    output.normal_world = normal;
+    output.voxel_type = input.voxel_type;
+    output.ao = input.ao;
+    return output;
+  }
+  
+  // Pixel Shader
+  Texture2D tex_terrain : register(t0);
+  Texture2D tex_emissive_mask : register(t1);
+  
+  float4 main(VS_OUTPUT input) : SV_TARGET {
+    // Fetch terrain color
+    float2 uv = GetTerrainUV(input.voxel_type);
+    float3 color_base = tex_terrain.Sample(sampler0, uv).rgb;
+    
+    // Simple lighting: normal · sun_direction
+    float3 sun_dir = normalize(float3(0.7, 0.7, 0.5));
+    float diffuse = max(0.2, dot(input.normal_world, sun_dir));
+    
+    // AO: reduce brightness based on corner occlusion
+    float ao = 1.0 - (input.ao * 0.1);
+    diffuse *= ao;
+    
+    // Emissive (neon fissures)
+    float is_emissive = tex_emissive_mask.Sample(sampler0, float2(input.voxel_type / 256.0, 0.5)).r;
+    float3 emissive_color = color_base * is_emissive * 2.0;
+    
+    // Output
+    float3 final = color_base * diffuse + emissive_color;
+    return float4(final, 1.0);
+  }
+  ```
+  - Input layout matches MeshVertex struct
+  - Textures: single 2048×2048 atlas (diffuse, normal, emissive)
+  - Lighting: single directional (sun) + ambient
+- **Why:** Renders voxel geometry; essential for visual feedback
+- **Dependencies:** DirectXMath, shared unpack/utility functions
+- **Build Impact:** Low (shader compilation via FXC or DXC)
+- **Risk:** Medium (shader compilation errors; test on WARP)
+
+#### Step 5.4: Compile Shaders & Create PSO
+- **File:** client/src/rendering/shader_compiler.cpp/h (calls FXC/DXC)
+- **Action:** Compile HLSL shaders to bytecode; create graphics pipeline state object:
+  ```cpp
+  class ShaderCompiler {
+    std::vector<uint8_t> CompileShader(const std::string& hlsl_file, 
+                                       const std::string& entry_point,
+                                       const std::string& target);
+     // target = "vs_6_0", "ps_6_0", etc.
+  };
+  
+  // In DX12Device:
+  void CreateVoxelPSO() {
+    auto vs_bytes = ShaderCompiler::Compile("voxel.hlsl", "main", "vs_6_0");
+    auto ps_bytes = ShaderCompiler::Compile("voxel.hlsl", "main", "ps_6_0");
+    
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_desc = { 
+      .pRootSignature = m_root_sig.Get(),
+      .VS = { vs_bytes.data(), vs_bytes.size() },
+      .PS = { ps_bytes.data(), ps_bytes.size() },
+      .RasterizerState = { .CullMode = D3D12_CULL_MODE_BACK, ... },
+      .DepthStencilState = { .DepthEnable = TRUE, ... },
+      // ...
+    };
+    m_device->CreateGraphicsPipelineState(&pso_desc, &m_pso_voxel);
+  }
+  ```
+  - Use FXC.exe (MSVC toolset) or DXC (Shader Model 6.0+)
+  - Fallback to pre-compiled bytecode if shader compilation fails in CI
+- **Why:** Separates compilation (offline) from runtime (fast pipeline creation)
+- **Dependencies:** DX12Device, HLSL compiler
+- **Build Impact:** Medium (FXC invocation in CMake; fallback to precompiled bytecode)
+- **Risk:** Medium (compiler availability; mitigate via precompiled blobs)
+
+#### Step 5.5: Server-Side Combat & Mining Commands
+- **File:** server/src/simulation/combat_system.cpp/h, mining_system.cpp/h
+- **Action:** Implement command processing for attack & mine:
+  ```cpp
+  // server/simulation/combat_system.h
+  class CombatSystem {
+    void ProcessAttackCommand(const CmdInput& cmd, WorldManager& world);
+    void ProcessHits(WorldManager& world);  // Physics phase
+    
+  private:
+    struct ProjectileEvent {
+      EntityID projectile_id;
+      EntityID target_id;
+      Vec3 impact_pos;
+    };
+    std::vector<ProjectileEvent> m_hit_events;
+  };
+  
+  // CombatSystem implementation (in .cpp):
+  // Phase 4: Combat
+  void CombatSystem::ProcessHits(WorldManager& world) {
+    auto& entities = world.GetEntitySystem().GetAll();
+    for (auto& proj : entities | filter_type(PROJECTILE)) {
+      AABB proj_bounds = GetAABB(proj.pos);
+      for (auto& ship : entities | filter_type(SHIP)) {
+        if (AABBOverlap(proj_bounds, GetAABB(ship.pos))) {
+          ship.hp -= PROJECTILE_DAMAGE;
+          m_hit_events.push_back({proj.id, ship.id, proj.pos});
+        }
+      }
+    }
+  }
+  
+  // server/simulation/mining_system.h
+  class MiningSystem {
+    void ProcessMiningCommand(const CmdInput& cmd, WorldManager& world);
+    void ExtractMiningVoxels(WorldManager& world);  // Phase 5
+  private:
+    std::vector<VoxelDelta> m_mined_voxels;  // Add to world delta buffer
+  };
+  ```
+  - Attack: spawn projectile; next frame raycasts detect hits
+  - Mine: raycast from ship → voxel; remove voxel if minable type
+  - Broadcast deltas in next snapshot
+- **Why:** Core gameplay mechanics; ensure they work before moving to network replication
+- **Dependencies:** EntitySystem, VoxelSystem, Physics (raycasts)
+- **Build Impact:** Low (new subsystems)
+- **Risk:** Medium (hit detection edge cases; test with high velocities)
+
+#### Step 5.6: Integrate Combat/Mining into Tick Phases
+- **File:** server/src/simulation/engine.cpp (update Phase 4 & 5)
+- **Action:** Hook CombatSystem & MiningSystem into tick loop:
+  ```cpp
+  void SimulationEngine::Tick() {
+    Phase1_InputProcessing();    // Validate commands
+    Phase2_VoxelUpdate();        // Apply queued voxel changes
+    Phase3_Physics();            // Move ships, projectiles
+    Phase4_Combat();             // CombatSystem::ProcessHits()
+    Phase5_Mining();             // MiningSystem::ExtractMiningVoxels()
+    Phase6_Effects();            // Spawn FX, cleanup
+  }
+  ```
+- **Why:** Ensures phases execute in correct order (input → physics → combat)
+- **Dependencies:** CombatSystem, MiningSystem, SimulationEngine
+- **Build Impact:** Zero (integration only)
+- **Risk:** Low
+
+#### Step 5.7: Snapshot Builder & Delta Encoding
+- **File:** server/src/interest_mgmt/snapshot_builder.cpp/h
+- **Action:** Encode entity & voxel deltas for efficient network transmission:
+  ```cpp
+  // server/interest_mgmt/snapshot_builder.h
+  class SnapshotBuilder {
+    SnapshotState BuildSnapshot(uint64_t tick, const WorldManager& world);
+    // Returns: entity deltas + voxel deltas (only changed fields)
+  };
+  
+  // Encoding:
+  // For each entity:
+  //   u32 entity_id
+  //   u8 field_mask (bit 0=pos, 1=rot, 2=vel, 3=hp, 4=despawn)
+  //   [optional fields based on mask]
+  // For each voxel delta:
+  //   i32 world_x, world_y, world_z
+  //   u8 new_voxel_type
+  ```
+  - Track entity state last-sent; only encode if changed
+  - Quantize floats (position to cm precision, rotation to 16-bit)
+  - Voxel deltas: only send chunks within interest radius
+- **Why:** Minimizes bandwidth; critical for scale to 50 players
+- **Dependencies:** EntitySystem, VoxelSystem, interest radius calculation
+- **Build Impact:** Low (new subsystem)
+- **Risk:** Low (delta encoding is well-established; unit test with various entity states)
+
+#### Step 5.8: Client Entity Rendering & HUD
+- **File:** client/src/rendering/entity_renderer.cpp/h, client/src/ui/hud.cpp/h
+- **Action:** Render ships & asteroids; display HUD elements:
+  ```cpp
+  // Entity rendering: simple colored cubes or quads
+  // HUD: health bar, ammo counter, radar (minimap), chat log
+  // For MVP: 2D overlays on top of 3D scene
+  ```
+  - Entity rendering: quad sprites or simple box meshes
+  - HUD: D2D1 text rendering (ship name, HP, cargo count)
+  - Radar: 2D minimap of nearby entities (512-unit radius)
+- **Why:** Visual feedback for player; essential for usability
+- **Dependencies:** DX12Device, entity data, D2D1 (for 2D text)
+- **Build Impact:** Low (new subsystems)
+- **Risk:** Low
+
+**Deliverables:**
+- ✅ Greedy mesh generation (40,000 tri/chunk)
+- ✅ VB/IB upload with LRU eviction
+- ✅ Voxel shaders (vertex + pixel) compiled
+- ✅ Graphics PSO created
+- ✅ Combat system (projectiles, hit detection, damage)
+- ✅ Mining system (voxel extraction, resource spawn)
+- ✅ Entity rendering (ships, asteroids as sprites)
+- ✅ HUD display (health, cargo, radar)
+
+**Success Criteria:**
+```bash
+./NeuronServer
+./NeuronClient
+# Voxel chunks render (colored cubes visible)
+# 2 ships visible (player's and test asteroid)
+# Click to move; ship interpolates smoothly
+# WASD to attack/mine; voxels disappear; resources spawn
+# HUD shows health/cargo
+```
+
+---
+
+### Phase 6: Persistence, Optimization & Polish (Weeks 9–12, ~18 files)
+
+**Goal:** Full data persistence, stress testing @ 50 players, observability, final polish.
+
+#### Step 6.1: Player Authentication & Ship Loading
+- **File:** server/src/persistence/player_store.cpp/h
+- **Action:** Player login/logout with ship state persistence:
+  ```cpp
+  class PlayerStore {
+    bool Login(const std::string& username, const std::string& password, uint32_t& out_player_id);
+    std::vector<Ship> LoadShips(uint32_t player_id);
+    void SaveShips(uint32_t player_id, const std::vector<Ship>& ships);
+    void Logout(uint32_t player_id);
+  };
+  ```
+  - Query players table; verify password hash
+  - LoadShips: fetch from ships table; reconstruct entity
+  - SaveShips: UPDATE ships table (position, HP, cargo, etc.)
+  - Called on player join (load) and every 5 ticks (incremental save)
+- **Why:** Players can persist their progress across sessions
+- **Dependencies:** Database, WorldManager
+- **Build Impact:** Low (new translation unit)
+- **Risk:** Medium (transaction isolation; test concurrent logins)
+
+#### Step 6.2: Voxel Event Flushing & Recovery
+- **File:** server/src/persistence/chunk_store.cpp (enhanced), transactionlog.cpp/h
+- **Action:** Periodic voxel delta flushing; on-crash recovery:
+  ```cpp
+  // In ChunkStore:
+  void FlushVoxelDeltas() {
+    if (m_event_buffer.empty()) return;
+    
+    // Batch INSERT voxel_events
+    stringstream sql;
+    sql << "INSERT INTO voxel_events (chunk_id, world_x/y/z, old/new_type, player_id, tick_number) VALUES ";
+    for (const auto& delta : m_event_buffer) {
+      sql << "(" << encode(delta) << "), ";
+    }
+    m_db.Execute(sql.str());
+    m_event_buffer.clear();
+  }
+  
+  // On server restart:
+  void RecoverFromLog(Database& db, WorldManager& world) {
+    // For each chunk:
+    //   Load voxel_chunks (latest snapshot)
+    //   Replay voxel_events since last snapshot
+    //   Reconstruct final state
+  }
+  ```
+  - FlushVoxelDeltas called every 1 sec (60 ticks)
+  - FlushDirtyChunks called every 30 sec
+  - Recovery on server start: reload chunks + replay events
+- **Why:** Ensures world persistence; no lost destructions on crash
+- **Dependencies:** Database, ChunkStore, VoxelSystem
+- **Build Impact:** Low (existing database layer)
+- **Risk:** Medium (transaction ordering; concurrent writers can cause splits; use SERIALIZABLE isolation)
+
+#### Step 6.3: Interest Management (Visibility Culling)
+- **File:** server/src/interest_mgmt/visibility.cpp/h
+- **Action:** Per-player entity culling; only send deltas for visible entities:
+  ```cpp
+  class VisibilityManager {
+    std::vector<EntityID> GetVisibleEntities(const Entity& player_ship, const WorldManager& world);
+    // Entities within D (16 chunks ≈ 512 units): always included
+    // Entities within 2D: lower update frequency (every 2 snapshots)
+    // Entities beyond 2D: not sent
+  };
+  ```
+  - Recompute per-player every 200 ms (12 ticks)
+  - Cache results until next update
+  - Voxel deltas: only send chunks in streaming radius (8 chunks from camera)
+- **Why:** Reduces bandwidth 4x for 50 players; enables larger player counts
+- **Dependencies:** EntitySystem, SectorManager
+- **Build Impact:** Low (new calculation)
+- **Risk:** Low (distance culling is straightforward)
+
+#### Step 6.4: Observability: Logging & Metrics
+- **File:** server/src/observability/logger.cpp/h, metrics.cpp/h
+- **Action:** Structured logging + Prometheus metrics:
+  ```cpp
+  // Logging (spdlog, rotating file logger)
+  spdlog::info("Player {} joined (ships: {})", player_id, ship_count);
+  spdlog::warn("Tick {} took {:.2f} ms (budget: 16.67)", tick, tick_ms);
+  spdlog::error("Database query failed: {}", error_msg);
+  
+  // Metrics
+  Metrics::Counter("server_tick_count", 1);
+  Metrics::Histogram("server_tick_duration_ms", tick_duration_ms);
+  Metrics::Gauge("network_connections_active", connection_count);
+  Metrics::Counter("voxel_destruction_events_total", voxel_deltas.size());
+  Metrics::Histogram("db_query_duration_ms", query_ms);
+  ```
+  - Logs to file (rotation: 100 MB per file, 10 backups)
+  - Metrics exposed via HTTP endpoint (localhost:9090/metrics) in Prometheus text format
+- **Why:** Enables production monitoring and debugging
+- **Dependencies:** spdlog, Prometheus client library
+- **Build Impact:** Low (logging integration)
+- **Risk:** Low (well-established libraries)
+
+#### Step 6.5: Server Health Check Endpoint
+- **File:** server/src/observability/health.cpp/h
+- **Action:** HTTP endpoint for /health and /ready (Kubernetes-compatible):
+  ```cpp
+  struct ServerHealth {
+    bool is_running;
+    uint64_t current_tick;
+    int active_players;
+    float tick_time_ms;
+    float bandwidth_kbps;
+    
+    bool IsHealthy() const {
+      return is_running && tick_time_ms < 20.0f && 
+             last_tick_time_ms < 60000;  // No tick for 60 sec = unhealthy
+    }
+  };
+  
+  // Exposed:
+  // GET /health  -> 200 OK { "status": "healthy" } or 503
+  // GET /ready   -> 200 OK when accepting players
+  ```
+  - Integrated into main tick loop (adds negligible overhead)
+  - Enables Kubernetes liveness/readiness probes
+- **Why:** Production deployment requires health monitoring
+- **Dependencies:** Simple HTTP server (embed or use microserver lib)
+- **Build Impact:** Low (HTTP handling)
+- **Risk:** Low
+
+#### Step 6.6: Post-Processing Pipeline (Bloom + Pixelation)
+- **File:** client/shaders/bloom_extract.hlsl, blur.hlsl, composite.hlsl
+- **Action:** Implement glow effect:
+  1. Render scene to low-res RT (640×360)
+  2. Extract bright pixels (bloom mask)
+  3. Blur (4-level pyramid)
+  4. Composite with original
+  5. Nearest-neighbor upsample to 1920×1080
+  ```hlsl
+  // Bloom extraction
+  float brightness = dot(color.rgb, float3(0.2126, 0.7152, 0.0722));
+  return brightness > 1.0 ? color : float4(0, 0, 0, 1);
+  
+  // Blur (separable, 4-tap)
+  // Composite: additive blend glow
+  ```
+- **Why:** Retro aesthetic (glowing neon fissures); visual polish
+- **Dependencies:** Voxel rendering pipeline
+- **Build Impact:** Low (new shaders)
+- **Risk:** Low
+
+#### Step 6.7: Stress Test & Performance Profiling
+- **File:** Test harness: tools/stress_test.cpp
+- **Action:** Simulate 50 concurrent players:
+  ```cpp
+  // Ghost bot clients:
+  // - Connect to server
+  // - Send random MOVE/ATTACK/MINE commands at realistic rates
+  // - Recv snapshots
+  // - Track: tick duration, bandwidth, entity count, errors
+  ```
+  - Measure: server tick time, CPU usage, memory, network I/O
+  - Target: tick < 16.67 ms @ 100% CPU (50 players)
+  - Log results to CSV for graphing
+- **Why:** Validates performance targets; catches scaling issues early
+- **Dependencies:** Ghost client library, server executable
+- **Build Impact:** Medium (test harness + metrics aggregation)
+- **Risk:** Medium (reproduction of production load is hard; ghost clients may be unrealistic)
+
+#### Step 6.8: Docker Build & Deployment Test
+- **File:** Dockerfile, docker-compose.yaml
+- **Action:** Build and test containerized deployment:
+  ```bash
+  docker build -t starstrike:latest .
+  docker-compose up --detach
+  docker exec starstrike-server /app/server --health-check
+  docker logs starstrike-server  # Verify logging
+  ```
+  - Verify: server starts, DB connection succeeds, port 7777 listens
+  - Test graceful shutdown: docker stop → SIGTERM → clean exit within 5 sec
+- **Why:** Production-ready deployment
+- **Dependencies:** Docker, docker-compose
+- **Build Impact:** Low (container tooling)
+- **Risk:** Low (standard Docker practices)
+
+#### Step 6.9: Final Bug Fixes & Polish
+- **File:** Throughout codebase
+- **Action:** 
+  - Playtesting (40+ hours with multiple players)
+  - Bug triage & fixes
+  - Performance tuning (profile hot paths; optimize mesh generation, database queries)
+  - UI polish (font, color scheme, tooltips)
+  - Documentation (README, BUILD.md, API docs)
+- **Why:** MVP quality bar
+- **Dependencies:** All prior phases complete
+- **Build Impact:** Variable (bug-dependent)
+- **Risk:** High (unknown unknowns; schedule buffer)
+
+**Deliverables:**
+- ✅ Player login/ship persistence
+- ✅ Voxel event log with recovery
+- ✅ Interest-based entity culling
+- ✅ Structured logging + Prometheus metrics
+- ✅ Health check endpoint
+- ✅ Post-processing (bloom, pixelation)
+- ✅ Stress test @ 50 concurrent players
+- ✅ Docker containerized deployment
+- ✅ Documentation & API examples
+
+**Success Criteria:**
+```bash
+# Server @ 50 ghost players:
+# "Tick 3600 took 15.2 ms (budget: 16.67)"  ✅
+# Prometheus metrics scrape: tick count increments ✅
+# Health check: /health returns 200 OK ✅
+# Docker deploy: ./ship_it.sh → production ready ✅
+```
+
+---
+
+## Build & Verification Strategy
+
+### Build Configurations
+
+| Config | Purpose | Compiler | Flags |
+|--------|---------|----------|-------|
+| **x64-debug** | Development | MSVC v145 | /Od /Zi /D_DEBUG |
+| **x64-release** | Production server | MSVC v145 | /O2 /Oi /GL |
+| **x64-release-client** | Shipping client | MSVC v145 | /O2 /GL /NDEBUG |
+
+### Per-Phase Build Verification
+
+**Phase 1:** `cmake --preset x64-debug && cmake --build . --target NeuronCore` → no errors
+**Phase 2:** `cmake --build . --target NeuronServer` → executable links; runs without crash
+**Phase 3:** `NeuronServer --config config/server.yaml` → loads DB, spawns test entities, ticks
+**Phase 4:** `NeuronClient --server 127.0.0.1:7777` → window opens, receives snapshots
+**Phase 5:** Kill server, respawn; verify voxel destruction persists across restart
+**Phase 6:** `docker-compose up && curl -s localhost:9090/metrics | grep server_tick` → metrics exposed
+
+### Incremental Build Strategy
+
+- **PCH optimization:** After Phase 1, rebuilds skip common headers (60–70% faster)
+- **Avoid wide headers:** Use forward declarations in .h files; include only in .cpp
+- **Parallel compilation:** `cmake --build . -j 8` (utilize all cores)
+- **Separate client/server builds:** If only server code changed, client rebuild skipped
+
+### Testing Strategy
+
+| Phase | Unit Tests | Integration Tests | Manual Tests |
+|-------|-----------|-------------------|--------------|
+| 1 | Types, constants | (none) | (none) |
+| 2 | Packet codec, socket | Server connects, receives packet | netstat 7777 |
+| 3 | Entity CRUD, RLE codec | Load chunks, save to DB | Server startup prints entities |
+| 4 | Input mapping, camera | Client snapshot decode | Keyboard input logged |
+| 5 | Mesh generation, combat | Voxels removed, entities hit | Play 30 min gameplay |
+| 6 | Persistence, visibility | Crash & recover, 50 players | Stress test 6 hours |
+
+---
+
+## Data & Content Dependencies
+
+### Assets Needed
+
+| Asset | Format | Size | Created By | Milestone |
+|-------|--------|------|-----------|-----------|
+| Terrain atlas | PNG RGBA | 2048×2048 | Artist | Phase 5 (or placeholder) |
+| Emissive mask | PNG (1-bit) | 2048×2048 | Artist | Phase 6 |
+| Ship models | Simple quads/cubes | — | Programmer | Phase 5 (2D sprites) |
+| Voxel types | Enum (64 types) | Code | Designer | Phase 1 |
+| Ship stats (YAML) | Config | — | Designer | Phase 4 |
+| Weapon params (YAML) | Config | — | Designer | Phase 5 |
+
+### Procedural Generation (Optional for MVP)
+
+- Initial world: generate 4×4 sectors × 16 chunks = 256 chunks (flat plane or noise-based)
+- Seeded RNG: reproducible worlds
+- Saved to voxel_chunks table on first server run
+
+---
+
+## Risks & Mitigations
+
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|-----------|
+| **Mesh generation correctness** | Graphics corrupted, unplayable | High | Unit tests (sparse/dense chunks); visual inspection |
+| **Network packet loss** | Freezing, desync | Medium | Client resend, server deduplication, sequence numbers |
+| **Voxel delta flood** | Bandwidth overrun, lag | Medium | Interest radius culling, delta aggregation, RLE compression |
+| **Server tick > 16.67 ms** | Jitter, unplayable | High | Profiling, optimize hot paths (entity iteration), consider thread pool |
+| **Database contention** | Stalls, connection pool exhaustion | Medium | Connection pooling, batch writes, async queries, profile query times |
+| **GPU memory fragmentation** | Crashes under load | Low | LRU eviction, defragmentation, test with 1000+ chunks |
+| **WinSock2 API mismatch** | Connection refused, packet corruption | Low | Unit tests for socket codec, test on Windows 10/11, fallback to POSIX for CI |
+| **Schedule slip** | Ship late, unfinished features | Medium | Regular playtesting, prioritize critical-path features (network, persistence, rendering), cut scope if needed |
+
+---
+
+## Success Criteria (MVP)
+
+### Functional
+- [ ] 50 concurrent players connect without errors
+- [ ] Ships move smoothly (< 50 ms latency, client prediction)
+- [ ] Combat: fire projectile → hit ship → damage applied visible to all players
+- [ ] Mining: extract voxel → removed on all clients, resource spawns
+- [ ] Persistence: restart server → world state unchanged (voxels, ships, resources)
+- [ ] Chat: one player's message visible to all in-sector
+
+### Performance
+- [ ] Server tick: ≤ 16.67 ms @ 60 Hz (100% CPU @ 50 players)
+- [ ] Network bandwidth: ≤ 1.5 KB/s inbound, ≤ 14 KB/s outbound per player
+- [ ] Client frame rate: ≥ 60 FPS (mid-range GPU; 1920×1080)
+- [ ] Voxel mesh generation: < 1 ms per chunk (cached, LOD'd)
+- [ ] Database latency: < 30 ms for query, < 100 ms for write
+
+### Deployment
+- [ ] Docker image builds without errors (< 5 min)
+- [ ] docker-compose up → server + postgres running (< 30 sec)
+- [ ] Server health check: /health responds 200 OK
+- [ ] Prometheus metrics: tick count, player count, bandwidth exposed
+- [ ] Graceful shutdown: SIGTERM → clean exit in < 5 sec, no data loss
+
+### Code Quality
+- [ ] Zero compiler warnings (MSVC /WX)
+- [ ] No memory leaks (ASAN, valgrind on Linux)
+- [ ] Static analysis: cppcheck, clang-tidy pass
+- [ ] Code follows CODE_STANDARDS.md (naming, formatting, memory management)
+
+---
+
+## Manual Checklist
+
+Use this to track progress:
+
+```
+## Phase 1 (Weeks 1–1.5) ✅ COMPLETE (March 5, 2026)
+- [x] CMake 3.24+ configured (`CMakeLists.txt`, `CMakePresets.json`)
+- [x] vcpkg manifest created (`vcpkg.json`: spdlog, yaml-cpp, zstd, libpq, nlohmann-json)
+- [x] NeuronCore Types.h, Constants.h created (full API with 15+ static_asserts verified)
+- [x] PCH headers configured (`shared/pch.h` + CMake INTERFACE propagation)
+- [x] x64-debug builds successfully (MSVC 19.50, Ninja, 0 errors)
+- [x] Config header generation (`config.h.in` → `generated/config.h`)
+- [x] Neuron platform stubs (Socket, FileSystem, Threading, Timer)
+- [x] VerifyPhase1.exe compiles and runs (exit code 0)
+
+## Phase 2 (Weeks 1.5–3)
+- [ ] Neuron::UDPSocket (WinSock2) implemented & tested
+- [ ] PostgreSQL connection pool working
+- [ ] Packet codec serializes/deserializes all message types
+- [ ] Server binary runs, tick loop at 60 Hz
+- [ ] Port 7777 listens (netstat verified)
+
+## Phase 3 (Weeks 3–4)
+- [ ] EntitySystem (AoS) working; entities spawn & despawn
+- [ ] VoxelSystem RLE codec tested (sparse & dense chunks)
+- [ ] PostgreSQL schema created, indexed
+- [ ] ChunkStore CRUD working (load/save/flush)
+- [ ] Server loads 256 chunks from DB on startup
+
+## Phase 4 (Weeks 4–6)
+- [ ] DX12 device initializes, window opens
+- [ ] Client connects to server, receives snapshots
+- [ ] Keyboard input captured & sent as commands
+- [ ] Camera pan (WASD) & zoom (wheel) working
+- [ ] Entity cache displays 2+ entities
+
+## Phase 5 (Weeks 6–9)
+- [ ] Greedy mesh generation produces correct geometry
+- [ ] VB/IB upload non-blocking; LRU eviction working
+- [ ] Voxel shaders compile (FXC or DXC)
+- [ ] PSO created, voxels render on screen
+- [ ] Combat: projectile hits ship, damage applied
+- [ ] Mining: voxels removed, visible to all players
+- [ ] HUD displays health, cargo, radar
+
+## Phase 6 (Weeks 9–12)
+- [ ] Player login/logout saves ship state to DB
+- [ ] Voxel events flushed every 1 sec
+- [ ] Crash recovery: restart server, voxel deltas replayed
+- [ ] 50-player stress test: tick < 16.67 ms
+- [ ] Observability: logs + Prometheus metrics working
+- [ ] Docker image builds & runs
+- [ ] 40+ hours playtesting, critical bugs fixed
+- [ ] MVP release: ship.sh runs, server ready for public test
+```
+
+---
+
+## References
+
+- **StarStrike.md:** Full architecture, gameplay systems, networking model, voxel design, rendering pipeline, deployment, risks
+- **ARCHITECTURE_RECOMMENDATIONS.md:** CMake build system, PCH strategy, library architecture, dependency management
+- **CODE_STANDARDS.md:** C++23 naming conventions, memory management, error handling (referenced but not included here)
+- **MathConv.md:** DirectXMath migration plan (future; use fixed-point 12.12 for now, known working)
+
+---
+
+**End of Implementation Plan**

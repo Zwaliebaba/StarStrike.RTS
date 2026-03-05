@@ -1,32 +1,71 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-# 3.12 required for CONFIGURE_DEPENDS on file(GLOB ...) calls.
-cmake_minimum_required (VERSION 3.12)
+# StarStrike.RTS — Root CMake Configuration
+cmake_minimum_required(VERSION 3.24)
 
-# Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
+project(StarStrike
+    VERSION 0.1.0
+    LANGUAGES CXX
+    DESCRIPTION "Voxel-based isometric RTS MMO"
+)
 
-# Declare the project as C++ only.
-project ("StarStrike" CXX)
-
-# Enforce C++23 globally for all targets.
+# ── C++ Standard ─────────────────────────────────────────────────────────────
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Use /permissive (non-conformance mode) for MSVC to allow legacy C++ patterns.
-if (MSVC)
-  add_compile_options(/permissive)
-endif()
+# ── Platform Detection ───────────────────────────────────────────────────────
+set(STARSTRIKE_WINDOWS ${WIN32})
+set(STARSTRIKE_UNIX ${UNIX})
+option(BuildServerOnly "Build server only (Linux headless)" OFF)
 
-# Include sub-projects in dependency order:
-#   NeuronCore  (no dependencies)
-#   NeuronClient (depends on NeuronCore)
-#   StarStrike  (depends on NeuronClient)
-add_subdirectory ("NeuronCore")
-add_subdirectory ("NeuronClient")
-add_subdirectory ("StarStrike")
+# ── Version Info ─────────────────────────────────────────────────────────────
+set(STARSTRIKE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(STARSTRIKE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(STARSTRIKE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+# ── Server Configuration ────────────────────────────────────────────────────
+set(SERVER_TICK_RATE_HZ 60)
+set(SERVER_MAX_PLAYERS 50)
+set(SERVER_PORT 7777)
+
+# ── Voxel System ─────────────────────────────────────────────────────────────
+set(VOXEL_CHUNK_SIZE 32)
+set(SECTOR_GRID_X 4)
+set(SECTOR_GRID_Y 4)
+
+# ── Rendering ────────────────────────────────────────────────────────────────
+set(CLIENT_TARGET_FPS 60)
+set(RENDER_RESOLUTION_WIDTH 640)
+set(RENDER_RESOLUTION_HEIGHT 360)
+
+# ── Feature Flags ────────────────────────────────────────────────────────────
+option(ENABLE_PROFILING "Enable performance profiling" ON)
+option(ENABLE_VALIDATION_LAYERS "Enable DX12 validation layers" ON)
+option(ENABLE_DEBUG_UI "Enable in-game debug UI" OFF)
+
+# ── Generate config.h ───────────────────────────────────────────────────────
+configure_file(
+    shared/config.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/config.h
+    @ONLY
+)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/generated)
+
+# ── Status ───────────────────────────────────────────────────────────────────
+message(STATUS "StarStrike v${PROJECT_VERSION}")
+message(STATUS "  Platform:   ${CMAKE_SYSTEM_NAME}")
+message(STATUS "  Compiler:   ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "  Build Type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "  Server Only: ${BuildServerOnly}")
+
+# ── Subdirectories ───────────────────────────────────────────────────────────
+add_subdirectory(shared)
+
+# Future phases:
+# add_subdirectory(server)
+# if(NOT BuildServerOnly)
+#     add_subdirectory(client)
+# endif()
+# if(BUILD_TESTING)
+#     enable_testing()
+#     add_subdirectory(tests)
+# endif()
