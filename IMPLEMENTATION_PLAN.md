@@ -1,22 +1,26 @@
-# StarStrike.RTS — 12-Week Implementation Plan
+# StarStrike.RTS — 14-Week Implementation Plan
 
 **Document Created:** March 5, 2026  
-**Last Updated:** March 5, 2026  
-**Target Timeline:** 8–12 weeks to MVP  
+**Last Updated:** March 6, 2026  
+**Target Timeline:** 10–14 weeks to MVP  
 **Current Status:** Phase 1 Complete — Phase 2 next  
 **Primary Reference:** StarStrike.md, ARCHITECTURE_RECOMMENDATIONS.md  
+**Validation:** IMPLEMENTATION_VALIDATION.md (March 5, 2026) — all recommendations incorporated  
 
 ---
 
 ## Overview
 
-This plan guides incremental implementation of a persistent voxel-based isometric RTS MMO from architecture to playable MVP. Each of 6 phases leaves the project buildable, linkable, and runnable. The plan prioritizes forward declarations to minimize PCH thrashing, respects the Neuron library architecture (NeuronCore → Neuron → {GameLogic, NeuronClient, NeuronServer}), and integrates WinSock2 for Windows networking from the start.
+This plan guides incremental implementation of a persistent voxel-based isometric RTS MMO from architecture to playable MVP. Each of 6 phases leaves the project buildable, linkable, and runnable. The plan prioritizes forward declarations to minimize PCH thrashing, respects the library architecture (NeuronCore → GameLogic → {NeuronClient, NeuronServer} → {StarStrike, Server}), and integrates WinSock2 for Windows networking from the start.
+
+> **Validation Update (March 6, 2026):** Timeline extended from 12 to 14 weeks based on IMPLEMENTATION_VALIDATION.md review. Key additions: per-phase unit/integration test requirements, formalized network protocol with error handling, quantitative performance tracking from Phase 2, concrete risk mitigation checklists, finalized database schema with locking/indices, shader compilation CMake integration, and Audio/UI placeholder phase (6.5). See each phase for specific additions marked with 🆕.
 
 **Success Criteria:**
 - Phase 1–3: Systems build and run independently (no gameplay yet)
 - Phase 4: 50 concurrent players, ships moving, 60 Hz tick maintained
 - Phase 5: Combat, mining, voxel destruction replicated to all clients
 - Phase 6: Full persistence, graceful shutdown, observability
+- Phase 6.5: Audio & UI placeholder (post-MVP polish)
 - Final: MVP ships with <$50/month server hosting cost, 60 FPS+ client
 
 ---
@@ -44,7 +48,8 @@ This plan guides incremental implementation of a persistent voxel-based isometri
 - **C++23** (MSVC v145 toolset minimum)
 - **CMake 3.24+** for modern features, precompiled headers, vcpkg
 - **WinSock2** on Windows, POSIX sockets on Linux (Neuron platform layer abstracts)
-- **Library Layering:** NeuronCore (deps: none) → Neuron (platform) → {GameLogic, engines}
+- **Library Layering:** `lib/NeuronCore` (deps: none) → `lib/GameLogic` + `lib/NeuronServer` + `lib/NeuronClient` → `Server/` (exe) + `StarStrike/` (exe)
+- **Directory Convention:** No `/src` or `/include` subdirectories — `.cpp` and `.h` files live together in each project folder
 
 ---
 
@@ -54,26 +59,30 @@ This plan guides incremental implementation of a persistent voxel-based isometri
 
 | File / Path | Project | Purpose | Dependencies |
 |---|---|---|---|
-| **shared/include/types.h** | NeuronCore | EntityID, ChunkID, Vec3, Quat typedefs | none |
-| **shared/include/constants.h** | NeuronCore | Chunk sizes, tick rate, sector grid | none |
-| **server/src/transport/socket.cpp/.h** | Neuron | UDP socket manager, WinSock2 wrapper | winsock2.lib on Windows |
-| **server/src/simulation/engine.cpp/.h** | NeuronServer | 60 Hz tick loop, 6 phases | Neuron, GameLogic |
-| **server/src/world/entity_system.cpp/.h** | GameLogic | ECS-lite, array-of-structs | NeuronCore |
-| **server/src/world/voxel_system.cpp/.h** | GameLogic | Chunk storage, RLE serialization | NeuronCore, PostgreSQL |
-| **server/src/persistence/database.cpp/.h** | NeuronServer | PostgreSQL connection pool | libpq |
-| **client/src/rendering/dx12_device.cpp/.h** | NeuronClient | DX12 device, command queues | dxgi, d3d12, directxmath |
-| **client/src/rendering/voxel_renderer.cpp/.h** | NeuronClient | Greedy meshing, VB/IB upload | NeuronCore |
-| **client/src/network/snapshot_decoder.cpp/.h** | NeuronClient | Deserialize snapshots | shared packet types |
-| **client/shaders/*.hlsl** | NeuronClient | Voxel, entity, post-process shaders | DirectXMath |
+| **lib/NeuronCore/Types.h** | NeuronCore | EntityID, ChunkID, Vec3, Quat typedefs | none |
+| **lib/NeuronCore/Constants.h** | NeuronCore | Chunk sizes, tick rate, sector grid | none |
+| **lib/NeuronCore/Socket.cpp/.h** | NeuronCore | UDP socket manager, WinSock2 wrapper | winsock2.lib on Windows |
+| **lib/NeuronServer/SimulationEngine.cpp/.h** | NeuronServer | 60 Hz tick loop, 6 phases | NeuronCore, GameLogic |
+| **lib/GameLogic/EntitySystem.cpp/.h** | GameLogic | ECS-lite, array-of-structs | NeuronCore |
+| **lib/GameLogic/VoxelSystem.cpp/.h** | GameLogic | Chunk storage, RLE serialization | NeuronCore, PostgreSQL |
+| **lib/NeuronServer/Database.cpp/.h** | NeuronServer | PostgreSQL connection pool | libpq |
+| **lib/NeuronClient/DX12Device.cpp/.h** | NeuronClient | DX12 device, command queues | dxgi, d3d12, directxmath |
+| **lib/NeuronClient/VoxelRenderer.cpp/.h** | NeuronClient | Greedy meshing, VB/IB upload | NeuronCore |
+| **lib/NeuronClient/SnapshotDecoder.cpp/.h** | NeuronClient | Deserialize snapshots | NeuronCore packet types |
+| **StarStrike/shaders/*.hlsl** | StarStrike | Voxel, entity, post-process shaders | DirectXMath |
 
 ### Modified Files
 
 | File | Changes | Impact |
 |---|---|---|
-| CMakeLists.txt (root) | Add subdirectories; vcpkg + precompiled headers | Build system setup |
+| CMakeLists.txt (root) | Add `lib/`, `Server/`, `StarStrike/`, `tests/` subdirectories; vcpkg + PCH | Build system setup |
 | vcpkg.json | Add PostgreSQL, libjpeg-turbo, zstd, spdlog | Dependency management |
-| server/CMakeLists.txt | Link ws2_32.lib on Windows; PCH headers | Server network I/O |
-| client/CMakeLists.txt | PCH includes windows.h, winsock2.h, d3d12.h | Client build optimization |
+| lib/NeuronCore/CMakeLists.txt | Core types, platform stubs, PCH propagation, ws2_32 on Windows | Foundation library |
+| lib/GameLogic/CMakeLists.txt | Entity, voxel, sector, combat, mining systems | Game logic static lib |
+| lib/NeuronServer/CMakeLists.txt | Simulation engine, persistence, networking, observability | Server static lib |
+| lib/NeuronClient/CMakeLists.txt | DX12 rendering, input, client networking; PCH includes d3d12.h | Client static lib |
+| Server/CMakeLists.txt | Server executable; links NeuronServer, GameLogic, NeuronCore | Server exe |
+| StarStrike/CMakeLists.txt | Client executable; links NeuronClient, GameLogic, NeuronCore; shader compilation | Client exe |
 
 ---
 
@@ -86,7 +95,7 @@ This plan guides incremental implementation of a persistent voxel-based isometri
 **Goal:** Establish NeuronCore library with types and constants; verify cmake + vcpkg + PCH.
 
 #### Step 1.1: Initialize CMake & vcpkg ✅
-- **File:** Root `CMakeLists.txt`, `CMakePresets.json`, `vcpkg.json`, `shared/config.h.in`
+- **File:** Root `CMakeLists.txt`, `CMakePresets.json`, `vcpkg.json`, `lib/NeuronCore/config.h.in`
 - **Action:** Set up CMake 3.24+ with presets for x64-debug/release/linux-server; configure vcpkg manifest mode with dependencies (libpq, yaml-cpp, spdlog, zstd, nlohmann-json). Created `config.h.in` template for compile-time constants generated by CMake.
 - **Actual:** CMake 4.1.2 (bundled with VS 18) + Ninja. Config generates `config.h` with version, server config, voxel system, rendering, feature flags, and platform detection.
 - **Why:** Enables deterministic, reproducible builds across platforms
@@ -95,7 +104,7 @@ This plan guides incremental implementation of a persistent voxel-based isometri
 - **Risk:** Low (standard CMake patterns)
 
 #### Step 1.2: Create NeuronCore Library (Header-Only Base Types) ✅
-- **File:** `shared/include/NeuronCore/Types.h`, `shared/include/NeuronCore/Constants.h`
+- **File:** `lib/NeuronCore/Types.h`, `lib/NeuronCore/Constants.h`
 - **Action:** Defined `EntityID` (u32), `PlayerID` (u16), `ChunkID` (u64) with `INVALID_*` sentinels and `makeChunkID()` encoder. Math primitives: `Vec2`, `Vec3` (with operator+/-/*/+=), `Vec3i` (with `==`), `Quat`, `AABB` (with `contains()`/`overlaps()`). Enums: `EntityType`, `VoxelType` (empty + 8 terrain/special types), `ActionType`, `ShipType`, `PacketType` (client→server + server→client). Constants: tick rate (60 Hz), chunk/sector geometry, network limits (magic, MTU, rate limits), persistence intervals, physics AABB sizes, rendering budgets.
 - **Why:** Establishes shared vocabulary for both server and client; no dependencies
 - **Dependencies:** C++ standard library only
@@ -103,15 +112,15 @@ This plan guides incremental implementation of a persistent voxel-based isometri
 - **Risk:** Low
 
 #### Step 1.3: Set Up NeuronCore CMakeLists.txt ✅
-- **File:** `shared/CMakeLists.txt`, `shared/pch.h`
-- **Action:** Created `NeuronCore` as INTERFACE library with public include directories and PCH propagation (17 STL headers). Created `Neuron` as INTERFACE library linking NeuronCore with ws2_32 on Windows. Added `shared/pch.h` precompiled header consuming all STL + NeuronCore headers.
+- **File:** `lib/NeuronCore/CMakeLists.txt`, `lib/NeuronCore/pch.h`
+- **Action:** Created `NeuronCore` as INTERFACE library with public include directories (`lib/` as include root) and PCH propagation (17 STL headers). Platform-specific link: ws2_32 on Windows. Added `lib/NeuronCore/pch.h` precompiled header consuming all STL + NeuronCore headers.
 - **Why:** Centralizes PCH generation; 60–70% rebuild speedup on subsequent changes
 - **Dependencies:** None (headers only)
 - **Build Impact:** Medium (triggers once at project setup)
 - **Risk:** Low (standard CMake practice)
 
 #### Step 1.4: Stub Out Neuron Platform Library Structure ✅
-- **File:** `shared/include/Neuron/Socket.h`, `FileSystem.h`, `Threading.h`, `Timer.h`
+- **File:** `lib/NeuronCore/Socket.h`, `FileSystem.h`, `Threading.h`, `Timer.h`
 - **Action:** Created full API-designed header stubs (declarations only, no .cpp):
   - **Socket.h:** `UDPSocket` class — `bind()`, `sendTo()`, `recvFrom()` (returns `optional<Datagram>`), cross-platform (`SOCKET` on Windows, `int` fd on POSIX), move-only.
   - **FileSystem.h:** `FileSystem` class — `setHomeDirectory()`, `readBinaryFile()`, `readTextFile()`, `writeBinaryFile()`, `exists()` using `std::filesystem`.
@@ -123,7 +132,7 @@ This plan guides incremental implementation of a persistent voxel-based isometri
 - **Risk:** Low
 
 #### Step 1.5: Verify Build & CMake Presets ✅
-- **File:** `shared/tests/VerifyPhase1.cpp`
+- **File:** `tests/VerifyPhase1.cpp`
 - **Action:** Created verification executable with 15+ `static_assert` checks covering: constant values (tick rate, chunk size, sector count, player count), ChunkID encoding, enum sizes, Vec3 arithmetic, AABB containment/overlap, and a runtime Timer smoke test. Built and ran successfully.
 - **Build Result:** MSVC 19.50.35725.0, Ninja, 3/3 targets compiled with zero errors, zero warnings. `VerifyPhase1.exe` exits with code 0. Generated `config.h` verified correct.
 - **Why:** Catch CMake configuration issues early before many files depend on it
@@ -133,30 +142,32 @@ This plan guides incremental implementation of a persistent voxel-based isometri
 
 **Deliverables:**
 - ✅ CMake 3.24+ configured with vcpkg — `CMakeLists.txt`, `CMakePresets.json`, `vcpkg.json`
-- ✅ NeuronCore (types, constants) builds — `shared/include/NeuronCore/Types.h`, `Constants.h`
-- ✅ Neuron platform stubs in place — `shared/include/Neuron/Socket.h`, `FileSystem.h`, `Threading.h`, `Timer.h`
-- ✅ PCH strategy implemented — `shared/pch.h` with 17 STL headers + NeuronCore, propagated via CMake INTERFACE
-- ✅ Config header generation — `shared/config.h.in` → `generated/config.h`
-- ✅ Verification test — `shared/tests/VerifyPhase1.cpp` passes (15+ static_asserts + runtime)
+- ✅ NeuronCore (types, constants) builds — `lib/NeuronCore/Types.h`, `Constants.h`
+- ✅ NeuronCore platform stubs in place — `lib/NeuronCore/Socket.h`, `FileSystem.h`, `Threading.h`, `Timer.h`
+- ✅ PCH strategy implemented — `lib/NeuronCore/pch.h` with 17 STL headers + NeuronCore, propagated via CMake INTERFACE
+- ✅ Config header generation — `lib/NeuronCore/config.h.in` → `generated/config.h`
+- ✅ Verification test — `tests/VerifyPhase1.cpp` passes (15+ static_asserts + runtime)
 
 **Success Criteria:** ✅ MET
 ```bash
 cmake -S . -B out/build/x64-debug -G Ninja   # Configures with 0 errors
 cmake --build out/build/x64-debug              # 3/3 targets, 0 errors
-./out/build/x64-debug/shared/VerifyPhase1.exe  # Exit code 0
+./out/build/x64-debug/tests/VerifyPhase1.exe  # Exit code 0
 ```
 
 ---
 
-### Phase 2: Server Network & Database Foundation (Weeks 1.5–3, ~18 files)
+### Phase 2: Server Network & Database Foundation (Weeks 2–3.5, ~18 files)
 
-**Goal:** UDP socket listening, PostgreSQL connection pool, packet codec. Server runs (empty tick loop).
+**Goal:** UDP socket listening, PostgreSQL connection pool, packet codec with error handling. Server runs (empty tick loop) with tick-time measurement.
+
+> 🆕 **Validation additions:** Formalized packet format with magic/CRC/sequence fields, packet loss/reorder handling, mock UDPSocket for offline testing, per-phase unit tests, tick-time histogram from day 1.
 
 #### Step 2.1: Implement Neuron::UDPSocket (WinSock2 + POSIX)
-- **File:** shared/src/network/socket.cpp/h
+- **File:** lib/NeuronCore/Socket.cpp/h
 - **Action:** Implement cross-platform UDPSocket wrapper:
   ```cpp
-  // shared/include/network/socket.h
+  // lib/NeuronCore/Socket.h
   namespace Neuron {
     class UDPSocket {
       bool Bind(const std::string& addr, uint16_t port);
@@ -179,10 +190,10 @@ cmake --build out/build/x64-debug              # 3/3 targets, 0 errors
 - **Risk:** Medium (OS-specific; test on both Windows and Linux)
 
 #### Step 2.2: PostgreSQL Database Connection Pool
-- **File:** server/src/persistence/database.cpp/h
+- **File:** lib/NeuronServer/Database.cpp/h
 - **Action:** Implement connection pool wrapper around libpq. Methods: Connect(), Execute(), Query(), Disconnect().
   ```cpp
-  // server/persistence/database.h
+  // lib/NeuronServer/Database.h
   class Database {
     bool Connect(const std::string& connstring, int pool_size);
     std::vector<std::vector<std::string>> Query(const std::string& sql);
@@ -192,16 +203,21 @@ cmake --build out/build/x64-debug              # 3/3 targets, 0 errors
   ```
   - Use RAII: connections released on ~PgConnection()
   - Pool: pre-allocate N connections, reuse via lock-free queue or mutex
+  - 🆕 **Connection pool config (per validation):**
+    - Pool size = 4 × num_worker_threads (configurable via YAML, not hardcoded)
+    - Idle timeout = 30 sec (close idle connections to free DB slots)
+    - Max query time = 1 sec with fallback (return stale data if DB slow)
+    - Log slow queries (> 100 ms) via spdlog
 - **Why:** Essential for persistence; connection pooling avoids latency spikes
 - **Dependencies:** libpq-fe.h (from vcpkg)
 - **Build Impact:** Low (new translation unit, links PostgreSQL lib)
 - **Risk:** Medium (database errors can cascade; add error logging)
 
 #### Step 2.3: Packet Codec (Serialization/Deserialization)
-- **File:** shared/src/serialization/packet_codec.cpp/h
-- **Action:** Binary serialization utilities. Define packet types (CMD_INPUT, SNAP_STATE, etc.):
+- **File:** lib/NeuronCore/PacketCodec.cpp/h
+- **Action:** Binary serialization utilities with formalized packet framing. Define packet types (CMD_INPUT, SNAP_STATE, etc.):
   ```cpp
-  // shared/packet_types.h
+  // lib/NeuronCore/PacketTypes.h
   struct CmdInput {
     uint32_t cmd_type = CMD_INPUT;
     uint32_t player_id;
@@ -210,21 +226,44 @@ cmake --build out/build/x64-debug              # 3/3 targets, 0 errors
     uint16_t target_entity_id;
   };
   
-  // shared/serialization/packet_codec.h
+  // lib/NeuronCore/PacketCodec.h
   bool Serialize(const CmdInput& cmd, std::vector<uint8_t>& bytes);
   bool Deserialize(const std::vector<uint8_t>& bytes, CmdInput& cmd);
   ```
-  - Little-endian byte order; include magic number + CRC for validation
-- **Why:** Unifies encoding/decoding logic; prevents bugs
+  - Little-endian byte order
+  - 🆕 **Formalized packet structure (per validation):**
+    ```
+    [Magic: u32 = 0xDEADBEEF]     // Reject non-StarStrike traffic
+    [Type: u8] [Flags: u8] [Reserved: u16]
+    [Sequence: u32]                // For dedup / reordering
+    [Payload Size: u16]
+    [CRC32: u32]                   // Over payload bytes
+    [Payload: variable]
+    ```
+  - 🆕 **Error handling rules:**
+    - Magic mismatch → drop silently (spam prevention)
+    - CRC mismatch → drop, log once per IP:port per minute
+    - Out-of-order → buffer in reorder window (up to 1 sec / 60 ticks); timeout old packets
+    - Duplicate → compare sequence number; drop if seen in last 60 ticks
+    - Oversized packet (> MTU) → drop, log warning
+  - 🆕 **Unit tests (required before phase exit):**
+    ```cpp
+    TEST(PacketCodec, RoundTrip) { /* serialize → deserialize all packet types */ }
+    TEST(PacketCodec, CRCDetectsCorruption) { /* corrupt 1 byte, verify CRC fails */ }
+    TEST(PacketCodec, MagicMismatch) { /* wrong magic → reject */ }
+    TEST(PacketCodec, OversizedPayload) { /* payload > MTU → reject */ }
+    TEST(PacketCodec, DuplicateSequence) { /* same seq # → deduplicated */ }
+    ```
+- **Why:** Unifies encoding/decoding logic; prevents bugs; protects against malformed/malicious packets
 - **Dependencies:** NeuronCore (types)
 - **Build Impact:** Very low (header-heavy)
-- **Risk:** Low (stateless utilities)
+- **Risk:** Low → Medium (error handling adds complexity; mitigated by unit tests)
 
 #### Step 2.4: Server Main & Config Parsing
-- **File:** server/src/main.cpp, config.cpp/h
+- **File:** Server/main.cpp, Config.cpp/h
 - **Action:** Entry point: parse YAML config, initialize spdlog for logging, spin up server. Config loads tick_rate, max_players, db_url, port.
   ```cpp
-  // server/src/main.cpp
+  // Server/main.cpp
   int main(int argc, char* argv[]) {
     auto config = LoadConfig("server.yaml");
     InitLogging(config.log_level);
@@ -245,10 +284,10 @@ cmake --build out/build/x64-debug              # 3/3 targets, 0 errors
 - **Risk:** Low (straightforward initialization)
 
 #### Step 2.5: Skeletal Server Tick Loop
-- **File:** server/src/simulation/engine.cpp/h
+- **File:** lib/NeuronServer/SimulationEngine.cpp/h
 - **Action:** Implement 60 Hz tick loop (6 phases) as stubs. Currently does nothing except advance tick counter and measure time.
   ```cpp
-  // server/simulation/engine.h
+  // lib/NeuronServer/SimulationEngine.h
   class SimulationEngine {
     void Tick(uint64_t tick_num);  // Called every 16.67 ms
   private:
@@ -266,14 +305,14 @@ cmake --build out/build/x64-debug              # 3/3 targets, 0 errors
 - **Risk:** Very low
 
 #### Step 2.6: Server Network Transport (Socket Recv Loop)
-- **File:** server/src/transport/socket_manager.cpp/h, updated server main loop
+- **File:** lib/NeuronServer/SocketManager.cpp/h, updated server main loop
 - **Action:** Create SocketManager that:
   - Binds Neuron::UDPSocket to 0.0.0.0:7777
   - Receives up to 100 datagrams per tick (non-blocking)
   - Validates & deserializes packets using packet codec
   - Enqueues validated commands
   ```cpp
-  // server/transport/socket_manager.h
+  // lib/NeuronServer/SocketManager.h
   class SocketManager {
     bool Init(uint16_t port);
     void RecvPackets(std::vector<ReceivedPacket>& outPackets);  // Called once per tick
@@ -296,38 +335,88 @@ cmake --build out/build/x64-debug              # 3/3 targets, 0 errors
   - Tick loop runs at 60 Hz (logs tick count every 1 sec)
   - TCP/UDP port 7777 listens (use netstat)
   - Database connection succeeds (SELECT 1)
-- **Why:** Catch linkage & runtime issues early
+  - 🆕 **Tick-time histogram prints every 60 ticks** (min, p50, p95, p99, max)
+- **Why:** Catch linkage & runtime issues early; establish performance baseline
 - **Dependencies:** Steps 2.1–2.6
 - **Build Impact:** Zero (verification)
 - **Risk:** Low
 
+#### 🆕 Step 2.8: Performance Measurement Infrastructure
+- **File:** lib/NeuronServer/TickProfiler.cpp/h
+- **Action:** Add tick-time recording from day 1 (per validation recommendation):
+  ```cpp
+  class TickProfiler {
+    void BeginTick();
+    void EndTick();
+    void PrintHistogram();  // Every 60 ticks: min, p50, p95, p99, max
+    bool IsHealthy() const; // p99 < 16.67 ms for last 600 ticks
+  private:
+    std::vector<double> m_tick_times;  // Rolling window of 600 samples (10 sec)
+  };
+  ```
+  - Integrated into SimulationEngine::Tick() wrapper
+  - Log warning if p99 > 16.67 ms for > 10 consecutive ticks
+  - Used as CI gate in later phases: fail build if p99 consistently over budget
+- **Why:** Enables continuous performance monitoring; catches regressions early instead of Phase 6
+- **Dependencies:** SimulationEngine (Step 2.5)
+- **Build Impact:** Very low (timing instrumentation)
+- **Risk:** Very low
+
+#### 🆕 Step 2.9: Mock UDPSocket for Offline Testing
+- **File:** tests/MockSocket.h
+- **Action:** Create test double for `Neuron::UDPSocket` so server can run offline without network:
+  ```cpp
+  class MockUDPSocket : public ISocket {
+    void EnqueueFakePacket(const std::vector<uint8_t>& data);
+    std::optional<Datagram> recvFrom() override; // Returns enqueued packets
+    bool sendTo(...) override; // Captures sent data for assertions
+  };
+  ```
+  - Enables unit testing of socket manager, packet codec, and tick loop without real network
+  - Use in CI environments where UDP ports may be restricted
+- **Why:** Test doubles prevent flaky network-dependent tests; enables CI pipeline
+- **Dependencies:** Neuron::UDPSocket interface (Step 2.1)
+- **Build Impact:** Very low (test-only code)
+- **Risk:** Very low
+
 **Deliverables:**
 - ✅ Server binary compiles (empty tick loop)
 - ✅ UDP socket listens on 7777 with WinSock2
-- ✅ PostgreSQL connection pool initialized
-- ✅ Packet codec (de)serializes commands
+- ✅ PostgreSQL connection pool initialized (configurable pool size)
+- ✅ Packet codec (de)serializes commands with CRC/magic/sequence validation
 - ✅ Server logs to stdout + file (spdlog)
 - ✅ Config YAML loads correctly
+- 🆕 ✅ Tick-time histogram prints every 60 ticks
+- 🆕 ✅ Mock UDPSocket enables offline testing
+- 🆕 ✅ Packet codec unit tests pass (round-trip, CRC, dedup)
 
 **Success Criteria:**
 ```bash
-cd server && ./NeuronServer --config ../config/server.yaml
+./Server --config config/server.yaml
 # Output: "Server initialized. Listening on 0.0.0.0:7777"
 # Tick count increments every 1 sec: "Tick 60, 120, 180, ..."
 # netstat -an | grep 7777  shows LISTENING
+# 🆕 Tick histogram: "Tick p50=0.02ms p95=0.05ms p99=0.08ms max=0.12ms"
 ```
+
+**🆕 Phase 2 CI Gate:**
+- Unit tests pass: packet codec round-trip, CRC detection, mock socket recv/send
+- Build succeeds on Windows x64 (Debug + Release)
+- Server starts and ticks for 10 sec without crash
 
 ---
 
-### Phase 3: Entity System & Voxel Storage (Weeks 3–4, ~16 files)
+### Phase 3: Entity System & Voxel Storage (Weeks 3.5–5, ~16 files)
 
 **Goal:** ECS-lite entity management, voxel chunk serialization, database schema loaded. Server spawns test entities.
 
+> 🆕 **Validation additions:** Finalized DB schema with chunk locking, indices on foreign keys, transaction isolation semantics, partitioning strategy. Unit tests for EntityID free pool and RLE codec. Mock PostgreSQL for CI.
+
 #### Step 3.1: ECS-Lite Entity System (Array-of-Structs)
-- **File:** server/src/world/entity_system.cpp/h
+- **File:** lib/GameLogic/EntitySystem.cpp/h
 - **Action:** Implement entity management:
   ```cpp
-  // server/world/entity_system.h
+  // lib/GameLogic/EntitySystem.h
   struct Entity {
     EntityID id;
     Vec3 pos, vel, accel; Quat rot;
@@ -351,16 +440,28 @@ cd server && ./NeuronServer --config ../config/server.yaml
   ```
   - Emphasis: Contiguous arrays for cache coherency; one iteration per phase
   - No pointers between entities (use IDs + lookup map)
+  - 🆕 **Unit tests (required before phase exit):**
+    ```cpp
+    TEST(EntitySystem, FreePoolCorrectness) {
+      // Spawn 100K entities, destroy random subset, spawn again
+      // Verify: no ID collision, all IDs valid, free pool drained correctly
+    }
+    TEST(EntitySystem, SpawnDestroyCycle) {
+      // Spawn, verify GetEntity() returns valid ptr
+      // Destroy, verify GetEntity() returns nullptr
+      // Re-spawn, verify ID reused from free pool
+    }
+    ```
 - **Why:** High-performance entity iteration (critical for 60 Hz @ 50 players)
 - **Dependencies:** NeuronCore (EntityID, Vec3, Quat)
 - **Build Impact:** Low (new translation unit)
 - **Risk:** Low (straightforward dynamic array management)
 
 #### Step 3.2: Voxel Chunk Structure & Serialization
-- **File:** server/src/world/voxel_system.cpp/h
+- **File:** lib/GameLogic/VoxelSystem.cpp/h
 - **Action:** Implement chunk storage and RLE serialization:
   ```cpp
-  // server/world/voxel_system.h
+  // lib/GameLogic/VoxelSystem.h
   struct VoxelChunk {
     Vec3i min;                       // Min corner in world coords
     uint8_t voxels[32][32][32];     // 32 KB per chunk
@@ -386,6 +487,21 @@ cd server && ./NeuronServer --config ../config/server.yaml
   ```
   - Serialization achieves ~4–6 KB per chunk (rocky terrain ≈ 75% empty)
   - Paired with zstd compression for additional 20% reduction if needed
+  - 🆕 **Unit tests (required before phase exit):**
+    ```cpp
+    TEST(RLECodec, RoundTripSparse) {
+      // 1 voxel in otherwise empty 32³ chunk → serialize → deserialize → byte-by-byte compare
+    }
+    TEST(RLECodec, RoundTripDense) {
+      // All voxels filled (worst case) → serialize → deserialize → compare
+    }
+    TEST(RLECodec, RoundTripHollowSphere) {
+      // Boundary case: shell of solid voxels around empty interior
+    }
+    TEST(RLECodec, EmptyChunk) {
+      // All EMPTY → minimal output (1 run)
+    }
+    ```
 - **Why:** Efficient storage; enables fast chunk swapping on server/client
 - **Dependencies:** NeuronCore (Vec3i, types)
 - **Build Impact:** Low (new translation unit)
@@ -400,22 +516,64 @@ cd server && ./NeuronServer --config ../config/server.yaml
     sector_id VARCHAR(10),
     voxel_data BYTEA,
     version INT DEFAULT 1,
-    modified_at TIMESTAMP DEFAULT NOW()
+    modified_at TIMESTAMP DEFAULT NOW(),
+    locked_by_player_id INT DEFAULT NULL,
+    lock_expiry_tick BIGINT DEFAULT NULL
   );
   CREATE INDEX idx_chunks_sector ON voxel_chunks(sector_id);
   
-  -- ... (see StarStrike.md Persistence section for full schema)
+  CREATE TABLE voxel_events (
+    id BIGSERIAL PRIMARY KEY,
+    chunk_id BYTEA NOT NULL,
+    world_x INT, world_y INT, world_z INT,
+    old_type SMALLINT, new_type SMALLINT,
+    player_id INT,
+    tick_number BIGINT,
+    created_at TIMESTAMP DEFAULT NOW()
+  );
+  CREATE INDEX idx_voxel_events_chunk_tick ON voxel_events(chunk_id, tick_number);
+  
+  CREATE TABLE players (
+    player_id SERIAL PRIMARY KEY,
+    username VARCHAR(64) UNIQUE NOT NULL,
+    password_hash VARCHAR(128) NOT NULL,
+    last_login TIMESTAMP
+  );
+  
+  CREATE TABLE ships (
+    ship_id SERIAL PRIMARY KEY,
+    owner_id INT NOT NULL REFERENCES players(player_id),
+    pos_x REAL, pos_y REAL, pos_z REAL,
+    hp INT, max_hp INT,
+    cargo_json JSONB,
+    last_saved_tick BIGINT
+  );
+  CREATE INDEX idx_ships_owner ON ships(owner_id);
   ```
-- **Why:** Defines data model; allows server to persist world state
+  - 🆕 **Partitioning strategy (per validation):** Consider `PARTITION BY LIST (sector_id)` on voxel_chunks for 4 partitions (one per sector row) if table exceeds 100K rows
+  - 🆕 **Transaction semantics for concurrent chunk edits:**
+    ```sql
+    -- Atomically update chunk + append event (prevents lost updates)
+    BEGIN;
+      UPDATE voxel_chunks SET voxel_data = $1, version = version + 1,
+             locked_by_player_id = NULL
+       WHERE chunk_id = $2 AND locked_by_player_id = $3;
+      INSERT INTO voxel_events (chunk_id, world_x, world_y, world_z,
+             old_type, new_type, player_id, tick_number)
+       VALUES ($2, $4, $5, $6, $7, $8, $9, $10);
+    COMMIT;
+    ```
+  - 🆕 **Isolation level:** Use `READ COMMITTED` (default) for most queries; `SERIALIZABLE` only for chunk version-check updates to prevent lost writes from concurrent miners
+- **Why:** Defines data model; allows server to persist world state; prevents concurrent write issues
 - **Dependencies:** PostgreSQL 14+
 - **Build Impact:** Zero (data only, run psql < schema.sql)
-- **Risk:** Low (standard SQL)
+- **Risk:** Low → Medium (concurrent writes; mitigated by locking fields + versioned updates)
 
 #### Step 3.4: Chunk Persistence Layer (Load/Save to DB)
-- **File:** server/src/persistence/chunk_store.cpp/h
+- **File:** lib/NeuronServer/ChunkStore.cpp/h
 - **Action:** Wrap Database class; implement:
   ```cpp
-  // server/persistence/chunk_store.h
+  // lib/NeuronServer/ChunkStore.h
   class ChunkStore {
     VoxelChunk LoadChunk(ChunkID id);
     void SaveChunk(const VoxelChunk& chunk);
@@ -436,10 +594,10 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Medium (transaction isolation; test concurrent writes)
 
 #### Step 3.5: Sector Manager
-- **File:** server/src/world/sector.cpp/h
+- **File:** lib/GameLogic/Sector.cpp/h
 - **Action:** Manage 4×4 grid of sectors; each sector owns ~4,096 chunks.
   ```cpp
-  // server/world/sector.h
+  // lib/GameLogic/Sector.h
   class Sector {
     Vec3i GetBounds() const;  // Min/max corners
     ChunkID WorldPosToChunkID(const Vec3i& world_pos) const;
@@ -459,7 +617,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Low
 
 #### Step 3.6: World Manager (Top-Level Orchestrator)
-- **File:** server/src/world/world_manager.cpp/h
+- **File:** lib/GameLogic/WorldManager.cpp/h
 - **Action:** Central point for entity, voxel, chunk management:
   ```cpp
   class WorldManager {
@@ -483,7 +641,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Very low
 
 #### Step 3.7: Test Entity & Chunk Initialization
-- **File:** server/src/main.cpp (updated)
+- **File:** Server/main.cpp (updated)
 - **Action:** In server main loop, after WorldManager::Init():
   - Load all voxel_chunks from DB into memory
   - Spawn 1 test asteroid per sector (EntityType::ASTEROID)
@@ -497,15 +655,25 @@ cd server && ./NeuronServer --config ../config/server.yaml
 **Deliverables:**
 - ✅ EntitySystem (ECS-lite array-of-structs) implemented
 - ✅ VoxelSystem with RLE serialization
-- ✅ PostgreSQL schema created (voxel_chunks, voxel_events, etc.)
+- ✅ PostgreSQL schema created (voxel_chunks, voxel_events, players, ships — with indices & locking)
 - ✅ ChunkStore persistence layer
 - ✅ SectorManager for world partitioning
 - ✅ WorldManager orchestrator
 - ✅ Server loads & spawns test entities
 
+**🆕 Phase 3 Unit Tests (required before phase exit):**
+- ✅ EntitySystem free pool correctness (spawn 100K, destroy random, verify no ID collision)
+- ✅ RLE codec round-trip (sparse, dense, hollow sphere, empty — byte-by-byte compare)
+- ✅ ChunkStore CRUD with versioned updates (load, save, flush, verify version increments)
+
+**🆕 Phase 3 CI Gate:**
+- Unit tests pass: EntitySystem + RLE codec + ChunkStore (mock DB or test PostgreSQL)
+- Build succeeds on Windows x64 (Debug + Release)
+- Server loads 256 chunks from DB without error
+
 **Success Criteria:**
 ```bash
-./NeuronServer
+./Server
 # Logs:
 # "Loaded 16 chunks from database"
 # "Spawned test asteroid at (256, 256, 128)"
@@ -515,15 +683,17 @@ cd server && ./NeuronServer --config ../config/server.yaml
 
 ---
 
-### Phase 4: Client Foundation & Input (Weeks 4–6, ~20 files)
+### Phase 4: Client Foundation & Input (Weeks 5–7, ~20 files)
 
 **Goal:** Client connects to server, receives and displays entities. Input processing skeleton. Still no voxel rendering yet.
 
+> 🆕 **Validation additions:** WARP fallback automation for CI, client↔server integration test (packet round-trip), 50-player load test setup.
+
 #### Step 4.1: DirectX 12 Device Initialization
-- **File:** client/src/rendering/dx12_device.cpp/h
+- **File:** lib/NeuronClient/DX12Device.cpp/h
 - **Action:** Implement DX12 device, command queue, swap chain:
   ```cpp
-  // client/rendering/dx12_device.h
+  // lib/NeuronClient/DX12Device.h
   class DX12Device {
     bool Initialize(HWND hwnd, uint32_t width, uint32_t height);
     void BeginFrame();
@@ -544,16 +714,24 @@ cd server && ./NeuronServer --config ../config/server.yaml
   - Debug layer enabled in Debug builds
   - Fence synchronization for present
   - Force WARP (software) fallback for CI if no GPU
+  - 🆕 **WARP fallback automation (per validation):**
+    - On device creation failure (`E_NOINTERFACE` or `DXGI_ERROR_NOT_FOUND`): automatically retry with `D3D_DRIVER_TYPE_WARP`
+    - Log: "No GPU detected, falling back to WARP software rasterizer" (warning level)
+    - CI environment (GitHub Actions Windows runner): always use WARP (~5–10× slower but pixel-perfect)
+    - Define `FORCE_WARP` CMake option for explicit software rendering in test builds
+  - 🆕 **Contingency steps:**
+    - If swap chain creation fails: log detailed DXGI error code + adapter name; prompt user to update drivers
+    - If feature level 12_1 unavailable: fall back to 12_0 with reduced shader model
 - **Why:** Mandatory for rendering; establishes GPU command pipeline
 - **Dependencies:** d3d12.lib, dxgi.lib, directxmath.lib (Windows SDK)
 - **Build Impact:** Medium (DirectX SDK linking; must handle missing GPU in CI)
 - **Risk:** High (GPU driver issues; mitigate with fallback to WARP)
 
 #### Step 4.2: Client Network Socket & Snapshot Decoder
-- **File:** client/src/network/client_socket.cpp/h, snapshot_decoder.cpp/h
+- **File:** lib/NeuronClient/ClientSocket.cpp/h, SnapshotDecoder.cpp/h
 - **Action:** Client-side UDP socket; deserialize snapshots:
   ```cpp
-  // client/network/client_socket.h
+  // lib/NeuronClient/ClientSocket.h
   class ClientSocket {
     bool Connect(const std::string& server_addr, uint16_t port);
     bool SendCommand(const CmdInput& cmd);
@@ -563,7 +741,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
     std::vector<uint8_t> m_recv_buffer;
   };
   
-  // client/network/snapshot_decoder.h
+  // lib/NeuronClient/SnapshotDecoder.h
   struct SnapshotState {
     uint64_t tick;
     std::vector<EntityDelta> entity_deltas;
@@ -579,10 +757,10 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Medium (packet format mismatches between server/client codecs)
 
 #### Step 4.3: Client Entity Cache (Local AoS Storage)
-- **File:** client/src/world/entity_cache.cpp/h
+- **File:** lib/NeuronClient/EntityCache.cpp/h
 - **Action:** Mirror server entity array on client (for rendering):
   ```cpp
-  // client/world/entity_cache.h
+  // lib/NeuronClient/EntityCache.h
   struct ClientEntity {
     EntityID id;
     Vec3 pos, vel, rotation;
@@ -609,10 +787,10 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Low
 
 #### Step 4.4: Client Input System (Keyboard/Mouse)
-- **File:** client/src/input/input_system.cpp/h
+- **File:** lib/NeuronClient/InputSystem.cpp/h
 - **Action:** Capture Win32 keyboard/mouse events; translate to commands:
   ```cpp
-  // client/input/input_system.h
+  // lib/NeuronClient/InputSystem.h
   class InputSystem {
     void ProcessWindowMessage(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
     std::vector<CmdInput> GetPendingCommands();  // Called once per frame
@@ -621,7 +799,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
     Vec2 m_mouse_pos, m_mouse_delta;
   };
   
-  // client/input/command_translator.h
+  // lib/NeuronClient/CommandTranslator.h
   CmdInput TranslateInputToCommand(const InputState& input);
   // WASD -> move commands; click -> target; R -> attack, M -> mine
   ```
@@ -633,10 +811,10 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Low
 
 #### Step 4.5: Client Camera Controller
-- **File:** client/src/rendering/camera.cpp/h
+- **File:** lib/NeuronClient/Camera.cpp/h
 - **Action:** Isometric camera; pan (WASD/mouse drag) and zoom (mouse wheel):
   ```cpp
-  // client/rendering/camera.h
+  // lib/NeuronClient/Camera.h
   class Camera {
     void Update(const InputState& input, float dt);
     Mat4x4 GetViewMatrix() const;
@@ -659,7 +837,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Low
 
 #### Step 4.6: Client Main Loop & Networking Integration
-- **File:** client/src/main.cpp (updated), client/src/app.cpp/h
+- **File:** StarStrike/main.cpp, StarStrike/GameApp.cpp/h
 - **Action:** Implement game app class:
   ```cpp
   class GameApp {
@@ -677,7 +855,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
     uint64_t m_local_tick = 0;
   };
   
-  // client/src/main.cpp
+  // StarStrike/main.cpp
   int main() {
     GameApp app;
     app.Initialize("127.0.0.1", 7777);
@@ -723,10 +901,20 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - ✅ Camera (pan/zoom) responds to input
 - ✅ Main game loop runs at 60 FPS
 
+**🆕 Phase 4 Integration Tests (required before phase exit):**
+- ✅ Client↔Server packet round-trip: client sends CmdInput, server receives & validates, server sends snapshot, client deserializes
+- ✅ 50-player load test setup: spawn 10 ghost clients (reduced count for CI), verify tick time < 16.67 ms
+- ✅ DX12 device initializes on WARP (CI gate: window opens, swap chain presents solid color)
+
+**🆕 Phase 4 CI Gate:**
+- Integration tests pass: client↔server round-trip, DX12 WARP init
+- Build succeeds on Windows x64 (Debug + Release)
+- Server + 10 ghost clients: p99 tick < 16.67 ms for 60 sec
+
 **Success Criteria:**
 ```bash
-./NeuronServer
-./NeuronClient --server 127.0.0.1:7777
+./Server
+./StarStrike --server 127.0.0.1:7777
 # Window opens (solid color)
 # Log: "Connected to server tick 123"
 # Log: "Snapshot received, 2 entities"
@@ -736,15 +924,17 @@ cd server && ./NeuronServer --config ../config/server.yaml
 
 ---
 
-### Phase 5: Rendering & Gameplay Systems (Weeks 6–9, ~24 files)
+### Phase 5: Rendering & Gameplay Systems (Weeks 7–10, ~24 files)
 
 **Goal:** Voxel rendering (greedy mesh), entity sprites, basic HUD. Combat, mining, voxel destruction working end-to-end.
 
+> 🆕 **Validation additions:** Detailed greedy mesh algorithm with face removal, normal encoding, seam handling, and mesh cache invalidation. Shader compilation CMake integration with offline precompilation fallback. Snapshot builder with periodic full-state resend for packet loss resilience.
+
 #### Step 5.1: Greedy Mesh Generation
-- **File:** client/src/rendering/voxel_renderer.cpp/h (includes mesh generation)
+- **File:** lib/NeuronClient/VoxelRenderer.cpp/h (includes mesh generation)
 - **Action:** Implement greedy meshing algorithm:
   ```cpp
-  // client/rendering/voxel_renderer.h
+  // lib/NeuronClient/VoxelRenderer.h
   struct MeshVertex {
     int16_t x, y, z;       // Local coords
     uint8_t normal_packed; // Normal (octahedron-encoded)
@@ -771,13 +961,49 @@ cd server && ./NeuronServer --config ../config/server.yaml
   - Result: ~40,000 triangles per chunk (vs. 520,000 naive)
   - Octahedron-encode normals to 1 byte (6 directions)
   - Cache mesh hash; regenerate only on chunk dirty flag
+  - 🆕 **Detailed greedy mesh algorithm (per validation):**
+    ```cpp
+    // Pseudocode:
+    for (axis in {X, Y, Z}) {
+      for (layer in layers[axis]) {
+        // Flatten 2D layer: check face exposure
+        is_covered[y][z] = (GetVoxel(layer, y, z) != EMPTY && 
+                            GetVoxel(layer-1, y, z) == EMPTY);  // Face exposed
+        // Greedy rectangles
+        for (y = 0; y < 32; ++y)
+          for (z = 0; z < 32; ++z)
+            if (!rect_allocated[y][z] && is_covered[y][z])
+              // Find max height h and width w of same-type rectangle
+              Quad quad = { {layer, y, z}, {layer, y+h, z+w} };
+              Mark rect_allocated[y..y+h][z..z+w];
+        // Encode quads as 2 triangles, encode normal from axis direction
+      }
+    }
+    ```
+  - 🆕 **Normal encoding:** 6 cardinal directions mapped to 3-bit index (0–5); stored as `uint8_t normal_packed`
+  - 🆕 **Seam handling at chunk boundaries:**
+    - Each chunk mesh is independent; sample 1-voxel border from adjacent chunks when determining face visibility
+    - When adjacent chunk is dirty, mark both chunks for re-mesh
+    - Unit test: render 2×2 adjacent chunks, verify no visible cracks between boundaries
+  - 🆕 **Mesh cache invalidation:**
+    - On chunk dirty flag: defer re-mesh to next frame (Option B)
+    - Queue limit: max 10 async mesh rebuilds per frame (prevents stall if > 5 chunks change simultaneously)
+    - If queue full: defer remaining to subsequent frames
+  - 🆕 **Unit tests (required before phase exit):**
+    ```cpp
+    TEST(GreedyMesh, SparseChunk) { /* 1 voxel → 6 faces → 12 triangles */ }
+    TEST(GreedyMesh, DenseChunk) { /* all solid → only outer faces */ }
+    TEST(GreedyMesh, HollowSphere) { /* boundary case: inner + outer faces */ }
+    TEST(GreedyMesh, ChunkBoundarySeam) { /* 2×2 chunks, verify no cracks */ }
+    TEST(GreedyMesh, Performance) { /* 512 chunks mesh generation, verify < 1ms each */ }
+    ```
 - **Why:** Critical for performance; enables rendering of large voxel worlds
 - **Dependencies:** NeuronCore, voxel data structure
 - **Build Impact:** Medium (complex algorithm, may take time to optimize)
 - **Risk:** High (greedy mesh is finicky; off-by-one errors common; extensive unit test)
 
 #### Step 5.2: VB/IB Creation & GPU Upload
-- **File:** client/src/rendering/mesh_pool.cpp/h
+- **File:** lib/NeuronClient/MeshPool.cpp/h
 - **Action:** Allocate vertex/index buffers on GPU; upload meshes:
   ```cpp
   class MeshPool {
@@ -805,7 +1031,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Medium (GPU memory fragmentation; test with 200+ chunks loaded)
 
 #### Step 5.3: Voxel Shaders (HLSL)
-- **File:** client/shaders/voxel.hlsl (vertex + pixel)
+- **File:** StarStrike/shaders/voxel.hlsl (vertex + pixel)
 - **Action:** Implement voxel rendering shaders:
   ```hlsl
   // Vertex Shader
@@ -881,7 +1107,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Medium (shader compilation errors; test on WARP)
 
 #### Step 5.4: Compile Shaders & Create PSO
-- **File:** client/src/rendering/shader_compiler.cpp/h (calls FXC/DXC)
+- **File:** lib/NeuronClient/ShaderCompiler.cpp/h (calls FXC/DXC)
 - **Action:** Compile HLSL shaders to bytecode; create graphics pipeline state object:
   ```cpp
   class ShaderCompiler {
@@ -909,16 +1135,40 @@ cd server && ./NeuronServer --config ../config/server.yaml
   ```
   - Use FXC.exe (MSVC toolset) or DXC (Shader Model 6.0+)
   - Fallback to pre-compiled bytecode if shader compilation fails in CI
+  - 🆕 **Shader compilation CMake integration (per validation):**
+    ```cmake
+    # StarStrike/CMakeLists.txt
+    function(compile_shader SHADER_FILE ENTRY_POINT SHADER_TYPE OUTPUT_VAR)
+      set(OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/${SHADER_FILE}.${SHADER_TYPE}.cso")
+      add_custom_command(OUTPUT ${OUTPUT_FILE}
+        COMMAND fxc.exe /Fo ${OUTPUT_FILE} /T ${SHADER_TYPE}_6_0
+                /E ${ENTRY_POINT} ${SHADER_FILE}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Compiling shader ${SHADER_FILE}..."
+        VERBATIM
+      )
+      set(${OUTPUT_VAR} ${OUTPUT_FILE} PARENT_SCOPE)
+    endfunction()
+    
+    compile_shader(shaders/voxel.hlsl VS_Main vs voxel_vs_cso)
+    compile_shader(shaders/voxel.hlsl PS_Main ps voxel_ps_cso)
+    target_sources(NeuronClient PRIVATE ${voxel_vs_cso} ${voxel_ps_cso})
+    ```
+  - 🆕 **Offline precompilation fallback:**
+    - `tools/compile_shaders.bat`: invokes FXC → outputs `.h` header with bytecode array constant
+    - Pre-compiled bytecode checked in at `tools/shader_bytecode/`
+    - CMake: if FXC not found, fall back to precompiled `.h` includes
+    - CI: use precompiled bytecode (FXC may not be available on all runners)
 - **Why:** Separates compilation (offline) from runtime (fast pipeline creation)
 - **Dependencies:** DX12Device, HLSL compiler
 - **Build Impact:** Medium (FXC invocation in CMake; fallback to precompiled bytecode)
 - **Risk:** Medium (compiler availability; mitigate via precompiled blobs)
 
 #### Step 5.5: Server-Side Combat & Mining Commands
-- **File:** server/src/simulation/combat_system.cpp/h, mining_system.cpp/h
+- **File:** lib/GameLogic/CombatSystem.cpp/h, MiningSystem.cpp/h
 - **Action:** Implement command processing for attack & mine:
   ```cpp
-  // server/simulation/combat_system.h
+  // lib/GameLogic/CombatSystem.h
   class CombatSystem {
     void ProcessAttackCommand(const CmdInput& cmd, WorldManager& world);
     void ProcessHits(WorldManager& world);  // Physics phase
@@ -947,7 +1197,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
     }
   }
   
-  // server/simulation/mining_system.h
+  // lib/GameLogic/MiningSystem.h
   class MiningSystem {
     void ProcessMiningCommand(const CmdInput& cmd, WorldManager& world);
     void ExtractMiningVoxels(WorldManager& world);  // Phase 5
@@ -964,7 +1214,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Medium (hit detection edge cases; test with high velocities)
 
 #### Step 5.6: Integrate Combat/Mining into Tick Phases
-- **File:** server/src/simulation/engine.cpp (update Phase 4 & 5)
+- **File:** lib/NeuronServer/SimulationEngine.cpp (update Phase 4 & 5)
 - **Action:** Hook CombatSystem & MiningSystem into tick loop:
   ```cpp
   void SimulationEngine::Tick() {
@@ -982,10 +1232,10 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Low
 
 #### Step 5.7: Snapshot Builder & Delta Encoding
-- **File:** server/src/interest_mgmt/snapshot_builder.cpp/h
+- **File:** lib/NeuronServer/SnapshotBuilder.cpp/h
 - **Action:** Encode entity & voxel deltas for efficient network transmission:
   ```cpp
-  // server/interest_mgmt/snapshot_builder.h
+  // lib/NeuronServer/SnapshotBuilder.h
   class SnapshotBuilder {
     SnapshotState BuildSnapshot(uint64_t tick, const WorldManager& world);
     // Returns: entity deltas + voxel deltas (only changed fields)
@@ -1003,13 +1253,30 @@ cd server && ./NeuronServer --config ../config/server.yaml
   - Track entity state last-sent; only encode if changed
   - Quantize floats (position to cm precision, rotation to 16-bit)
   - Voxel deltas: only send chunks within interest radius
+  - 🆕 **Packet loss resilience (per validation):**
+    ```
+    Snapshot sequence: Full(N), Delta+1, Delta+2, ..., Delta+(N-1), Full(2N), ...
+    - Send full entity state every N frames (N = 60 = 1 sec)
+    - Between full snapshots: send delta-only (changed fields)
+    - Client: use most recent full snapshot + all deltas received since
+    - On missed full snapshot: request resend via RESEND_FULL packet type
+    ```
+  - 🆕 **Unit tests:**
+    ```cpp
+    TEST(SnapshotBuilder, DeltaEncodingCorrect) {
+      // Entity pos change → delta has pos bit set, rot/hp bits clear
+    }
+    TEST(SnapshotBuilder, FullStateResend) {
+      // After N ticks, full snapshot includes all entity fields
+    }
+    ```
 - **Why:** Minimizes bandwidth; critical for scale to 50 players
 - **Dependencies:** EntitySystem, VoxelSystem, interest radius calculation
 - **Build Impact:** Low (new subsystem)
 - **Risk:** Low (delta encoding is well-established; unit test with various entity states)
 
 #### Step 5.8: Client Entity Rendering & HUD
-- **File:** client/src/rendering/entity_renderer.cpp/h, client/src/ui/hud.cpp/h
+- **File:** lib/NeuronClient/EntityRenderer.cpp/h, lib/NeuronClient/HUD.cpp/h
 - **Action:** Render ships & asteroids; display HUD elements:
   ```cpp
   // Entity rendering: simple colored cubes or quads
@@ -1036,8 +1303,8 @@ cd server && ./NeuronServer --config ../config/server.yaml
 
 **Success Criteria:**
 ```bash
-./NeuronServer
-./NeuronClient
+./Server
+./StarStrike
 # Voxel chunks render (colored cubes visible)
 # 2 ships visible (player's and test asteroid)
 # Click to move; ship interpolates smoothly
@@ -1047,12 +1314,12 @@ cd server && ./NeuronServer --config ../config/server.yaml
 
 ---
 
-### Phase 6: Persistence, Optimization & Polish (Weeks 9–12, ~18 files)
+### Phase 6: Persistence, Optimization & Polish (Weeks 10–13, ~18 files)
 
 **Goal:** Full data persistence, stress testing @ 50 players, observability, final polish.
 
 #### Step 6.1: Player Authentication & Ship Loading
-- **File:** server/src/persistence/player_store.cpp/h
+- **File:** lib/NeuronServer/PlayerStore.cpp/h
 - **Action:** Player login/logout with ship state persistence:
   ```cpp
   class PlayerStore {
@@ -1072,7 +1339,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Medium (transaction isolation; test concurrent logins)
 
 #### Step 6.2: Voxel Event Flushing & Recovery
-- **File:** server/src/persistence/chunk_store.cpp (enhanced), transactionlog.cpp/h
+- **File:** lib/NeuronServer/ChunkStore.cpp (enhanced), TransactionLog.cpp/h
 - **Action:** Periodic voxel delta flushing; on-crash recovery:
   ```cpp
   // In ChunkStore:
@@ -1106,7 +1373,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Medium (transaction ordering; concurrent writers can cause splits; use SERIALIZABLE isolation)
 
 #### Step 6.3: Interest Management (Visibility Culling)
-- **File:** server/src/interest_mgmt/visibility.cpp/h
+- **File:** lib/NeuronServer/Visibility.cpp/h
 - **Action:** Per-player entity culling; only send deltas for visible entities:
   ```cpp
   class VisibilityManager {
@@ -1125,7 +1392,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Low (distance culling is straightforward)
 
 #### Step 6.4: Observability: Logging & Metrics
-- **File:** server/src/observability/logger.cpp/h, metrics.cpp/h
+- **File:** lib/NeuronServer/Logger.cpp/h, Metrics.cpp/h
 - **Action:** Structured logging + Prometheus metrics:
   ```cpp
   // Logging (spdlog, rotating file logger)
@@ -1148,7 +1415,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Low (well-established libraries)
 
 #### Step 6.5: Server Health Check Endpoint
-- **File:** server/src/observability/health.cpp/h
+- **File:** lib/NeuronServer/Health.cpp/h
 - **Action:** HTTP endpoint for /health and /ready (Kubernetes-compatible):
   ```cpp
   struct ServerHealth {
@@ -1176,7 +1443,7 @@ cd server && ./NeuronServer --config ../config/server.yaml
 - **Risk:** Low
 
 #### Step 6.6: Post-Processing Pipeline (Bloom + Pixelation)
-- **File:** client/shaders/bloom_extract.hlsl, blur.hlsl, composite.hlsl
+- **File:** StarStrike/shaders/bloom_extract.hlsl, blur.hlsl, composite.hlsl
 - **Action:** Implement glow effect:
   1. Render scene to low-res RT (640×360)
   2. Extract bright pixels (bloom mask)
@@ -1209,6 +1476,25 @@ cd server && ./NeuronServer --config ../config/server.yaml
   - Measure: server tick time, CPU usage, memory, network I/O
   - Target: tick < 16.67 ms @ 100% CPU (50 players)
   - Log results to CSV for graphing
+  - 🆕 **Quantitative performance test harness (per validation):**
+    ```cpp
+    // tools/perf_test.cpp
+    ServerInstance server;
+    server.SpawnPlayers(50);  // Spawns AI ghost clients
+    for (int i = 0; i < 3600; ++i) {  // 60 sec @ 60 Hz
+      uint64_t tick_start = PerfCounter();
+      server.Tick();
+      double tick_ms = (PerfCounter() - tick_start) / 1e6;
+      tick_times.push_back(tick_ms);
+    }
+    PrintHistogram(tick_times);
+    assert(Percentile(tick_times, 99) < 16.67);
+    ```
+  - 🆕 **Memory / GPU profiling checklist (before shipping):**
+    - Run with PIX GPU profiler; capture frame; verify < 200 chunks visible
+    - Run with Windows Performance Analyzer; verify server < 4 GB heap peak
+    - Run with GPU memory profiler; verify client < 1 GB VRAM (out of 2 GB budget)
+    - Run with ASAN (Address Sanitizer); verify zero memory leaks
 - **Why:** Validates performance targets; catches scaling issues early
 - **Dependencies:** Ghost client library, server executable
 - **Build Impact:** Medium (test harness + metrics aggregation)
@@ -1265,6 +1551,65 @@ cd server && ./NeuronServer --config ../config/server.yaml
 
 ---
 
+### 🆕 Phase 6.5: Audio & UI Placeholder (Week 14, ~8 files)
+
+**Goal:** Basic audio feedback and UI elements for MVP polish. This phase is **post-core-gameplay** and can be partially deferred if schedule is tight.
+
+> Added per IMPLEMENTATION_VALIDATION.md recommendation (Issue #7: Audio & UI Systems Missing).
+
+#### Step 6.5.1: Audio Integration
+- **File:** lib/NeuronClient/AudioSystem.cpp/h
+- **Action:** Integrate audio engine (NeuronClient::Sound if available, or minimal DirectSound wrapper):
+  ```cpp
+  class AudioSystem {
+    void Init();
+    void PlaySFX(SoundID id, Vec3 world_pos);  // 3D positional audio
+    void PlayMusic(const std::string& track);   // Background loop
+    void SetListenerPos(Vec3 pos);              // Camera position
+  };
+  ```
+  - Sound events: weapon fire, projectile impact, mining drill loop, ship engine hum
+  - Music: single ambient track (placeholder .wav)
+  - Volume config via YAML
+- **Why:** Audio feedback dramatically improves player immersion and gameplay readability
+- **Dependencies:** DirectSound or XAudio2, NeuronCore
+- **Build Impact:** Low (new subsystem)
+- **Risk:** Low (audio is non-blocking; failures just produce silence)
+
+#### Step 6.5.2: Main Menu & UI Panels
+- **File:** lib/NeuronClient/MainMenu.cpp/h, ResourcePanel.cpp/h, TargetInfo.cpp/h
+- **Action:** Implement basic UI elements:
+  ```cpp
+  // Main Menu: Connect to Server, Settings, Quit
+  // In-Game HUD:
+  //   - Resource bar (top): minerals, credits
+  //   - Target info (bottom-left): selected entity name, HP, distance
+  //   - Minimap (bottom-right): entity dots in 512-unit radius
+  //   - Chat log (bottom-center): last 5 messages
+  ```
+  - Use D2D1 text rendering (already available from Phase 5.8)
+  - Keyboard shortcuts: ESC = menu, Tab = scoreboard, Enter = chat
+- **Why:** Players need UI to understand game state; main menu enables server selection
+- **Dependencies:** DX12Device, D2D1, InputSystem
+- **Build Impact:** Low (UI overlay)
+- **Risk:** Low
+
+**Deliverables:**
+- ✅ Weapon fire, impact, mining SFX play
+- ✅ Background music loops
+- ✅ Main menu (connect, settings, quit)
+- ✅ In-game HUD (resources, target info, minimap, chat)
+
+**Success Criteria:**
+```bash
+# Audio: weapon fire produces sound; impact audible at correct position
+# Music: ambient track loops without gap
+# Menu: ESC opens main menu; can reconnect to server
+# HUD: resource count updates when mining; target info shows selected ship HP
+```
+
+---
+
 ## Build & Verification Strategy
 
 ### Build Configurations
@@ -1278,9 +1623,9 @@ cd server && ./NeuronServer --config ../config/server.yaml
 ### Per-Phase Build Verification
 
 **Phase 1:** `cmake --preset x64-debug && cmake --build . --target NeuronCore` → no errors
-**Phase 2:** `cmake --build . --target NeuronServer` → executable links; runs without crash
-**Phase 3:** `NeuronServer --config config/server.yaml` → loads DB, spawns test entities, ticks
-**Phase 4:** `NeuronClient --server 127.0.0.1:7777` → window opens, receives snapshots
+**Phase 2:** `cmake --build . --target Server` → executable links; runs without crash
+**Phase 3:** `Server --config config/server.yaml` → loads DB, spawns test entities, ticks
+**Phase 4:** `StarStrike --server 127.0.0.1:7777` → window opens, receives snapshots
 **Phase 5:** Kill server, respawn; verify voxel destruction persists across restart
 **Phase 6:** `docker-compose up && curl -s localhost:9090/metrics | grep server_tick` → metrics exposed
 
@@ -1293,14 +1638,33 @@ cd server && ./NeuronServer --config ../config/server.yaml
 
 ### Testing Strategy
 
-| Phase | Unit Tests | Integration Tests | Manual Tests |
-|-------|-----------|-------------------|--------------|
-| 1 | Types, constants | (none) | (none) |
-| 2 | Packet codec, socket | Server connects, receives packet | netstat 7777 |
-| 3 | Entity CRUD, RLE codec | Load chunks, save to DB | Server startup prints entities |
-| 4 | Input mapping, camera | Client snapshot decode | Keyboard input logged |
-| 5 | Mesh generation, combat | Voxels removed, entities hit | Play 30 min gameplay |
-| 6 | Persistence, visibility | Crash & recover, 50 players | Stress test 6 hours |
+| Phase | Unit Tests | Integration Tests | Manual Tests | CI Gate |
+|-------|-----------|-------------------|--------------|--------|
+| 1 | Types, constants (15+ static_asserts) | (none) | (none) | Build succeeds, VerifyPhase1.exe exits 0 |
+| 2 | 🆕 Packet codec (round-trip, CRC, dedup, magic), socket mock | Server connects, receives packet | netstat 7777 | 🆕 Unit tests pass, server ticks 10 sec |
+| 3 | 🆕 EntityID free pool (100K spawn/destroy), RLE codec (sparse/dense/hollow/empty) | Load chunks, save to DB | Server startup prints entities | 🆕 Unit tests pass, 256 chunks loaded |
+| 4 | Input mapping, camera | 🆕 Client↔Server packet round-trip, DX12 WARP init | Keyboard input logged | 🆕 Integration tests pass, 10 ghost clients |
+| 5 | 🆕 Greedy mesh (sparse/dense/hollow/seam/perf), 🆕 snapshot delta encoding | Voxels removed, entities hit | Play 30 min gameplay | 🆕 Mesh tests pass, shader compiles |
+| 6 | Persistence, visibility | Crash & recover, 50 players | 🆕 Stress test 6 hrs, 🆕 perf harness CSV | 🆕 p99 tick < 16.67 ms @ 50 players |
+| 6.5 | (none) | Audio plays, UI renders | Main menu navigable | Build succeeds |
+
+### 🆕 CI/CD Pipeline Strategy (per validation)
+
+**Platform:** GitHub Actions (Windows runner) or Azure Pipelines
+
+| Phase | CI Requirements |
+|-------|----------------|
+| 1–2 | Unit tests pass, build succeeds on Windows x64 (Debug + Release) |
+| 3 | Database integration tests (create schema, load/save chunks — use PostgreSQL Docker service container) |
+| 4+ | DX12 WARP rendering test (no physical GPU required on CI runner) |
+| 6 | 50-player load test: p99 tick < 16.67 ms average (CI runs reduced 10-player version; full 50 run manually) |
+
+**CI Environment:**
+- Windows runner with MSVC v145 toolset
+- WARP software rasterizer (no physical GPU; ~5–10× slower but pixel-perfect)
+- Shader precompilation happens offline (Phase 5.4); CI uses precompiled bytecode
+- PostgreSQL service container for database tests
+- Load test runs with reduced player count (10 instead of 50; scales linearly if tick time < 16.67 ms)
 
 ---
 
@@ -1338,6 +1702,29 @@ cd server && ./NeuronServer --config ../config/server.yaml
 | **WinSock2 API mismatch** | Connection refused, packet corruption | Low | Unit tests for socket codec, test on Windows 10/11, fallback to POSIX for CI |
 | **Schedule slip** | Ship late, unfinished features | Medium | Regular playtesting, prioritize critical-path features (network, persistence, rendering), cut scope if needed |
 
+### 🆕 Concrete Risk Mitigation Checklists (per validation)
+
+**Phase 5.1 — Greedy Mesh:**
+- [ ] Unit tests: sparse chunk (1 voxel), dense chunk (all voxels), hollow sphere (boundary), 2×2 chunk seam
+- [ ] Visual test: render known geometry, screenshot comparison against reference image
+- [ ] Performance: measure mesh generation time for 512 chunks; plot histogram; all < 1 ms
+
+**Phase 4.1 — DX12 Device Initialization:**
+- [ ] If GPU not detected: fall back to WARP (`D3D_DRIVER_TYPE_WARP`)
+- [ ] If shader compilation fails at runtime: load pre-compiled bytecode blob from `tools/shader_bytecode/`
+- [ ] If swap chain creation fails: log detailed DXGI error code + adapter info; prompt user to update drivers
+- [ ] If feature level 12_1 unavailable: fall back to 12_0 with reduced shader model
+
+**Phase 6.7 — 50-Player Stress Test:**
+- [ ] Run for 6 hours continuously; log tick histogram every minute
+- [ ] Verify: p99 tick < 16.67 ms, zero crashes, zero memory leaks (ASAN)
+- [ ] If tick budget exceeded: profile with PIX/WPA, identify top 3 hotspots, optimize before shipping
+
+**Phase 3.3 — Database Concurrency:**
+- [ ] Test: two clients mine same chunk simultaneously; verify no lost writes (version check)
+- [ ] Test: connection pool exhaustion (pool size = 2, 10 concurrent queries); verify graceful degradation
+- [ ] Monitor: log slow queries (> 100 ms); alert if > 10 slow queries per minute
+
 ---
 
 ## Success Criteria (MVP)
@@ -1352,10 +1739,13 @@ cd server && ./NeuronServer --config ../config/server.yaml
 
 ### Performance
 - [ ] Server tick: ≤ 16.67 ms @ 60 Hz (100% CPU @ 50 players)
+- [ ] 🆕 Server tick p99 < 16.67 ms (measured via TickProfiler histogram over 6-hour stress test)
 - [ ] Network bandwidth: ≤ 1.5 KB/s inbound, ≤ 14 KB/s outbound per player
 - [ ] Client frame rate: ≥ 60 FPS (mid-range GPU; 1920×1080)
 - [ ] Voxel mesh generation: < 1 ms per chunk (cached, LOD'd)
 - [ ] Database latency: < 30 ms for query, < 100 ms for write
+- [ ] 🆕 Server memory: < 4 GB heap peak (measured via WPA / ASAN)
+- [ ] 🆕 Client VRAM: < 1 GB (measured via GPU memory profiler)
 
 ### Deployment
 - [ ] Docker image builds without errors (< 5 min)
@@ -1381,52 +1771,90 @@ Use this to track progress:
 - [x] CMake 3.24+ configured (`CMakeLists.txt`, `CMakePresets.json`)
 - [x] vcpkg manifest created (`vcpkg.json`: spdlog, yaml-cpp, zstd, libpq, nlohmann-json)
 - [x] NeuronCore Types.h, Constants.h created (full API with 15+ static_asserts verified)
-- [x] PCH headers configured (`shared/pch.h` + CMake INTERFACE propagation)
+- [x] PCH headers configured (`lib/NeuronCore/pch.h` + CMake INTERFACE propagation)
 - [x] x64-debug builds successfully (MSVC 19.50, Ninja, 0 errors)
 - [x] Config header generation (`config.h.in` → `generated/config.h`)
 - [x] Neuron platform stubs (Socket, FileSystem, Threading, Timer)
 - [x] VerifyPhase1.exe compiles and runs (exit code 0)
 
-## Phase 2 (Weeks 1.5–3)
+## Phase 2 (Weeks 2–3.5)
 - [ ] Neuron::UDPSocket (WinSock2) implemented & tested
-- [ ] PostgreSQL connection pool working
+- [ ] PostgreSQL connection pool working (configurable pool size)
 - [ ] Packet codec serializes/deserializes all message types
+- [ ] 🆕 Packet framing: magic, CRC32, sequence number, error handling
 - [ ] Server binary runs, tick loop at 60 Hz
 - [ ] Port 7777 listens (netstat verified)
+- [ ] 🆕 Tick-time histogram prints every 60 ticks (min, p50, p95, p99, max)
+- [ ] 🆕 Mock UDPSocket created for offline testing
+- [ ] 🆕 Unit tests pass: packet round-trip, CRC, dedup, magic mismatch
 
-## Phase 3 (Weeks 3–4)
+## Phase 3 (Weeks 3.5–5)
 - [ ] EntitySystem (AoS) working; entities spawn & despawn
+- [ ] 🆕 EntityID free pool unit test (100K spawn/destroy, no ID collision)
 - [ ] VoxelSystem RLE codec tested (sparse & dense chunks)
-- [ ] PostgreSQL schema created, indexed
-- [ ] ChunkStore CRUD working (load/save/flush)
+- [ ] 🆕 RLE round-trip tests: sparse, dense, hollow sphere, empty chunk
+- [ ] PostgreSQL schema created, indexed (with locking fields & foreign key indices)
+- [ ] ChunkStore CRUD working (load/save/flush with versioned updates)
 - [ ] Server loads 256 chunks from DB on startup
 
-## Phase 4 (Weeks 4–6)
-- [ ] DX12 device initializes, window opens
+## Phase 4 (Weeks 5–7)
+- [ ] DX12 device initializes, window opens (WARP fallback for CI)
 - [ ] Client connects to server, receives snapshots
 - [ ] Keyboard input captured & sent as commands
 - [ ] Camera pan (WASD) & zoom (wheel) working
 - [ ] Entity cache displays 2+ entities
+- [ ] 🆕 Client↔Server integration test: packet round-trip verified
+- [ ] 🆕 10 ghost clients: p99 tick < 16.67 ms for 60 sec
 
-## Phase 5 (Weeks 6–9)
+## Phase 5 (Weeks 7–10)
 - [ ] Greedy mesh generation produces correct geometry
+- [ ] 🆕 Mesh unit tests: sparse, dense, hollow, seam, performance
 - [ ] VB/IB upload non-blocking; LRU eviction working
-- [ ] Voxel shaders compile (FXC or DXC)
+- [ ] Voxel shaders compile (FXC or DXC; 🆕 CMake integration + offline fallback)
 - [ ] PSO created, voxels render on screen
 - [ ] Combat: projectile hits ship, damage applied
 - [ ] Mining: voxels removed, visible to all players
 - [ ] HUD displays health, cargo, radar
+- [ ] 🆕 Snapshot builder: periodic full-state resend for packet loss resilience
 
-## Phase 6 (Weeks 9–12)
+## Phase 6 (Weeks 10–13)
 - [ ] Player login/logout saves ship state to DB
 - [ ] Voxel events flushed every 1 sec
 - [ ] Crash recovery: restart server, voxel deltas replayed
-- [ ] 50-player stress test: tick < 16.67 ms
+- [ ] 50-player stress test: tick < 16.67 ms (🆕 quantitative perf harness with CSV output)
+- [ ] 🆕 Memory/GPU profiling: server < 4 GB heap, client < 1 GB VRAM
 - [ ] Observability: logs + Prometheus metrics working
 - [ ] Docker image builds & runs
 - [ ] 40+ hours playtesting, critical bugs fixed
 - [ ] MVP release: ship.sh runs, server ready for public test
+
+## 🆕 Phase 6.5 (Week 14)
+- [ ] Audio: weapon fire, impact, mining SFX play
+- [ ] Background music loops
+- [ ] Main menu: connect, settings, quit
+- [ ] In-game HUD: resources, target info, minimap, chat
 ```
+
+---
+
+## 🆕 Phase Gate Validation Checklist (per validation)
+
+Before each phase starts, verify:
+- [ ] Test requirements (unit + integration) written for the phase
+- [ ] Success criteria quantified (not just "logs", but "tick time < 16.67 ms")
+- [ ] Risk mitigation steps concrete (not vague "extensive testing")
+- [ ] Dependencies on prior phases met
+- [ ] Estimated effort realistic (5–7 files per week is typical for experienced developer)
+- [ ] Build system changes tested on Windows x64 (CI when available)
+
+## 🆕 Missing Subsystems & Future Phases (Post-MVP)
+
+For **Phase 7+**, consider:
+- **Fog of War** (client-side culling based on radar)
+- **Diplomacy & Alliances** (multiplayer coordination)
+- **Save/Load Campaign** (single-player progression)
+- **Modding Support** (custom unit/building definitions)
+- **Anti-Cheat** (server audit log replication, client input validation)
 
 ---
 
@@ -1436,6 +1864,7 @@ Use this to track progress:
 - **ARCHITECTURE_RECOMMENDATIONS.md:** CMake build system, PCH strategy, library architecture, dependency management
 - **CODE_STANDARDS.md:** C++23 naming conventions, memory management, error handling (referenced but not included here)
 - **MathConv.md:** DirectXMath migration plan (future; use fixed-point 12.12 for now, known working)
+- **🆕 IMPLEMENTATION_VALIDATION.md:** Validation review (March 5, 2026) — all recommendations incorporated into this plan
 
 ---
 

@@ -44,7 +44,7 @@ option(ENABLE_DEBUG_UI "Enable in-game debug UI" OFF)
 
 # ── Generate config.h ───────────────────────────────────────────────────────
 configure_file(
-    shared/config.h.in
+    lib/NeuronCore/config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/generated/config.h
     @ONLY
 )
@@ -58,12 +58,20 @@ message(STATUS "  Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "  Server Only: ${BuildServerOnly}")
 
 # ── Subdirectories ───────────────────────────────────────────────────────────
-add_subdirectory(shared)
+add_subdirectory(lib/NeuronCore)
+add_subdirectory(lib/GameLogic)
+add_subdirectory(lib/NeuronServer)
+add_subdirectory(lib/NeuronClient)
+
+# Phase 1 Verification Target
+add_executable(VerifyPhase1 tests/VerifyPhase1.cpp)
+target_link_libraries(VerifyPhase1 PRIVATE NeuronCore)
+target_include_directories(VerifyPhase1 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/NeuronCore)
 
 # Future phases:
-# add_subdirectory(server)
+# add_subdirectory(Server)
 # if(NOT BuildServerOnly)
-#     add_subdirectory(client)
+#     add_subdirectory(StarStrike)
 # endif()
 # if(BUILD_TESTING)
 #     enable_testing()
