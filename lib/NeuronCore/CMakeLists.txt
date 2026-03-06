@@ -1,36 +1,22 @@
-# ── NeuronCore (header-only foundation: types, constants, platform stubs) ────
-add_library(NeuronCore INTERFACE)
+# ── NeuronCore (foundation: types, math, file system, event bus, timers) ──────
+add_library(NeuronCore STATIC
+    pch.cpp
+    NeuronCore.cpp
+    FileSys.cpp
+    WndProcManager.cpp
+)
 
 target_include_directories(NeuronCore
-    INTERFACE
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
         $<INSTALL_INTERFACE:lib>
 )
 
-# Propagate PCH headers to consuming targets
-target_precompile_headers(NeuronCore
-    INTERFACE
-        <algorithm>
-        <array>
-        <atomic>
-        <cmath>
-        <cstddef>
-        <cstdint>
-        <cstring>
-        <functional>
-        <limits>
-        <memory>
-        <optional>
-        <span>
-        <string>
-        <string_view>
-        <unordered_map>
-        <utility>
-        <variant>
-        <vector>
-)
+# Precompiled header — every .cpp in this target includes pch.h first
+target_precompile_headers(NeuronCore PRIVATE pch.h)
 
-# Platform-specific link dependencies (applied when consumers link NeuronCore)
+# Platform-specific link dependencies
 if(WIN32)
-    target_link_libraries(NeuronCore INTERFACE ws2_32)
+    target_link_libraries(NeuronCore PUBLIC ws2_32 onecore)
 endif()

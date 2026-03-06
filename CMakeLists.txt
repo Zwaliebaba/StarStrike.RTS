@@ -17,6 +17,11 @@ set(STARSTRIKE_WINDOWS ${WIN32})
 set(STARSTRIKE_UNIX ${UNIX})
 option(BuildServerOnly "Build server only (Linux headless)" OFF)
 
+# ── Unicode (Win32) ──────────────────────────────────────────────────────────
+if(WIN32)
+    add_compile_definitions(UNICODE _UNICODE)
+endif()
+
 # ── Version Info ─────────────────────────────────────────────────────────────
 set(STARSTRIKE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(STARSTRIKE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
@@ -63,16 +68,11 @@ add_subdirectory(lib/GameLogic)
 add_subdirectory(lib/NeuronServer)
 add_subdirectory(lib/NeuronClient)
 
-# Phase 1 Verification Target
-add_executable(VerifyPhase1 tests/VerifyPhase1.cpp)
-target_link_libraries(VerifyPhase1 PRIVATE NeuronCore)
-target_include_directories(VerifyPhase1 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/NeuronCore)
-
-# Future phases:
+# ── Client / Server executables ──────────────────────────────────────────────
 # add_subdirectory(Server)
-# if(NOT BuildServerOnly)
-#     add_subdirectory(StarStrike)
-# endif()
+if(NOT BuildServerOnly)
+    add_subdirectory(StarStrike)
+endif()
 # if(BUILD_TESTING)
 #     enable_testing()
 #     add_subdirectory(tests)

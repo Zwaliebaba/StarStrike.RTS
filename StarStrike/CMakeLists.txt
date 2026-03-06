@@ -1,4 +1,16 @@
 # ── StarStrike client executable ──────────────────────────────────────────────
-# Currently a placeholder. Will become the client exe when StarStrike/main.cpp is added.
-# add_executable(StarStrike main.cpp)
-# target_link_libraries(StarStrike PRIVATE NeuronClient GameLogic NeuronCore)
+add_executable(StarStrike WIN32
+    pch.cpp
+    WinMain.cpp
+    GameApp.cpp
+)
+
+target_include_directories(StarStrike
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+# Precompiled header — every .cpp in this target includes pch.h first
+target_precompile_headers(StarStrike PRIVATE pch.h)
+
+target_link_libraries(StarStrike PRIVATE NeuronClient GameLogic NeuronCore)

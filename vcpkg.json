@@ -1,11 +1,9 @@
 {
-    "name": "starstrike",
-    "version-string": "0.1.0",
-    "dependencies": [
-        "spdlog",
-        "nlohmann-json",
-        "yaml-cpp",
-        "zstd",
-        "libpq"
-    ]
+  "name": "starstrike",
+  "version-string": "0.1.0",
+  "dependencies": [
+    "cppwinrt",
+    "winpixevent"
+  ],
+  "builtin-baseline": "1e199d32ad53aab1defda61ce41c380302e3f95c"
 }
