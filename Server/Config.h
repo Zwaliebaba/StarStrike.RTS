@@ -18,7 +18,9 @@ struct ServerConfig
     uint32_t    maxPlayers  = 50;
 
     // Database
-    std::string databaseUrl = "postgres://localhost:5432/starstrike";
+    // Windows Auth: Trusted_Connection=yes (requires Windows login granted in SQL Server)
+    // SQL Auth:     UID=sa;PWD=...;  (requires Mixed Mode enabled on instance)
+    std::string databaseUrl = "Driver={ODBC Driver 18 for SQL Server};Server=localhost;Database=starstrike;Trusted_Connection=yes;Encrypt=optional;";
     int         dbPoolSize  = 4;
 
     // Logging

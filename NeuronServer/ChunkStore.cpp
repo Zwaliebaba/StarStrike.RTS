@@ -18,7 +18,7 @@ bool ChunkStore::loadChunk(ChunkID id, GameLogic::VoxelChunk& outChunk)
 
     // Query the chunk by its binary ID
     std::ostringstream sql;
-    sql << "SELECT voxel_data, version FROM voxel_chunks WHERE chunk_id = '\\x";
+    sql << "SELECT voxel_data, version FROM voxel_chunks WHERE chunk_id = 0x";
     // Encode ChunkID as 8-byte hex
     auto idBytes = reinterpret_cast<const uint8_t*>(&id);
     for (size_t i = 0; i < sizeof(ChunkID); ++i)
@@ -27,19 +27,18 @@ bool ChunkStore::loadChunk(ChunkID id, GameLogic::VoxelChunk& outChunk)
         snprintf(hex, sizeof(hex), "%02x", idBytes[i]);
         sql << hex;
     }
-    sql << "'";
 
     auto result = m_db.query(sql.str());
     if (!result.has_value() || result->empty())
         return false;
 
-    // Parse result: voxel_data is a hex-encoded BYTEA
+    // Parse result
     const auto& row = (*result)[0];
     if (row.size() < 2)
         return false;
 
     // For now, just set the chunk ID and clear it
-    // Full BYTEA→RLE deserialization requires binary mode queries (Phase 6 polish)
+    // Full VARBINARY→RLE deserialization requires binary mode queries (Phase 6 polish)
     outChunk.chunkId = id;
     outChunk.version = std::stoull(row[1]);
     return true;
@@ -52,9 +51,9 @@ bool ChunkStore::saveChunk(const GameLogic::VoxelChunk& chunk)
 
     auto rleData = GameLogic::VoxelSystem::serializeChunk(chunk);
 
-    // Encode RLE data as hex for BYTEA
+    // Encode RLE data as hex for VARBINARY
     std::ostringstream hexData;
-    hexData << "\\x";
+    hexData << "0x";
     for (auto b : rleData)
     {
         char hex[4];
@@ -64,7 +63,7 @@ bool ChunkStore::saveChunk(const GameLogic::VoxelChunk& chunk)
 
     // Encode ChunkID as hex
     std::ostringstream hexId;
-    hexId << "\\x";
+    hexId << "0x";
     auto idBytes = reinterpret_cast<const uint8_t*>(&chunk.chunkId);
     for (size_t i = 0; i < sizeof(ChunkID); ++i)
     {
@@ -73,11 +72,17 @@ bool ChunkStore::saveChunk(const GameLogic::VoxelChunk& chunk)
         hexId << hex;
     }
 
+    // T-SQL MERGE for upsert
     std::ostringstream sql;
-    sql << "INSERT INTO voxel_chunks (chunk_id, voxel_data, version) VALUES ('"
-        << hexId.str() << "', '" << hexData.str() << "', " << chunk.version
-        << ") ON CONFLICT (chunk_id) DO UPDATE SET voxel_data = '"
-        << hexData.str() << "', version = voxel_chunks.version + 1, modified_at = NOW()";
+    sql << "MERGE voxel_chunks AS tgt "
+        << "USING (SELECT " << hexId.str() << " AS chunk_id) AS src "
+        << "ON tgt.chunk_id = src.chunk_id "
+        << "WHEN MATCHED THEN UPDATE SET "
+        << "voxel_data = " << hexData.str()
+        << ", version = tgt.version + 1"
+        << ", modified_at = GETUTCDATE() "
+        << "WHEN NOT MATCHED THEN INSERT (chunk_id, voxel_data, version) VALUES ("
+        << hexId.str() << ", " << hexData.str() << ", " << chunk.version << ");";
 
     return m_db.execute(sql.str());
 }
@@ -156,48 +161,81 @@ bool ChunkStore::ensureSchema()
     if (!m_db.isConnected())
         return false;
 
-    const char* schema = R"SQL(
-        CREATE TABLE IF NOT EXISTS voxel_chunks (
-            chunk_id BYTEA PRIMARY KEY,
-            sector_id VARCHAR(10),
-            voxel_data BYTEA,
-            version INT DEFAULT 1,
-            modified_at TIMESTAMP DEFAULT NOW(),
+    // Create tables individually — T-SQL does not support multi-statement batches
+    // with IF NOT EXISTS on CREATE TABLE in all contexts; use separate calls.
+
+    bool ok = true;
+
+    ok = ok && m_db.execute(R"SQL(
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'voxel_chunks')
+        CREATE TABLE voxel_chunks (
+            chunk_id            VARBINARY(8) NOT NULL PRIMARY KEY,
+            sector_id           VARCHAR(10),
+            voxel_data          VARBINARY(MAX),
+            version             INT DEFAULT 1,
+            modified_at         DATETIME2 DEFAULT GETUTCDATE(),
             locked_by_player_id INT DEFAULT NULL,
-            lock_expiry_tick BIGINT DEFAULT NULL
-        );
-        CREATE INDEX IF NOT EXISTS idx_chunks_sector ON voxel_chunks(sector_id);
+            lock_expiry_tick    BIGINT DEFAULT NULL
+        )
+    )SQL");
 
-        CREATE TABLE IF NOT EXISTS voxel_events (
-            id BIGSERIAL PRIMARY KEY,
-            chunk_id BYTEA,
-            world_x INT, world_y INT, world_z INT,
-            old_type SMALLINT, new_type SMALLINT,
-            player_id INT,
-            tick_number BIGINT,
-            created_at TIMESTAMP DEFAULT NOW()
-        );
-        CREATE INDEX IF NOT EXISTS idx_voxel_events_chunk_tick ON voxel_events(chunk_id, tick_number);
+    ok = ok && m_db.execute(R"SQL(
+        IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_chunks_sector')
+        CREATE INDEX idx_chunks_sector ON voxel_chunks(sector_id)
+    )SQL");
 
-        CREATE TABLE IF NOT EXISTS players (
-            player_id SERIAL PRIMARY KEY,
-            username VARCHAR(64) UNIQUE NOT NULL,
+    ok = ok && m_db.execute(R"SQL(
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'voxel_events')
+        CREATE TABLE voxel_events (
+            id            BIGINT IDENTITY(1,1) PRIMARY KEY,
+            chunk_id      VARBINARY(8) NOT NULL,
+            world_x       INT,
+            world_y       INT,
+            world_z       INT,
+            old_type      SMALLINT,
+            new_type      SMALLINT,
+            player_id     INT,
+            tick_number   BIGINT,
+            created_at    DATETIME2 DEFAULT GETUTCDATE()
+        )
+    )SQL");
+
+    ok = ok && m_db.execute(R"SQL(
+        IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_voxel_events_chunk_tick')
+        CREATE INDEX idx_voxel_events_chunk_tick ON voxel_events(chunk_id, tick_number)
+    )SQL");
+
+    ok = ok && m_db.execute(R"SQL(
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'players')
+        CREATE TABLE players (
+            player_id     INT IDENTITY(1,1) PRIMARY KEY,
+            username      VARCHAR(64) NOT NULL UNIQUE,
             password_hash VARCHAR(128) NOT NULL,
-            last_login TIMESTAMP
-        );
+            last_login    DATETIME2
+        )
+    )SQL");
 
-        CREATE TABLE IF NOT EXISTS ships (
-            ship_id SERIAL PRIMARY KEY,
-            owner_id INT NOT NULL REFERENCES players(player_id),
-            pos_x REAL, pos_y REAL, pos_z REAL,
-            hp INT, max_hp INT,
-            cargo_json JSONB,
+    ok = ok && m_db.execute(R"SQL(
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ships')
+        CREATE TABLE ships (
+            ship_id         INT IDENTITY(1,1) PRIMARY KEY,
+            owner_id        INT NOT NULL REFERENCES players(player_id),
+            pos_x           REAL,
+            pos_y           REAL,
+            pos_z           REAL,
+            hp              INT,
+            max_hp          INT,
+            cargo_json      NVARCHAR(MAX),
             last_saved_tick BIGINT
-        );
-        CREATE INDEX IF NOT EXISTS idx_ships_owner ON ships(owner_id);
-    )SQL";
+        )
+    )SQL");
 
-    return m_db.execute(schema);
+    ok = ok && m_db.execute(R"SQL(
+        IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_ships_owner')
+        CREATE INDEX idx_ships_owner ON ships(owner_id)
+    )SQL");
+
+    return ok;
 }
 
 } // namespace Neuron::Server

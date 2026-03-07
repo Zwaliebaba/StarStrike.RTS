@@ -32,7 +32,7 @@ StarStrike combines **persistent voxel terrain**, **real-time multiplayer combat
 
 - **Authoritative Server**: All gameplay, voxel destruction, and combat resolved server-side
 - **Client Prediction**: Ships and projectiles predicted locally; reconciled on server state
-- **Persistent World**: Voxel destruction permanent for all players; stored in PostgreSQL
+- **Persistent World**: Voxel destruction permanent for all players; stored in MS SQL Server
 - **Sector-Based Partitioning**: 4×4 grid of sectors initially; each sector a bounded gameplay volume
 - **60 Hz Tick Rate**: 16.67 ms simulation ticks for responsive combat and predictable physics
 
@@ -45,8 +45,8 @@ StarStrike combines **persistent voxel terrain**, **real-time multiplayer combat
 | **Client UI** | D2D1 (Direct2D) + custom widget layer | Vector UI, low overhead, integrates with DX12 |
 | **Server Language** | C++23 (MSVC) | Performance, determinism, memory control |
 | **Server Transport** | UDP (custom) over IPv4 | Low latency; packet loss handled via resend/ACK logic |
-| **Persistence Layer** | PostgreSQL 14+ (relational) | ACID guarantees for voxel chunks and entity snapshots |
-| **Object Storage** | PostgreSQL BYTEA for chunk data | Simplifies deployment; alternative: S3 for future scale |
+| **Persistence Layer** | MS SQL Server (ODBC) | ACID guarantees for voxel chunks and entity snapshots |
+| **Object Storage** | SQL Server VARBINARY(MAX) for chunk data | Simplifies deployment; alternative: S3 for future scale |
 | **Deployment** | Docker (Windows Server Core) | Single-container MVP; orchestration-ready |
 | **Scripting** | YAML config + Lua (optional, for AI tuning) | Designer-facing parameters |
 
@@ -74,7 +74,7 @@ graph TB
     Client["Client<br/>Win32 + DX12"]
     Network["Network<br/>UDP Port 7777"]
     Server["Server<br/>C++ Sim Loop"]
-    DB["PostgreSQL<br/>Voxels + Entities"]
+    DB["SQL Server<br/>Voxels + Entities"]
     Cache["Redis<br/>Session Cache"]
     Metrics["Prometheus<br/>Metrics"]
     Container["Docker Container<br/>Windows Server Core"]
@@ -357,8 +357,8 @@ graph TB
     end
     
     subgraph PersistenceLayer["Persistence"]
-        ChunkStore["Chunk Store<br/>PostgreSQL"]
-        EntityStore["Entity Store<br/>PostgreSQL"]
+        ChunkStore["Chunk Store<br/>SQL Server"]
+        EntityStore["Entity Store<br/>SQL Server"]
         TransactionLog["Transaction Log<br/>Voxel events"]
     end
     
@@ -559,48 +559,48 @@ graph TB
 
 #### 4. **Persistence Layer**
 
-**PostgreSQL Schema**
+**MS SQL Server Schema**
 
 ```sql
 -- Voxel chunks
 CREATE TABLE voxel_chunks (
-  chunk_id BYTEA PRIMARY KEY,         -- (sector_x, sector_y, chunk_x, chunk_y, chunk_z)
-  sector_id VARCHAR(10),               -- e.g., "0,0"
-  voxel_data BYTEA,                    -- zstd-compressed chunk data
-  version INT,                         -- incremented on update
-  modified_at TIMESTAMP DEFAULT NOW()
+  chunk_id VARBINARY(8) NOT NULL PRIMARY KEY,  -- (sector_x, sector_y, chunk_x, chunk_y, chunk_z)
+  sector_id VARCHAR(10),                        -- e.g., "0,0"
+  voxel_data VARBINARY(MAX),                    -- zstd-compressed chunk data
+  version INT,                                  -- incremented on update
+  modified_at DATETIME2 DEFAULT GETUTCDATE()
 );
 
 -- Players & fleets
 CREATE TABLE players (
-  player_id INT PRIMARY KEY,
-  username VARCHAR(64) UNIQUE,
-  faction INT,                         -- 0 = neutral, 1+ = known factions
+  player_id INT IDENTITY(1,1) PRIMARY KEY,
+  username VARCHAR(64) NOT NULL UNIQUE,
+  faction INT,                                  -- 0 = neutral, 1+ = known factions
   resource_credits INT DEFAULT 0,
-  last_login TIMESTAMP,
-  created_at TIMESTAMP DEFAULT NOW()
+  last_login DATETIME2,
+  created_at DATETIME2 DEFAULT GETUTCDATE()
 );
 
 CREATE TABLE ships (
-  ship_id INT PRIMARY KEY,
+  ship_id INT IDENTITY(1,1) PRIMARY KEY,
   player_id INT REFERENCES players(player_id),
-  ship_type INT,                       -- 0 = fighter, 1 = carrier, etc.
-  sector_id VARCHAR(10),               -- denormalized for quick lookup
+  ship_type INT,                                -- 0 = fighter, 1 = carrier, etc.
+  sector_id VARCHAR(10),                        -- denormalized for quick lookup
   pos_x REAL, pos_y REAL, pos_z REAL,
   hp INT,
   max_hp INT,
   resource_cargo INT,
-  updated_at TIMESTAMP DEFAULT NOW()
+  updated_at DATETIME2 DEFAULT GETUTCDATE()
 );
 
 -- Voxel delta log (audit trail)
 CREATE TABLE voxel_events (
-  event_id BIGSERIAL PRIMARY KEY,
-  chunk_id BYTEA,
+  event_id BIGINT IDENTITY(1,1) PRIMARY KEY,
+  chunk_id VARBINARY(8),
   world_x INT, world_y INT, world_z INT,
   old_voxel INT, new_voxel INT,
   player_id INT REFERENCES players(player_id),
-  timestamp TIMESTAMP DEFAULT NOW()
+  created_at DATETIME2 DEFAULT GETUTCDATE()
 );
 
 CREATE INDEX idx_voxel_events_chunk ON voxel_events(chunk_id);
@@ -790,7 +790,7 @@ struct VoxelChunk {
 
 #### **Compression (Persistence)**
 
-**On-Disk (PostgreSQL BYTEA):**
+**On-Disk (SQL Server VARBINARY):**
 - Sparse representation: only store non-empty voxels
 - Run-length encoding: 
   - `(count: u16 | type: u8)` repeating
@@ -930,7 +930,7 @@ struct ChunkMesh {
    - Voxel delta buffer
    - TTL: evict after 5 minutes inactivity
 
-2. **Transactional Store** (PostgreSQL)
+2. **Transactional Store** (MS SQL Server)
    - Player data (login, faction, resources)
    - Ship state (position, health, cargo)
    - Voxel chunk snapshots (compressed RLE)
@@ -945,32 +945,32 @@ struct ChunkMesh {
 ```sql
 -- Sectors (metadata only)
 CREATE TABLE sectors (
-  sector_id VARCHAR(10) PRIMARY KEY,  -- e.g., "0,0"
+  sector_id VARCHAR(10) NOT NULL PRIMARY KEY,  -- e.g., "0,0"
   min_x INT, min_y INT, min_z INT,
   max_x INT, max_y INT, max_z INT,
-  created_at TIMESTAMP DEFAULT NOW(),
-  last_backup TIMESTAMP
+  created_at DATETIME2 DEFAULT GETUTCDATE(),
+  last_backup DATETIME2
 );
 
 -- Voxel chunks (materialized state)
 CREATE TABLE voxel_chunks (
-  chunk_id BYTEA PRIMARY KEY,
+  chunk_id VARBINARY(8) NOT NULL PRIMARY KEY,
   sector_id VARCHAR(10) REFERENCES sectors(sector_id),
-  voxel_data BYTEA,  -- RLE or zstd-compressed
+  voxel_data VARBINARY(MAX),  -- RLE or zstd-compressed
   version INT DEFAULT 1,
-  modified_at TIMESTAMP DEFAULT NOW(),
+  modified_at DATETIME2 DEFAULT GETUTCDATE(),
   data_hash VARCHAR(64)  -- for integrity check
 );
 
 -- Voxel change events (audit log)
 CREATE TABLE voxel_events (
-  event_id BIGSERIAL PRIMARY KEY,
-  chunk_id BYTEA,
+  event_id BIGINT IDENTITY(1,1) PRIMARY KEY,
+  chunk_id VARBINARY(8),
   world_x INT, world_y INT, world_z INT,
   old_voxel_type INT,
   new_voxel_type INT,
   player_id INT REFERENCES players(player_id),
-  event_time TIMESTAMP DEFAULT NOW(),
+  event_time DATETIME2 DEFAULT GETUTCDATE(),
   tick_number BIGINT
 );
 
@@ -980,18 +980,18 @@ CREATE INDEX idx_voxel_chunks_sector ON voxel_chunks(sector_id);
 
 -- Players
 CREATE TABLE players (
-  player_id INT PRIMARY KEY,
-  username VARCHAR(64) UNIQUE NOT NULL,
+  player_id INT IDENTITY(1,1) PRIMARY KEY,
+  username VARCHAR(64) NOT NULL UNIQUE,
   password_hash VARCHAR(256),
   faction INT DEFAULT 0,
   credits INT DEFAULT 1000,
-  created_at TIMESTAMP DEFAULT NOW(),
-  last_login TIMESTAMP
+  created_at DATETIME2 DEFAULT GETUTCDATE(),
+  last_login DATETIME2
 );
 
 -- Ships (owned by players)
 CREATE TABLE ships (
-  ship_id INT PRIMARY KEY,
+  ship_id INT IDENTITY(1,1) PRIMARY KEY,
   player_id INT NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
   ship_name VARCHAR(64),
   ship_type INT,  -- 0=fighter, 1=corvette, 2=carrier, etc.
@@ -1003,8 +1003,8 @@ CREATE TABLE ships (
   shield_hp INT, max_shield_hp INT,
   cargo_resource INT,
   cargo_capacity INT,
-  updated_at TIMESTAMP DEFAULT NOW(),
-  
+  updated_at DATETIME2 DEFAULT GETUTCDATE(),
+
   FOREIGN KEY (player_id) REFERENCES players(player_id)
 );
 
@@ -1013,26 +1013,26 @@ CREATE INDEX idx_ships_sector ON ships(sector_id);
 
 -- Fleets (optional: group ships)
 CREATE TABLE fleets (
-  fleet_id INT PRIMARY KEY,
+  fleet_id INT IDENTITY(1,1) PRIMARY KEY,
   player_id INT NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
   fleet_name VARCHAR(64),
-  created_at TIMESTAMP DEFAULT NOW()
+  created_at DATETIME2 DEFAULT GETUTCDATE()
 );
 
 CREATE TABLE fleet_membership (
   fleet_id INT REFERENCES fleets(fleet_id) ON DELETE CASCADE,
-  ship_id INT REFERENCES ships(ship_id) ON DELETE CASCADE,
+  ship_id INT REFERENCES ships(ship_id),
   PRIMARY KEY (fleet_id, ship_id)
 );
 
 -- Session state (transient; can be lost on restart)
 CREATE TABLE sessions (
-  session_id VARCHAR(128) PRIMARY KEY,
+  session_id VARCHAR(128) NOT NULL PRIMARY KEY,
   player_id INT REFERENCES players(player_id),
-  login_time TIMESTAMP DEFAULT NOW(),
-  last_heartbeat TIMESTAMP DEFAULT NOW(),
-  ip_address INET,
-  
+  login_time DATETIME2 DEFAULT GETUTCDATE(),
+  last_heartbeat DATETIME2 DEFAULT GETUTCDATE(),
+  ip_address VARCHAR(45),  -- IPv4 or IPv6 text representation
+
   CONSTRAINT unique_player_session UNIQUE (player_id)
 );
 ```
@@ -1471,7 +1471,7 @@ COPY --from=builder C:\app\out\build\x64-release\Server\Server.exe C:\app\server
 COPY config\ C:\app\config\
 
 ENV LOG_LEVEL=INFO
-ENV DATABASE_URL=postgres://user:pass@postgres:5432/starstrike
+ENV DATABASE_URL="Driver={ODBC Driver 18 for SQL Server};Server=mssql;Database=starstrike;Trusted_Connection=no;UID=sa;PWD=YourPassword;Encrypt=optional;"
 
 EXPOSE 7777/udp
 
@@ -1488,26 +1488,26 @@ CMD ["--config", "C:\\app\\config\\server.yaml"]
 graph TB
     Nginx["Nginx Reverse Proxy<br/>Port 443 (HTTPS)"]
     Docker["Docker Container<br/>StarStrike Server"]
-    Postgres["PostgreSQL 14<br/>Persistent Storage"]
+    MSSQL["SQL Server<br/>Persistent Storage"]
     Prometheus["Prometheus<br/>Metrics Scrape"]
     Grafana["Grafana<br/>Dashboard"]
-    
+
     User["Players<br/>UDP:7777"]
     Logs["Log Volume<br/>C:\\logs\\starstrike"]
-    Data["Data Volume<br/>/var/lib/postgres"]
+    Data["Data Volume<br/>SQL Server data"]
     Config["Config Volume<br/>C:\\app\\config"]
-    
+
     User -->|"UDP Port 7777"| Docker
-    Docker -->|"Query/Update/Insert"| Postgres
+    Docker -->|"Query/Update/Insert"| MSSQL
     Docker -->|"Metrics at :9090"| Prometheus
     Prometheus -->|"Scrape"| Grafana
-    
+
     Config -->|"Mounts to"| Docker
     Logs -->|"Mounts to"| Docker
-    Data -->|"Mounts to"| Postgres
-    
+    Data -->|"Mounts to"| MSSQL
+
     style Docker fill:#0066cc,stroke:#fff,color:#fff
-    style Postgres fill:#0a8c42,stroke:#fff,color:#fff
+    style MSSQL fill:#0a8c42,stroke:#fff,color:#fff
     style Prometheus fill:#ff9900,stroke:#000
 ```
 
@@ -1517,19 +1517,18 @@ graph TB
 version: '3.9'
 
 services:
-  postgres:
-    image: postgres:14
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      POSTGRES_USER: starstrike
-      POSTGRES_PASSWORD: dev_password_change_in_prod
-      POSTGRES_DB: starstrike
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Dev_Password_Change_In_Prod!"
+      MSSQL_PID: "Express"
     ports:
-      - "5432:5432"
+      - "1433:1433"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./schema.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - mssql_data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U starstrike"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Dev_Password_Change_In_Prod!' -Q 'SELECT 1' -C -b"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -1540,14 +1539,14 @@ services:
       dockerfile: Dockerfile
     environment:
       LOG_LEVEL: DEBUG
-      DATABASE_URL: postgres://starstrike:dev_password_change_in_prod@postgres:5432/starstrike
+      DATABASE_URL: "Driver={ODBC Driver 18 for SQL Server};Server=mssql;Database=starstrike;UID=sa;PWD=Dev_Password_Change_In_Prod!;Encrypt=optional;"
       SERVER_TICK_RATE: 60
       MAX_PLAYERS: 50
     ports:
       - "7777:7777/udp"
       - "9090:9090"  # Prometheus metrics
     depends_on:
-      postgres:
+      mssql:
         condition: service_healthy
     volumes:
       - ./config:C:\app\config:ro
@@ -1555,7 +1554,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  mssql_data:
   server_logs:
 ```
 
@@ -1817,7 +1816,7 @@ StarStrike.RTS/
 │       ├── composite.hlsl           # Final composite
 │       └── shared.hlsl              # Utility functions
 │
-├── server/                       # Server application (C++, UDP, PostgreSQL)
+├── server/                       # Server application (C++, UDP, SQL Server)
 │   ├── CMakeLists.txt
 │   ├── src/
 │   │   ├── main.cpp              # Entry point, signal handlers
@@ -1840,7 +1839,7 @@ StarStrike.RTS/
 │   │   │   ├── voxel_serialization.cpp/h
 │   │   │   └── mining_system.cpp/h  # Resource extraction
 │   │   ├── persistence/
-│   │   │   ├── database.cpp/h       # PostgreSQL connection pool
+│   │   │   ├── database.cpp/h       # SQL Server connection pool (ODBC)
 │   │   │   ├── chunk_store.cpp/h    # Voxel chunk CRUD
 │   │   │   ├── entity_store.cpp/h   # Ship/player CRUD
 │   │   │   └── transaction_log.cpp/h # Event log
@@ -1854,7 +1853,6 @@ StarStrike.RTS/
 │   │       └── health.cpp/h         # Health check endpoint
 │   │
 │   └── cmake/
-│       └── FindPostgreSQL.cmake    # PostgreSQL discovery
 │
 ├── shared/                       # Shared code (types, serialization)
 │   ├── CMakeLists.txt
@@ -1889,7 +1887,7 @@ StarStrike.RTS/
 │
 ├── config/                       # Deployment configs
 │   ├── server.yaml               # Server configuration
-│   ├── schema.sql                # PostgreSQL schema
+│   ├── schema.sql                # MS SQL Server schema
 │   └── prometheus.yml            # Prometheus config
 │
 ├── docs/                         # Documentation
@@ -1925,7 +1923,7 @@ else ()
 endif ()
 
 # Find dependencies
-find_package(PostgreSQL REQUIRED)
+# ODBC is built into Windows SDK (no find_package needed)
 find_package(DirectX REQUIRED)
 
 # Core libraries (see ARCHITECTURE_RECOMMENDATIONS.md for full CMake structure)
@@ -1957,7 +1955,7 @@ target_link_libraries(NeuronServer PRIVATE
   GameLogic
   Neuron
   NeuronCore
-  PostgreSQL::PostgreSQL
+  odbc32
 )
 
 target_compile_definitions(NeuronServer PRIVATE
@@ -1982,7 +1980,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake postgresql-client libpq-dev
+          sudo apt-get install -y cmake unixodbc-dev
       
       - name: Build server
         run: |
@@ -2024,7 +2022,7 @@ jobs:
 
 **Week 2: Voxel Loading & Persistence**
 - Deliverables:
-  - PostgreSQL schema created
+  - MS SQL Server schema created
   - Voxel chunk CRUD in server
   - Chunk serialization (RLE compression)
   - Client fetches chunk; renders single chunk with debug coloring
@@ -2148,7 +2146,7 @@ jobs:
 - [ ] Server tick runs at 60 Hz, < 16.67 ms per tick
 - [ ] Client 60 FPS with voxel rendering
 - [ ] Snapshots sent at 20 Hz; < 50 KB/s per player
-- [ ] All voxel changes persisted to PostgreSQL
+- [ ] All voxel changes persisted to SQL Server
 - [ ] Server restarts cleanly; world state restored
 
 **Deployment:**
@@ -2193,7 +2191,7 @@ jobs:
 - Periodically consolidate voxel_events into chunk_snapshots (replace event log with final state)
 - Implement chunk versioning: old versions deleted after consolidation
 - Database size monitoring via Prometheus (alert if > 10 GB)
-- Optional: Time-series DB (InfluxDB) for events instead of PostgreSQL
+- Optional: Time-series DB (InfluxDB) for events instead of SQL Server
 
 ### 3. Server Tick Instability Under Load
 
@@ -2241,7 +2239,7 @@ jobs:
 
 **Risk:** 50 players all login at 9 AM; database connections spike; server OOM.
 
-**Scenario:** Connection pool max 20; 50 login requests queue up; PostgreSQL handle creation floods RAM.
+**Scenario:** Connection pool max 20; 50 login requests queue up; SQL Server handle creation floods RAM.
 
 **Mitigation:**
 - Connection pool: Set max_pool_size = 30; queue requests with timeout (5 sec)
@@ -2278,7 +2276,7 @@ This architecture provides a solid foundation for a voxel-based isometric RTS MM
 
 - **Authoritative server** ensures all gameplay is fair and consistent
 - **60 Hz tick rate** with client prediction balances responsiveness and network load
-- **PostgreSQL persistence** keeps the shared world intact across server restarts
+- **SQL Server persistence** keeps the shared world intact across server restarts
 - **Interest management** scales from 50 to hundreds of players
 - **Directx 12 rendering** with greedy meshing achieves low-poly voxel aesthetic
 - **Containerized deployment** makes shipping and scaling straightforward

@@ -83,7 +83,7 @@ Placeholder — will be the headless game server executable.
 | **Graphics** | DirectX 12 (d3d12.lib, dxgi.lib, dxguid.lib) |
 | **Profiling** | PIX (WinPixEventRuntime via vcpkg) |
 | **Networking** | WinSock2 UDP (custom protocol, planned) |
-| **Persistence** | PostgreSQL 14+ (planned, via libpq) |
+| **Persistence** | MS SQL Server (via ODBC, Windows SDK built-in) |
 | **Platform** | Windows 10+ x64 only |
 | **Server deployment** | Windows Server Core containers (planned) |
 
@@ -108,7 +108,7 @@ Available presets (see `CMakePresets.json`):
 | `x64-release` | 64-bit | Release |
 
 **vcpkg dependencies** (current): `cppwinrt`, `winpixevent`
-**vcpkg dependencies** (planned): `libpq`, `yaml-cpp`, `zstd`, `nlohmann-json`
+**vcpkg dependencies** (planned): `yaml-cpp`, `zstd`, `nlohmann-json`
 
 ## Coding Conventions
 

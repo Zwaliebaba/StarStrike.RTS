@@ -12,7 +12,7 @@
 - Build system: CMake 4.1.2, Ninja generator, vcpkg manifest mode.
 - Configure: `cmake --preset x64-debug` (requires VS Developer Command Prompt with `VCPKG_ROOT` set).
 - Build: `cmake --build out/build/x64-debug`.
-- vcpkg dependencies (current): `cppwinrt`, `winpixevent`. Future: `libpq`, `yaml-cpp`, `zstd`, `nlohmann-json`.
+- vcpkg dependencies (current): `cppwinrt`, `winpixevent`. Future: `yaml-cpp`, `zstd`, `nlohmann-json`. Database: MS SQL Server via ODBC (Windows SDK built-in, no vcpkg dependency).
 - Run from the app output directory so `FileSys::SetHomeDirectory` (set in `WinMain.cpp`) can resolve resources.
 
 ## Coding Patterns

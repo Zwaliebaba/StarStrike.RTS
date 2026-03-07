@@ -13,13 +13,13 @@
 
 This plan guides incremental implementation of a persistent voxel-based isometric RTS MMO from architecture to playable MVP. Each of 6 phases leaves the project buildable, linkable, and runnable. The plan prioritizes forward declarations to minimize PCH thrashing, respects the library architecture (NeuronCore → GameLogic → {NeuronClient, NeuronServer} → {StarStrike, Server}), and integrates WinSock2 for Windows networking from the start.
 
-> **MSBuild Migration Update (March 7, 2026):** The build system has been migrated from CMake/Ninja to MSBuild (`.vcxproj` + `.slnx`). All CMake files (`CMakeLists.txt`, `CMakePresets.json`, `config.h.in`) have been removed. Projects now live in top-level directories (`NeuronCore/`, `NeuronClient/`, `GameLogic/`, `NeuronServer/`, `Server/`, `StarStrike/`) instead of under `lib/`. Package management uses NuGet `packages.config` per project (CppWinRT for all; Windows App SDK 1.8, WIL, WebView2 for StarStrike) alongside vcpkg manifest mode (`vcpkg.json`) for libpq, yaml-cpp, and winpixevent. StarStrike is now a Windows App SDK / WinUI desktop app with MSIX packaging support. Phase 2 server boilerplate files have been scaffolded (Database, SimulationEngine, SocketManager, TickProfiler, PacketCodec, Socket, Config) — implementation to follow. The solution uses the new `.slnx` XML format (`StarStrike.slnx`). Build via Visual Studio IDE or `msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64`.
+alongside vcpkg manifest mode (`vcpkg.json`) for yaml-cpp and winpixevent.
 
 > **Validation Update (March 6, 2026):** Timeline extended from 12 to 14 weeks based on IMPLEMENTATION_VALIDATION.md review. Key additions: per-phase unit/integration test requirements, formalized network protocol with error handling, quantitative performance tracking from Phase 2, concrete risk mitigation checklists, finalized database schema with locking/indices, shader compilation MSBuild integration, and Audio/UI placeholder phase (6.5). See each phase for specific additions marked with 🆕.
 
 > **Phase 1.5 Update (March 6, 2026):** The full DirectX 12 client engine boilerplate has been implemented ahead of schedule, completing ~90% of the planned Phase 4 DX12 work. This includes the D3D12 device manager (`GraphicsCore`), descriptor heaps, pipeline state objects, root signatures, resource state tracking, GPU buffers, DDS texture loading, sampler management, PIX profiling, window creation (`ClientEngine`), the game application framework (`GameMain` / `GameApp`), and the Win32 entry point. NeuronCore was upgraded to a STATIC library with project-level `pch.h` precompiled headers per target. The implementation uses different file names from the original plan (e.g. `GraphicsCore` instead of `DX12Device`) — the plan has been updated to reflect reality. See Phase 1.5 for details.
 
-> **Phase 2 Update (March 8, 2026):** Server Network & Database Foundation is complete. All Phase 2 boilerplate files (scaffolded during Phase 1.5) have been promoted to full implementations: `UDPSocket` (WinSock2 non-blocking), PostgreSQL connection pool (`Database` with configurable pool size + slow query logging), `PacketCodec` (CRC-32C with SSE4.2 hw acceleration, magic/sequence/CRC validation), `SimulationEngine` (60 Hz tick loop with 6 phase stubs), `SocketManager` (receive/validate/dedup/send with per-sender sequence tracking and rate-limited CRC logging), `TickProfiler` (rolling histogram with p50/p95/p99), `Config` (YAML parsing via yaml-cpp), and the `Server` main loop with `SetConsoleCtrlHandler` for proper Windows shutdown. New additions: `config/server.yaml` (default config), `NeuronServer/ServerLog.h` (stdout/stderr logging for console apps). Release build configs fixed across all projects (PCH Create on `pch.cpp` + `AdditionalIncludeDirectories` for Release). NeuronCore, NeuronServer, GameLogic, and Server all compile in Debug; Server.exe links and runs.
+> **Phase 2 Update (March 8, 2026):** Server Network & Database Foundation is complete. All Phase 2 boilerplate files (scaffolded during Phase 1.5) have been promoted to full implementations: `UDPSocket` (WinSock2 non-blocking), MS SQL Server connection pool via ODBC (`Database` with configurable pool size + slow query logging),
 
 > **Phase 2.5 Update (March 10, 2026):** Unit Test Project & Phase 1/2 Test Coverage is complete. The `Tests.NeuronCore` Microsoft Native Unit Test DLL project was added to the solution with full tests for Phase 1 (Types, Constants, ChunkID, Vec3, AABB) and Phase 2 (PacketCodec round-trip for all packet types, CRC corruption detection, magic mismatch, too-short/oversized packets, CRC32 consistency). All 82 tests pass via `vstest.console.exe`.
 
@@ -42,7 +42,7 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 - **Voxel World:** 4×4 sectors, 32×32×32 chunks, visible destruction for all players
 - **Combat:** Ship-to-ship targeting, projectile weapons, hit detection, damage & respawn
 - **Mining:** Voxel extraction, resource collection, cargo system
-- **Persistence:** PostgreSQL with RLE compression, voxel event log, player ship state
+- **Persistence:** MS SQL Server (ODBC) with RLE compression, voxel event log, player ship state
 - **Rendering:** DirectX 12, greedy-meshed voxels, pixelated post-process, bloom glow
 - **Concurrency:** ≥50 simultaneous players without tick rate degradation
 
@@ -112,7 +112,7 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 | **StarStrike/GameApp.cpp/.h** | StarStrike | Game application (touch, camera, render) | NeuronClient | ✅ Done (skeleton) |
 | **StarStrike/WinMain.cpp** | StarStrike | Win32 entry point + ClientEngine boot | NeuronClient | ✅ Done |
 | **NeuronServer/SimulationEngine.cpp/.h** | NeuronServer | 60 Hz tick loop, 6 phases (stubs) | NeuronCore, GameLogic | ✅ Done |
-| **NeuronServer/Database.cpp/.h** | NeuronServer | PostgreSQL connection pool (libpq, configurable size, slow query logging) | libpq | ✅ Done |
+| **NeuronServer/Database.cpp/.h** | NeuronServer | MS SQL Server connection pool (ODBC, configurable size, slow query logging) | odbc32 (Windows SDK) | ✅ Done |
 | **NeuronServer/SocketManager.cpp/.h** | NeuronServer | Server network transport (recv/validate/dedup/send, rate-limited CRC logging) | NeuronCore | ✅ Done |
 | **NeuronServer/TickProfiler.cpp/.h** | NeuronServer | Tick-time measurement/histogram (rolling 600 samples, p50/p95/p99) | NeuronCore | ✅ Done |
 | **Server/main.cpp** | Server | Server entry point + main loop (SetConsoleCtrlHandler) | NeuronServer | ✅ Done |
@@ -132,7 +132,7 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 | **GameLogic/Sector.cpp/.h** | GameLogic | Sector bounds + SectorManager 4×4 grid | NeuronCore | ✅ Done |
 | **GameLogic/WorldManager.cpp/.h** | GameLogic | Top-level orchestrator (EntitySystem + VoxelSystem + SectorManager) | GameLogic | ✅ Done |
 | **NeuronServer/ChunkStore.cpp/.h** | NeuronServer | Chunk persistence layer (load/save/flush, voxel events, schema DDL) | NeuronServer, GameLogic | ✅ Done |
-| **config/schema.sql** | — | PostgreSQL DDL (voxel_chunks, voxel_events, players, ships + indices) | — | ✅ Done |
+| **config/schema.sql** | — | MS SQL Server DDL (voxel_chunks, voxel_events, players, ships + indices) | — | ✅ Done |
 | **NeuronClient/VoxelRenderer.cpp/.h** | NeuronClient | Greedy meshing, VB/IB upload | NeuronCore | ⬜ Phase 5 |
 | **NeuronClient/SnapshotDecoder.cpp/.h** | NeuronClient | Deserialize snapshots | NeuronCore | ⬜ Phase 4 |
 | **StarStrike/shaders/*.hlsl** | StarStrike | Voxel, entity, post-process shaders | DirectXMath | ⬜ Phase 5 |
@@ -142,7 +142,7 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 | File | Changes | Status |
 |---|---|---|
 | StarStrike.slnx | XML solution file; 7 projects (NeuronCore, NeuronClient, GameLogic, NeuronServer, Server, StarStrike, Tests.NeuronCore) | ✅ Done |
-| vcpkg.json | cppwinrt, libpq, winpixevent, yaml-cpp; builtin-baseline | ✅ Done |
+| vcpkg.json | cppwinrt, winpixevent, yaml-cpp; builtin-baseline | ✅ Done |
 | NeuronCore/NeuronCore.vcxproj | StaticLibrary (6 .cpp), PCH via `pch.h`/`pch.cpp` (Create for Debug+Release), CppWinRT NuGet, `stdcpplatest` (Debug) / `stdcpp20` (Release) | ✅ Done |
 | NeuronClient/NeuronClient.vcxproj | StaticLibrary (11 .cpp), PCH, references NeuronCore, CppWinRT NuGet, include dirs `$(SolutionDir)NeuronCore` | ✅ Done |
 | StarStrike/StarStrike.vcxproj | Application (Windows App SDK / WinUI / MSIX), references NeuronClient + NeuronCore, CppWinRT + WinAppSDK NuGet | ✅ Done |
@@ -163,8 +163,8 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 
 #### Step 1.1: Initialize Build System & vcpkg ✅
 - **File:** `StarStrike.slnx`, `vcpkg.json`, per-project `.vcxproj` files, per-project `packages.config`
-- **Action:** Set up MSBuild solution with `.slnx` XML format; configure vcpkg manifest mode with dependencies (libpq, yaml-cpp, winpixevent). NuGet `packages.config` per project for CppWinRT (all projects) and Windows App SDK (StarStrike only).
-- **Actual:** Visual Studio 2022+ with v145 toolset. NuGet restores CppWinRT 2.0.250303.1 and Windows App SDK 1.8. vcpkg manifest mode provides libpq, yaml-cpp, winpixevent.
+- **Action:** Set up MSBuild solution with `.slnx` XML format; configure vcpkg manifest mode with dependencies (yaml-cpp, winpixevent). NuGet `packages.config` per project for CppWinRT (all projects) and Windows App SDK (StarStrike only). Database access uses ODBC (ships with Windows SDK — no vcpkg dependency).
+- **Actual:** Visual Studio 2022+ with v145 toolset. NuGet restores CppWinRT 2.0.250303.1 and Windows App SDK 1.8. vcpkg manifest mode provides yaml-cpp, winpixevent.
 - **Why:** Enables deterministic, reproducible builds with Visual Studio IDE and CLI
 - **Dependencies:** None (new files)
 - **Build Impact:** Low (configuration only, no compilation yet)
@@ -298,8 +298,8 @@ msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64   # All targets, 
   - **GameLogic:** StaticLibrary (2 .cpp files: `pch.cpp`, `GameLogic.cpp`). PCH. CppWinRT via NuGet. Include dirs: `$(SolutionDir)NeuronCore`.
   - **NeuronServer:** StaticLibrary (5 .cpp files: `pch.cpp`, `Database.cpp`, `SimulationEngine.cpp`, `SocketManager.cpp`, `TickProfiler.cpp`). PCH. References NeuronCore. CppWinRT via NuGet. Include dirs: `$(SolutionDir)NeuronCore`.
   - **Server:** Console Application (3 .cpp files: `pch.cpp`, `main.cpp`, `Config.cpp`). PCH. References GameLogic + NeuronCore + NeuronServer. Include dirs: `$(SolutionDir)NeuronCore;$(SolutionDir)NeuronServer`. Subsystem: Console.
-  - **vcpkg.json:** Dependencies: `cppwinrt`, `libpq`, `winpixevent`, `yaml-cpp` with `builtin-baseline`.
-  - **Package management:** Dual approach — NuGet `packages.config` per project for CppWinRT and Windows App SDK; vcpkg manifest mode for libpq, yaml-cpp, winpixevent.
+  - **vcpkg.json:** Dependencies: `cppwinrt`, `winpixevent`, `yaml-cpp` with `builtin-baseline`.
+  - **Package management:** Dual approach — NuGet `packages.config` per project for CppWinRT and Windows App SDK; vcpkg manifest mode for yaml-cpp, winpixevent. Database uses ODBC (Windows SDK built-in).
   - **PCH strategy:** Each target has its own `pch.h` → `pch.cpp` pair. `pch.cpp` is marked with `<PrecompiledHeader>Create</PrecompiledHeader>`; all other `.cpp` files use `<PrecompiledHeader>Use</PrecompiledHeader>`. All projects use v145 toolset with Unicode character set.
 - **Why:** Enables native Visual Studio IDE experience with solution-level build, NuGet package management, and MSIX packaging for client; PCH reduces rebuild times by 60–70%
 - **Build Impact:** High (one-time restructure; all subsequent builds benefit from PCH and IDE integration)
@@ -313,7 +313,7 @@ msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64   # All targets, 
 - ✅ GameApp concrete implementation with touch input and language detection
 - ✅ WinMain entry point boots ClientEngine → GameApp → Run loop
 - ✅ Per-target PCH (`pch.h`) via MSBuild `<PrecompiledHeader>` settings
-- ✅ NuGet integration (CppWinRT, Windows App SDK) + vcpkg (libpq, winpixevent, yaml-cpp)
+- ✅ NuGet integration (CppWinRT, Windows App SDK) + vcpkg (winpixevent, yaml-cpp)
 - ✅ UNICODE/WIN64 builds enforced
 
 **Success Criteria:** ✅ MET
@@ -335,9 +335,9 @@ msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64  # All projects c
 
 ### Phase 2: Server Network & Database Foundation (Weeks 2–3.5, ~18 files) ✅ COMPLETE
 
-**Status:** Completed March 8, 2026. All server subsystems implemented: WinSock2 UDP socket, PostgreSQL connection pool, packet codec with CRC-32C/magic/sequence validation, 60 Hz tick loop, socket manager with per-sender sequence dedup and rate-limited CRC logging, tick-time profiler with rolling histogram, YAML config, and Windows console shutdown handler. Mock UDPSocket created for offline testing. Release build configs fixed across all projects. NeuronCore.lib, NeuronServer.lib, GameLogic.lib, and Server.exe compile with zero errors.
+**Status:** Completed March 8, 2026. All server subsystems implemented: WinSock2 UDP socket, MS SQL Server connection pool via ODBC, packet codec with CRC-32C/magic/sequence validation, 60 Hz tick loop, socket manager with per-sender sequence dedup and rate-limited CRC logging, tick-time profiler with rolling histogram, YAML config, and Windows console shutdown handler. Mock UDPSocket created for offline testing. Release build configs fixed across all projects. NeuronCore.lib, NeuronServer.lib, GameLogic.lib, and Server.exe compile with zero errors.
 
-**Goal:** UDP socket listening, PostgreSQL connection pool, packet codec with error handling. Server runs (empty tick loop) with tick-time measurement.
+**Goal:** UDP socket listening, MS SQL Server connection pool (ODBC), packet codec with error handling. Server runs (empty tick loop) with tick-time measurement.
 
 > 🆕 **Validation additions:** Formalized packet format with magic/CRC/sequence fields, packet loss/reorder handling, per-phase unit tests, tick-time histogram from day 1.
 
@@ -362,9 +362,9 @@ msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64  # All projects c
 - **Build Impact:** Low (new translation unit)
 - **Risk:** Low
 
-#### Step 2.2: PostgreSQL Database Connection Pool
+#### Step 2.2: MS SQL Server Database Connection Pool (ODBC)
 - **File:** NeuronServer/Database.cpp/h
-- **Action:** Implement connection pool wrapper around libpq. Methods: Connect(), Execute(), Query(), Disconnect().
+- **Action:** Implement connection pool wrapper around ODBC. Methods: Connect(), Execute(), Query(), Disconnect().
   ```cpp
   // NeuronServer/Database.h
   class Database {
@@ -374,17 +374,16 @@ msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64  # All projects c
     void BeginTransaction(); void Commit();
   };
   ```
-  - Use RAII: connections released on ~PgConnection()
-  - Pool: pre-allocate N connections, reuse via lock-free queue or mutex
+  - Use RAII: connections released on ~SqlConnection()
+  - Pool: pre-allocate N connections via ODBC environment handle, reuse via mutex
   - 🆕 **Connection pool config (per validation):**
     - Pool size = 4 × num_worker_threads (configurable via YAML, not hardcoded)
     - Idle timeout = 30 sec (close idle connections to free DB slots)
     - Max query time = 1 sec with fallback (return stale data if DB slow)
-    - Log slow queries (> 100 ms) via DebugTrace
+    - Log slow queries (> 100 ms) via ServerLog
 - **Why:** Essential for persistence; connection pooling avoids latency spikes
-- **Dependencies:** libpq-fe.h (from vcpkg)
-- **vcpkg:** `libpq` is already in `vcpkg.json`. Ensure `NeuronServer.vcxproj` has vcpkg manifest mode enabled (`<VcpkgEnableManifest>true</VcpkgEnableManifest>`).
-- **Build Impact:** Low (new translation unit, links PostgreSQL lib)
+- **Dependencies:** ODBC (Windows SDK built-in: `sql.h`, `sqlext.h`, `odbc32.lib`)
+- **Build Impact:** Low (new translation unit, links odbc32.lib — ships with Windows)
 - **Risk:** Medium (database errors can cascade; add error logging)
 
 #### Step 2.3: Packet Codec (Serialization/Deserialization)
@@ -505,7 +504,7 @@ msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64  # All projects c
 
 #### Step 2.7: Verify Build & Test Basic Server Start
 - **File:** Build & run tests
-- **Action:** Build server; run with config pointing to test PostgreSQL; verify:
+- **Action:** Build server; run with config pointing to test SQL Server; verify:
   - Server logs "Initialized"
   - Tick loop runs at 60 Hz (logs tick count every 1 sec)
   - TCP/UDP port 7777 listens (use netstat)
@@ -540,7 +539,7 @@ msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64  # All projects c
 **Deliverables:**
 - ✅ Server binary compiles (Server.exe: tick loop + socket + DB)
 - ✅ UDP socket listens on 7777 with WinSock2 (non-blocking via `ioctlsocket FIONBIO`)
-- ✅ PostgreSQL connection pool initialized (configurable pool size, slow query logging > 100 ms)
+- ✅ MS SQL Server connection pool initialized via ODBC (configurable pool size, slow query logging > 100 ms)
 - ✅ Packet codec (de)serializes commands with CRC-32C (SSE4.2 hw) / magic / sequence validation
 - ✅ Server logs via ServerLog (stdout/stderr) — `NeuronServer/ServerLog.h` (`LogInfo`, `LogWarn`, `LogError`, `LogFatal`)
 - ✅ Config YAML loads correctly (`config/server.yaml`)
@@ -687,7 +686,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 
 ### Phase 3: Entity System & Voxel Storage (Weeks 3.5–5, ~16 files) ✅ COMPLETE
 
-**Status:** Completed March 10, 2026. All Phase 3 subsystems implemented: EntitySystem (ECS-lite AoS with free pool), VoxelSystem (chunk storage + RLE codec), Sector/SectorManager (4×4 grid), WorldManager (orchestrator), ChunkStore (persistence), config/schema.sql (PostgreSQL DDL). Server updated with world init, test entity spawning, and persistence flush. 31 new unit tests added (EntitySystem: 9, RLE codec: 7, VoxelSystem: 5, Sector: 10). Total test count: 82, all passing.
+**Status:** Completed March 10, 2026. All Phase 3 subsystems implemented: EntitySystem (ECS-lite AoS with free pool), VoxelSystem (chunk storage + RLE codec), Sector/SectorManager (4×4 grid), WorldManager (orchestrator), ChunkStore (persistence), config/schema.sql (MS SQL Server DDL). Server updated with world init, test entity spawning, and persistence flush. 31 new unit tests added (EntitySystem: 9, RLE codec: 7, VoxelSystem: 5, Sector: 10). Total test count: 82, all passing.
 
 **Goal:** ECS-lite entity management, voxel chunk serialization, database schema loaded. Server spawns test entities.
 
@@ -788,66 +787,70 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 - **Build Impact:** Low (new translation unit)
 - **Risk:** Medium (RLE codec has edge cases; unit test thoroughly with sparse/dense chunks)
 
-#### Step 3.3: PostgreSQL Schema Creation
+#### Step 3.3: MS SQL Server Schema Creation
 - **File:** config/schema.sql
 - **Action:** Create tables for voxel_chunks, voxel_events, players, ships, sectors. Include indices on chunk_id, sector_id, player_id.
   ```sql
+  IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'voxel_chunks')
   CREATE TABLE voxel_chunks (
-    chunk_id BYTEA PRIMARY KEY,
+    chunk_id VARBINARY(8) NOT NULL PRIMARY KEY,
     sector_id VARCHAR(10),
-    voxel_data BYTEA,
+    voxel_data VARBINARY(MAX),
     version INT DEFAULT 1,
-    modified_at TIMESTAMP DEFAULT NOW(),
+    modified_at DATETIME2 DEFAULT GETUTCDATE(),
     locked_by_player_id INT DEFAULT NULL,
     lock_expiry_tick BIGINT DEFAULT NULL
   );
   CREATE INDEX idx_chunks_sector ON voxel_chunks(sector_id);
-  
+
+  IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'voxel_events')
   CREATE TABLE voxel_events (
-    id BIGSERIAL PRIMARY KEY,
-    chunk_id BYTEA NOT NULL,
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    chunk_id VARBINARY(8) NOT NULL,
     world_x INT, world_y INT, world_z INT,
     old_type SMALLINT, new_type SMALLINT,
     player_id INT,
     tick_number BIGINT,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at DATETIME2 DEFAULT GETUTCDATE()
   );
   CREATE INDEX idx_voxel_events_chunk_tick ON voxel_events(chunk_id, tick_number);
-  
+
+  IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'players')
   CREATE TABLE players (
-    player_id SERIAL PRIMARY KEY,
-    username VARCHAR(64) UNIQUE NOT NULL,
+    player_id INT IDENTITY(1,1) PRIMARY KEY,
+    username VARCHAR(64) NOT NULL UNIQUE,
     password_hash VARCHAR(128) NOT NULL,
-    last_login TIMESTAMP
+    last_login DATETIME2
   );
-  
+
+  IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ships')
   CREATE TABLE ships (
-    ship_id SERIAL PRIMARY KEY,
+    ship_id INT IDENTITY(1,1) PRIMARY KEY,
     owner_id INT NOT NULL REFERENCES players(player_id),
     pos_x REAL, pos_y REAL, pos_z REAL,
     hp INT, max_hp INT,
-    cargo_json JSONB,
+    cargo_json NVARCHAR(MAX),
     last_saved_tick BIGINT
   );
   CREATE INDEX idx_ships_owner ON ships(owner_id);
   ```
-  - 🆕 **Partitioning strategy (per validation):** Consider `PARTITION BY LIST (sector_id)` on voxel_chunks for 4 partitions (one per sector row) if table exceeds 100K rows
+  - 🆕 **Partitioning strategy (per validation):** Consider partition functions and schemes on voxel_chunks for 4 partitions (one per sector row) if table exceeds 100K rows
   - 🆕 **Transaction semantics for concurrent chunk edits:**
     ```sql
     -- Atomically update chunk + append event (prevents lost updates)
-    BEGIN;
-      UPDATE voxel_chunks SET voxel_data = $1, version = version + 1,
+    BEGIN TRANSACTION;
+      UPDATE voxel_chunks SET voxel_data = @data, version = version + 1,
              locked_by_player_id = NULL
-       WHERE chunk_id = $2 AND locked_by_player_id = $3;
+       WHERE chunk_id = @chunkId AND locked_by_player_id = @playerId;
       INSERT INTO voxel_events (chunk_id, world_x, world_y, world_z,
              old_type, new_type, player_id, tick_number)
-       VALUES ($2, $4, $5, $6, $7, $8, $9, $10);
+       VALUES (@chunkId, @x, @y, @z, @oldType, @newType, @playerId, @tick);
     COMMIT;
     ```
   - 🆕 **Isolation level:** Use `READ COMMITTED` (default) for most queries; `SERIALIZABLE` only for chunk version-check updates to prevent lost writes from concurrent miners
 - **Why:** Defines data model; allows server to persist world state; prevents concurrent write issues
-- **Dependencies:** PostgreSQL 14+
-- **Build Impact:** Zero (data only, run psql < schema.sql)
+- **Dependencies:** MS SQL Server 2019+ (or SQL Server Express / LocalDB for development)
+- **Build Impact:** Zero (data only, run `sqlcmd -S localhost -d starstrike -i config\schema.sql`)
 - **Risk:** Low → Medium (concurrent writes; mitigated by locking fields + versioned updates)
 
 #### Step 3.4: Chunk Persistence Layer (Load/Save to DB)
@@ -871,7 +874,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   - AppendVoxelEvent: buffer deltas; flush via batch INSERT every 1 sec
 - **Why:** Abstracts SQL details; centralizes persistence logic
 - **Dependencies:** Database, VoxelSystem
-- **Build Impact:** Low (new translation unit, links PostgreSQL)
+- **Build Impact:** Low (new translation unit, uses ODBC via Database layer)
 - **Risk:** Medium (transaction isolation; test concurrent writes)
 
 #### Step 3.5: Sector Manager
@@ -936,7 +939,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 **Deliverables:**
 - ✅ EntitySystem (ECS-lite array-of-structs) implemented
 - ✅ VoxelSystem with RLE serialization
-- ✅ PostgreSQL schema created (voxel_chunks, voxel_events, players, ships — with indices & locking)
+- ✅ MS SQL Server schema created (voxel_chunks, voxel_events, players, ships — with indices & locking)
 - ✅ ChunkStore persistence layer
 - ✅ SectorManager for world partitioning
 - ✅ WorldManager orchestrator
@@ -1804,7 +1807,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   - Test graceful shutdown: `docker stop` → `CTRL_SHUTDOWN_EVENT` → clean exit within 5 sec
   - Register `SetConsoleCtrlHandler` for `CTRL_C_EVENT` / `CTRL_SHUTDOWN_EVENT` in server main
 - **Why:** Production-ready containerized deployment on Windows Server Core
-- **Dependencies:** Docker Desktop (Windows containers mode), Windows Server Core 2022 base image, PostgreSQL for Windows
+- **Dependencies:** Docker Desktop (Windows containers mode), Windows Server Core 2022 base image, MS SQL Server for Windows
 - **Build Impact:** Low (container tooling + deployment scripting)
 - **Risk:** Low (standard Windows container patterns)
 
@@ -1950,14 +1953,14 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 | Phase | CI Requirements |
 |-------|----------------|
 | 1–2 | Unit tests pass, build succeeds on Windows x64 (Debug + Release) |
-| 3 | Database integration tests (create schema, load/save chunks — use local PostgreSQL for Windows) |
+| 3 | Database integration tests (create schema, load/save chunks — use local SQL Server Express / LocalDB) |
 | 4+ | DX12 rendering test (requires GPU-enabled CI runner or local testing) |
 | 6 | 50-player load test: p99 tick < 16.67 ms average (CI runs reduced 10-player version; full 50 run manually) |
 
 **CI Environment:**
 - Windows runner with MSVC v145 toolset and GPU (or skip DX12 rendering tests in headless CI)
 - Shader precompilation happens offline (Phase 5.4); CI uses precompiled bytecode
-- PostgreSQL for Windows for database tests
+- SQL Server Express (or LocalDB) for database tests
 - Load test runs with reduced player count (10 instead of 50; scales linearly if tick time < 16.67 ms)
 
 ---
@@ -2043,7 +2046,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 ### Deployment
 - [ ] Server builds as Release x64 binary (< 5 min)
 - [ ] Windows Server Core container image builds (< 10 min)
-- [ ] docker-compose up → server + postgres running (< 30 sec)
+- [ ] docker-compose up → server + SQL Server running (< 30 sec)
 - [ ] Server health check: /health responds 200 OK
 - [ ] Prometheus metrics: tick count, player count, bandwidth exposed
 - [ ] Graceful shutdown: docker stop → CTRL_SHUTDOWN_EVENT → clean exit in < 5 sec, no data loss
@@ -2063,7 +2066,7 @@ Use this to track progress:
 ```
 ## Phase 1 (Weeks 1–1.5) ✅ COMPLETE (March 5, 2026)
 - [x] MSBuild solution configured (`StarStrike.slnx`, per-project `.vcxproj`)
-- [x] vcpkg manifest created (`vcpkg.json`: cppwinrt, libpq, winpixevent, yaml-cpp)
+- [x] vcpkg manifest created (`vcpkg.json`: cppwinrt, winpixevent, yaml-cpp)
 - [x] NeuronCore Types.h, Constants.h created (full API with 15+ static_asserts verified)
 - [x] PCH headers configured (`NeuronCore/pch.h` + MSBuild `<PrecompiledHeader>` settings)
 - [x] x64-debug builds successfully (MSVC 19.50, 0 errors)
@@ -2086,14 +2089,14 @@ Use this to track progress:
 - [x] GameApp: concrete GameMain — language detection, touch input, WndProc
 - [x] WinMain: entry point → ClientEngine::Startup → GameApp → Run → Shutdown
 - [x] Per-target PCH via MSBuild `<PrecompiledHeader>` settings
-- [x] NuGet: CppWinRT + Windows App SDK; vcpkg: libpq + winpixevent + yaml-cpp
+- [x] NuGet: CppWinRT + Windows App SDK; vcpkg: winpixevent + yaml-cpp
 - [x] UNICODE/WIN64 builds enforced
 - [x] MSBuild migration complete: CMake removed, `.vcxproj` + `.slnx` in place
 - [x] Phase 2 boilerplate scaffolded (NeuronServer: Database, SimulationEngine, SocketManager, TickProfiler; Server: main, Config)
 
 ## Phase 2 (Weeks 2–3.5) ✅ COMPLETE (March 8, 2026)
 - [x] Neuron::UDPSocket (WinSock2) implemented — non-blocking, bind/sendTo/recvFrom/close
-- [x] PostgreSQL connection pool working (configurable pool size, slow query logging > 100 ms)
+- [x] MS SQL Server connection pool working via ODBC (configurable pool size, slow query logging > 100 ms)
 - [x] Packet codec serializes/deserializes all message types (CmdInput, CmdChat, CmdRequestChunk, SnapState, Ping)
 - [x] 🆕 Packet framing: magic (0x53535452), CRC-32C (SSE4.2 hw), sequence number, error handling
 - [x] Server binary runs, tick loop at 60 Hz (Server.exe links and runs)
@@ -2117,7 +2120,7 @@ Use this to track progress:
 - [x] 🆕 EntityID free pool unit test (100K spawn/destroy, no ID collision)
 - [x] VoxelSystem RLE codec tested (sparse & dense chunks)
 - [x] 🆕 RLE round-trip tests: sparse, dense, hollow sphere, empty chunk, alternating types
-- [x] PostgreSQL schema created, indexed (with locking fields & foreign key indices)
+- [x] MS SQL Server schema created, indexed (with locking fields & foreign key indices)
 - [x] ChunkStore CRUD working (load/save/flush with versioned updates)
 - [x] SectorManager 4×4 grid with bounds checking and world-to-chunk mapping
 - [x] WorldManager orchestrator (owns EntitySystem + VoxelSystem + SectorManager)

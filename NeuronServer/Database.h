@@ -8,9 +8,9 @@
 #include <string>
 #include <vector>
 
-// Forward declare libpq types to avoid including libpq-fe.h in the header.
-struct pg_conn;
-typedef struct pg_conn PGconn;
+// Forward declare ODBC handle types to avoid pulling in <sql.h> in the header.
+using SQLHENV = void*;
+using SQLHDBC = void*;
 
 namespace Neuron::Server
 {
@@ -27,19 +27,19 @@ struct DatabaseConfig
 /// A single row of query results (column values as strings).
 using Row = std::vector<std::string>;
 
-/// RAII wrapper for a single PostgreSQL connection.
-class PgConnection
+/// RAII wrapper for a single MS SQL Server ODBC connection.
+class SqlConnection
 {
 public:
-    PgConnection() = default;
-    ~PgConnection();
+    SqlConnection() = default;
+    ~SqlConnection();
 
-    PgConnection(const PgConnection&) = delete;
-    PgConnection& operator=(const PgConnection&) = delete;
-    PgConnection(PgConnection&& other) noexcept;
-    PgConnection& operator=(PgConnection&& other) noexcept;
+    SqlConnection(const SqlConnection&) = delete;
+    SqlConnection& operator=(const SqlConnection&) = delete;
+    SqlConnection(SqlConnection&& other) noexcept;
+    SqlConnection& operator=(SqlConnection&& other) noexcept;
 
-    bool connect(const std::string& connString);
+    bool connect(SQLHENV hEnv, const std::string& connString);
     void disconnect();
 
     [[nodiscard]] bool isConnected() const noexcept;
@@ -51,10 +51,10 @@ public:
     std::optional<std::vector<Row>> query(const std::string& sql);
 
 private:
-    PGconn* m_conn = nullptr;
+    SQLHDBC m_hdbc = nullptr;
 };
 
-/// Thread-safe connection pool for PostgreSQL.
+/// Thread-safe connection pool for MS SQL Server via ODBC.
 class Database
 {
 public:
@@ -84,15 +84,16 @@ public:
 
 private:
     /// Borrow a connection from the pool (blocks if none available).
-    PgConnection* acquire();
+    SqlConnection* acquire();
     /// Return a connection to the pool.
-    void release(PgConnection* conn);
+    void release(SqlConnection* conn);
 
-    std::vector<std::unique_ptr<PgConnection>> m_pool;
-    std::queue<PgConnection*>                  m_available;
-    std::mutex                                 m_mutex;
-    bool                                       m_connected = false;
-    DatabaseConfig                             m_config;
+    SQLHENV                                     m_hEnv = nullptr;
+    std::vector<std::unique_ptr<SqlConnection>> m_pool;
+    std::queue<SqlConnection*>                  m_available;
+    std::mutex                                  m_mutex;
+    bool                                        m_connected = false;
+    DatabaseConfig                              m_config;
 };
 
 } // namespace Neuron::Server

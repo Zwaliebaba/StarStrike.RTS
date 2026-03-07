@@ -3,121 +3,188 @@
 
 #include "ServerLog.h"
 
-#include <libpq-fe.h>
+#include <sql.h>
+#include <sqlext.h>
 
 namespace Neuron::Server
 {
 
-// ── PgConnection ────────────────────────────────────────────────────────────
+// ── Helper: extract ODBC diagnostic message ─────────────────────────────────
 
-PgConnection::~PgConnection()
+static std::string getOdbcError(SQLSMALLINT handleType, SQLHANDLE handle)
+{
+    SQLCHAR     sqlState[6]{};
+    SQLINTEGER  nativeError = 0;
+    SQLCHAR     message[512]{};
+    SQLSMALLINT msgLen = 0;
+
+    if (SQLGetDiagRecA(handleType, handle, 1, sqlState, &nativeError,
+                       message, sizeof(message), &msgLen) == SQL_SUCCESS)
+    {
+        return std::string(reinterpret_cast<char*>(message), msgLen);
+    }
+    return "Unknown ODBC error";
+}
+
+// ── SqlConnection ───────────────────────────────────────────────────────────
+
+SqlConnection::~SqlConnection()
 {
     disconnect();
 }
 
-PgConnection::PgConnection(PgConnection&& other) noexcept
-    : m_conn(other.m_conn)
+SqlConnection::SqlConnection(SqlConnection&& other) noexcept
+    : m_hdbc(other.m_hdbc)
 {
-    other.m_conn = nullptr;
+    other.m_hdbc = nullptr;
 }
 
-PgConnection& PgConnection::operator=(PgConnection&& other) noexcept
+SqlConnection& SqlConnection::operator=(SqlConnection&& other) noexcept
 {
     if (this != &other)
     {
         disconnect();
-        m_conn = other.m_conn;
-        other.m_conn = nullptr;
+        m_hdbc = other.m_hdbc;
+        other.m_hdbc = nullptr;
     }
     return *this;
 }
 
-bool PgConnection::connect(const std::string& connString)
+bool SqlConnection::connect(SQLHENV hEnv, const std::string& connString)
 {
     disconnect();
-    m_conn = PQconnectdb(connString.c_str());
 
-    if (PQstatus(m_conn) != CONNECTION_OK)
+    SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_DBC, hEnv, &m_hdbc);
+    if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
     {
-        LogError("PostgreSQL connect failed: {}\n", PQerrorMessage(m_conn));
-        PQfinish(m_conn);
-        m_conn = nullptr;
+        LogError("ODBC: failed to allocate connection handle\n");
+        m_hdbc = nullptr;
         return false;
     }
 
-    LogInfo("PostgreSQL connection established\n");
+    // Set login timeout
+    SQLSetConnectAttrA(static_cast<SQLHDBC>(m_hdbc), SQL_LOGIN_TIMEOUT,
+                       reinterpret_cast<SQLPOINTER>(10), SQL_IS_INTEGER);
+
+    SQLCHAR outConn[1024]{};
+    SQLSMALLINT outLen = 0;
+    ret = SQLDriverConnectA(static_cast<SQLHDBC>(m_hdbc), nullptr,
+                            reinterpret_cast<SQLCHAR*>(const_cast<char*>(connString.c_str())),
+                            static_cast<SQLSMALLINT>(connString.size()),
+                            outConn, sizeof(outConn), &outLen,
+                            SQL_DRIVER_NOPROMPT);
+
+    if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
+    {
+        LogError("SQL Server connect failed: {}\n",
+                 getOdbcError(SQL_HANDLE_DBC, m_hdbc));
+        SQLFreeHandle(SQL_HANDLE_DBC, m_hdbc);
+        m_hdbc = nullptr;
+        return false;
+    }
+
+    LogInfo("SQL Server connection established\n");
     return true;
 }
 
-void PgConnection::disconnect()
+void SqlConnection::disconnect()
 {
-    if (m_conn)
+    if (m_hdbc)
     {
-        PQfinish(m_conn);
-        m_conn = nullptr;
+        SQLDisconnect(static_cast<SQLHDBC>(m_hdbc));
+        SQLFreeHandle(SQL_HANDLE_DBC, m_hdbc);
+        m_hdbc = nullptr;
     }
 }
 
-bool PgConnection::isConnected() const noexcept
+bool SqlConnection::isConnected() const noexcept
 {
-    return m_conn != nullptr && PQstatus(m_conn) == CONNECTION_OK;
+    if (!m_hdbc) return false;
+
+    // Check connection status via ODBC attribute
+    SQLUINTEGER deadConn = SQL_CD_FALSE;
+    SQLRETURN ret = SQLGetConnectAttrA(
+        static_cast<SQLHDBC>(const_cast<void*>(m_hdbc)),
+        SQL_ATTR_CONNECTION_DEAD, &deadConn, 0, nullptr);
+    return (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+           && deadConn == SQL_CD_FALSE;
 }
 
-bool PgConnection::execute(const std::string& sql)
+bool SqlConnection::execute(const std::string& sql)
 {
-    if (!m_conn) return false;
+    if (!m_hdbc) return false;
+
+    SQLHSTMT hStmt = nullptr;
+    SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_STMT, m_hdbc, &hStmt);
+    if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
+        return false;
 
     auto start = std::chrono::steady_clock::now();
-    PGresult* res = PQexec(m_conn, sql.c_str());
+    ret = SQLExecDirectA(hStmt,
+                         reinterpret_cast<SQLCHAR*>(const_cast<char*>(sql.c_str())),
+                         SQL_NTS);
     auto elapsed = std::chrono::steady_clock::now() - start;
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
 
     if (ms > 100)
         LogWarn("Slow query ({} ms): {}\n", ms, sql.substr(0, 120));
 
-    ExecStatusType status = PQresultStatus(res);
-    bool ok = (status == PGRES_COMMAND_OK || status == PGRES_TUPLES_OK);
+    bool ok = (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO || ret == SQL_NO_DATA);
     if (!ok)
-        LogError("SQL execute failed: {}\n", PQerrorMessage(m_conn));
+        LogError("SQL execute failed: {}\n", getOdbcError(SQL_HANDLE_STMT, hStmt));
 
-    PQclear(res);
+    SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     return ok;
 }
 
-std::optional<std::vector<Row>> PgConnection::query(const std::string& sql)
+std::optional<std::vector<Row>> SqlConnection::query(const std::string& sql)
 {
-    if (!m_conn) return std::nullopt;
+    if (!m_hdbc) return std::nullopt;
+
+    SQLHSTMT hStmt = nullptr;
+    SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_STMT, m_hdbc, &hStmt);
+    if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
+        return std::nullopt;
 
     auto start = std::chrono::steady_clock::now();
-    PGresult* res = PQexec(m_conn, sql.c_str());
+    ret = SQLExecDirectA(hStmt,
+                         reinterpret_cast<SQLCHAR*>(const_cast<char*>(sql.c_str())),
+                         SQL_NTS);
     auto elapsed = std::chrono::steady_clock::now() - start;
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
 
     if (ms > 100)
         LogWarn("Slow query ({} ms): {}\n", ms, sql.substr(0, 120));
 
-    if (PQresultStatus(res) != PGRES_TUPLES_OK)
+    if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
     {
-        LogError("SQL query failed: {}\n", PQerrorMessage(m_conn));
-        PQclear(res);
+        LogError("SQL query failed: {}\n", getOdbcError(SQL_HANDLE_STMT, hStmt));
+        SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
         return std::nullopt;
     }
 
-    int rows = PQntuples(res);
-    int cols = PQnfields(res);
-    std::vector<Row> result;
-    result.reserve(static_cast<size_t>(rows));
+    SQLSMALLINT cols = 0;
+    SQLNumResultCols(hStmt, &cols);
 
-    for (int r = 0; r < rows; ++r)
+    std::vector<Row> result;
+    while (SQLFetch(hStmt) == SQL_SUCCESS)
     {
         Row row;
         row.reserve(static_cast<size_t>(cols));
-        for (int c = 0; c < cols; ++c)
-            row.emplace_back(PQgetvalue(res, r, c));
+        for (SQLSMALLINT c = 1; c <= cols; ++c)
+        {
+            SQLCHAR buf[4096]{};
+            SQLLEN indicator = 0;
+            SQLGetData(hStmt, c, SQL_C_CHAR, buf, sizeof(buf), &indicator);
+            if (indicator == SQL_NULL_DATA)
+                row.emplace_back();
+            else
+                row.emplace_back(reinterpret_cast<char*>(buf));
+        }
         result.push_back(std::move(row));
     }
 
-    PQclear(res);
+    SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     return result;
 }
 
@@ -133,13 +200,23 @@ bool Database::connect(const DatabaseConfig& config)
     std::lock_guard lock(m_mutex);
     m_config = config;
 
+    // Allocate ODBC environment handle
+    SQLRETURN ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &m_hEnv);
+    if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
+    {
+        LogError("ODBC: failed to allocate environment handle\n");
+        return false;
+    }
+    SQLSetEnvAttr(m_hEnv, SQL_ATTR_ODBC_VERSION,
+                  reinterpret_cast<SQLPOINTER>(SQL_OV_ODBC3_80), 0);
+
     int successCount = 0;
     m_pool.reserve(static_cast<size_t>(config.poolSize));
 
     for (int i = 0; i < config.poolSize; ++i)
     {
-        auto conn = std::make_unique<PgConnection>();
-        if (conn->connect(config.connectionString))
+        auto conn = std::make_unique<SqlConnection>();
+        if (conn->connect(m_hEnv, config.connectionString))
         {
             m_available.push(conn.get());
             m_pool.push_back(std::move(conn));
@@ -160,11 +237,17 @@ bool Database::connect(const DatabaseConfig& config)
 void Database::disconnect()
 {
     std::lock_guard lock(m_mutex);
-    // PgConnection destructors handle PQfinish
+    // SqlConnection destructors handle SQLDisconnect/SQLFreeHandle
     m_pool.clear();
     while (!m_available.empty())
         m_available.pop();
     m_connected = false;
+
+    if (m_hEnv)
+    {
+        SQLFreeHandle(SQL_HANDLE_ENV, m_hEnv);
+        m_hEnv = nullptr;
+    }
 }
 
 bool Database::execute(const std::string& sql)
@@ -189,7 +272,7 @@ std::optional<std::vector<Row>> Database::query(const std::string& sql)
 
 bool Database::beginTransaction()
 {
-    return execute("BEGIN");
+    return execute("BEGIN TRANSACTION");
 }
 
 bool Database::commit()
@@ -197,7 +280,7 @@ bool Database::commit()
     return execute("COMMIT");
 }
 
-PgConnection* Database::acquire()
+SqlConnection* Database::acquire()
 {
     std::lock_guard lock(m_mutex);
     if (m_available.empty())
@@ -210,7 +293,7 @@ PgConnection* Database::acquire()
     return conn;
 }
 
-void Database::release(PgConnection* conn)
+void Database::release(SqlConnection* conn)
 {
     std::lock_guard lock(m_mutex);
     m_available.push(conn);

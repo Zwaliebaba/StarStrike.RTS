@@ -8,7 +8,9 @@ server:
   max_players: 50
 
 database:
-  url: "postgres://postgres:Vesting28@localhost:5432/starstrike"
+  url: "Driver={ODBC Driver 18 for SQL Server};Server=localhost;Database=starstrike;Trusted_Connection=yes;Encrypt=optional;"
+  # To use SQL Server Authentication instead of Windows Auth, replace the url above:
+  # url: "Driver={ODBC Driver 18 for SQL Server};Server=localhost;Database=starstrike;UID=sa;PWD=YourPasswordHere;Encrypt=optional;TrustServerCertificate=yes;"
   pool_size: 4
 
 logging:
