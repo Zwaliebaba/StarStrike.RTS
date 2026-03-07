@@ -9,23 +9,23 @@ namespace Neuron::Server { class ChunkStore; }
 namespace Neuron::GameLogic
 {
 
-/// Configuration for WorldManager initialisation.
-struct WorldConfig
+/// Configuration for UniverseManager initialisation.
+struct UniverseConfig
 {
     int32_t sectorGridX = SECTOR_GRID_X;
     int32_t sectorGridY = SECTOR_GRID_Y;
 };
 
-/// Top-level orchestrator for the game world state.
+/// Top-level orchestrator for the game universe state.
 /// Owns EntitySystem, VoxelSystem, and SectorManager.
 /// ChunkStore (persistence) is held externally by the server and passed in.
-class WorldManager
+class UniverseManager
 {
 public:
-    WorldManager() = default;
+    UniverseManager() = default;
 
-    /// Initialise the world: set up sector grid.
-    void init(const WorldConfig& cfg = {});
+    /// Initialise the universe: set up sector grid.
+    void init(const UniverseConfig& cfg = {});
 
     /// Per-tick update (called by SimulationEngine).
     void tick(float dt, uint64_t tickNum);

@@ -1,7 +1,7 @@
 # StarStrike: Voxel-Based Isometric RTS MMO Space Game — Full Architecture
 
-**Last Updated:** March 2026  
-**Status:** Architecture Design Complete  
+**Last Updated:** June 2025  
+**Status:** Architecture synced with implementation (Phase 3 complete)  
 **Target:** 8–12 week MVP build  
 
 ---
@@ -43,12 +43,13 @@ StarStrike combines **persistent voxel terrain**, **real-time multiplayer combat
 | **Client OS** | Windows 10+ (x64) | Desktop focus; future Vulkan for Linux |
 | **Client Rendering** | DirectX 12 | Modern GPU API; low-latency; supports compute shaders for voxel ops |
 | **Client UI** | D2D1 (Direct2D) + custom widget layer | Vector UI, low overhead, integrates with DX12 |
+| **Build System** | MSBuild (`.vcxproj` + `.slnx`) | Native VS integration; vcpkg manifest for deps |
 | **Server Language** | C++23 (MSVC) | Performance, determinism, memory control |
 | **Server Transport** | UDP (custom) over IPv4 | Low latency; packet loss handled via resend/ACK logic |
 | **Persistence Layer** | MS SQL Server (ODBC) | ACID guarantees for voxel chunks and entity snapshots |
 | **Object Storage** | SQL Server VARBINARY(MAX) for chunk data | Simplifies deployment; alternative: S3 for future scale |
 | **Deployment** | Docker (Windows Server Core) | Single-container MVP; orchestration-ready |
-| **Scripting** | YAML config + Lua (optional, for AI tuning) | Designer-facing parameters |
+| **Config** | YAML (yaml-cpp) | Designer-facing parameters; loaded in `Server/Config.cpp` |
 
 ### Core Metrics (MVP)
 
@@ -240,15 +241,11 @@ graph TB
 - Sends to server IP:7777
 - Platform: Windows 10+ native support (winsock2.h, link ws2_32.lib)
 
-**Packet Codec**
-- Binary serialization (hand-written, no IDL overhead)
-- Compression: optional Snappy or LZ4 for large snapshots
-- Message types:
-  - `CMD_INPUT`: Player commands (position, targeting)
-  - `CMD_CHAT`: Text chat
-  - `SNAP_ENTITIES`: Entity states (ships, asteroids, projectiles)
-  - `SNAP_VOXELS`: Chunk deltas (added/removed voxels)
-  - `ACK`: Acknowledgment (packet loss detection)
+**Packet Codec** (see `NeuronCore/PacketCodec.h`)
+- Binary serialization with 18-byte header (magic `0x53535452`, CRC-32C, sequence dedup)
+- Message types (from `NeuronCore/PacketTypes.h`):
+  - Client → Server: `CmdInput`, `CmdChat`, `CmdAck`, `CmdRequestChunk`
+  - Server → Client: `SnapState`, `SnapChunk`, `EventChat`, `EventDamage`, `Ping`
 
 **Chunk Streamer**
 - Tracks which chunks are loaded and visible
@@ -265,14 +262,18 @@ graph TB
 - Max capacity: ~200 chunks in MVP (32 × 32 × 32 × 4 bytes ≈ 512 MB for full sector)
 - Eviction: LRU by last-rendered timestamp
 
-**Entity List**
-- Struct-of-arrays for cache efficiency:
-  - `vector<EntityID> ids`
-  - `vector<Vec3> positions`
-  - `vector<Vec3> velocities`
-  - `vector<uint16> shipsTypes` (fighter, carrier, etc.)
-  - `vector<uint8> faction` (player ID)
-- Supports up to 10,000 entities (far more than needed for MVP)
+**Entity List** (mirrors server-side `GameLogic::EntitySystem`)
+- Array-of-structs for cache coherency (not SoA):
+  ```cpp
+  struct Entity {
+    EntityID id; Vec3 pos, vel, accel; Quat rot;
+    EntityType type; PlayerID ownerPlayerId;
+    uint32_t hp, maxHp; EntityID targetId; bool alive;
+  };
+  std::vector<Entity> m_entities;
+  std::unordered_map<EntityID, size_t> m_entityLookup;
+  ```
+- Supports up to 10,000 entities (`MAX_ENTITIES` in `Constants.h`)
 
 **Chunk Streaming Manager**
 - Interest region: sphere or box around camera (e.g., 8-chunk radius)
@@ -507,46 +508,70 @@ graph TB
 - Handles sector transitions (player moves across boundary)
 
 **Entity System (ECS-lite)**
-- Array-of-structs in separate vectors for cache coherency:
+- Array-of-structs with contiguous storage for cache coherency:
   ```cpp
+  // GameLogic/EntitySystem.h  (namespace Neuron::GameLogic)
   struct Entity {
-    EntityID id;
-    Vec3 pos, vel, accel;
-    Quat rot;
-    uint8 type; // SHIP, ASTEROID, PROJECTILE, RESOURCE
-    uint16 ownerPlayerID;
-    uint32 hp, maxHP;
-    uint32 targetEntityID; // EntityID::INVALID if none
-    uint64 lastUpdateTick;
+    EntityID   id;
+    Vec3       pos, vel, accel;
+    Quat       rot;
+    EntityType type;           // Ship, Asteroid, Projectile, Resource, Effect
+    PlayerID   ownerPlayerId;
+    uint32_t   hp, maxHp;
+    EntityID   targetId;       // INVALID_ENTITY if none
+    uint64_t   lastUpdateTick;
+    bool       alive;
   };
-  
-  vector<Entity> entities;
-  unordered_map<EntityID, size_t> entityIndex; // fast lookup
+
+  class EntitySystem {
+    EntityID spawnEntity(const Entity& prototype);
+    void destroyEntity(EntityID id);
+    Entity* getEntity(EntityID id);
+    void tickUpdate(float dt, uint64_t tickNum);
+  private:
+    std::vector<Entity> m_entities;
+    std::unordered_map<EntityID, size_t> m_entityLookup;
+    std::vector<EntityID> m_freePool;  // Reuse IDs to avoid exhaustion
+  };
   ```
-- CRUD operations: `SpawnEntity()`, `DestroyEntity()`, `GetEntity()`
+- CRUD operations: `spawnEntity()`, `destroyEntity()`, `getEntity()`
 - Tick updates: iterate entities array once per phase
 
 **Voxel System**
 - Chunk-based storage:
   ```cpp
+  // GameLogic/VoxelSystem.h  (namespace Neuron::GameLogic)
   struct VoxelChunk {
-    Vec3i min; // sector-local coords
-    uint8 voxels[32][32][32]; // 0 = empty, 1–255 = terrain type
-    bool dirty; // mesh rebuild needed
-    uint64 lastModified; // timestamp
+    ChunkID  chunkId;
+    Vec3i    minCorner;          // World-space min corner
+    uint8_t  voxels[32][32][32]; // 0 = empty, 1–255 = terrain type
+    bool     dirty;              // mesh rebuild needed
+    uint64_t version;
+    uint64_t modifiedTick;
   };
-  
-  unordered_map<ChunkID, VoxelChunk> chunks;
+
+  class VoxelSystem {
+    void setVoxel(const Vec3i& worldPos, uint8_t type, PlayerID playerId, uint64_t tickNum);
+    uint8_t getVoxel(const Vec3i& worldPos) const;
+    void loadChunk(VoxelChunk&& chunk);
+    std::vector<VoxelDelta> consumeDeltas();  // For persistence & network
+
+    static std::vector<uint8_t> serializeChunk(const VoxelChunk& chunk);   // RLE
+    static bool deserializeChunk(const std::vector<uint8_t>& data, VoxelChunk& chunk);
+  private:
+    std::unordered_map<ChunkID, VoxelChunk> m_chunks;
+    std::vector<VoxelDelta> m_deltaBuffer;
+  };
   ```
 - Delta buffer (per-tick changes):
   ```cpp
   struct VoxelDelta {
-    Vec3i worldPos;
-    uint8 newValue;
-    uint64 tick;
+    Vec3i    worldPos;
+    uint8_t  oldType;
+    uint8_t  newType;
+    PlayerID playerId;
+    uint64_t tickNum;
   };
-  
-  vector<VoxelDelta> deltaBuffer; // flushed to db every N ticks
   ```
 
 **Physics Engine**
@@ -559,63 +584,59 @@ graph TB
 
 #### 4. **Persistence Layer**
 
-**MS SQL Server Schema**
+**MS SQL Server Schema** (see `Config/schema.sql` for canonical DDL)
 
 ```sql
--- Voxel chunks
+-- Voxel chunks (materialized state with optimistic locking)
 CREATE TABLE voxel_chunks (
-  chunk_id VARBINARY(8) NOT NULL PRIMARY KEY,  -- (sector_x, sector_y, chunk_x, chunk_y, chunk_z)
-  sector_id VARCHAR(10),                        -- e.g., "0,0"
-  voxel_data VARBINARY(MAX),                    -- zstd-compressed chunk data
-  version INT,                                  -- incremented on update
-  modified_at DATETIME2 DEFAULT GETUTCDATE()
+  chunk_id            VARBINARY(8) NOT NULL PRIMARY KEY,
+  sector_id           VARCHAR(10),
+  voxel_data          VARBINARY(MAX),          -- RLE-compressed chunk data
+  version             INT DEFAULT 1,
+  modified_at         DATETIME2 DEFAULT GETUTCDATE(),
+  locked_by_player_id INT DEFAULT NULL,
+  lock_expiry_tick    BIGINT DEFAULT NULL
 );
 
--- Players & fleets
-CREATE TABLE players (
-  player_id INT IDENTITY(1,1) PRIMARY KEY,
-  username VARCHAR(64) NOT NULL UNIQUE,
-  faction INT,                                  -- 0 = neutral, 1+ = known factions
-  resource_credits INT DEFAULT 0,
-  last_login DATETIME2,
-  created_at DATETIME2 DEFAULT GETUTCDATE()
-);
-
-CREATE TABLE ships (
-  ship_id INT IDENTITY(1,1) PRIMARY KEY,
-  player_id INT REFERENCES players(player_id),
-  ship_type INT,                                -- 0 = fighter, 1 = carrier, etc.
-  sector_id VARCHAR(10),                        -- denormalized for quick lookup
-  pos_x REAL, pos_y REAL, pos_z REAL,
-  hp INT,
-  max_hp INT,
-  resource_cargo INT,
-  updated_at DATETIME2 DEFAULT GETUTCDATE()
-);
-
--- Voxel delta log (audit trail)
+-- Voxel change events (append-only log for crash recovery)
 CREATE TABLE voxel_events (
-  event_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  chunk_id VARBINARY(8),
-  world_x INT, world_y INT, world_z INT,
-  old_voxel INT, new_voxel INT,
-  player_id INT REFERENCES players(player_id),
-  created_at DATETIME2 DEFAULT GETUTCDATE()
+  id            BIGINT IDENTITY(1,1) PRIMARY KEY,
+  chunk_id      VARBINARY(8) NOT NULL,
+  world_x       INT, world_y INT, world_z INT,
+  old_type      SMALLINT,
+  new_type      SMALLINT,
+  player_id     INT,
+  tick_number   BIGINT,
+  created_at    DATETIME2 DEFAULT GETUTCDATE()
 );
 
-CREATE INDEX idx_voxel_events_chunk ON voxel_events(chunk_id);
-CREATE INDEX idx_chunks_sector ON voxel_chunks(sector_id);
+-- Players
+CREATE TABLE players (
+  player_id     INT IDENTITY(1,1) PRIMARY KEY,
+  username      VARCHAR(64) NOT NULL UNIQUE,
+  password_hash VARCHAR(128) NOT NULL,
+  last_login    DATETIME2
+);
+
+-- Ships (owned by players)
+CREATE TABLE ships (
+  ship_id         INT IDENTITY(1,1) PRIMARY KEY,
+  owner_id        INT NOT NULL REFERENCES players(player_id),
+  pos_x           REAL, pos_y REAL, pos_z REAL,
+  hp              INT, max_hp INT,
+  cargo_json      NVARCHAR(MAX),
+  last_saved_tick BIGINT
+);
 ```
 
 **Write Patterns**
-- Chunks: buffered, flushed every 30 seconds or on explicit \`SaveChunk()\`
-- Ships: updated after each tick (or batched every 5 ticks if no state change)
-- Events: appended to voxel_events on each destruction (transactional integrity)
+- Chunks: buffered, flushed every 30 seconds (`CHUNK_FLUSH_TICKS`) via `ChunkStore::flushDirtyChunks()`
+- Voxel events: accumulated per-tick in `VoxelSystem::m_deltaBuffer`, consumed by `ChunkStore::appendVoxelEvents()`, batch-inserted every 1 second (`VOXEL_EVENT_FLUSH_TICKS`)
+- On shutdown: `chunkStore.flushVoxelEvents()` + `chunkStore.flushDirtyChunks()` before `db.disconnect()`
 
 **Read Patterns**
-- On player login: load ships for that player
-- On chunk load request: fetch chunk from voxel_chunks; decompress
-- On server start: load all chunk metadata from voxel_chunks table
+- On server start: `ChunkStore::loadSectorChunks()` loads all chunks per sector with RLE deserialization
+- On chunk load request: fetch chunk from voxel_chunks; decompress via `VoxelSystem::deserializeChunk()`
 
 #### 5. **Interest Management**
 
@@ -666,65 +687,64 @@ CREATE INDEX idx_chunks_sector ON voxel_chunks(sector_id);
 
 ### Message Types & Frequencies
 
+> **Packet Framing (implemented):** All packets use an 18-byte header: `[Magic: u32 = 0x53535452 "SSTR"] [Type: u8] [Flags: u8] [Reserved: u16] [Sequence: u32] [PayloadSize: u16] [CRC32C: u32] [Payload]`. CRC-32C uses SSE4.2 hardware intrinsics. Magic mismatch → drop silently; CRC mismatch → drop, log once per IP:port per minute; duplicate sequence → deduplicated via 60-tick window. See `NeuronCore/PacketTypes.h` and `NeuronCore/PacketCodec.h`.
+
 #### **Inbound (Client → Server)**
 
 | Message | Freq | Size | Purpose |
 |---------|------|------|---------|
-| `CMD_INPUT` | 60 Hz | 24 bytes | Player action (move, attack, mine) |
-| `CMD_CHAT` | On-demand | 64–256 bytes | Text message |
-| `CMD_ACK` | 20 Hz | 4 bytes | Acknowledge received snapshot |
-| `CMD_REQUEST_CHUNK` | Async | 8 bytes | Request voxel chunk |
+| `CmdInput` | 60 Hz | 18 + 22 bytes | Player action (move, attack, mine) |
+| `CmdChat` | On-demand | 18 + 260 bytes | Text message |
+| `CmdAck` | 20 Hz | 18 + 4 bytes | Acknowledge received snapshot |
+| `CmdRequestChunk` | Async | 18 + 10 bytes | Request voxel chunk |
 
-**Example `CMD_INPUT` (24 bytes):**
+**Example `CmdInput` payload (22 bytes):**
 ```
-u32 cmd_type = CMD_INPUT
-u32 player_id
-u8 action (1=move, 2=attack, 3=mine, 4=stop)
-f32 target_x, target_y, target_z
-u16 target_entity_id (0xFFFF if none)
+u16 playerId
+u8  action (1=Move, 2=Attack, 3=Mine, 4=Stop)
+f32 targetX, targetY, targetZ
+u32 targetEntity (0xFFFFFFFF if none)
 ```
 
-**Example `CMD_ACK`:**
+**Example `CmdAck` payload (8 bytes):**
 ```
-u32 cmd_type = CMD_ACK
-u32 last_snapshot_tick
+u64 lastSnapshotTick
 ```
 
 #### **Outbound (Server → Client)**
 
 | Message | Freq | Size | Purpose |
 |---------|------|------|---------|
-| `SNAP_STATE` | 20 Hz | 200–800 bytes | Entity + voxel deltas |
-| `SNAP_CHUNK` | Async | 4 KB–32 KB | Voxel chunk data |
-| `EVENT_CHAT` | On broadcast | 64–256 bytes | Chat message from other player |
-| `EVENT_DAMAGE` | Per hit | 12 bytes | Entity took X damage |
-| `PING` | 5 Hz | 4 bytes | Server still alive |
+| `SnapState` | 20 Hz | 18 + variable | Entity state snapshot (up to 64 entities) |
+| `SnapChunk` | Async | 18 + 4 KB–32 KB | Voxel chunk data |
+| `EventChat` | On broadcast | 18 + 260 bytes | Chat message from other player |
+| `EventDamage` | Per hit | 18 + 12 bytes | Entity took X damage |
+| `Ping` | 5 Hz | 18 + 16 bytes | Server tick + timestamp |
 
-**Example `SNAP_STATE` (variable):**
-```
-u32 cmd_type = SNAP_STATE
-u64 tick_number
-u16 num_entity_deltas
-  [for each delta]
-    u32 entity_id
-    u8 field_mask (bit 0=pos, 1=rot, 2=vel, 3=hp, 4=despawn)
-    [if pos] f32 x, y, z
-    [if rot] u16 yaw, pitch (quantized 0–65535)
-    [if vel] i16 vx, vy, vz (quantized)
-    [if hp] u16 hp_current, hp_max
-    [if despawn] <end>
-u16 num_voxel_deltas
-  [for each voxel delta]
-    i32 world_x, world_y, world_z
-    u8 new_voxel_type
+**Example `SnapState` payload (implemented in `NeuronCore/PacketTypes.h`):**
+```cpp
+struct SnapEntityData {
+  EntityID   entityId;       // u32
+  EntityType type;           // u8 (Ship, Asteroid, Projectile, etc.)
+  Vec3       position;       // 3 × f32
+  Vec3       velocity;       // 3 × f32
+  float      health;         // f32
+  PlayerID   ownerId;        // u16
+};
+
+struct SnapState {
+  uint64_t       serverTick;       // u64
+  uint16_t       entityCount;      // u16
+  SnapEntityData entities[64];     // up to MAX_ENTITIES_PER_SNAP
+};
 ```
 
 ### Traffic Budgets
 
 **Inbound per player:**
-- Input: 1 cmd/frame × 24 bytes = 1.44 KB/s @ 60 Hz input
-- ACK: 1 msg/50 ms × 4 bytes = 0.08 KB/s
-- **Total: ~1.5 KB/s per player (worst case)**
+- Input: 1 cmd/frame × 40 bytes (18 header + 22 payload) = 2.4 KB/s @ 60 Hz input
+- ACK: 1 msg/50 ms × 26 bytes = 0.5 KB/s
+- **Total: ~3 KB/s per player (worst case)**
 
 **Outbound per player:**
 - Snapshot: 1 msg/50 ms (20 Hz) × 250 bytes avg = 5 KB/s
@@ -740,18 +760,18 @@ u16 num_voxel_deltas
 ### Packet Loss Handling
 
 **Client-side:**
-- Resend `CMD_INPUT` if no `SNAP_STATE` received for 250 ms
+- Resend `CmdInput` if no `SnapState` received for 250 ms
 - Buffer up to 3 pending commands (sequence number)
 - Accept snapshots out-of-order; use snapshot tick to sort
 
 **Server-side:**
-- On duplicate `CMD_INPUT`: check sequence; drop if already processed
-- On missing `CMD_ACK`: assume packet loss; continue normally (no retransmit needed for one-way UDP)
+- On duplicate `CmdInput`: check sequence; drop if already processed (60-tick dedup window)
+- On missing `CmdAck`: assume packet loss; continue normally (no retransmit needed for one-way UDP)
 - Discard packets from unknown clients after 60 seconds of inactivity
 
 ### Tick Synchronization
 
-- Server publishes snapshot tick number in each `SNAP_STATE`
+- Server publishes snapshot tick number in each `SnapState`
 - Client advances local tick from input, but does not assume server ack
 - When snapshot arrives: reconcile if client tick ahead (snap to server); rewind if behind (lerp)
 - Maintains ~16–33 ms latency tolerance (1–2 frames)
@@ -770,22 +790,25 @@ u16 num_voxel_deltas
 
 #### **Voxel Data Format**
 ```cpp
+// GameLogic/VoxelSystem.h  (namespace Neuron::GameLogic)
 struct VoxelChunk {
-  Vec3i min;              // world-space min corner
-  uint8 voxels[32][32][32];
-  
-  bool dirty;             // mesh rebuild needed
-  uint64 version;         // increment on modification
-  uint64 lastModifiedTick;
-  uint64 cachedMeshHash;  // for cache validation
+  ChunkID  chunkId;                              // uint64 unique ID
+  Vec3i    minCorner;                            // world-space min corner
+  uint8_t  voxels[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]; // 32×32×32
+  bool     dirty;                                // mesh rebuild needed
+  uint64_t version;                              // increment on modification
+  uint64_t modifiedTick;                         // last tick that changed this chunk
 };
 ```
 
-**Voxel Type Encoding (1 byte):**
+**Voxel Type Encoding (1 byte — `NeuronCore/Types.h` `VoxelType` enum):**
 ```
-0x00 = empty (void)
-0x01–0x7F = terrain types (rock, ice, crystal, metal, etc.)
-0x80–0xFF = special (reserved for liquid, hazard, etc.)
+0x00 = Empty (void)
+0x01 = Rock       0x02 = Ice        0x03 = Crystal
+0x04 = Metal      0x05 = Ore
+  ... (0x06–0x7F reserved for future terrain)
+0x80 = Fissure    0x81 = Hazard     0x82 = Liquid
+  ... (0x83–0xFF reserved for special types)
 ```
 
 #### **Compression (Persistence)**
@@ -887,9 +910,9 @@ struct ChunkMesh {
 
 **Streaming Pipeline:**
 1. Client camera moves → new chunks enter view frustum
-2. Client requests chunks via `CMD_REQUEST_CHUNK`
+2. Client requests chunks via `CmdRequestChunk`
 3. Server checks if chunk exists in voxel_chunks table
-4. If exists: send chunk data in `SNAP_CHUNK` message
+4. If exists: send chunk data in `SnapChunk` message
 5. If not: send empty chunk (filled with terrain type 0x00)
 6. Client receives chunk; unpacks voxel data → CPU RAM
 7. On next frame: generate mesh via greedy meshing
@@ -903,11 +926,11 @@ struct ChunkMesh {
 ### Voxel Destruction Mechanics
 
 **Mining Example:**
-1. Client sends `CMD_INPUT` with action=MINE, target voxel coords
-2. Server validates: ship in range, voxel exists, voxel<br/>type is minable
+1. Client sends `CmdInput` with action=Mine, target voxel coords
+2. Server validates: ship in range, voxel exists, voxel type is minable
 3. Server removes voxel: `chunk.voxels[x][y][z] = 0x00`
 4. Mark chunk dirty; append to voxel_events table
-5. Server broadcasts `SNAP_STATE` with voxel delta to all players
+5. Server broadcasts `SnapState` with voxel delta to all players
 6. Clients apply delta locally
 7. When enough voxels removed: regenerate mesh (next frame)
 
@@ -942,99 +965,60 @@ struct ChunkMesh {
 
 ### Detailed Schema
 
+> **Canonical schema:** See `Config/schema.sql` for the DDL actually executed by `ChunkStore::ensureSchema()`. It uses `IF NOT EXISTS` guards and `GO` batch separators. The schema below reflects the implemented tables.
+
 ```sql
--- Sectors (metadata only)
-CREATE TABLE sectors (
-  sector_id VARCHAR(10) NOT NULL PRIMARY KEY,  -- e.g., "0,0"
-  min_x INT, min_y INT, min_z INT,
-  max_x INT, max_y INT, max_z INT,
-  created_at DATETIME2 DEFAULT GETUTCDATE(),
-  last_backup DATETIME2
-);
-
 -- Voxel chunks (materialized state)
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'voxel_chunks')
 CREATE TABLE voxel_chunks (
-  chunk_id VARBINARY(8) NOT NULL PRIMARY KEY,
-  sector_id VARCHAR(10) REFERENCES sectors(sector_id),
-  voxel_data VARBINARY(MAX),  -- RLE or zstd-compressed
-  version INT DEFAULT 1,
-  modified_at DATETIME2 DEFAULT GETUTCDATE(),
-  data_hash VARCHAR(64)  -- for integrity check
+  chunk_id            VARBINARY(8) NOT NULL PRIMARY KEY,
+  sector_id           VARCHAR(10),
+  voxel_data          VARBINARY(MAX),
+  version             INT DEFAULT 1,
+  modified_at         DATETIME2 DEFAULT GETUTCDATE(),
+  locked_by_player_id INT DEFAULT NULL,     -- optimistic locking for concurrent edits
+  lock_expiry_tick    BIGINT DEFAULT NULL
 );
 
--- Voxel change events (audit log)
+-- Voxel change events (append-only audit log for crash recovery)
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'voxel_events')
 CREATE TABLE voxel_events (
-  event_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  chunk_id VARBINARY(8),
-  world_x INT, world_y INT, world_z INT,
-  old_voxel_type INT,
-  new_voxel_type INT,
-  player_id INT REFERENCES players(player_id),
-  event_time DATETIME2 DEFAULT GETUTCDATE(),
-  tick_number BIGINT
+  id            BIGINT IDENTITY(1,1) PRIMARY KEY,
+  chunk_id      VARBINARY(8) NOT NULL,
+  world_x       INT,
+  world_y       INT,
+  world_z       INT,
+  old_type      SMALLINT,
+  new_type      SMALLINT,
+  player_id     INT,
+  tick_number   BIGINT,
+  created_at    DATETIME2 DEFAULT GETUTCDATE()
 );
-
-CREATE INDEX idx_voxel_events_chunk ON voxel_events(chunk_id, event_time DESC);
-CREATE INDEX idx_voxel_events_time ON voxel_events(event_time DESC);
-CREATE INDEX idx_voxel_chunks_sector ON voxel_chunks(sector_id);
+CREATE INDEX idx_voxel_events_chunk_tick ON voxel_events(chunk_id, tick_number);
 
 -- Players
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'players')
 CREATE TABLE players (
-  player_id INT IDENTITY(1,1) PRIMARY KEY,
-  username VARCHAR(64) NOT NULL UNIQUE,
-  password_hash VARCHAR(256),
-  faction INT DEFAULT 0,
-  credits INT DEFAULT 1000,
-  created_at DATETIME2 DEFAULT GETUTCDATE(),
-  last_login DATETIME2
+  player_id     INT IDENTITY(1,1) PRIMARY KEY,
+  username      VARCHAR(64) NOT NULL UNIQUE,
+  password_hash VARCHAR(128) NOT NULL,
+  last_login    DATETIME2
 );
 
 -- Ships (owned by players)
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ships')
 CREATE TABLE ships (
-  ship_id INT IDENTITY(1,1) PRIMARY KEY,
-  player_id INT NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
-  ship_name VARCHAR(64),
-  ship_type INT,  -- 0=fighter, 1=corvette, 2=carrier, etc.
-  sector_id VARCHAR(10),
-  pos_x REAL, pos_y REAL, pos_z REAL,
-  rot_yaw REAL, rot_pitch REAL, rot_roll REAL,
-  vel_x REAL, vel_y REAL, vel_z REAL,
-  hp INT, max_hp INT,
-  shield_hp INT, max_shield_hp INT,
-  cargo_resource INT,
-  cargo_capacity INT,
-  updated_at DATETIME2 DEFAULT GETUTCDATE(),
-
-  FOREIGN KEY (player_id) REFERENCES players(player_id)
+  ship_id         INT IDENTITY(1,1) PRIMARY KEY,
+  owner_id        INT NOT NULL REFERENCES players(player_id),
+  pos_x           REAL,
+  pos_y           REAL,
+  pos_z           REAL,
+  hp              INT,
+  max_hp          INT,
+  cargo_json      NVARCHAR(MAX),        -- JSON cargo payload
+  last_saved_tick BIGINT
 );
-
-CREATE INDEX idx_ships_player ON ships(player_id);
-CREATE INDEX idx_ships_sector ON ships(sector_id);
-
--- Fleets (optional: group ships)
-CREATE TABLE fleets (
-  fleet_id INT IDENTITY(1,1) PRIMARY KEY,
-  player_id INT NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
-  fleet_name VARCHAR(64),
-  created_at DATETIME2 DEFAULT GETUTCDATE()
-);
-
-CREATE TABLE fleet_membership (
-  fleet_id INT REFERENCES fleets(fleet_id) ON DELETE CASCADE,
-  ship_id INT REFERENCES ships(ship_id),
-  PRIMARY KEY (fleet_id, ship_id)
-);
-
--- Session state (transient; can be lost on restart)
-CREATE TABLE sessions (
-  session_id VARCHAR(128) NOT NULL PRIMARY KEY,
-  player_id INT REFERENCES players(player_id),
-  login_time DATETIME2 DEFAULT GETUTCDATE(),
-  last_heartbeat DATETIME2 DEFAULT GETUTCDATE(),
-  ip_address VARCHAR(45),  -- IPv4 or IPv6 text representation
-
-  CONSTRAINT unique_player_session UNIQUE (player_id)
-);
+CREATE INDEX idx_ships_owner ON ships(owner_id);
 ```
 
 ### Write & Flush Strategy
@@ -1102,18 +1086,18 @@ void FlushVoxelDeltas() {
 void FlushDirtyChunks() {
   for (auto& [chunk_id, chunk] : g_voxel_chunks) {
     if (!chunk.dirty) continue;
-    
+
     vector<uint8> compressed = SerializeChunk(chunk);
-    uint64 hash = CRC64(compressed);
-    
+
+    // T-SQL MERGE for upsert (INSERT or UPDATE)
     g_database.Execute(
-      "INSERT INTO voxel_chunks (chunk_id, sector_id, voxel_data, version, data_hash) "
-      "VALUES (?, ?, ?, ?, ?) "
-      "ON CONFLICT (chunk_id) DO UPDATE SET "
-      "voxel_data = EXCLUDED.voxel_data, version = version + 1, modified_at = NOW()",
-      chunk_id, chunk.sector_id, compressed, chunk.version, hash
+      "MERGE voxel_chunks AS tgt "
+      "USING (SELECT ? AS chunk_id) AS src ON tgt.chunk_id = src.chunk_id "
+      "WHEN MATCHED THEN UPDATE SET voxel_data = ?, version = tgt.version + 1, modified_at = GETUTCDATE() "
+      "WHEN NOT MATCHED THEN INSERT (chunk_id, voxel_data, version) VALUES (?, ?, 1);",
+      chunk_id, compressed, chunk_id, compressed
     );
-    
+
     chunk.dirty = false;
   }
 }
@@ -1450,7 +1434,7 @@ void RenderVoxelWorld(ID3D12GraphicsCommandList* cmd_list, float delta_time) {
 # Dockerfile (Windows Server Core)
 FROM mcr.microsoft.com/windows/servercore:ltsc2022 AS builder
 
-# Install Visual Studio Build Tools + CMake + vcpkg deps
+# Install Visual Studio Build Tools + vcpkg deps
 RUN powershell -Command \
     Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe ; \
     Start-Process -Wait -FilePath .\vs_buildtools.exe -ArgumentList '--quiet --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended' ; \
@@ -1459,7 +1443,7 @@ RUN powershell -Command \
 WORKDIR C:\app
 COPY . .
 
-RUN cmake --preset x64-release && cmake --build out/build/x64-release
+RUN msbuild StarStrike.slnx /p:Configuration=Release /p:Platform=x64 /t:Server
 
 ###
 
@@ -1467,8 +1451,8 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 WORKDIR C:\app
 
-COPY --from=builder C:\app\out\build\x64-release\Server\Server.exe C:\app\server.exe
-COPY config\ C:\app\config\
+COPY --from=builder C:\app\x64\Release\Server.exe C:\app\server.exe
+COPY Config\ C:\app\config\
 
 ENV LOG_LEVEL=INFO
 ENV DATABASE_URL="Driver={ODBC Driver 18 for SQL Server};Server=mssql;Database=starstrike;Trusted_Connection=no;UID=sa;PWD=YourPassword;Encrypt=optional;"
@@ -1549,7 +1533,7 @@ services:
       mssql:
         condition: service_healthy
     volumes:
-      - ./config:C:\app\config:ro
+      - ./Config:C:\app\config:ro
       - server_logs:C:\logs\starstrike
     restart: unless-stopped
 
@@ -1561,66 +1545,49 @@ volumes:
 ### Configuration File (YAML)
 
 ```yaml
-# config/server.yaml
+# Config/server.yaml  (see Server/Config.h for all supported keys and defaults)
 
 server:
   port: 7777
   bind_address: "0.0.0.0"
   tick_rate_hz: 60
-  max_concurrent_players: 50
-  
+  max_players: 50
+
 database:
-  url: "${DATABASE_URL}"
-  max_pool_size: 20
-  connection_timeout_ms: 5000
-  query_timeout_ms: 30000
-  
-world:
-  sectors:
-    grid_x: 4
-    grid_y: 4
-    sector_size_voxels: 512
-  
-  chunk:
-    size: 32  # voxels per axis
-    max_memory_mb: 2048
-    dirty_flush_interval_sec: 30
-  
-  voxel:
-    streaming_radius_chunks: 8
-    lod_distances: [8, 16, 32]
-  
-network:
-  bandwidth_limit_kbps: 1000  # per-player
-  snapshot_rate_hz: 20
-  packet_loss_tolerance_pct: 5
-  
+  url: "Driver={ODBC Driver 18 for SQL Server};Server=localhost;Database=starstrike;Trusted_Connection=yes;Encrypt=optional;"
+  # To use SQL Server Authentication instead of Windows Auth, replace the url above:
+  # url: "Driver={ODBC Driver 18 for SQL Server};Server=localhost;Database=starstrike;UID=sa;PWD=YourPasswordHere;Encrypt=optional;TrustServerCertificate=yes;"
+  pool_size: 4
+
 logging:
-  level: "${LOG_LEVEL:INFO}"
-  file: "/var/log/starstrike/server.log"
-  max_size_mb: 100
-  max_backups: 10
-  
-metrics:
-  enabled: true
-  port: 9090
-  scrape_interval_sec: 10
+  level: "info"
 ```
 
 ### Restart & Lifecycle
 
 **Graceful Shutdown:**
 ```cpp
-void OnShutdownSignal(int sig) {
-  g_shutdown_requested = true;
-  
-  // Server loop checks g_shutdown_requested each iteration
-  // Flushes voxels, saves player state, closes connections
-  // Exits cleanly within 5 seconds
+// Windows console control handler (replaces POSIX signals)
+static std::atomic<bool> g_shutdownRequested{ false };
+
+BOOL WINAPI consoleCtrlHandler(DWORD ctrlType) {
+  switch (ctrlType) {
+  case CTRL_C_EVENT:
+  case CTRL_BREAK_EVENT:
+  case CTRL_CLOSE_EVENT:
+  case CTRL_SHUTDOWN_EVENT:
+    g_shutdownRequested.store(true, std::memory_order_release);
+    return TRUE;
+  default:
+    return FALSE;
+  }
 }
 
-signal(SIGTERM, OnShutdownSignal);
-signal(SIGINT, OnShutdownSignal);
+// Registered in main():
+SetConsoleCtrlHandler(consoleCtrlHandler, TRUE);
+
+// Server loop checks g_shutdownRequested each iteration.
+// On exit: flushes voxel events + dirty chunks, disconnects DB, exits cleanly.
 ```
 
 **Kubernetes Ready (Future):**
@@ -1646,31 +1613,29 @@ readinessProbe:
 
 ### Logging
 
-**Levels & Categories:**
+**Logging Convention:**
+
+- **GUI apps** (StarStrike / NeuronClient): Use `DebugTrace` (debug-only, `OutputDebugString`) and `Fatal` from `NeuronCore/Debug.h`.
+- **Console apps** (Server / NeuronServer): Use `LogInfo`, `LogWarn`, `LogError`, `LogFatal` from `NeuronServer/ServerLog.h` — these write to stdout/stderr using `std::format`, so output is visible in terminals, Docker logs, and CI.
 
 ```cpp
-enum class LogLevel {
-  TRACE,    // every voxel update
-  DEBUG,    // per-tick state changes
-  INFO,     // startup, player join/leave
-  WARN,     // bandwidth overages, late ticks
-  ERROR,    // game logic violations
-  FATAL     // shutdown-triggering errors
-};
+// NeuronServer/ServerLog.h — console-friendly logging
+template <class... Types>
+void LogInfo(std::string_view fmt, Types&&... args);
+void LogWarn(std::string_view fmt, Types&&... args);   // Prefixed [WARN]
+void LogError(std::string_view fmt, Types&&... args);  // Prefixed [ERROR]
+void LogFatal(std::string_view fmt, Types&&... args);  // Prefixed [FATAL], calls exit(1)
 
-#define LOG(level, category, format, ...) \
-  Logger::Write(level, category, __FILE__, __LINE__, format, ##__VA_ARGS__)
-
-// Examples:
-LOG(INFO, "NETWORK", "Player %d connected from %s", player_id, ip_addr);
-LOG(DEBUG, "VOXEL", "Chunk [%d, %d, %d] modified, triggering mesh rebuild", cx, cy, cz);
-LOG(WARN, "TICK", "Tick %lld took %.2f ms (budget: 16.67 ms)", tick, tick_duration_ms);
+// Examples (in Server/main.cpp):
+LogInfo("StarStrike Server v0.1.0\n");
+LogInfo("  Tick rate:   {} Hz\n", config.tickRateHz);
+LogWarn("Database connected but SELECT 1 failed\n");
+LogFatal("Failed to bind socket — aborting");
 ```
 
 **Output Targets:**
-- Stdout (container logs)
-- File rotation (100 MB max, 10 backups)
-- Optional: Syslog or centralized ELK stack (future)
+- Stdout/stderr (container logs, terminal)
+- Future: File rotation, centralized ELK stack
 
 ### Metrics (Prometheus)
 
@@ -1731,33 +1696,21 @@ scrape_configs:
 
 ### Server Health Check
 
-```cpp
-struct ServerHealth {
-  bool is_running;
-  uint64 current_tick;
-  uint64 last_tick_time_ms;
-  int active_players;
-  int active_chunks;
-  float tick_time_ms;
-  float bandwidth_kbps;
-  
-  bool IsHealthy() const {
-    return is_running 
-      && tick_time_ms < 20.0f  // budget is 16.67, allow 20% overrun
-      && active_players > 0 || last_tick_time_ms < 60000; // no tick for 60 sec = bad
-  }
-};
+> **Current implementation:** `NeuronServer/TickProfiler.h` records rolling tick-time histograms and exposes an `isHealthy()` method (p99 < 16.67 ms over a 600-sample window). A full HTTP health endpoint is planned for a later phase.
 
-// Exposed via HTTP endpoint :9090/health
-void HandleHealthCheck(HttpRequest req) {
-  ServerHealth health = GetServerHealth();
-  Json::Value json;
-  json["status"] = health.IsHealthy() ? "healthy" : "degraded";
-  json["tick"] = health.current_tick;
-  json["players"] = health.active_players;
-  json["tick_time_ms"] = health.tick_time_ms;
-  req.SendJson(json);
-}
+```cpp
+// NeuronServer/TickProfiler.h  (namespace Neuron::Server)
+class TickProfiler {
+public:
+    void beginTick();
+    void endTick();                       // records elapsed ms, prints histogram every 60 ticks
+    [[nodiscard]] bool isHealthy() const; // true if p99 < 16.67 ms
+
+private:
+    static constexpr uint32_t WINDOW_SIZE    = 600;  // 10 sec @ 60 Hz
+    static constexpr uint32_t PRINT_INTERVAL = 60;   // every 1 sec
+    std::deque<double> m_samples;
+};
 ```
 
 ---
@@ -1766,205 +1719,150 @@ void HandleHealthCheck(HttpRequest req) {
 
 ### Mono-Repo Structure
 
+> **Note:** The actual project uses **MSBuild** (`.vcxproj` + `.slnx`), not CMake. Each project is a top-level folder; `.cpp` and `.h` files live together — no `/src`, `/include`, or `/lib` subdirectories. The CMake references below are from the original design document and are superseded by the MSBuild project files.
+
 ```
 StarStrike.RTS/
 │
-├── README.md                      # Project overview
-├── CMakeLists.txt                # Root CMake (orchestrates builds)
-├── CMakePresets.json             # Build presets (debug, release, etc.)
-├── Dockerfile                    # Windows Server Core container definition
-├── docker-compose.yaml           # Local dev compose
+├── StarStrike.slnx               # MSBuild solution (XML format, 7 projects)
+├── vcpkg.json                    # vcpkg manifest (cppwinrt, winpixevent, yaml-cpp)
+├── CODE_STANDARDS.md             # C++23 naming, style, memory rules
+├── IMPLEMENTATION_PLAN.md        # 14-week phase plan
+├── StarStrike.md                 # This architecture document
 │
-├── client/                       # Client application (Windows, DirectX 12)
-│   ├── CMakeLists.txt
-│   ├── src/
-│   │   ├── main.cpp              # Entry point, window creation
-│   │   ├── app.cpp/h             # Game app class
-│   │   ├── rendering/
-│   │   │   ├── dx12_device.cpp/h    # DX12 device init & management
-│   │   │   ├── voxel_renderer.cpp/h # Voxel mesh generation & draw
-│   │   │   ├── entity_renderer.cpp/h # Ships, projectiles
-│   │   │   ├── ui_renderer.cpp/h    # HUD, menus
-│   │   │   └── post_process.cpp/h   # Bloom, pixelation
-│   │   ├── world/
-│   │   │   ├── camera.cpp/h         # Isometric camera controller
-│   │   │   ├── voxel_cache.cpp/h    # Chunk streaming & LOD
-│   │   │   ├── entity_list.cpp/h    # Local entity AoS storage
-│   │   │   └── chunk_streamer.cpp/h # Interest mgmt
-│   │   ├── network/
-│   │   │   ├── socket.cpp/h         # UDP socket
-│   │   │   ├── packet_codec.cpp/h   # Serialize/deserialize
-│   │   │   ├── snapshot_decoder.cpp/h
-│   │   │   └── packet_queue.cpp/h   # Input queue
-│   │   ├── input/
-│   │   │   ├── keyboard.cpp/h       # Win32 keyboard input
-│   │   │   ├── mouse.cpp/h          # Mouse + camera control
-│   │   │   └── command_input.cpp/h  # Command translation
-│   │   ├── simulation/
-│   │   │   ├── ship_predictor.cpp/h # Dead reckoning
-│   │   │   └── projectile_predictor.cpp/h
-│   │   └── assets/
-│   │       ├── shader_compiler.cpp/h # HLSL → bytecode
-│   │       ├── mesh_pool.cpp/h       # VB/IB allocation
-│   │       └── texture_manager.cpp/h
-│   │
-│   └── shaders/
-│       ├── voxel.hlsl               # Voxel vertex + pixel
-│       ├── entity.hlsl              # Entity rendering
-│       ├── bloom_extract.hlsl       # Bloom mask
-│       ├── blur.hlsl                # Glow blur
-│       ├── composite.hlsl           # Final composite
-│       └── shared.hlsl              # Utility functions
+├── NeuronCore/                   # Static library — shared foundation (no Win32/DX12)
+│   ├── NeuronCore.vcxproj
+│   ├── pch.h / pch.cpp           # Precompiled header (STL + WinRT + DirectXMath)
+│   ├── NeuronCore.cpp/.h         # CoreEngine::Startup/Shutdown (WinRT init)
+│   ├── Types.h                   # EntityID, PlayerID, ChunkID, Vec3, Quat, AABB, enums
+│   ├── Constants.h               # Tick rate, chunk/sector geometry, network limits
+│   ├── PacketCodec.cpp/.h        # Binary packet encode/decode (CRC-32C, magic, sequence)
+│   ├── PacketTypes.h             # Wire-format structs (CmdInput, SnapState, Ping, etc.)
+│   ├── Socket.cpp/.h             # UDPSocket (WinSock2, non-blocking)
+│   ├── Hash.h                    # CRC32 with SSE4.2 intrinsics
+│   ├── GameMath.h                # DirectXMath wrappers
+│   ├── MathCommon.h              # Bit ops, alignment, power-of-two
+│   ├── Debug.h                   # DebugTrace, Fatal, ASSERT (GUI apps only)
+│   ├── NeuronHelper.h            # ENUM_HELPER, BaseException
+│   ├── FileSys.cpp/.h            # Win32 binary/text file I/O
+│   ├── FileSystem.h              # std::filesystem API
+│   ├── Threading.h               # ThreadPool (PIMPL)
+│   ├── Timer.h                   # std::chrono timer
+│   ├── TimerCore.h               # QPC-based frame timer with fixed timestep
+│   ├── ASyncLoader.h             # Async resource loading base
+│   ├── DeviceNotify.h            # IDeviceNotify interface
+│   └── WndProcManager.cpp/.h     # Win32 message routing chain
 │
-├── server/                       # Server application (C++, UDP, SQL Server)
-│   ├── CMakeLists.txt
-│   ├── src/
-│   │   ├── main.cpp              # Entry point, signal handlers
-│   │   ├── server.cpp/h          # Server main loop
-│   │   ├── config.cpp/h          # YAML config loader
-│   │   ├── transport/
-│   │   │   ├── socket.cpp/h         # UDP socket manager
-│   │   │   ├── packet_decoder.cpp/h # Deserialize input
-│   │   │   ├── packet_encoder.cpp/h # Serialize snapshots
-│   │   │   └── rate_limiter.cpp/h   # Per-player throttle
-│   │   ├── simulation/
-│   │   │   ├── engine.cpp/h         # 60 Hz tick loop
-│   │   │   ├── command_processor.cpp/h
-│   │   │   ├── physics.cpp/h        # AABB, raycasts
-│   │   │   └── combat_system.cpp/h  # Damage, effects
-│   │   ├── world/
-│   │   │   ├── sector.cpp/h         # Sector manager
-│   │   │   ├── entity_system.cpp/h  # ECS-lite
-│   │   │   ├── voxel_system.cpp/h   # Chunk + delta mgmt
-│   │   │   ├── voxel_serialization.cpp/h
-│   │   │   └── mining_system.cpp/h  # Resource extraction
-│   │   ├── persistence/
-│   │   │   ├── database.cpp/h       # SQL Server connection pool (ODBC)
-│   │   │   ├── chunk_store.cpp/h    # Voxel chunk CRUD
-│   │   │   ├── entity_store.cpp/h   # Ship/player CRUD
-│   │   │   └── transaction_log.cpp/h # Event log
-│   │   ├── interest_mgmt/
-│   │   │   ├── visibility.cpp/h     # Distance culling
-│   │   │   ├── snapshot_builder.cpp/h
-│   │   │   └── chunk_request_mgr.cpp/h
-│   │   └── observability/
-│   │       ├── logger.cpp/h         # Logging
-│   │       ├── metrics.cpp/h        # Prometheus metrics
-│   │       └── health.cpp/h         # Health check endpoint
-│   │
-│   └── cmake/
+├── NeuronClient/                 # Static library — DX12 rendering + window lifecycle
+│   ├── NeuronClient.vcxproj
+│   ├── pch.h / pch.cpp
+│   ├── NeuronClient.cpp/.h       # ClientEngine: window, Run loop, WndProc
+│   ├── GameMain.h                # Abstract game app lifecycle (Update/Render)
+│   ├── GraphicsCore.cpp/.h       # D3D12 device, swap chain, command queue, Present
+│   ├── GraphicsCommon.cpp/.h     # Global rasterizer/blend/depth states
+│   ├── DescriptorHeap.cpp/.h     # D3D12 descriptor heap allocation
+│   ├── RootSignature.cpp/.h      # Root signature builder
+│   ├── PipelineState.cpp/.h      # GraphicsPSO wrapper
+│   ├── ResourceStateTracker.cpp/.h # Batched resource barriers
+│   ├── GpuBuffer.cpp/.h          # Vertex/index/constant buffer management
+│   ├── GpuResource.h             # Base GPU resource with state tracking
+│   ├── SamplerManager.cpp/.h     # Sampler descriptor caching
+│   ├── DDSTextureLoader.cpp/.h   # DDS texture loader
+│   ├── DirectXHelper.h           # D3D12 helper macros
+│   ├── d3dx12.h                  # Microsoft D3D12 helper structures
+│   ├── VertexTypes.h             # Vertex layout descriptors
+│   ├── Color.h                   # 150+ named XMVECTORF32 color constants
+│   ├── PixProfiler.h             # PIX profiling macros (debug only)
+│   ├── Audio.h                   # Audio stub (Phase 6.5)
+│   └── Strings.h                 # String localization stub
 │
-├── shared/                       # Shared code (types, serialization)
-│   ├── CMakeLists.txt
-│   ├── types.h                   # EntityID, Vec3, Quat, etc.
-│   ├── constants.h               # Chunk sizes, physics params, etc.
-│   ├── entity_types.h            # Ship, Asteroid enum + properties
-│   ├── packet_types.h            # Network message structs
-│   ├── serialization.h           # Binary encode/decode utilities
-│   └── math.h                    # Common math functions
+├── GameLogic/                    # Static library — shared gameplay (no platform deps)
+│   ├── GameLogic.vcxproj
+│   ├── pch.h / pch.cpp
+│   ├── GameLogic.cpp/.h          # Placeholder / shared utilities
+│   ├── EntitySystem.cpp/.h       # ECS-lite AoS with free pool ID reuse
+│   ├── VoxelSystem.cpp/.h        # Chunk storage, RLE serialization, delta tracking
+│   ├── Sector.cpp/.h             # Sector bounds + SectorManager 4×4 grid
+│   └── WorldManager.cpp/.h       # Top-level orchestrator (Entity + Voxel + Sector)
 │
-├── tools/                        # Utilities & converters
-│   ├── CMakeLists.txt
-│   ├── asset_compiler/           # Texture atlas builder
-│   │   ├── atlas_builder.cpp
-│   │   └── png_loader.cpp
-│   └── voxel_painter/            # Level editor (future)
-│       ├── editor.cpp
-│       └── voxel_brush.cpp
+├── NeuronServer/                 # Static library — server subsystems
+│   ├── NeuronServer.vcxproj
+│   ├── pch.h / pch.cpp
+│   ├── NeuronServer.h            # Umbrella header
+│   ├── ServerLog.h               # Console logging (LogInfo/LogWarn/LogError/LogFatal)
+│   ├── Database.cpp/.h           # MS SQL Server connection pool (ODBC)
+│   ├── SimulationEngine.cpp/.h   # 60 Hz tick loop, 6 phases (stubs)
+│   ├── SocketManager.cpp/.h      # Server UDP recv/validate/dedup/send
+│   ├── TickProfiler.cpp/.h       # Tick-time histogram (p50/p95/p99)
+│   └── ChunkStore.cpp/.h         # Chunk persistence (load/save/flush, schema DDL)
 │
-├── assets/                       # Game content
-│   ├── textures/
-│   │   ├── terrain_atlas.png     # 2048×2048 RGBA
-│   │   ├── emissive_mask.png
-│   │   └── normal_maps.png
-│   ├── scripts/
-│   │   ├── terrain_gen.lua       # Procedural generation
-│   │   └── ai_behavior.lua
-│   └── data/
-│       ├── ship_types.yaml       # Ship stats
-│       ├── weapons.yaml          # Weapon properties
-│       └── factions.yaml
+├── Server/                       # Console executable — server entry point
+│   ├── Server.vcxproj
+│   ├── pch.h / pch.cpp
+│   ├── main.cpp                  # Entry point, SetConsoleCtrlHandler, tick loop
+│   └── Config.cpp/.h             # YAML config parsing (yaml-cpp)
 │
-├── config/                       # Deployment configs
+├── StarStrike/                   # Windows application — client entry point
+│   ├── StarStrike.vcxproj
+│   ├── pch.h / pch.cpp
+│   ├── WinMain.cpp               # Win32 entry point → ClientEngine boot
+│   └── GameApp.cpp/.h            # Concrete GameMain (touch, camera, render)
+│
+├── Tests.NeuronCore/             # Microsoft Native Unit Test DLL
+│   ├── Tests.NeuronCore.vcxproj
+│   ├── pch.h / pch.cpp
+│   ├── TypesTests.cpp            # Phase 1: Vec3/AABB/ChunkID/constants
+│   ├── PacketCodecTests.cpp      # Phase 2: encode→decode, CRC, magic, oversized
+│   ├── EntitySystemTests.cpp     # Phase 3: spawn/destroy/free pool/100K stress
+│   ├── VoxelSystemTests.cpp      # Phase 3: RLE codec + VoxelSystem CRUD
+│   └── SectorTests.cpp           # Phase 3: Sector bounds/mapping/manager
+│
+├── Config/                       # Deployment configs
 │   ├── server.yaml               # Server configuration
-│   ├── schema.sql                # MS SQL Server schema
-│   └── prometheus.yml            # Prometheus config
+│   └── schema.sql                # MS SQL Server DDL (IF NOT EXISTS guards)
 │
-├── docs/                         # Documentation
-│   ├── ARCHITECTURE.md           # This file
-│   ├── NETWORKING.md             # Protocol spec
-│   ├── VOXEL_SYSTEM.md           # Voxel design detailed
-│   ├── RENDERING.md              # Renderer internals
-│   └── BUILD.md                  # Build instructions
-│
-└── .github/                      # CI/CD
-    └── workflows/
-        ├── build.yml             # Compile on every commit
-        ├── test.yml              # Unit tests
-        └── deploy.yml            # Docker build & push
+└── .github/                      # CI/CD & Copilot config
+    ├── copilot-instructions.md
+    └── Agents/
+        └── Architect.md
 ```
 
-### Build System (CMake)
+### Build System (MSBuild)
 
-**Root CMakeLists.txt:**
+> **Note:** The project uses MSBuild (`.vcxproj` + `.slnx`), not CMake. NuGet provides CppWinRT and Windows App SDK; vcpkg manifest mode provides yaml-cpp and winpixevent. Database access uses ODBC (Windows SDK built-in — no vcpkg dependency).
 
-```cmake
-cmake_minimum_required(VERSION 3.20)
-project(StarStrike LANGUAGES CXX)
+**Building:**
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+```powershell
+# From VS Developer Command Prompt:
+msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64
 
-# Compiler flags
-if (MSVC)
-  add_compile_options(/W4 /WX)  # Warnings as errors
-else ()
-  add_compile_options(-Wall -Wextra -Werror)
-endif ()
-
-# Find dependencies
-# ODBC is built into Windows SDK (no find_package needed)
-find_package(DirectX REQUIRED)
-
-# Core libraries (see ARCHITECTURE_RECOMMENDATIONS.md for full CMake structure)
-add_subdirectory(shared)  # Creates NeuronCore, Neuron, GameLogic
-
-# Server
-add_subdirectory(server)
-
-# Client (Windows only)
-if (WIN32)
-  add_subdirectory(client)
-endif ()
-
-# Tools
-add_subdirectory(tools)
+# Or: Open StarStrike.slnx in Visual Studio → Build Solution (Ctrl+Shift+B)
 ```
 
-**server/CMakeLists.txt:**
+**Solution structure (StarStrike.slnx):**
 
-```cmake
-add_executable(NeuronServer
-  src/main.cpp
-  src/server.cpp
-  src/config.cpp
-  # ... rest of sources
-)
+| Project | Type | Output | Key Dependencies |
+|---------|------|--------|-----------------|
+| **NeuronCore** | StaticLibrary | NeuronCore.lib | ws2_32, WinRT, DirectXMath |
+| **NeuronClient** | StaticLibrary | NeuronClient.lib | NeuronCore, d3d12, dxgi, WinPixEventRuntime |
+| **GameLogic** | StaticLibrary | GameLogic.lib | NeuronCore |
+| **NeuronServer** | StaticLibrary | NeuronServer.lib | NeuronCore, GameLogic, odbc32 |
+| **Server** | Console App | Server.exe | NeuronServer, GameLogic, NeuronCore, yaml-cpp |
+| **StarStrike** | Windows App | StarStrike.exe | NeuronClient, NeuronCore, Windows App SDK |
+| **Tests.NeuronCore** | Test DLL | Tests.NeuronCore.dll | NeuronCore, NeuronServer, GameLogic |
 
-target_link_libraries(NeuronServer PRIVATE
-  GameLogic
-  Neuron
-  NeuronCore
-  odbc32
-)
+**PCH strategy:** Each target has its own `pch.h` → `pch.cpp` pair. `pch.cpp` uses `<PrecompiledHeader>Create</PrecompiledHeader>`; all other `.cpp` files use `<PrecompiledHeader>Use</PrecompiledHeader>`. Provides 60–70% rebuild speedup.
 
-target_compile_definitions(NeuronServer PRIVATE
-  NEURON_VERSION="0.1.0"
-  NEURON_MAX_PLAYERS=50
-)
+**Unit tests:**
+```powershell
+# Run all unit tests (82 tests across 5 test files):
+vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 ```
 
 ### CI/CD (.github/workflows/build.yml)
+
+> **Note:** This is a Windows-only project (Win32, DX12, WinSock2, ODBC). CI runs on `windows-latest` with MSVC.
 
 ```yaml
 name: Build & Test
@@ -1972,36 +1870,25 @@ name: Build & Test
 on: [push, pull_request]
 
 jobs:
-  build-server:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake unixodbc-dev
-      
-      - name: Build server
-        run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
-          cmake --build build
-      
-      - name: Build Docker image
-        run: docker build -t starstrike:latest .
-  
-  build-client:
+  build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
-      
-      - name: Build client
-        run: |
-          cmake -B build -G "Visual Studio 17 2022" -A x64
-          cmake --build build --config Release
+
+      - name: Restore NuGet packages
+        run: nuget restore StarStrike.slnx
+
+      - name: Build solution
+        run: msbuild StarStrike.slnx /p:Configuration=Debug /p:Platform=x64 /m
+
+      - name: Run unit tests
+        run: vstest.console.exe x64\Debug\Tests.NeuronCore.dll
+
+      - name: Build Docker image (server only)
+        run: docker build -t starstrike-server:latest .
 ```
 
 ---
@@ -2290,7 +2177,7 @@ This architecture provides a solid foundation for a voxel-based isometric RTS MM
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** March 2026  
+**Document Version:** 1.1 (synced with Phase 3 codebase)  
+**Last Updated:** June 2025  
 **Author:** StarStrike Architecture Team  
 **Status:** Ready for Implementation

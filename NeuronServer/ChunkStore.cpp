@@ -112,14 +112,14 @@ void ChunkStore::flushVoxelEvents()
         return;
 
     std::ostringstream sql;
-    sql << "INSERT INTO voxel_events (world_x, world_y, world_z, "
+    sql << "INSERT INTO voxel_events (universe_x, universe_y, universe_z, "
         << "old_type, new_type, player_id, tick_number) VALUES ";
 
     for (size_t i = 0; i < m_eventBuffer.size(); ++i)
     {
         const auto& d = m_eventBuffer[i];
         if (i > 0) sql << ", ";
-        sql << "(" << d.worldPos.x << ", " << d.worldPos.y << ", " << d.worldPos.z
+        sql << "(" << d.universePos.x << ", " << d.universePos.y << ", " << d.universePos.z
             << ", " << static_cast<int>(d.oldType) << ", " << static_cast<int>(d.newType)
             << ", " << d.playerId << ", " << d.tickNum << ")";
     }
@@ -189,9 +189,9 @@ bool ChunkStore::ensureSchema()
         CREATE TABLE voxel_events (
             id            BIGINT IDENTITY(1,1) PRIMARY KEY,
             chunk_id      VARBINARY(8) NOT NULL,
-            world_x       INT,
-            world_y       INT,
-            world_z       INT,
+            universe_x    INT,
+            universe_y    INT,
+            universe_z    INT,
             old_type      SMALLINT,
             new_type      SMALLINT,
             player_id     INT,

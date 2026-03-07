@@ -20,7 +20,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Sector.h" />
     <ClInclude Include="VoxelSystem.h" />
-    <ClInclude Include="WorldManager.h" />
+    <ClInclude Include="UniverseManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EntitySystem.cpp" />
@@ -31,7 +31,7 @@
     </ClCompile>
     <ClCompile Include="Sector.cpp" />
     <ClCompile Include="VoxelSystem.cpp" />
-    <ClCompile Include="WorldManager.cpp" />
+    <ClCompile Include="UniverseManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

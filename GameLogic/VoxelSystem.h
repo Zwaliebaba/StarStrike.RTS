@@ -14,7 +14,7 @@ namespace Neuron::GameLogic
 /// A voxel modification delta (for persistence and network replication).
 struct VoxelDelta
 {
-    Vec3i    worldPos  = {};
+    Vec3i    universePos  = {};
     uint8_t  oldType   = 0;
     uint8_t  newType   = 0;
     PlayerID playerId  = INVALID_PLAYER;
@@ -25,7 +25,7 @@ struct VoxelDelta
 struct VoxelChunk
 {
     ChunkID  chunkId      = INVALID_CHUNK;
-    Vec3i    minCorner    = {};          // World-space min corner
+    Vec3i    minCorner    = {};          // Universe-space min corner
     uint8_t  voxels[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE]{};
     bool     dirty        = false;
     uint64_t version      = 1;
@@ -39,17 +39,17 @@ struct VoxelChunk
     }
 };
 
-/// Manages all voxel chunks in the world with RLE serialization.
+/// Manages all voxel chunks in the universe with RLE serialization.
 class VoxelSystem
 {
 public:
     VoxelSystem() = default;
 
-    /// Set a single voxel at a world position. Marks the owning chunk dirty.
-    void setVoxel(const Vec3i& worldPos, uint8_t type, PlayerID playerId, uint64_t tickNum);
+    /// Set a single voxel at a universe position. Marks the owning chunk dirty.
+    void setVoxel(const Vec3i& universePos, uint8_t type, PlayerID playerId, uint64_t tickNum);
 
-    /// Get the voxel type at a world position (returns VoxelType::Empty if chunk not loaded).
-    [[nodiscard]] uint8_t getVoxel(const Vec3i& worldPos) const;
+    /// Get the voxel type at a universe position (returns VoxelType::Empty if chunk not loaded).
+    [[nodiscard]] uint8_t getVoxel(const Vec3i& universePos) const;
 
     /// Insert or replace a chunk in the system.
     void loadChunk(VoxelChunk&& chunk);
@@ -79,12 +79,12 @@ public:
 
     // ── Coordinate Helpers ──────────────────────────────────────────────────
 
-    /// Convert a world position to the ChunkID that contains it.
-    [[nodiscard]] static ChunkID worldPosToChunkID(const Vec3i& worldPos,
+    /// Convert a universe position to the ChunkID that contains it.
+    [[nodiscard]] static ChunkID universePosToChunkID(const Vec3i& universePos,
                                                    uint8_t sectorX, uint8_t sectorY);
 
-    /// Convert a world position to the local voxel index within its chunk.
-    [[nodiscard]] static Vec3i worldPosToLocalPos(const Vec3i& worldPos);
+    /// Convert a universe position to the local voxel index within its chunk.
+    [[nodiscard]] static Vec3i universePosToLocalPos(const Vec3i& universePos);
 
 private:
     std::unordered_map<ChunkID, VoxelChunk> m_chunks;

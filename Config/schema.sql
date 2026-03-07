@@ -26,9 +26,9 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'voxel_events')
 CREATE TABLE voxel_events (
     id            BIGINT IDENTITY(1,1) PRIMARY KEY,
     chunk_id      VARBINARY(8) NOT NULL,
-    world_x       INT,
-    world_y       INT,
-    world_z       INT,
+    universe_x    INT,
+    universe_y    INT,
+    universe_z    INT,
     old_type      SMALLINT,
     new_type      SMALLINT,
     player_id     INT,
@@ -82,7 +82,7 @@ GO
 --   UPDATE voxel_chunks SET voxel_data = @data, version = version + 1,
 --          locked_by_player_id = NULL
 --    WHERE chunk_id = @chunkId AND locked_by_player_id = @playerId;
---   INSERT INTO voxel_events (chunk_id, world_x, world_y, world_z,
+--   INSERT INTO voxel_events (chunk_id, universe_x, universe_y, universe_z,
 --          old_type, new_type, player_id, tick_number)
 --    VALUES (@chunkId, @x, @y, @z, @oldType, @newType, @playerId, @tick);
 -- COMMIT;

@@ -10,7 +10,7 @@
 #include "SocketManager.h"
 #include "TickProfiler.h"
 #include "VoxelSystem.h"
-#include "WorldManager.h"
+#include "UniverseManager.h"
 
 #include <atomic>
 #include <thread>
@@ -95,9 +95,9 @@ int main(int argc, char* argv[])
     SimulationEngine sim;
     TickProfiler profiler;
 
-    // ── Initialize world (Phase 3) ──────────────────────────────────────────
-    GameLogic::WorldManager world;
-    world.init();
+    // ── Initialize universe (Phase 3) ──────────────────────────────────────────
+    GameLogic::UniverseManager universe;
+    universe.init();
 
     // Persistence layer
     ChunkStore chunkStore(db);
@@ -113,20 +113,20 @@ int main(int argc, char* argv[])
             {
                 totalChunks += chunkStore.loadSectorChunks(
                     static_cast<uint8_t>(sx), static_cast<uint8_t>(sy),
-                    world.getVoxelSystem());
+                    universe.getVoxelSystem());
             }
         }
         LogInfo("Loaded {} chunks from database\n", totalChunks);
     }
 
     // Spawn test entities — 1 asteroid per sector, 1 ship at sector (0,0)
-    auto& entitySys = world.getEntitySystem();
+    auto& entitySys = universe.getEntitySystem();
 
     for (int32_t sy = 0; sy < SECTOR_GRID_Y; ++sy)
     {
         for (int32_t sx = 0; sx < SECTOR_GRID_X; ++sx)
         {
-            const auto& sector = world.getSectorManager().getSector(sx, sy);
+            const auto& sector = universe.getSectorManager().getSector(sx, sy);
             auto sMin = sector.minBound();
 
             GameLogic::Entity asteroid;
@@ -154,8 +154,8 @@ int main(int argc, char* argv[])
         LogInfo("Spawned test ship {} at (0, 0, 0)\n", id);
     }
 
-    LogInfo("World ready: {} entities, {} chunks\n",
-               entitySys.liveCount(), world.getVoxelSystem().chunkCount());
+    LogInfo("Universe ready: {} entities, {} chunks\n",
+               entitySys.liveCount(), universe.getVoxelSystem().chunkCount());
 
     LogInfo("Server initialized. Listening on {}:{}/udp\n",
                config.bindAddress, config.port);
@@ -177,12 +177,12 @@ int main(int argc, char* argv[])
 
         // Run simulation tick
         sim.tick(tickNum);
-        world.tick(TICK_INTERVAL_SEC, tickNum);
+        universe.tick(TICK_INTERVAL_SEC, tickNum);
 
         // Persistence: flush voxel deltas every 1 sec, dirty chunks every 30 sec
         if (db.isConnected())
         {
-            auto deltas = world.getVoxelSystem().consumeDeltas();
+            auto deltas = universe.getVoxelSystem().consumeDeltas();
             if (!deltas.empty())
                 chunkStore.appendVoxelEvents(deltas);
 
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
                 chunkStore.flushVoxelEvents();
 
             if (tickNum % CHUNK_FLUSH_TICKS == 0)
-                chunkStore.flushDirtyChunks(world.getVoxelSystem());
+                chunkStore.flushDirtyChunks(universe.getVoxelSystem());
         }
 
         profiler.endTick();
@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
     if (db.isConnected())
     {
         chunkStore.flushVoxelEvents();
-        chunkStore.flushDirtyChunks(world.getVoxelSystem());
+        chunkStore.flushDirtyChunks(universe.getVoxelSystem());
     }
 
     db.disconnect();

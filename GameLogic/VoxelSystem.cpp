@@ -6,40 +6,40 @@ namespace Neuron::GameLogic
 
 // ── Coordinate Helpers ──────────────────────────────────────────────────────
 
-ChunkID VoxelSystem::worldPosToChunkID(const Vec3i& worldPos,
+ChunkID VoxelSystem::universePosToChunkID(const Vec3i& universePos,
                                        uint8_t sectorX, uint8_t sectorY)
 {
-    auto chunkX = static_cast<uint8_t>(worldPos.x / CHUNK_SIZE);
-    auto chunkY = static_cast<uint8_t>(worldPos.y / CHUNK_SIZE);
-    auto chunkZ = static_cast<uint8_t>(worldPos.z / CHUNK_SIZE);
+    auto chunkX = static_cast<uint8_t>(universePos.x / CHUNK_SIZE);
+    auto chunkY = static_cast<uint8_t>(universePos.y / CHUNK_SIZE);
+    auto chunkZ = static_cast<uint8_t>(universePos.z / CHUNK_SIZE);
     return makeChunkID(sectorX, sectorY, chunkX, chunkY, chunkZ);
 }
 
-Vec3i VoxelSystem::worldPosToLocalPos(const Vec3i& worldPos)
+Vec3i VoxelSystem::universePosToLocalPos(const Vec3i& universePos)
 {
     // Modulo that handles negative coords via ((x % n) + n) % n
     auto mod = [](int32_t v, int32_t n) -> int32_t {
         return ((v % n) + n) % n;
     };
-    return { mod(worldPos.x, CHUNK_SIZE),
-             mod(worldPos.y, CHUNK_SIZE),
-             mod(worldPos.z, CHUNK_SIZE) };
+    return { mod(universePos.x, CHUNK_SIZE),
+             mod(universePos.y, CHUNK_SIZE),
+             mod(universePos.z, CHUNK_SIZE) };
 }
 
 // ── Voxel Accessors ─────────────────────────────────────────────────────────
 
-void VoxelSystem::setVoxel(const Vec3i& worldPos, uint8_t type,
+void VoxelSystem::setVoxel(const Vec3i& universePos, uint8_t type,
                            PlayerID playerId, uint64_t tickNum)
 {
     // For now, iterate chunks to find the matching one by minCorner range.
     // This is O(N) in chunk count — acceptable for MVP; can be optimised later
-    // with a spatial index or direct ChunkID computation from world coords.
+    // with a spatial index or direct ChunkID computation from universe coords.
     for (auto& [id, chunk] : m_chunks)
     {
         Vec3i localPos = {
-            worldPos.x - chunk.minCorner.x,
-            worldPos.y - chunk.minCorner.y,
-            worldPos.z - chunk.minCorner.z
+            universePos.x - chunk.minCorner.x,
+            universePos.y - chunk.minCorner.y,
+            universePos.z - chunk.minCorner.z
         };
         if (localPos.x >= 0 && localPos.x < CHUNK_SIZE &&
             localPos.y >= 0 && localPos.y < CHUNK_SIZE &&
@@ -52,7 +52,7 @@ void VoxelSystem::setVoxel(const Vec3i& worldPos, uint8_t type,
             ++chunk.version;
 
             m_deltaBuffer.push_back(VoxelDelta{
-                .worldPos = worldPos,
+                .universePos = universePos,
                 .oldType  = oldType,
                 .newType  = type,
                 .playerId = playerId,
@@ -63,14 +63,14 @@ void VoxelSystem::setVoxel(const Vec3i& worldPos, uint8_t type,
     }
 }
 
-uint8_t VoxelSystem::getVoxel(const Vec3i& worldPos) const
+uint8_t VoxelSystem::getVoxel(const Vec3i& universePos) const
 {
     for (const auto& [id, chunk] : m_chunks)
     {
         Vec3i localPos = {
-            worldPos.x - chunk.minCorner.x,
-            worldPos.y - chunk.minCorner.y,
-            worldPos.z - chunk.minCorner.z
+            universePos.x - chunk.minCorner.x,
+            universePos.y - chunk.minCorner.y,
+            universePos.z - chunk.minCorner.z
         };
         if (localPos.x >= 0 && localPos.x < CHUNK_SIZE &&
             localPos.y >= 0 && localPos.y < CHUNK_SIZE &&

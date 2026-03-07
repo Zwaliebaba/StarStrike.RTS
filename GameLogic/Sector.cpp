@@ -25,21 +25,21 @@ Vec3i Sector::maxBound() const noexcept
              SECTOR_SIZE_Z };
 }
 
-bool Sector::isInBounds(const Vec3i& worldPos) const noexcept
+bool Sector::isInBounds(const Vec3i& universePos) const noexcept
 {
     Vec3i lo = minBound();
     Vec3i hi = maxBound();
-    return worldPos.x >= lo.x && worldPos.x < hi.x
-        && worldPos.y >= lo.y && worldPos.y < hi.y
-        && worldPos.z >= lo.z && worldPos.z < hi.z;
+    return universePos.x >= lo.x && universePos.x < hi.x
+        && universePos.y >= lo.y && universePos.y < hi.y
+        && universePos.z >= lo.z && universePos.z < hi.z;
 }
 
-ChunkID Sector::worldPosToChunkID(const Vec3i& worldPos) const
+ChunkID Sector::universePosToChunkID(const Vec3i& universePos) const
 {
     Vec3i lo = minBound();
-    auto cx = static_cast<uint8_t>((worldPos.x - lo.x) / CHUNK_SIZE);
-    auto cy = static_cast<uint8_t>((worldPos.y - lo.y) / CHUNK_SIZE);
-    auto cz = static_cast<uint8_t>((worldPos.z - lo.z) / CHUNK_SIZE);
+    auto cx = static_cast<uint8_t>((universePos.x - lo.x) / CHUNK_SIZE);
+    auto cy = static_cast<uint8_t>((universePos.y - lo.y) / CHUNK_SIZE);
+    auto cz = static_cast<uint8_t>((universePos.z - lo.z) / CHUNK_SIZE);
     return makeChunkID(static_cast<uint8_t>(m_gridX),
                        static_cast<uint8_t>(m_gridY),
                        cx, cy, cz);
@@ -77,11 +77,11 @@ const Sector& SectorManager::getSector(int32_t gridX, int32_t gridY) const
     return m_sectors[static_cast<size_t>(gridY * m_gridWidth + gridX)];
 }
 
-const Sector* SectorManager::findSectorForWorldPos(const Vec3i& worldPos) const
+const Sector* SectorManager::findSectorForUniversePos(const Vec3i& universePos) const
 {
     for (const auto& s : m_sectors)
     {
-        if (s.isInBounds(worldPos))
+        if (s.isInBounds(universePos))
             return &s;
     }
     return nullptr;

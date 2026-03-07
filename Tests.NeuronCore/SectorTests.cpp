@@ -53,18 +53,18 @@ public:
         Assert::IsFalse(s.isInBounds({ -1, 0, 0 }));
     }
 
-    TEST_METHOD(WorldPosToChunkIDOrigin)
+    TEST_METHOD(UniversePosToChunkIDOrigin)
     {
         Sector s(0, 0);
-        auto id = s.worldPosToChunkID({ 0, 0, 0 });
+        auto id = s.universePosToChunkID({ 0, 0, 0 });
         Assert::AreEqual(makeChunkID(0, 0, 0, 0, 0), id);
     }
 
-    TEST_METHOD(WorldPosToChunkIDOffset)
+    TEST_METHOD(UniversePosToChunkIDOffset)
     {
         Sector s(0, 0);
         // Position (32, 64, 96) → chunk (1, 2, 3) in sector (0,0)
-        auto id = s.worldPosToChunkID({ 32, 64, 96 });
+        auto id = s.universePosToChunkID({ 32, 64, 96 });
         Assert::AreEqual(makeChunkID(0, 0, 1, 2, 3), id);
     }
 };
@@ -89,33 +89,33 @@ public:
         Assert::AreEqual(3, s.gridY());
     }
 
-    TEST_METHOD(FindSectorForWorldPos)
+    TEST_METHOD(FindSectorForUniversePos)
     {
         SectorManager mgr;
         mgr.init(4, 4);
 
-        auto* s = mgr.findSectorForWorldPos({ 0, 0, 0 });
+        auto* s = mgr.findSectorForUniversePos({ 0, 0, 0 });
         Assert::IsNotNull(s);
         Assert::AreEqual(0, s->gridX());
         Assert::AreEqual(0, s->gridY());
 
         // Position in sector (1, 1)
-        auto* s2 = mgr.findSectorForWorldPos({
+        auto* s2 = mgr.findSectorForUniversePos({
             SECTOR_SIZE_X + 10, SECTOR_SIZE_Y + 10, 0 });
         Assert::IsNotNull(s2);
         Assert::AreEqual(1, s2->gridX());
         Assert::AreEqual(1, s2->gridY());
     }
 
-    TEST_METHOD(FindSectorForWorldPosOutOfBounds)
+    TEST_METHOD(FindSectorForUniversePosOutOfBounds)
     {
         SectorManager mgr;
         mgr.init(4, 4);
 
-        auto* s = mgr.findSectorForWorldPos({ -1, -1, 0 });
+        auto* s = mgr.findSectorForUniversePos({ -1, -1, 0 });
         Assert::IsNull(s);
 
-        auto* s2 = mgr.findSectorForWorldPos({
+        auto* s2 = mgr.findSectorForUniversePos({
             SECTOR_GRID_X * SECTOR_SIZE_X + 1, 0, 0 });
         Assert::IsNull(s2);
     }

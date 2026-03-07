@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "WorldManager.h"
+#include "UniverseManager.h"
 
 namespace Neuron::GameLogic
 {
 
-void WorldManager::init(const WorldConfig& cfg)
+void UniverseManager::init(const UniverseConfig& cfg)
 {
     m_sectorMgr.init(cfg.sectorGridX, cfg.sectorGridY);
-    DebugTrace("WorldManager initialized ({} x {} sectors)\n",
+    DebugTrace("UniverseManager initialized ({} x {} sectors)\n",
                cfg.sectorGridX, cfg.sectorGridY);
 }
 
-void WorldManager::tick(float dt, uint64_t tickNum)
+void UniverseManager::tick(float dt, uint64_t tickNum)
 {
     m_entitySystem.tickUpdate(dt, tickNum);
 }

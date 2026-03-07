@@ -39,7 +39,7 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 
 ### Functional Requirements
 - **Network:** Server-authoritative UDP (WinSock2) at 7777, 60 Hz tick, 20 Hz client snapshots
-- **Voxel World:** 4×4 sectors, 32×32×32 chunks, visible destruction for all players
+- **Voxel Universe:** 4×4 sectors, 32×32×32 chunks, visible destruction for all players
 - **Combat:** Ship-to-ship targeting, projectile weapons, hit detection, damage & respawn
 - **Mining:** Voxel extraction, resource collection, cargo system
 - **Persistence:** MS SQL Server (ODBC) with RLE compression, voxel event log, player ship state
@@ -130,7 +130,7 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 | **GameLogic/EntitySystem.cpp/.h** | GameLogic | ECS-lite, array-of-structs with free pool ID reuse | NeuronCore | ✅ Done |
 | **GameLogic/VoxelSystem.cpp/.h** | GameLogic | Chunk storage, RLE serialization, delta tracking | NeuronCore | ✅ Done |
 | **GameLogic/Sector.cpp/.h** | GameLogic | Sector bounds + SectorManager 4×4 grid | NeuronCore | ✅ Done |
-| **GameLogic/WorldManager.cpp/.h** | GameLogic | Top-level orchestrator (EntitySystem + VoxelSystem + SectorManager) | GameLogic | ✅ Done |
+| **GameLogic/UniverseManager.cpp/.h** | GameLogic | Top-level orchestrator (EntitySystem + VoxelSystem + SectorManager) | GameLogic | ✅ Done |
 | **NeuronServer/ChunkStore.cpp/.h** | NeuronServer | Chunk persistence layer (load/save/flush, voxel events, schema DDL) | NeuronServer, GameLogic | ✅ Done |
 | **config/schema.sql** | — | MS SQL Server DDL (voxel_chunks, voxel_events, players, ships + indices) | — | ✅ Done |
 | **NeuronClient/VoxelRenderer.cpp/.h** | NeuronClient | Greedy meshing, VB/IB upload | NeuronCore | ⬜ Phase 5 |
@@ -146,7 +146,7 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 | NeuronCore/NeuronCore.vcxproj | StaticLibrary (6 .cpp), PCH via `pch.h`/`pch.cpp` (Create for Debug+Release), CppWinRT NuGet, `stdcpplatest` (Debug) / `stdcpp20` (Release) | ✅ Done |
 | NeuronClient/NeuronClient.vcxproj | StaticLibrary (11 .cpp), PCH, references NeuronCore, CppWinRT NuGet, include dirs `$(SolutionDir)NeuronCore` | ✅ Done |
 | StarStrike/StarStrike.vcxproj | Application (Windows App SDK / WinUI / MSIX), references NeuronClient + NeuronCore, CppWinRT + WinAppSDK NuGet | ✅ Done |
-| GameLogic/GameLogic.vcxproj | StaticLibrary (7 .cpp: pch, GameLogic, EntitySystem, VoxelSystem, Sector, WorldManager), PCH (Create for Debug+Release), CppWinRT NuGet, include dirs `$(SolutionDir)NeuronCore` (Debug+Release) | ✅ Done (updated Phase 3) |
+| GameLogic/GameLogic.vcxproj | StaticLibrary (7 .cpp: pch, GameLogic, EntitySystem, VoxelSystem, Sector, UniverseManager), PCH (Create for Debug+Release), CppWinRT NuGet, include dirs `$(SolutionDir)NeuronCore` (Debug+Release) | ✅ Done (updated Phase 3) |
 | NeuronServer/NeuronServer.vcxproj | StaticLibrary (6 .cpp: +ChunkStore), PCH (Create for Debug+Release), references NeuronCore, CppWinRT NuGet, include dirs `$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic` (Debug+Release) | ✅ Done (updated Phase 3) |
 | Server/Server.vcxproj | Console Application (3 .cpp), PCH (Create for Debug+Release), references GameLogic + NeuronCore + NeuronServer, include dirs `$(SolutionDir)NeuronCore;$(SolutionDir)NeuronServer;$(SolutionDir)GameLogic` (Debug+Release), Subsystem: Console | ✅ Done (updated Phase 3) |
 | Tests.NeuronCore/Tests.NeuronCore.vcxproj | DynamicLibrary (6 test .cpp), PCH, references NeuronCore + NeuronServer + GameLogic, include dirs `$(SolutionDir)NeuronCore;$(SolutionDir)NeuronServer;$(SolutionDir)GameLogic`, MS CppUnitTest lib | ✅ Done (Phase 2.5 + Phase 3) |
@@ -686,7 +686,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 
 ### Phase 3: Entity System & Voxel Storage (Weeks 3.5–5, ~16 files) ✅ COMPLETE
 
-**Status:** Completed March 10, 2026. All Phase 3 subsystems implemented: EntitySystem (ECS-lite AoS with free pool), VoxelSystem (chunk storage + RLE codec), Sector/SectorManager (4×4 grid), WorldManager (orchestrator), ChunkStore (persistence), config/schema.sql (MS SQL Server DDL). Server updated with world init, test entity spawning, and persistence flush. 31 new unit tests added (EntitySystem: 9, RLE codec: 7, VoxelSystem: 5, Sector: 10). Total test count: 82, all passing.
+**Status:** Completed March 10, 2026. All Phase 3 subsystems implemented: EntitySystem (ECS-lite AoS with free pool), VoxelSystem (chunk storage + RLE codec), Sector/SectorManager (4×4 grid), UniverseManager (orchestrator), ChunkStore (persistence), config/schema.sql (MS SQL Server DDL). Server updated with universe init, test entity spawning, and persistence flush. 31 new unit tests added (EntitySystem: 9, RLE codec: 7, VoxelSystem: 5, Sector: 10). Total test count: 82, all passing.
 
 **Goal:** ECS-lite entity management, voxel chunk serialization, database schema loaded. Server spawns test entities.
 
@@ -743,7 +743,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   ```cpp
   // GameLogic/VoxelSystem.h
   struct VoxelChunk {
-    Vec3i min;                       // Min corner in world coords
+    Vec3i min;                       // Min corner in universe coords
     uint8_t voxels[32][32][32];     // 32 KB per chunk
     bool dirty;
     uint64_t version;
@@ -751,8 +751,8 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   };
   
   class VoxelSystem {
-    void SetVoxel(const Vec3i& world_pos, uint8_t type);
-    uint8_t GetVoxel(const Vec3i& world_pos) const;
+    void SetVoxel(const Vec3i& universe_pos, uint8_t type);
+    uint8_t GetVoxel(const Vec3i& universe_pos) const;
     std::vector<uint8_t> SerializeChunk(const VoxelChunk& chunk) const;
     VoxelChunk DeserializeChunk(const std::vector<uint8_t>& data) const;
     
@@ -807,7 +807,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   CREATE TABLE voxel_events (
     id BIGINT IDENTITY(1,1) PRIMARY KEY,
     chunk_id VARBINARY(8) NOT NULL,
-    world_x INT, world_y INT, world_z INT,
+    universe_x INT, universe_y INT, universe_z INT,
     old_type SMALLINT, new_type SMALLINT,
     player_id INT,
     tick_number BIGINT,
@@ -842,13 +842,13 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
       UPDATE voxel_chunks SET voxel_data = @data, version = version + 1,
              locked_by_player_id = NULL
        WHERE chunk_id = @chunkId AND locked_by_player_id = @playerId;
-      INSERT INTO voxel_events (chunk_id, world_x, world_y, world_z,
+      INSERT INTO voxel_events (chunk_id, universe_x, universe_y, universe_z,
              old_type, new_type, player_id, tick_number)
        VALUES (@chunkId, @x, @y, @z, @oldType, @newType, @playerId, @tick);
     COMMIT;
     ```
   - 🆕 **Isolation level:** Use `READ COMMITTED` (default) for most queries; `SERIALIZABLE` only for chunk version-check updates to prevent lost writes from concurrent miners
-- **Why:** Defines data model; allows server to persist world state; prevents concurrent write issues
+- **Why:** Defines data model; allows server to persist universe state; prevents concurrent write issues
 - **Dependencies:** MS SQL Server 2019+ (or SQL Server Express / LocalDB for development)
 - **Build Impact:** Zero (data only, run `sqlcmd -S localhost -d starstrike -i config\schema.sql`)
 - **Risk:** Low → Medium (concurrent writes; mitigated by locking fields + versioned updates)
@@ -884,8 +884,8 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   // GameLogic/Sector.h
   class Sector {
     Vec3i GetBounds() const;  // Min/max corners
-    ChunkID WorldPosToChunkID(const Vec3i& world_pos) const;
-    bool IsInBounds(const Vec3i& world_pos) const;
+    ChunkID UniversePosToChunkID(const Vec3i& universe_pos) const;
+    bool IsInBounds(const Vec3i& universe_pos) const;
   };
   
   class SectorManager {
@@ -895,17 +895,17 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
     std::vector<Sector> m_sectors;  // 16 for MVP
   };
   ```
-- **Why:** Partitions world; enables interest-based culling later
+- **Why:** Partitions universe; enables interest-based culling later
 - **Dependencies:** NeuronCore (Vec3i, ChunkID)
 - **Build Impact:** Very low (mostly logic)
 - **Risk:** Low
 
-#### Step 3.6: World Manager (Top-Level Orchestrator)
-- **File:** GameLogic/WorldManager.cpp/h
+#### Step 3.6: Universe Manager (Top-Level Orchestrator)
+- **File:** GameLogic/UniverseManager.cpp/h
 - **Action:** Central point for entity, voxel, chunk management:
   ```cpp
-  class WorldManager {
-    void Init(const WorldConfig& cfg);
+  class UniverseManager {
+    void Init(const UniverseConfig& cfg);
     void Tick();  // Called by SimulationEngine each tick
     
     EntitySystem& GetEntitySystem() { return m_entity_system; }
@@ -926,12 +926,12 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 
 #### Step 3.7: Test Entity & Chunk Initialization
 - **File:** Server/main.cpp (updated)
-- **Action:** In server main loop, after WorldManager::Init():
+- **Action:** In server main loop, after UniverseManager::Init():
   - Load all voxel_chunks from DB into memory
   - Spawn 1 test asteroid per sector (EntityType::ASTEROID)
   - Spawn 1 test ship (EntityType::SHIP) at sector (0,0)
   - Log entity IDs and chunk counts
-- **Why:** Verifies WorldManager initialization; catches database loading issues
+- **Why:** Verifies UniverseManager initialization; catches database loading issues
 - **Dependencies:** Steps 3.1–3.6
 - **Build Impact:** Zero (logic changes only)
 - **Risk:** Low
@@ -941,8 +941,8 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 - ✅ VoxelSystem with RLE serialization
 - ✅ MS SQL Server schema created (voxel_chunks, voxel_events, players, ships — with indices & locking)
 - ✅ ChunkStore persistence layer
-- ✅ SectorManager for world partitioning
-- ✅ WorldManager orchestrator
+- ✅ SectorManager for universe partitioning
+- ✅ UniverseManager orchestrator
 - ✅ Server loads & spawns test entities
 
 **🆕 Phase 3 Unit Tests (required before phase exit):**
@@ -953,17 +953,17 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 **🆕 Phase 3 CI Gate:** ✅ ALL GATES PASSED
 - ✅ Unit tests pass: EntitySystem (9) + RLE codec (7) + VoxelSystem (5) + Sector (10) — 31 new tests, 82 total
 - ✅ Build succeeds on Windows x64 Debug (0 errors, 7 projects)
-- ✅ Server initializes WorldManager, spawns 16 test asteroids + 1 test ship
+- ✅ Server initializes UniverseManager, spawns 16 test asteroids + 1 test ship
 
 **Success Criteria:** ✅ MET
 ```bash
 ./Server --config config/server.yaml
 # Logs:
-# "WorldManager initialized (4 x 4 sectors)"
+# "UniverseManager initialized (4 x 4 sectors)"
 # "Spawned test asteroid 0 at (256, 256, 128)"
 # ... (16 asteroids, 1 per sector)
 # "Spawned test ship 16 at (0, 0, 0)"
-# "World ready: 17 entities, 0 chunks"  (chunks loaded from DB if connected)
+# "Universe ready: 17 entities, 0 chunks"  (chunks loaded from DB if connected)
 # Tick counter increments
 # vstest.console.exe: Total tests: 82, Passed: 82
 ```
@@ -1033,7 +1033,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   bool DeserializeSnapshot(const std::vector<uint8_t>& bytes, SnapshotState& snap);
   ```
   - Deserialize entity deltas (pos, rot, vel, hp, despawn)
-  - Deserialize voxel deltas (world pos + type)
+  - Deserialize voxel deltas (universe pos + type)
 - **Why:** Client receives server state; core gameplay loop dependency
 - **Dependencies:** Neuron::UDPSocket, packet_codec, NeuronCore types
 - **Build Impact:** Low (new translation units)
@@ -1114,7 +1114,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   ```
   - Fixed pitch/yaw (isometric); only pan and zoom change
   - Frustum culling: only render chunks within view bounds
-- **Why:** Allows player to see the world; critical for usability
+- **Why:** Allows player to see the universe; critical for usability
 - **Dependencies:** DirectXMath, input_system, NeuronCore (Vec3, Mat4x4)
 - **Build Impact:** Very low
 - **Risk:** Low
@@ -1280,7 +1280,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
     TEST(GreedyMesh, ChunkBoundarySeam) { /* 2×2 chunks, verify no cracks */ }
     TEST(GreedyMesh, Performance) { /* 512 chunks mesh generation, verify < 1ms each */ }
     ```
-- **Why:** Critical for performance; enables rendering of large voxel worlds
+- **Why:** Critical for performance; enables rendering of large voxel universes
 - **Dependencies:** NeuronCore, voxel data structure
 - **Build Impact:** Medium (complex algorithm, may take time to optimize)
 - **Risk:** High (greedy mesh is finicky; off-by-one errors common; extensive unit test)
@@ -1450,8 +1450,8 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   ```cpp
   // GameLogic/CombatSystem.h
   class CombatSystem {
-    void ProcessAttackCommand(const CmdInput& cmd, WorldManager& world);
-    void ProcessHits(WorldManager& world);  // Physics phase
+    void ProcessAttackCommand(const CmdInput& cmd, UniverseManager& universe);
+    void ProcessHits(UniverseManager& universe);  // Physics phase
     
   private:
     struct ProjectileEvent {
@@ -1464,8 +1464,8 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   
   // CombatSystem implementation (in .cpp):
   // Phase 4: Combat
-  void CombatSystem::ProcessHits(WorldManager& world) {
-    auto& entities = world.GetEntitySystem().GetAll();
+  void CombatSystem::ProcessHits(UniverseManager& universe) {
+    auto& entities = universe.GetEntitySystem().GetAll();
     for (auto& proj : entities | filter_type(PROJECTILE)) {
       AABB proj_bounds = GetAABB(proj.pos);
       for (auto& ship : entities | filter_type(SHIP)) {
@@ -1479,10 +1479,10 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   
   // GameLogic/MiningSystem.h
   class MiningSystem {
-    void ProcessMiningCommand(const CmdInput& cmd, WorldManager& world);
-    void ExtractMiningVoxels(WorldManager& world);  // Phase 5
+    void ProcessMiningCommand(const CmdInput& cmd, UniverseManager& universe);
+    void ExtractMiningVoxels(UniverseManager& universe);  // Phase 5
   private:
-    std::vector<VoxelDelta> m_mined_voxels;  // Add to world delta buffer
+    std::vector<VoxelDelta> m_mined_voxels;  // Add to universe delta buffer
   };
   ```
   - Attack: spawn projectile; next frame raycasts detect hits
@@ -1517,7 +1517,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   ```cpp
   // NeuronServer/SnapshotBuilder.h
   class SnapshotBuilder {
-    SnapshotState BuildSnapshot(uint64_t tick, const WorldManager& world);
+    SnapshotState BuildSnapshot(uint64_t tick, const UniverseManager& universe);
     // Returns: entity deltas + voxel deltas (only changed fields)
   };
   
@@ -1527,7 +1527,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   //   u8 field_mask (bit 0=pos, 1=rot, 2=vel, 3=hp, 4=despawn)
   //   [optional fields based on mask]
   // For each voxel delta:
-  //   i32 world_x, world_y, world_z
+  //   i32 universe_x, universe_y, universe_z
   //   u8 new_voxel_type
   ```
   - Track entity state last-sent; only encode if changed
@@ -1615,7 +1615,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   - Called on player join (load) and every 5 ticks (incremental save)
 - **Security:** Password verification must use a slow hash (bcrypt or Argon2id) — never store or compare plaintext passwords. Consider DTLS or a challenge–response handshake over the UDP transport to prevent credential sniffing. Rate-limit login attempts to mitigate brute-force attacks.
 - **Why:** Players can persist their progress across sessions
-- **Dependencies:** Database, WorldManager
+- **Dependencies:** Database, UniverseManager
 - **Build Impact:** Low (new translation unit)
 - **Risk:** Medium (transaction isolation; test concurrent logins)
 
@@ -1629,7 +1629,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
     
     // Batch INSERT voxel_events
     stringstream sql;
-    sql << "INSERT INTO voxel_events (chunk_id, world_x/y/z, old/new_type, player_id, tick_number) VALUES ";
+    sql << "INSERT INTO voxel_events (chunk_id, universe_x/y/z, old/new_type, player_id, tick_number) VALUES ";
     for (const auto& delta : m_event_buffer) {
       sql << "(" << encode(delta) << "), ";
     }
@@ -1638,7 +1638,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   }
   
   // On server restart:
-  void RecoverFromLog(Database& db, WorldManager& world) {
+  void RecoverFromLog(Database& db, UniverseManager& universe) {
     // For each chunk:
     //   Load voxel_chunks (latest snapshot)
     //   Replay voxel_events since last snapshot
@@ -1648,7 +1648,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   - FlushVoxelDeltas called every 1 sec (60 ticks)
   - FlushDirtyChunks called every 30 sec
   - Recovery on server start: reload chunks + replay events
-- **Why:** Ensures world persistence; no lost destructions on crash
+- **Why:** Ensures universe persistence; no lost destructions on crash
 - **Dependencies:** Database, ChunkStore, VoxelSystem
 - **Build Impact:** Low (existing database layer)
 - **Risk:** Medium (transaction ordering; concurrent writers can cause splits; use SERIALIZABLE isolation)
@@ -1658,7 +1658,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 - **Action:** Per-player entity culling; only send deltas for visible entities:
   ```cpp
   class VisibilityManager {
-    std::vector<EntityID> GetVisibleEntities(const Entity& player_ship, const WorldManager& world);
+    std::vector<EntityID> GetVisibleEntities(const Entity& player_ship, const UniverseManager& universe);
     // Entities within D (16 chunks ≈ 512 units): always included
     // Entities within 2D: lower update frequency (every 2 snapshots)
     // Entities beyond 2D: not sent
@@ -1858,7 +1858,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
   ```cpp
   class AudioSystem {
     void Init();
-    void PlaySFX(SoundID id, Vec3 world_pos);  // 3D positional audio
+    void PlaySFX(SoundID id, Vec3 universe_pos);  // 3D positional audio
     void PlayMusic(const std::string& track);   // Background loop
     void SetListenerPos(Vec3 pos);              // Camera position
   };
@@ -1980,8 +1980,8 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 
 ### Procedural Generation (Optional for MVP)
 
-- Initial world: generate 4×4 sectors × 16 chunks = 256 chunks (flat plane or noise-based)
-- Seeded RNG: reproducible worlds
+- Initial universe: generate 4×4 sectors × 16 chunks = 256 chunks (flat plane or noise-based)
+- Seeded RNG: reproducible universes
 - Saved to voxel_chunks table on first server run
 
 ---
@@ -2030,7 +2030,7 @@ vstest.console.exe x64\Debug\Tests.NeuronCore.dll
 - [ ] Ships move smoothly (< 50 ms latency, client prediction)
 - [ ] Combat: fire projectile → hit ship → damage applied visible to all players
 - [ ] Mining: extract voxel → removed on all clients, resource spawns
-- [ ] Persistence: restart server → world state unchanged (voxels, ships, resources)
+- [ ] Persistence: restart server → universe state unchanged (voxels, ships, resources)
 - [ ] Chat: one player's message visible to all in-sector
 
 ### Performance
@@ -2122,9 +2122,9 @@ Use this to track progress:
 - [x] 🆕 RLE round-trip tests: sparse, dense, hollow sphere, empty chunk, alternating types
 - [x] MS SQL Server schema created, indexed (with locking fields & foreign key indices)
 - [x] ChunkStore CRUD working (load/save/flush with versioned updates)
-- [x] SectorManager 4×4 grid with bounds checking and world-to-chunk mapping
-- [x] WorldManager orchestrator (owns EntitySystem + VoxelSystem + SectorManager)
-- [x] Server initializes WorldManager, spawns 16 test asteroids + 1 test ship
+- [x] SectorManager 4×4 grid with bounds checking and universe-to-chunk mapping
+- [x] UniverseManager orchestrator (owns EntitySystem + VoxelSystem + SectorManager)
+- [x] Server initializes UniverseManager, spawns 16 test asteroids + 1 test ship
 - [x] Phase 3 unit tests: 31 new tests (EntitySystem: 9, RLE: 7, VoxelSystem: 5, Sector: 10)
 - [x] Total test count: 82 (all passing)
 
