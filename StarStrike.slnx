@@ -1,0 +1,25 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Solution Files/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="agents.md" />
+    <File Path="CODE_STANDARDS.md" />
+    <File Path="IMPLEMENTATION_PLAN.md" />
+    <File Path="StarStrike.md" />
+    <File Path="vcpkg.json" />
+  </Folder>
+  <Folder Name="/Test Framework/">
+    <Project Path="Tests.NeuronCore/Tests.NeuronCore.vcxproj" Id="a1b2c3d4-e5f6-7890-abcd-ef1234567890" />
+  </Folder>
+  <Project Path="GameLogic/GameLogic.vcxproj" Id="0643e22c-f3d7-4138-bd99-423b3dd2ff05" />
+  <Project Path="NeuronClient/NeuronClient.vcxproj" Id="83b9739c-5afe-432f-80df-5042425ccbee" />
+  <Project Path="NeuronCore/NeuronCore.vcxproj" Id="d6428268-7930-4423-b894-683c54d2b573" />
+  <Project Path="NeuronServer/NeuronServer.vcxproj" Id="4b2679af-33ab-46af-9e3e-d192fee97248" />
+  <Project Path="Server/Server.vcxproj" Id="d76e6649-2791-4334-a4d6-1e18db5f508b" />
+  <Project Path="StarStrike/StarStrike.vcxproj" Id="8becbf69-4468-41d1-90cf-ab758cfdd42e">
+    <Deploy />
+  </Project>
+</Solution>

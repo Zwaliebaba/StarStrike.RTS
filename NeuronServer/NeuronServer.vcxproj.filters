@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Project Files">
+      <UniqueIdentifier>{21096558-b649-4ff1-9680-fda3bbc04a5b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <Filter>Project Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Database.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="SimulationEngine.cpp" />
+    <ClCompile Include="SocketManager.cpp" />
+    <ClCompile Include="TickProfiler.cpp" />
+    <ClCompile Include="ChunkStore.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Database.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="SimulationEngine.h" />
+    <ClInclude Include="SocketManager.h" />
+    <ClInclude Include="TickProfiler.h" />
+    <ClInclude Include="NeuronServer.h" />
+    <ClInclude Include="ChunkStore.h" />
+    <ClInclude Include="ServerLog.h" />
+  </ItemGroup>
+</Project>

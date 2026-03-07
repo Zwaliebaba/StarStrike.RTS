@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Project Files">
+      <UniqueIdentifier>{7a5670d1-9d99-48c7-a081-122a15da30b5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <Filter>Project Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameLogic.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="EntitySystem.h" />
+    <ClInclude Include="VoxelSystem.h" />
+    <ClInclude Include="Sector.h" />
+    <ClInclude Include="WorldManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="GameLogic.cpp" />
+    <ClCompile Include="EntitySystem.cpp" />
+    <ClCompile Include="VoxelSystem.cpp" />
+    <ClCompile Include="Sector.cpp" />
+    <ClCompile Include="WorldManager.cpp" />
+  </ItemGroup>
+</Project>

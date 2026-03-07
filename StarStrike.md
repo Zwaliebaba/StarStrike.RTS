@@ -47,7 +47,7 @@ StarStrike combines **persistent voxel terrain**, **real-time multiplayer combat
 | **Server Transport** | UDP (custom) over IPv4 | Low latency; packet loss handled via resend/ACK logic |
 | **Persistence Layer** | PostgreSQL 14+ (relational) | ACID guarantees for voxel chunks and entity snapshots |
 | **Object Storage** | PostgreSQL BYTEA for chunk data | Simplifies deployment; alternative: S3 for future scale |
-| **Deployment** | Docker (Alpine Linux) | Single-container MVP; orchestration-ready |
+| **Deployment** | Docker (Windows Server Core) | Single-container MVP; orchestration-ready |
 | **Scripting** | YAML config + Lua (optional, for AI tuning) | Designer-facing parameters |
 
 ### Core Metrics (MVP)
@@ -77,7 +77,7 @@ graph TB
     DB["PostgreSQL<br/>Voxels + Entities"]
     Cache["Redis<br/>Session Cache"]
     Metrics["Prometheus<br/>Metrics"]
-    Container["Docker Container<br/>Linux"]
+    Container["Docker Container<br/>Windows Server Core"]
     
     Player -->|"Keyboard/Mouse"| Client
     Client -->|"Commands<br/>50 ms"| Network
@@ -1447,27 +1447,28 @@ void RenderVoxelWorld(ID3D12GraphicsCommandList* cmd_list, float delta_time) {
 ### Docker Container Layout
 
 ```dockerfile
-# Dockerfile
-FROM alpine:3.18 AS builder
+# Dockerfile (Windows Server Core)
+FROM mcr.microsoft.com/windows/servercore:ltsc2022 AS builder
 
-RUN apk add --no-cache g++ cmake make postgresql-client
+# Install Visual Studio Build Tools + CMake + vcpkg deps
+RUN powershell -Command \
+    Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe ; \
+    Start-Process -Wait -FilePath .\vs_buildtools.exe -ArgumentList '--quiet --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended' ; \
+    Remove-Item vs_buildtools.exe
 
-WORKDIR /app
+WORKDIR C:\app
 COPY . .
 
-RUN cmake -B build -DCMAKE_BUILD_TYPE=Release \
-    && cmake --build build --config Release
+RUN cmake --preset x64-release && cmake --build out/build/x64-release
 
 ###
 
-FROM alpine:3.18
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
-RUN apk add --no-cache libstdc++ postgresql-client ca-certificates
+WORKDIR C:\app
 
-WORKDIR /app
-
-COPY --from=builder /app/build/server/StarStrike_server /app/server
-COPY config/ /app/config/
+COPY --from=builder C:\app\out\build\x64-release\Server\Server.exe C:\app\server.exe
+COPY config\ C:\app\config\
 
 ENV LOG_LEVEL=INFO
 ENV DATABASE_URL=postgres://user:pass@postgres:5432/starstrike
@@ -1475,10 +1476,10 @@ ENV DATABASE_URL=postgres://user:pass@postgres:5432/starstrike
 EXPOSE 7777/udp
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
-  CMD /app/server --health-check || exit 1
+  CMD powershell -Command "C:\app\server.exe --health-check; if ($LASTEXITCODE -ne 0) { exit 1 }"
 
-ENTRYPOINT ["/app/server"]
-CMD ["--config", "/app/config/server.yaml"]
+ENTRYPOINT ["C:\\app\\server.exe"]
+CMD ["--config", "C:\\app\\config\\server.yaml"]
 ```
 
 ### Deployment Diagram
@@ -1492,9 +1493,9 @@ graph TB
     Grafana["Grafana<br/>Dashboard"]
     
     User["Players<br/>UDP:7777"]
-    Logs["Log Volume<br/>/var/log/starstrike"]
+    Logs["Log Volume<br/>C:\\logs\\starstrike"]
     Data["Data Volume<br/>/var/lib/postgres"]
-    Config["Config Volume<br/>/app/config"]
+    Config["Config Volume<br/>C:\\app\\config"]
     
     User -->|"UDP Port 7777"| Docker
     Docker -->|"Query/Update/Insert"| Postgres
@@ -1517,7 +1518,7 @@ version: '3.9'
 
 services:
   postgres:
-    image: postgres:14-alpine
+    image: postgres:14
     environment:
       POSTGRES_USER: starstrike
       POSTGRES_PASSWORD: dev_password_change_in_prod
@@ -1549,8 +1550,8 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./config:/app/config:ro
-      - server_logs:/var/log/starstrike
+      - ./config:C:\app\config:ro
+      - server_logs:C:\logs\starstrike
     restart: unless-stopped
 
 volumes:
@@ -1772,7 +1773,7 @@ StarStrike.RTS/
 ├── README.md                      # Project overview
 ├── CMakeLists.txt                # Root CMake (orchestrates builds)
 ├── CMakePresets.json             # Build presets (debug, release, etc.)
-├── Dockerfile                    # Container definition
+├── Dockerfile                    # Windows Server Core container definition
 ├── docker-compose.yaml           # Local dev compose
 │
 ├── client/                       # Client application (Windows, DirectX 12)

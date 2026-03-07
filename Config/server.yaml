@@ -1,0 +1,15 @@
+# StarStrike.RTS — Server Configuration
+# See Server/Config.h for all supported keys and defaults.
+
+server:
+  port: 7777
+  bind_address: "0.0.0.0"
+  tick_rate_hz: 60
+  max_players: 50
+
+database:
+  url: "postgres://postgres:Vesting28@localhost:5432/starstrike"
+  pool_size: 4
+
+logging:
+  level: "info"
