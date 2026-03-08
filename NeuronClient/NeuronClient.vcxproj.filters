@@ -22,6 +22,11 @@
     <ClCompile Include="ResourceStateTracker.cpp" />
     <ClCompile Include="RootSignature.cpp" />
     <ClCompile Include="SamplerManager.cpp" />
+    <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="SnapshotDecoder.cpp" />
+    <ClCompile Include="EntityCache.cpp" />
+    <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
@@ -44,5 +49,10 @@
     <ClInclude Include="SamplerManager.h" />
     <ClInclude Include="Strings.h" />
     <ClInclude Include="VertexTypes.h" />
+    <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="SnapshotDecoder.h" />
+    <ClInclude Include="EntityCache.h" />
+    <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
 </Project>

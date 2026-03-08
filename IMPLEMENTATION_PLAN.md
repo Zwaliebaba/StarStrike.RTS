@@ -3,7 +3,7 @@
 **Document Created:** March 5, 2026  
 **Last Updated:** March 10, 2026  
 **Target Timeline:** 10–14 weeks to MVP  
-**Current Status:** Phase 1 Complete, Phase 1.5 Complete, MSBuild Migration Complete, Phase 2 Complete, Phase 2.5 Complete, Phase 3 Complete — Phase 4 implementation next  
+**Current Status:** Phase 1 Complete, Phase 1.5 Complete, MSBuild Migration Complete, Phase 2 Complete, Phase 2.5 Complete, Phase 3 Complete, Phase 4 Unit & Integration Tests Complete — Phase 4 implementation continues  
 **Primary Reference:** StarStrike.md, ARCHITECTURE_RECOMMENDATIONS.md  
 **Validation:** IMPLEMENTATION_VALIDATION.md (March 5, 2026) — all recommendations incorporated
 
@@ -24,6 +24,8 @@ alongside vcpkg manifest mode (`vcpkg.json`) for yaml-cpp and winpixevent.
 > **Phase 2.5 Update (March 10, 2026):** Unit Test Project & Phase 1/2 Test Coverage is complete. The `Tests.NeuronCore` Microsoft Native Unit Test DLL project was added to the solution with full tests for Phase 1 (Types, Constants, ChunkID, Vec3, AABB) and Phase 2 (PacketCodec round-trip for all packet types, CRC corruption detection, magic mismatch, too-short/oversized packets, CRC32 consistency). All 82 tests pass via `vstest.console.exe`.
 
 Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correctness), RLE codec (7 tests: empty/sparse/dense/hollow-sphere/alternating/malformed), VoxelSystem (5 tests: load/set/delta/bounds), Sector (10 tests: bounds/mapping/manager). All 82 tests pass (0 failures).
+
+> **Phase 4 Test Update (March 12, 2026):** Phase 4 unit and integration tests added to `Tests.NeuronCore`. New test files: `EntityCacheTests.cpp` (11 tests: snapshot update, interpolation, clear, lookup), `SnapshotDecoderTests.cpp` (7 tests: valid/invalid/overflow/round-trip), `CameraTests.cpp` (12 tests: init/pan/zoom/clamp/lookAt/matrices), `ClientServerTests.cpp` (5 integration tests: real UDP loopback round-trip). NeuronClient added as project reference to test DLL. UDPSocket::localPort() added for ephemeral port discovery. Receive buffer increased from 2048→4096 bytes. Known issue discovered: PacketType (uint32_t) TYPE field truncation to uint8_t causes CmdInput (0x0001) and SnapState (0x0101) to collide at 0x01. Total tests: 117, all passing.
 
 **Success Criteria:**
 - Phase 1–3: Systems build and run independently (no gameplay yet)
@@ -134,7 +136,11 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 | **NeuronServer/ChunkStore.cpp/.h** | NeuronServer | Chunk persistence layer (load/save/flush, voxel events, schema DDL) | NeuronServer, GameLogic | ✅ Done |
 | **config/schema.sql** | — | MS SQL Server DDL (voxel_chunks, voxel_events, players, ships + indices) | — | ✅ Done |
 | **NeuronClient/VoxelRenderer.cpp/.h** | NeuronClient | Greedy meshing, VB/IB upload | NeuronCore | ⬜ Phase 5 |
-| **NeuronClient/SnapshotDecoder.cpp/.h** | NeuronClient | Deserialize snapshots | NeuronCore | ⬜ Phase 4 |
+| **NeuronClient/SnapshotDecoder.cpp/.h** | NeuronClient | Deserialize snapshots | NeuronCore | ✅ Done |
+| **Tests.NeuronCore/EntityCacheTests.cpp** | Tests.NeuronCore | Phase 4: EntityCache unit tests (11 tests: snapshot update, interpolation, clear, lookup) | NeuronClient | ✅ Done |
+| **Tests.NeuronCore/SnapshotDecoderTests.cpp** | Tests.NeuronCore | Phase 4: SnapshotDecoder unit tests (7 tests: valid/invalid/overflow/round-trip) | NeuronClient | ✅ Done |
+| **Tests.NeuronCore/CameraTests.cpp** | Tests.NeuronCore | Phase 4: Camera unit tests (12 tests: init/pan/zoom/clamp/lookAt/matrices) | NeuronClient | ✅ Done |
+| **Tests.NeuronCore/ClientServerTests.cpp** | Tests.NeuronCore | Phase 4: Client↔Server UDP integration tests (5 tests: real loopback round-trip, non-blocking recv) | NeuronCore | ✅ Done |
 | **StarStrike/shaders/*.hlsl** | StarStrike | Voxel, entity, post-process shaders | DirectXMath | ⬜ Phase 5 |
 
 ### Modified Files
@@ -149,7 +155,7 @@ Phase 3 unit tests added: EntitySystem (9 tests including 100K free pool correct
 | GameLogic/GameLogic.vcxproj | StaticLibrary (7 .cpp: pch, GameLogic, EntitySystem, VoxelSystem, Sector, UniverseManager), PCH (Create for Debug+Release), CppWinRT NuGet, include dirs `$(SolutionDir)NeuronCore` (Debug+Release) | ✅ Done (updated Phase 3) |
 | NeuronServer/NeuronServer.vcxproj | StaticLibrary (6 .cpp: +ChunkStore), PCH (Create for Debug+Release), references NeuronCore, CppWinRT NuGet, include dirs `$(SolutionDir)NeuronCore;$(SolutionDir)GameLogic` (Debug+Release) | ✅ Done (updated Phase 3) |
 | Server/Server.vcxproj | Console Application (3 .cpp), PCH (Create for Debug+Release), references GameLogic + NeuronCore + NeuronServer, include dirs `$(SolutionDir)NeuronCore;$(SolutionDir)NeuronServer;$(SolutionDir)GameLogic` (Debug+Release), Subsystem: Console | ✅ Done (updated Phase 3) |
-| Tests.NeuronCore/Tests.NeuronCore.vcxproj | DynamicLibrary (6 test .cpp), PCH, references NeuronCore + NeuronServer + GameLogic, include dirs `$(SolutionDir)NeuronCore;$(SolutionDir)NeuronServer;$(SolutionDir)GameLogic`, MS CppUnitTest lib | ✅ Done (Phase 2.5 + Phase 3) |
+| Tests.NeuronCore/Tests.NeuronCore.vcxproj | DynamicLibrary (10 test .cpp), PCH, references NeuronCore + NeuronClient + NeuronServer + GameLogic, include dirs `$(SolutionDir)NeuronCore;$(SolutionDir)NeuronClient;$(SolutionDir)NeuronServer;$(SolutionDir)GameLogic`, MS CppUnitTest lib | ✅ Done (Phase 2.5 + Phase 3 + Phase 4) |
 
 ---
 
@@ -2128,14 +2134,20 @@ Use this to track progress:
 - [x] Phase 3 unit tests: 31 new tests (EntitySystem: 9, RLE: 7, VoxelSystem: 5, Sector: 10)
 - [x] Total test count: 82 (all passing)
 
-## Phase 4 (Weeks 5–7)
+## Phase 4 (Weeks 5–7) — Tests Complete
 - [x] DX12 device initializes, window opens *(done in Phase 1.5 as GraphicsCore)*
 - [x] Client main loop runs at 60 FPS *(done in Phase 1.5 as ClientEngine::Run)*
 - [ ] Client connects to server, receives snapshots
 - [ ] Keyboard input captured & sent as commands
 - [ ] Camera pan (WASD) & zoom (wheel) working
 - [ ] Entity cache displays 2+ entities
-- [ ] 🆕 Client↔Server integration test: packet round-trip verified
+- [x] 🆕 Client↔Server integration test: packet round-trip verified (5 UDP loopback tests)
+- [x] 🆕 Phase 4 unit tests: EntityCache (11), SnapshotDecoder (7), Camera (12) — 30 tests
+- [x] 🆕 Phase 4 integration tests: real UDP loopback round-trip (5 tests)
+- [x] UDPSocket::localPort() added for ephemeral port discovery in tests
+- [x] UDPSocket receive buffer increased from 2048 → 4096 bytes
+- [x] 🆕 Known issue documented: PacketType uint32_t → uint8_t TYPE truncation causes CmdInput/SnapState collision at 0x01
+- [x] Total test count: 117 (all passing)
 - [ ] 🆕 10 ghost clients: p99 tick < 16.67 ms for 60 sec
 
 ## Phase 5 (Weeks 7–10)

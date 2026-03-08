@@ -70,10 +70,6 @@
 #include <unknwn.h>
 
 #include <winrt/Windows.Foundation.Collections.h>
-#include <winrt/Windows.Globalization.h>
-#include <winrt/Windows.Storage.Streams.h>
-#include <winrt/Windows.System.Threading.Core.h>
-#include <winrt/Windows.System.UserProfile.h>
 #include <winrt/Windows.System.h>
 
 using namespace winrt;

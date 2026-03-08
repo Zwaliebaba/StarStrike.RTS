@@ -1,5 +1,10 @@
 #pragma once
 
+#include "Camera.h"
+#include "ClientSocket.h"
+#include "EntityCache.h"
+#include "InputSystem.h"
+
 class GameApp : public GameMain
 {
 public:
@@ -19,6 +24,7 @@ public:
   void RenderCanvas() override;
 
   void OnDeviceRestored() override;
+  void OnWindowSizeChanged(int width, int height) override;
 
   // Touch input for camera panning
   void AddTouch(int _id, Windows::Foundation::Point _point) override;
@@ -32,6 +38,19 @@ protected:
 
   // Track active touch ID for single-finger panning
   int m_activeTouchId = -1;
+
+  // ── Phase 4 subsystems ─────────────────────────────────────────────────
+  Neuron::Client::ClientSocket m_socket;
+  Neuron::Client::EntityCache  m_entityCache;
+  Neuron::Client::InputSystem  m_input;
+  Neuron::Client::Camera       m_camera;
+
+  Neuron::PlayerID m_localPlayerId = 0;
+  uint64_t         m_localTick     = 0;
+
+  // Server connection config (hardcoded for now; Phase 6 adds UI)
+  static constexpr const char* DEFAULT_SERVER_ADDR = "127.0.0.1";
+  static constexpr uint16_t    DEFAULT_SERVER_PORT = 7777;
 };
 
 extern GameApp* g_app;

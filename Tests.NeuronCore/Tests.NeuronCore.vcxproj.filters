@@ -1,11 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="MockSocketTests.cpp" />
     <ClCompile Include="PacketCodecTests.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="TypesTests.cpp" />
+    <ClCompile Include="CameraTests.cpp" />
+    <ClCompile Include="ClientServerTests.cpp" />
+    <ClCompile Include="EntityCacheTests.cpp" />
     <ClCompile Include="EntitySystemTests.cpp" />
+    <ClCompile Include="SnapshotDecoderTests.cpp" />
     <ClCompile Include="VoxelSystemTests.cpp" />
     <ClCompile Include="SectorTests.cpp" />
   </ItemGroup>

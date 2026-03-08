@@ -5,6 +5,8 @@
 #include "Constants.h"
 #include "Database.h"
 #include "EntitySystem.h"
+#include "PacketCodec.h"
+#include "PacketTypes.h"
 #include "ServerLog.h"
 #include "SimulationEngine.h"
 #include "SocketManager.h"
@@ -13,6 +15,7 @@
 #include "UniverseManager.h"
 
 #include <atomic>
+#include <chrono>
 #include <thread>
 
 namespace
@@ -32,6 +35,72 @@ namespace
         default:
             return FALSE;
         }
+    }
+
+    // ── Connected client tracking ───────────────────────────────────────
+    struct ConnectedClient
+    {
+        std::string addr;
+        uint16_t    port     = 0;
+        uint64_t    lastTick = 0;
+    };
+
+    std::unordered_map<std::string, ConnectedClient> g_clients;
+    uint32_t g_snapSequence = 0;
+
+    std::string makeClientKey(const std::string& addr, uint16_t port)
+    {
+        return addr + ":" + std::to_string(port);
+    }
+
+    void trackClient(const std::string& addr, uint16_t port, uint64_t tickNum)
+    {
+        auto key = makeClientKey(addr, port);
+        auto it = g_clients.find(key);
+        if (it == g_clients.end())
+        {
+            g_clients[key] = { addr, port, tickNum };
+            Neuron::Server::LogInfo("Client connected: {}:{}\n", addr, port);
+        }
+        else
+        {
+            it->second.lastTick = tickNum;
+        }
+    }
+
+    void broadcastSnapshot(Neuron::Server::SocketManager& socketMgr,
+                           const Neuron::GameLogic::EntitySystem& entitySys,
+                           uint64_t tickNum)
+    {
+        using namespace Neuron;
+
+        // Build a SnapState from live entities
+        SnapState snap;
+        snap.serverTick  = tickNum;
+        snap.entityCount = 0;
+
+        for (const auto& e : entitySys.getAll())
+        {
+            if (!e.alive)
+                continue;
+            if (snap.entityCount >= SnapState::MAX_ENTITIES_PER_SNAP)
+                break;
+
+            auto& se = snap.entities[snap.entityCount];
+            se.entityId = e.id;
+            se.type     = e.type;
+            se.position = e.pos;
+            se.velocity = e.vel;
+            se.health   = static_cast<float>(e.hp);
+            se.ownerId  = e.ownerPlayerId;
+            ++snap.entityCount;
+        }
+
+        auto bytes = encodePacket(snap, g_snapSequence++);
+
+        // Send to all connected clients
+        for (auto& [key, client] : g_clients)
+            socketMgr.sendTo(bytes, client.addr, client.port);
     }
 } // anonymous
 
@@ -175,9 +244,17 @@ int main(int argc, char* argv[])
         std::vector<ReceivedPacket> packets;
         socketMgr.recvPackets(packets);
 
+        // Track connected clients from any received packets
+        for (const auto& pkt : packets)
+            trackClient(pkt.senderAddr, pkt.senderPort, tickNum);
+
         // Run simulation tick
         sim.tick(tickNum);
         universe.tick(TICK_INTERVAL_SEC, tickNum);
+
+        // Broadcast snapshots at 20 Hz (every TICKS_PER_SNAPSHOT ticks)
+        if (tickNum % TICKS_PER_SNAPSHOT == 0 && !g_clients.empty())
+            broadcastSnapshot(socketMgr, entitySys, tickNum);
 
         // Persistence: flush voxel deltas every 1 sec, dirty chunks every 30 sec
         if (db.isConnected())

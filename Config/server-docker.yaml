@@ -1,0 +1,22 @@
+# StarStrike.RTS — Server Configuration (Docker container)
+# Bind-mount this over config/server.yaml when running in Docker:
+#   docker run -v "${PWD}\config\server-docker.yaml:C:\StarStrike\config\server.yaml" ...
+#
+# Key difference from default: database URL uses SQL Authentication and
+# host.docker.internal to reach SQL Server on the Docker host.
+
+server:
+  port: 7777
+  bind_address: "0.0.0.0"
+  tick_rate_hz: 60
+  max_players: 50
+
+database:
+  # host.docker.internal resolves to the Docker host from inside a Windows container.
+  # Replace <password> with the actual starstrike_svc login password.
+  # For Azure SQL, change Server to <name>.database.windows.net and set Encrypt=yes.
+  url: "Driver={ODBC Driver 18 for SQL Server};Server=host.docker.internal,1433;Database=starstrike;UID=starstrike_svc;PWD=Vesting28;Encrypt=optional;TrustServerCertificate=yes;"
+  pool_size: 4
+
+logging:
+  level: "info"

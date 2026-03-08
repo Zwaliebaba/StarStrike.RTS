@@ -1,0 +1,14 @@
+# Only ship build artifacts and config into the Docker context.
+# Exclude source, intermediate files, docs, IDE files, etc.
+
+*
+
+!x64/Debug/Server.exe
+!x64/Debug/yaml-cppd.dll
+!x64/Debug/ucrtbased.dll
+!x64/Debug/vcruntime140d.dll
+!x64/Debug/vcruntime140_1d.dll
+!x64/Debug/msvcp140d.dll
+!x64/Debug/concrt140d.dll
+!Config/server.yaml
+!Config/schema.sql

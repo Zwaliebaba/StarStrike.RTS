@@ -120,7 +120,7 @@ namespace Neuron
     if (!m_open)
       return std::nullopt;
 
-    uint8_t buf[2048];
+    uint8_t buf[4096];
     sockaddr_in from{};
     int fromLen = sizeof(from);
 
@@ -146,6 +146,19 @@ namespace Neuron
     dg.senderAddr = ipBuf;
     dg.senderPort = ntohs(from.sin_port);
     return dg;
+  }
+
+  uint16_t UDPSocket::localPort() const
+  {
+    if (!m_open)
+      return 0;
+
+    sockaddr_in sa{};
+    int len = sizeof(sa);
+    if (getsockname(m_sock, reinterpret_cast<sockaddr*>(&sa), &len) == SOCKET_ERROR)
+      return 0;
+
+    return ntohs(sa.sin_port);
   }
 
   void UDPSocket::close()

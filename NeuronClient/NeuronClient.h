@@ -8,6 +8,10 @@
 
 #include <winrt/Windows.Devices.Enumeration.h>
 #include <winrt/Windows.Devices.Input.h>
+#include <winrt/Windows.Globalization.h>
+#include <winrt/Windows.Storage.Streams.h>
+#include <winrt/Windows.System.Threading.Core.h>
+#include <winrt/Windows.System.UserProfile.h>
 #include <winrt/Windows.UI.Core.h>
 #include <winrt/Windows.UI.Input.Core.h>
 #include <winrt/Windows.UI.Popups.h>

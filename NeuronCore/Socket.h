@@ -48,6 +48,9 @@ public:
 
     [[nodiscard]] bool isOpen() const noexcept { return m_open; }
 
+    /// Return the local port the socket is bound to (useful after bind to port 0).
+    [[nodiscard]] uint16_t localPort() const;
+
 private:
 #ifdef _WIN32
     uintptr_t m_sock = ~static_cast<uintptr_t>(0); // INVALID_SOCKET

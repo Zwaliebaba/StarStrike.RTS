@@ -1,6 +1,33 @@
 -- StarStrike.RTS MS SQL Server Schema
 -- Phase 3: Entity System & Voxel Storage
--- Run with: sqlcmd -S localhost -d starstrike -i config\schema.sql
+-- Run with: sqlcmd -S localhost -i config\schema.sql
+--
+-- This script drops and recreates the starstrike database.
+-- WARNING: All existing data will be lost.
+
+USE master;
+GO
+
+-- Drop existing connections and database
+IF EXISTS (SELECT * FROM sys.databases WHERE name = 'starstrike')
+BEGIN
+    ALTER DATABASE starstrike SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE starstrike;
+END
+GO
+
+-- Create fresh database
+CREATE DATABASE starstrike;
+GO
+
+USE starstrike;
+GO
+
+CREATE USER starstrike_svc FOR LOGIN starstrike_svc;
+GO
+
+ALTER ROLE db_owner ADD MEMBER starstrike_svc;
+GO
 
 -- ── Voxel Chunks ────────────────────────────────────────────────────────────
 
