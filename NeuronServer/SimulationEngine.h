@@ -1,17 +1,27 @@
 #pragma once
 
+#include "PacketTypes.h"
+
 #include <cstdint>
-#include <functional>
+#include <vector>
+
+namespace Neuron::GameLogic { class UniverseManager; }
 
 namespace Neuron::Server
 {
 
-/// Skeletal 60 Hz server tick loop with 6 simulation phases (all stubs).
-/// Each phase will be filled in during later implementation phases.
+/// 60 Hz server simulation tick loop with 6 phases.
+/// Phase 1 (input) is implemented; remaining phases are stubs for later.
 class SimulationEngine
 {
 public:
     SimulationEngine() = default;
+
+    /// Bind the simulation to a universe.  Must be called before tick().
+    void init(Neuron::GameLogic::UniverseManager* universe);
+
+    /// Enqueue a validated player command for processing in the next tick.
+    void enqueueCommand(const CmdInput& cmd);
 
     /// Run one simulation tick. Called every 16.67 ms by the server main loop.
     void tick(uint64_t tickNum);
@@ -26,7 +36,9 @@ private:
     void phase5_mining();
     void phase6_effects();
 
-    uint64_t m_tickCount = 0;
+    Neuron::GameLogic::UniverseManager* m_universe = nullptr;
+    std::vector<CmdInput>               m_pendingCommands;
+    uint64_t                            m_tickCount = 0;
 };
 
 } // namespace Neuron::Server

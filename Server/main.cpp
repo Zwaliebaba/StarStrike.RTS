@@ -40,31 +40,37 @@ namespace
     // ── Connected client tracking ───────────────────────────────────────
     struct ConnectedClient
     {
-        std::string addr;
-        uint16_t    port     = 0;
-        uint64_t    lastTick = 0;
+        std::string    addr;
+        uint16_t       port     = 0;
+        uint64_t       lastTick = 0;
+        Neuron::PlayerID playerId = Neuron::INVALID_PLAYER;
     };
 
     std::unordered_map<std::string, ConnectedClient> g_clients;
     uint32_t g_snapSequence = 0;
+    Neuron::PlayerID g_nextPlayerId = 0;
 
     std::string makeClientKey(const std::string& addr, uint16_t port)
     {
         return addr + ":" + std::to_string(port);
     }
 
-    void trackClient(const std::string& addr, uint16_t port, uint64_t tickNum)
+    /// Track a client connection and return its assigned PlayerID.
+    Neuron::PlayerID trackClient(const std::string& addr, uint16_t port, uint64_t tickNum)
     {
         auto key = makeClientKey(addr, port);
         auto it = g_clients.find(key);
         if (it == g_clients.end())
         {
-            g_clients[key] = { addr, port, tickNum };
-            Neuron::Server::LogInfo("Client connected: {}:{}\n", addr, port);
+            auto pid = g_nextPlayerId++;
+            g_clients[key] = { addr, port, tickNum, pid };
+            Neuron::Server::LogInfo("Client connected: {}:{} (player {})\n", addr, port, pid);
+            return pid;
         }
         else
         {
             it->second.lastTick = tickNum;
+            return it->second.playerId;
         }
     }
 
@@ -167,6 +173,7 @@ int main(int argc, char* argv[])
     // ── Initialize universe (Phase 3) ──────────────────────────────────────────
     GameLogic::UniverseManager universe;
     universe.init();
+    sim.init(&universe);
 
     // Persistence layer
     ChunkStore chunkStore(db);
@@ -244,9 +251,48 @@ int main(int argc, char* argv[])
         std::vector<ReceivedPacket> packets;
         socketMgr.recvPackets(packets);
 
-        // Track connected clients from any received packets
+        // Track connected clients and enqueue commands for simulation
         for (const auto& pkt : packets)
-            trackClient(pkt.senderAddr, pkt.senderPort, tickNum);
+        {
+            auto playerId = trackClient(pkt.senderAddr, pkt.senderPort, tickNum);
+
+            // Spawn a ship for brand-new players (playerId was just assigned)
+            if (entitySys.getEntity(static_cast<EntityID>(playerId)) == nullptr)
+            {
+                // Check if any existing ship belongs to this player
+                bool hasShip = false;
+                for (const auto& e : entitySys.getAll())
+                {
+                    if (e.alive && e.type == EntityType::Ship &&
+                        e.ownerPlayerId == playerId)
+                    {
+                        hasShip = true;
+                        break;
+                    }
+                }
+                if (!hasShip)
+                {
+                    GameLogic::Entity ship;
+                    ship.type          = EntityType::Ship;
+                    ship.ownerPlayerId = playerId;
+                    ship.pos           = { 0.0f, 0.0f, 0.0f };
+                    ship.hp            = 100;
+                    ship.maxHp         = 100;
+                    auto id = entitySys.spawnEntity(ship);
+                    LogInfo("Spawned ship {} for player {}\n", id, playerId);
+                }
+            }
+
+            // Extract CmdInput packets and feed to simulation
+            if (pkt.packet.header.type == CmdInput::TYPE &&
+                pkt.packet.payload.size() >= sizeof(CmdInput))
+            {
+                CmdInput cmd;
+                std::memcpy(&cmd, pkt.packet.payload.data(), sizeof(CmdInput));
+                cmd.playerId = playerId; // override with server-assigned ID
+                sim.enqueueCommand(cmd);
+            }
+        }
 
         // Run simulation tick
         sim.tick(tickNum);

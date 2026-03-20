@@ -150,20 +150,20 @@ enum class ShipType : uint8_t
     Carrier
 };
 
-enum class PacketType : uint32_t
+enum class PacketType : uint8_t
 {
-    // Client → Server
-    CmdInput        = 0x0001,
-    CmdChat         = 0x0002,
-    CmdAck          = 0x0003,
-    CmdRequestChunk = 0x0004,
+    // Client -> Server  (0x01-0x7F)
+    CmdInput        = 0x01,
+    CmdChat         = 0x02,
+    CmdAck          = 0x03,
+    CmdRequestChunk = 0x04,
 
-    // Server → Client
-    SnapState       = 0x0101,
-    SnapChunk       = 0x0102,
-    EventChat       = 0x0103,
-    EventDamage     = 0x0104,
-    Ping            = 0x0105
+    // Server -> Client  (0x80-0xFF, high bit distinguishes direction)
+    SnapState       = 0x81,
+    SnapChunk       = 0x82,
+    EventChat       = 0x83,
+    EventDamage     = 0x84,
+    Ping            = 0x85
 };
 
 } // namespace Neuron

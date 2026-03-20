@@ -54,6 +54,8 @@ inline constexpr uint32_t CHUNK_FLUSH_TICKS        = TICK_RATE_HZ * 30;  // ever
 
 inline constexpr float    SHIP_AABB_HALF_EXTENT    = 5.0f;  // 10×10×10 unit box
 inline constexpr float    PROJECTILE_AABB_EXTENT   = 0.5f;  // 1×1×1 point-like
+inline constexpr float    SHIP_MOVE_SPEED          = 30.0f; // voxels/sec
+inline constexpr float    SHIP_STOP_DISTANCE       = 1.0f;  // stop when within this distance of target
 
 // ── Rendering ───────────────────────────────────────────────────────────────
 
